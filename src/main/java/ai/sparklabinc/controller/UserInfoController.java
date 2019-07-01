@@ -32,8 +32,8 @@ public class UserInfoController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "name", value = "用户名", required = false, paramType = "query")
     })
-    public Object findByUserName(String name){
-        return userInfoService.findByUserName(name);
+    public Object findByUserName(Integer curpage,Integer size,String name){
+        return userInfoService.findByUserName(curpage,size,name);
     }
 
     @GetMapping(value = "/selectAll")

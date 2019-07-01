@@ -11,7 +11,7 @@ import javax.naming.Name;
 import static com.baomidou.mybatisplus.enums.IdType.AUTO;
 
 @Data
-@TableName("user_info")
+@TableName(value = "user_info")
 public class UserInfoDO {
     @TableId(type=AUTO)
     private Integer id;

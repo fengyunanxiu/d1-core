@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class UserInfoService extends ServiceImpl<UserInfoMapper,UserInfoDO> {
+public class UserInfoService extends ServiceImpl<UserInfoMapper, UserInfoDO> {
 
     @Autowired
     private UserInfoMapper userInfoMapper;
@@ -25,22 +25,24 @@ public class UserInfoService extends ServiceImpl<UserInfoMapper,UserInfoDO> {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public List<UserInfoDO> findUserInfoList(){
+    public List<UserInfoDO> findUserInfoList() {
         return userInfoMapper.selectList(null);
     }
 
-       public List<UserInfoDO> findByUserName(String name){
-        return userInfoMapper.findByUserName(name);
+    public Page<UserInfoDO> findByUserName(Integer curpage,Integer size,String name) {
+        Page<UserInfoDO> page =new Page<>(curpage, size);
+        return page.setRecords(userInfoMapper.findByUserName(page,name));
     }
 
-    public List<Map<String,Object>> selectAll(){
-        String sql="select * from user_info";
+    public List<Map<String, Object>> selectAll() {
+        String sql = "select * from user_info";
         return jdbcTemplate.queryForList(sql);
     }
 
 
     /**
      * 新增用户信息
+     *
      * @param userInfoDO 角色参数
      * @return 是否成功
      */
@@ -50,6 +52,7 @@ public class UserInfoService extends ServiceImpl<UserInfoMapper,UserInfoDO> {
 
     /**
      * 批量新增用户信息
+     *
      * @param userInfoDOList 角色参数
      * @return 是否成功
      */
@@ -59,6 +62,7 @@ public class UserInfoService extends ServiceImpl<UserInfoMapper,UserInfoDO> {
 
     /**
      * 更新用户信息
+     *
      * @param userInfoDO 角色参数
      * @return 是否成功
      */
@@ -68,6 +72,7 @@ public class UserInfoService extends ServiceImpl<UserInfoMapper,UserInfoDO> {
 
     /**
      * 删除用户信息
+     *
      * @param userInfoDO 角色参数
      * @return 是否成功
      */
@@ -83,9 +88,9 @@ public class UserInfoService extends ServiceImpl<UserInfoMapper,UserInfoDO> {
      * @param size
      * @return 查询角色分页列表
      */
-    public Page<UserInfoDO> selectListPage(Integer curpage,Integer size) {
-        Page<UserInfoDO>  page= new Page<UserInfoDO>(curpage, size);
-        Wrapper<UserInfoDO> wrapper = new EntityWrapper<UserInfoDO>().orderBy("id").last("desc");
+    public Page<UserInfoDO> selectListPage(Integer curpage, Integer size) {
+        Page<UserInfoDO> page = new Page<UserInfoDO>(curpage, size);
+        Wrapper<UserInfoDO> wrapper = new EntityWrapper<UserInfoDO>().orderBy(false, "id", false);
         Page<UserInfoDO> roleDOList = selectPage(page, wrapper);
         return roleDOList;
     }

@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @MapperScan("ai.sparklabinc.mapper*")
 @EnableTransactionManagement(proxyTargetClass = true)
 public class MybatisPlusConfig {
-
     /**
      * 分页插件
      */
