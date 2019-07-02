@@ -29,29 +29,6 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!--格式化sql语句-->
-      <!--  <dependency>
-            <groupId>p6spy</groupId>
-            <artifactId>p6spy</artifactId>
-            <version>3.8.0</version>
-        </dependency>-->
-
-      <!--  <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>1.3.2</version>
-        </dependency>-->
-      <!--  <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>${mybatis-plus.version}</version>
-        </dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>com.baomidou</groupId>-->
-            <!--<artifactId>dynamic-datasource-spring-boot-starter</artifactId>-->
-            <!--<version>2.5.5</version>-->
-        <!--</dependency>-->
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -76,20 +53,6 @@
             <version>${springfox.version}</version>
         </dependency>
 
-        <!-- druid 驱动 -->
-        <!--<dependency>-->
-            <!--<groupId>com.alibaba</groupId>-->
-            <!--<artifactId>druid</artifactId>-->
-            <!--<version>1.1.9</version>-->
-        <!--</dependency>-->
-
-        <!-- lombok 驱动 -->
-        <!--<dependency>-->
-            <!--<groupId>org.projectlombok</groupId>-->
-            <!--<artifactId>lombok</artifactId>-->
-            <!--<version>1.18.2</version>-->
-        <!--</dependency>-->
-
         <!-- SQLite 驱动 -->
         <dependency>
             <groupId>org.xerial</groupId>
@@ -101,6 +64,12 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-jdbc</artifactId>
+            <version>8.5.23</version>
         </dependency>
 
 
@@ -116,13 +85,7 @@
             <artifactId>jsch</artifactId>
             <version>0.1.54</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
-            <version>RELEASE</version>
-            <scope>compile</scope>
-        </dependency>
+        
     </dependencies>
 
     <build>
