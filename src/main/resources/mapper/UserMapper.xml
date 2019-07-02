@@ -5,8 +5,4 @@
         select *  from user_info t where t.name like '%'||#{name,jdbcType=VARCHAR}||'%'
     </select>
 
-
-
-
-
 </mapper>
