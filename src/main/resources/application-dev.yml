@@ -9,21 +9,7 @@ server:
 spring:
   application:
     #注册到注册中心应用名
-    name: fdvt-core
-  ##cloud配置
-  cloud:
-    zookeeper:
-      #注册到zookeeper注册中心的服务地址
-      connect-string: localhost:2181
-      discovery:
-        #是否启动服务注册
-        register: true
-        enabled: true
-        #zk唯一id的标识
-        instance-id: 1
-        instance-port: ${server.port}
-        #zk根节点名称，默认/services
-        root: /schedule
+    name: d1-core
   #Redis配置
   redis:
     host: 127.0.0.1
@@ -41,18 +27,25 @@ spring:
     url: jdbc:sqlite:d1-core/D1.db
     username:
     password:
-    type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: org.sqlite.JDBC
-    hikari:  # 全局hikariCP参数，所有值和默认保持一致。(现已支持的参数如下,不清楚含义不要乱设置)
-        minimum-idle: 5
-        maximum-pool-size: 15
-        auto-commit: true
-        idle-timeout: 30000
-        pool-name: DatebookHikariCP
-        max-lifetime: 1800000
-        connection-timeout: 30000
-        connection-test-query: SELECT 1
-
+    tomcat:
+     jdbc-interceptors: org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer;org.apache.tomcat.jdbc.pool.interceptor.ResetAbandonedTimer
+     test-while-idle: true
+     test-on-borrow: true
+     validation-query: select 1
+     validation-interval: 34000
+     test-on-return: true
+     time-between-eviction-runs-millis: 34000
+     min-evictable-idle-time-millis: 55000
+     max-wait: 30000
+     remove-abandoned-timeout: 1800
+     log-abandoned: true
+     remove-abandoned: true
+     max-active: 30
+     max-idle: 15
+     min-idle: 5
+     initial-size: 10
+     auto-reconnect: true
 
 
 

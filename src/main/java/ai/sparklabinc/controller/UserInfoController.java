@@ -1,23 +1,21 @@
-//package ai.sparklabinc.controller;
-//import ai.sparklabinc.entity.UserInfoDO;
-//import ai.sparklabinc.service.UserInfoService;
-//import io.swagger.annotations.Api;
-//import io.swagger.annotations.ApiImplicitParam;
-//import io.swagger.annotations.ApiImplicitParams;
-//import io.swagger.annotations.ApiOperation;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.web.bind.annotation.*;
-//
-//import java.util.List;
-//
-//@RestController
-//@RequestMapping(value = "/user")
-//@Api(value = "用户类" ,tags = "用户操作接口")
-//public class UserInfoController {
-//
-//    @Autowired
-//    private UserInfoService userInfoService;
-//
+package ai.sparklabinc.controller;
+
+import ai.sparklabinc.service.UserInfoService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping(value = "/user")
+@Api(value = "用户类" ,tags = "用户操作接口")
+public class UserInfoController {
+
+    @Autowired
+    private UserInfoService userInfoService;
+
 //    @GetMapping(value = "/findUserInfoList")
 //    @ApiOperation(value="获取用户列表", notes="获取用户列表")
 //    @ApiImplicitParams({
@@ -35,12 +33,12 @@
 //    public Object findByUserName(Integer curpage,Integer size,String name){
 //        return userInfoService.findByUserName(curpage,size,name);
 //    }
-//
-//    @GetMapping(value = "/selectAll")
-//    @ApiOperation(value="获取用户列表(jdbcTemplata)", notes="获取用户列表")
-//    public Object selectAll(){
-//        return userInfoService.selectAll();
-//    }
+
+    @GetMapping(value = "/selectAll")
+    @ApiOperation(value="获取用户列表(jdbcTemplata)", notes="获取用户列表")
+    public Object selectAll(){
+        return userInfoService.selectAll();
+    }
 //
 //    @GetMapping(value = "/selectListPage")
 //    @ApiOperation(value="获取用户列表(分页)")
@@ -73,9 +71,6 @@
 //        return userInfoService.insertInfo(userInfoDOList);
 //    }
 //
-//
-//
-//
-//
-//
-//}
+
+
+}

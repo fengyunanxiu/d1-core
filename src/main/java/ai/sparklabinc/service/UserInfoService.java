@@ -1,29 +1,20 @@
-//package ai.sparklabinc.service;
-//
-//import ai.sparklabinc.entity.UserInfoDO;
-//import ai.sparklabinc.mapper.UserInfoMapper;
-//import com.baomidou.mybatisplus.mapper.EntityWrapper;
-//import com.baomidou.mybatisplus.mapper.Wrapper;
-//import com.baomidou.mybatisplus.plugins.Page;
-//import com.baomidou.mybatisplus.service.IService;
-//import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-//import org.apache.ibatis.session.RowBounds;
-//import org.springframework.beans.BeanUtils;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.jdbc.core.JdbcTemplate;
-//import org.springframework.stereotype.Service;
-//
-//import java.util.List;
-//import java.util.Map;
-//
-//@Service
-//public class UserInfoService extends ServiceImpl<UserInfoMapper, UserInfoDO> {
-//
+package ai.sparklabinc.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class UserInfoService{
+
 //    @Autowired
 //    private UserInfoMapper userInfoMapper;
-//
-//    @Autowired
-//    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 //
 //    public List<UserInfoDO> findUserInfoList() {
 //        return userInfoMapper.selectList(null);
@@ -33,12 +24,12 @@
 //        Page<UserInfoDO> page =new Page<>(curpage, size);
 //        return page.setRecords(userInfoMapper.findByUserName(page,name));
 //    }
-//
-//    public List<Map<String, Object>> selectAll() {
-//        String sql = "select * from user_info";
-//        return jdbcTemplate.queryForList(sql);
-//    }
-//
+
+    public List<Map<String, Object>> selectAll() {
+        String sql = "select * from user_info";
+        return jdbcTemplate.queryForList(sql);
+    }
+
 //
 //    /**
 //     * 新增用户信息
@@ -94,5 +85,5 @@
 //        Page<UserInfoDO> roleDOList = selectPage(page, wrapper);
 //        return roleDOList;
 //    }
-//
-//}
+
+}
