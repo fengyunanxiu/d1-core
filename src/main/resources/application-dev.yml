@@ -10,17 +10,6 @@ spring:
   application:
     #注册到注册中心应用名
     name: d1-core
-  #Redis配置
-  redis:
-    host: 127.0.0.1
-    password:
-    port: 6379
-    jedis:
-      pool:
-        max-idle: 100
-        min-idle: 1
-        max-active: 1000
-        max-wait: -1
   ##数据源配置
   datasource:
     name: D1
@@ -45,7 +34,6 @@ spring:
      max-idle: 15
      min-idle: 5
      initial-size: 10
-     auto-reconnect: true
 
 
 

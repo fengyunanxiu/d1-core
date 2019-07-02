@@ -34,11 +34,11 @@ public class UserInfoController {
 //        return userInfoService.findByUserName(curpage,size,name);
 //    }
 
-    @GetMapping(value = "/selectAll")
-    @ApiOperation(value="获取用户列表(jdbcTemplata)", notes="获取用户列表")
-    public Object selectAll(){
-        return userInfoService.selectAll();
-    }
+//    @GetMapping(value = "/selectAll")
+//    @ApiOperation(value="获取用户列表(jdbcTemplata)", notes="获取用户列表")
+//    public Object selectAll(){
+//        return userInfoService.selectAll();
+//    }
 //
 //    @GetMapping(value = "/selectListPage")
 //    @ApiOperation(value="获取用户列表(分页)")
