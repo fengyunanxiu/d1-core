@@ -54,8 +54,8 @@ public class TestController {
 
                     dbBasicConfigDO = new DbBasicConfigDO();
                     dbBasicConfigDO.setId(id);
-                    dbBasicConfigDO.setGmtCreate(gmtCreate);
-                    dbBasicConfigDO.setGmtModified(gmtModified);
+                    dbBasicConfigDO.setGmtCreate(gmtCreateStr);
+                    dbBasicConfigDO.setGmtModified(gmtModifiedStr);
                     dbBasicConfigDO.setType(type);
                     dbBasicConfigDO.setName(name);
                    // dbBasicConfigDO.setHost(host);

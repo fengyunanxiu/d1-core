@@ -6,6 +6,7 @@ import ai.sparklabinc.service.QueryFormTableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -27,7 +28,7 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
 
 
 
-    private List<DsFormTableSettingDO> getAllDsFormTableSettingByDsKey(String dataSourceKey){
+    private List<DsFormTableSettingDO> getAllDsFormTableSettingByDsKey(String dataSourceKey) throws SQLException {
         return this.dsFormTableSettingDao.getAllDsFormTableSettingByDsKey(dataSourceKey);
     }
 }

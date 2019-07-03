@@ -5,9 +5,9 @@ import java.util.Date;
 public class DbSecurityConfigDO {
     private Long id;
 
-    private Date gmtCreate;
+    private String gmtCreate;
 
-    private Date gmtModified;
+    private String gmtModified;
 
     private Boolean useSsl;
 
@@ -40,19 +40,20 @@ public class DbSecurityConfigDO {
         this.id = id;
     }
 
-    public Date getGmtCreate() {
+
+    public String getGmtCreate() {
         return gmtCreate;
     }
 
-    public void setGmtCreate(Date gmtCreate) {
+    public void setGmtCreate(String gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
-    public Date getGmtModified() {
+    public String getGmtModified() {
         return gmtModified;
     }
 
-    public void setGmtModified(Date gmtModified) {
+    public void setGmtModified(String gmtModified) {
         this.gmtModified = gmtModified;
     }
 
