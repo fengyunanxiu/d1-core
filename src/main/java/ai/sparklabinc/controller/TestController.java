@@ -1,13 +1,12 @@
 package ai.sparklabinc.controller;
 
 
-import ai.sparklabinc.component.DefaultDataSourceComponent;
+import ai.sparklabinc.datasource.Constants;
+import ai.sparklabinc.datasource.DataSourceFactory;
 import ai.sparklabinc.entity.DbBasicConfigDO;
 import ai.sparklabinc.util.DateUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.commons.dbutils.handlers.BeanListHandler;
-import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,19 +15,22 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/test")
 public class TestController {
 
     @Autowired
-    private DefaultDataSourceComponent defaultDataSourceComponent;
+    private DataSourceFactory dataSourceFactory;
 
     @ResponseBody
     @RequestMapping("/test")
     public Object getInfo() throws SQLException {
-        DataSource dataSource = defaultDataSourceComponent.getDataSource();
+        DataSource dataSource = dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE);
         QueryRunner queryRunner = new QueryRunner(dataSource);
         List<DbBasicConfigDO> dbBasicConfigDOList =queryRunner.query("select * from db_basic_config", new ResultSetHandler<List<DbBasicConfigDO>>() {
             @Override
@@ -78,7 +80,7 @@ public class TestController {
     @ResponseBody
     @RequestMapping("/test2")
     public Object getInfo2() throws SQLException {
-        DataSource dataSource = defaultDataSourceComponent.getDataSource();
+        DataSource dataSource =dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE);
         QueryRunner queryRunner = new QueryRunner(dataSource);
 
         String sql = "insert into db_basic_config" +

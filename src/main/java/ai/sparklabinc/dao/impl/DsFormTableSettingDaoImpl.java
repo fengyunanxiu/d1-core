@@ -1,7 +1,8 @@
 package ai.sparklabinc.dao.impl;
 
-import ai.sparklabinc.component.DefaultDataSourceComponent;
 import ai.sparklabinc.dao.DsFormTableSettingDao;
+import ai.sparklabinc.datasource.Constants;
+import ai.sparklabinc.datasource.DataSourceFactory;
 import ai.sparklabinc.entity.DsFormTableSettingDO;
 import org.apache.commons.dbutils.QueryRunner;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +20,13 @@ import java.util.List;
 public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
 
     @Autowired
-    private DefaultDataSourceComponent defaultDataSourceComponent;
+    private DataSourceFactory dataSourceFactory;
 
     private QueryRunner queryRunner;
 
     @PostConstruct
     public void initQueryRunner(){
-        queryRunner = new QueryRunner(defaultDataSourceComponent.getDataSource());
+        queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE));
     }
 
 
