@@ -9,9 +9,9 @@ public class DbSecurityConfigDO {
 
     private Date gmtModified;
 
-    private Integer useSsl;
+    private Boolean useSsl;
 
-    private Integer useSshTunnel;
+    private Boolean useSshTunnel;
 
     private String sslCaFile;
 
@@ -56,19 +56,19 @@ public class DbSecurityConfigDO {
         this.gmtModified = gmtModified;
     }
 
-    public Integer getUseSsl() {
+    public Boolean getUseSsl() {
         return useSsl;
     }
 
-    public void setUseSsl(Integer useSsl) {
+    public void setUseSsl(Boolean useSsl) {
         this.useSsl = useSsl;
     }
 
-    public Integer getUseSshTunnel() {
+    public Boolean getUseSshTunnel() {
         return useSshTunnel;
     }
 
-    public void setUseSshTunnel(Integer useSshTunnel) {
+    public void setUseSshTunnel(Boolean useSshTunnel) {
         this.useSshTunnel = useSshTunnel;
     }
 

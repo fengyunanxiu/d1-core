@@ -27,6 +27,8 @@ public class DbBasicConfigDO {
 
     private String password;
 
+    private String url;
+
     public Long getId() {
         return id;
     }
@@ -97,5 +99,13 @@ public class DbBasicConfigDO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }
