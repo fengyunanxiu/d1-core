@@ -2,7 +2,7 @@ package ai.sparklabinc.entity;
 
 import java.util.Date;
 
-public class DsBasicConfigDO {
+public class DbBasicConfigDO {
 
     private Long id;
 
@@ -11,7 +11,10 @@ public class DsBasicConfigDO {
     private Date gmtModified;
 
 
-    // 枚举类型，MySQL,Sql Server等（见DsConstant）
+    /**
+     * 枚举类型，MySQL,Sql Server等（见DsConstant）
+     */
+
     private String type;
 
     private String name;
@@ -23,6 +26,8 @@ public class DsBasicConfigDO {
     private String user;
 
     private String password;
+
+    private String url;
 
     public Long getId() {
         return id;
@@ -94,5 +99,13 @@ public class DsBasicConfigDO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

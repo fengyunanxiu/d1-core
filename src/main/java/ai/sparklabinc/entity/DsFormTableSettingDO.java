@@ -24,14 +24,14 @@ public class DsFormTableSettingDO {
 
     private String dbFieldComment;
 
-    private Integer formFieldVisible;
+    private Boolean formFieldVisible;
 
 
     private Integer formFieldSequence;
 
     private String formFieldQueryType;
 
-    private Integer formFieldIsExactly;
+    private Boolean formFieldIsExactly;
 
 
     private String formFieldChildrenDbFieldName;
@@ -39,22 +39,22 @@ public class DsFormTableSettingDO {
 
     private String formFieldDicDomainName;
 
-    private Integer formFieldAutoCollectDic;
+    private Boolean formFieldAutoCollectDic;
 
     private String formFieldDefaultValStratege;
 
 
-    private Integer tableFieldVisible;
+    private Boolean tableFieldVisible;
 
     private String tableFieldOrderBy;
 
-    private Integer tableFieldQueryRequired;
+    private Boolean tableFieldQueryRequired;
 
     private Integer tableFieldSequence;
 
     private Integer tableFieldColumnWidth;
 
-    private Integer exportFieldVisible;
+    private Boolean exportFieldVisible;
 
     private Integer exportFieldSequence;
 
@@ -124,11 +124,11 @@ public class DsFormTableSettingDO {
         this.dbFieldComment = dbFieldComment;
     }
 
-    public Integer getFormFieldVisible() {
+    public Boolean getFormFieldVisible() {
         return formFieldVisible;
     }
 
-    public void setFormFieldVisible(Integer formFieldVisible) {
+    public void setFormFieldVisible(Boolean formFieldVisible) {
         this.formFieldVisible = formFieldVisible;
     }
 
@@ -148,11 +148,11 @@ public class DsFormTableSettingDO {
         this.formFieldQueryType = formFieldQueryType;
     }
 
-    public Integer getFormFieldIsExactly() {
+    public Boolean getFormFieldIsExactly() {
         return formFieldIsExactly;
     }
 
-    public void setFormFieldIsExactly(Integer formFieldIsExactly) {
+    public void setFormFieldIsExactly(Boolean formFieldIsExactly) {
         this.formFieldIsExactly = formFieldIsExactly;
     }
 
@@ -172,11 +172,11 @@ public class DsFormTableSettingDO {
         this.formFieldDicDomainName = formFieldDicDomainName;
     }
 
-    public Integer getFormFieldAutoCollectDic() {
+    public Boolean getFormFieldAutoCollectDic() {
         return formFieldAutoCollectDic;
     }
 
-    public void setFormFieldAutoCollectDic(Integer formFieldAutoCollectDic) {
+    public void setFormFieldAutoCollectDic(Boolean formFieldAutoCollectDic) {
         this.formFieldAutoCollectDic = formFieldAutoCollectDic;
     }
 
@@ -188,11 +188,11 @@ public class DsFormTableSettingDO {
         this.formFieldDefaultValStratege = formFieldDefaultValStratege;
     }
 
-    public Integer getTableFieldVisible() {
+    public Boolean getTableFieldVisible() {
         return tableFieldVisible;
     }
 
-    public void setTableFieldVisible(Integer tableFieldVisible) {
+    public void setTableFieldVisible(Boolean tableFieldVisible) {
         this.tableFieldVisible = tableFieldVisible;
     }
 
@@ -204,11 +204,11 @@ public class DsFormTableSettingDO {
         this.tableFieldOrderBy = tableFieldOrderBy;
     }
 
-    public Integer getTableFieldQueryRequired() {
+    public Boolean getTableFieldQueryRequired() {
         return tableFieldQueryRequired;
     }
 
-    public void setTableFieldQueryRequired(Integer tableFieldQueryRequired) {
+    public void setTableFieldQueryRequired(Boolean tableFieldQueryRequired) {
         this.tableFieldQueryRequired = tableFieldQueryRequired;
     }
 
@@ -228,11 +228,11 @@ public class DsFormTableSettingDO {
         this.tableFieldColumnWidth = tableFieldColumnWidth;
     }
 
-    public Integer getExportFieldVisible() {
+    public Boolean getExportFieldVisible() {
         return exportFieldVisible;
     }
 
-    public void setExportFieldVisible(Integer exportFieldVisible) {
+    public void setExportFieldVisible(Boolean exportFieldVisible) {
         this.exportFieldVisible = exportFieldVisible;
     }
 

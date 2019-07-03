@@ -19,8 +19,7 @@
         <java.version>1.8</java.version>
         <start-class>ai.sparklabinc.D1CoreApplication</start-class>
         <springfox.version>2.7.0</springfox.version>
-        <!--mybatis-plus-->
-        <!--<mybatis-plus.version>2.3</mybatis-plus.version>-->
+
     </properties>
 
     <dependencies>
@@ -79,12 +78,26 @@
             <scope>test</scope>
         </dependency>
 
+
+        <dependency>
+            <groupId>commons-dbutils</groupId>
+            <artifactId>commons-dbutils</artifactId>
+            <version>1.7</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.jcraft/com.jcraft.jsch -->
         <dependency>
             <groupId>com.jcraft</groupId>
             <artifactId>jsch</artifactId>
             <version>0.1.54</version>
         </dependency>
+
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency>
+
+
 
     </dependencies>
 

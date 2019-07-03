@@ -13,7 +13,7 @@ public class DsBasicDictionaryDO {
     private String itemVal;
 
 
-    private Integer isAuto;
+    private Boolean isAuto;
 
     private Date gmtCreate;
 
@@ -51,12 +51,12 @@ public class DsBasicDictionaryDO {
         this.itemVal = itemVal;
     }
 
-    public Integer getIsAuto() {
+    public Boolean getAuto() {
         return isAuto;
     }
 
-    public void setIsAuto(Integer isAuto) {
-        this.isAuto = isAuto;
+    public void setAuto(Boolean auto) {
+        isAuto = auto;
     }
 
     public Date getGmtCreate() {

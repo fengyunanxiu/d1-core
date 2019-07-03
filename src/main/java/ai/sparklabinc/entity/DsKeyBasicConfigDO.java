@@ -11,7 +11,7 @@ public class DsKeyBasicConfigDO {
 
     private Long fkDbId;
 
-    private String schemal;
+    private String schema;
 
     private String tableName;
 
@@ -45,12 +45,12 @@ public class DsKeyBasicConfigDO {
         this.fkDbId = fkDbId;
     }
 
-    public String getSchemal() {
-        return schemal;
+    public String getSchema() {
+        return schema;
     }
 
-    public void setSchemal(String schemal) {
-        this.schemal = schemal;
+    public void setSchema(String schema) {
+        this.schema = schema;
     }
 
     public String getTableName() {
