@@ -15,9 +15,9 @@ public class DsBasicDictionaryDO {
 
     private Boolean isAuto;
 
-    private Date gmtCreate;
+    private String gmtCreate;
 
-    private Date gmtModified;
+    private String gmtModified;
 
     public Long getId() {
         return id;
@@ -59,19 +59,19 @@ public class DsBasicDictionaryDO {
         isAuto = auto;
     }
 
-    public Date getGmtCreate() {
+    public String getGmtCreate() {
         return gmtCreate;
     }
 
-    public void setGmtCreate(Date gmtCreate) {
+    public void setGmtCreate(String gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
-    public Date getGmtModified() {
+    public String getGmtModified() {
         return gmtModified;
     }
 
-    public void setGmtModified(Date gmtModified) {
+    public void setGmtModified(String gmtModified) {
         this.gmtModified = gmtModified;
     }
 }

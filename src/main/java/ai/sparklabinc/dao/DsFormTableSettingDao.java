@@ -2,6 +2,7 @@ package ai.sparklabinc.dao;
 
 import ai.sparklabinc.entity.DsFormTableSettingDO;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -12,5 +13,5 @@ import java.util.List;
 public interface DsFormTableSettingDao {
 
 
-    List<DsFormTableSettingDO> getAllDsFormTableSettingByDsKey(String dataSourceKey);
+    List<DsFormTableSettingDO> getAllDsFormTableSettingByDsKey(String dataSourceKey) throws SQLException;
 }
