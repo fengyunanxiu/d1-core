@@ -1,13 +1,9 @@
 package ai.sparklabinc.datasource;
 
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
-import java.sql.Connection;
+
+import java.sql.*;
 
 
 public class MySqlConnOverSSH {

@@ -22,20 +22,21 @@ public class D1CoreApplicationTests {
 
     @Test
     public void contextLoads() {
-        DataSource sqlite = dataSourceFactory.builder("SQLITE");
+
         try {
+            DataSource sqlite = dataSourceFactory.builder("SQLITE1",1L);
             Connection connection = sqlite.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("select * from  user_info");
+            PreparedStatement preparedStatement = connection.prepareStatement("show databases");
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                System.out.println(resultSet.getString(2));
+                System.out.println(resultSet.getString(1));
             }
             if(connection!=null){
                 System.out.println("连接成功");
             }else{
                 System.out.println("连接失败");
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

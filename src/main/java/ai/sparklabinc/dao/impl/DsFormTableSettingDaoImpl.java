@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -29,8 +30,8 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
     private QueryRunner queryRunner;
 
     @PostConstruct
-    public void initQueryRunner(){
-        queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE));
+    public void initQueryRunner() throws IOException, SQLException {
+        queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,0L));
     }
 
 

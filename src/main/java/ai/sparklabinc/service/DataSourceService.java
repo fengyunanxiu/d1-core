@@ -8,5 +8,5 @@ package ai.sparklabinc.service;
  * @Version V1.0
  */
 public interface DataSourceService {
-    Object getDataSourcesTree();
+    boolean dataSourcesTestConnection(Long dsId);
 }

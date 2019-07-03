@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -29,8 +30,8 @@ public class TestController {
 
     @ResponseBody
     @RequestMapping("/test")
-    public Object getInfo() throws SQLException {
-        DataSource dataSource = dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE);
+    public Object getInfo() throws SQLException, IOException {
+        DataSource dataSource = dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,0L);
         QueryRunner queryRunner = new QueryRunner(dataSource);
         List<DbBasicConfigDO> dbBasicConfigDOList =queryRunner.query("select * from db_basic_config", new ResultSetHandler<List<DbBasicConfigDO>>() {
             @Override
@@ -79,8 +80,8 @@ public class TestController {
 
     @ResponseBody
     @RequestMapping("/test2")
-    public Object getInfo2() throws SQLException {
-        DataSource dataSource =dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE);
+    public Object getInfo2() throws SQLException, IOException {
+        DataSource dataSource =dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,0L);
         QueryRunner queryRunner = new QueryRunner(dataSource);
 
         String sql = "insert into db_basic_config" +
