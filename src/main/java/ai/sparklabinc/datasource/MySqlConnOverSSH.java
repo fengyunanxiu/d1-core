@@ -65,10 +65,11 @@ public class MySqlConnOverSSH {
 	    		System.out.println("Closing Database Connection");
 	    		conn.close();
 	    	}
-	    	if(session !=null && session.isConnected()){
-	    		System.out.println("Closing SSH Connection");
-	    		session.disconnect();
-	    	}
+
+//	    	if(session !=null && session.isConnected()){
+//	    		System.out.println("Closing SSH Connection");
+//	    		session.disconnect();
+//	    	}
 	    }
 	}
 
