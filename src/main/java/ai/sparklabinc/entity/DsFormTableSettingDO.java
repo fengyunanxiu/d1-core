@@ -48,6 +48,8 @@ public class DsFormTableSettingDO {
 
     private String tableFieldOrderBy;
 
+    private String tableParentLable;
+
     private Boolean tableFieldQueryRequired;
 
     private Integer tableFieldSequence;
@@ -250,5 +252,14 @@ public class DsFormTableSettingDO {
 
     public void setExportFieldWidth(Integer exportFieldWidth) {
         this.exportFieldWidth = exportFieldWidth;
+    }
+
+
+    public String getTableParentLable() {
+        return tableParentLable;
+    }
+
+    public void setTableParentLable(String tableParentLable) {
+        this.tableParentLable = tableParentLable;
     }
 }
