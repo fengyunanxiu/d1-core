@@ -9,6 +9,7 @@ import java.util.List;
  */
 public class DsKeyQueryTableSettingVO {
 
+
     private String viewFieldLable;
 
     private String dbFieldName;
@@ -72,4 +73,5 @@ public class DsKeyQueryTableSettingVO {
     public void setChildren(List<DsKeyQueryTableSettingVO> children) {
         this.children = children;
     }
+
 }
