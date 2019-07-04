@@ -17,7 +17,7 @@ import java.util.Map;
  * @Version V1.0
  */
 public interface DataSourceService {
-    boolean Connection2DataSource(Long dsId);
+    boolean Connection2DataSource(Long dsId) throws SQLException, IOException;
 
     boolean addDataSources(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO)  throws IOException, SQLException;
 
