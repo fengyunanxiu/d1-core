@@ -9,8 +9,13 @@ import ai.sparklabinc.dto.OptionListAndDefaultValDTO;
 import ai.sparklabinc.dto.QueryParameterGroupDTO;
 import ai.sparklabinc.entity.DsFormTableSettingDO;
 import ai.sparklabinc.entity.DsKeyBasicConfigDO;
+import ai.sparklabinc.exception.ServiceException;
+import ai.sparklabinc.exception.custom.ResourceNotFoundException;
 import ai.sparklabinc.service.DsBasicDictionaryService;
 import ai.sparklabinc.service.QueryFormTableService;
+import ai.sparklabinc.util.D1SQLUtils;
+import ai.sparklabinc.util.SqlConditions;
+import ai.sparklabinc.util.StringUtils;
 import ai.sparklabinc.vo.DsKeyQueryFormSettingVO;
 import ai.sparklabinc.vo.DsKeyQueryTableSettingVO;
 import ai.sparklabinc.vo.DsKeyQueryVO;
@@ -19,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -48,38 +54,38 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
     private DsKeyBasicConfigDao dsKeyBasicConfigDao;
 
     @Override
-    public List<DsKeyQueryTableSettingVO> getDsKeyQueryTableSetting(String dataSourceKey) throws SQLException, IOException {
+    public List<DsKeyQueryTableSettingVO> getDsKeyQueryTableSetting(String dataSourceKey) throws Exception {
         List<DsFormTableSettingDO> dsFormTableSettingDOList = getAllDsFormTableSettingByDsKey(dataSourceKey);
-        if(dsFormTableSettingDOList == null && dsFormTableSettingDOList.isEmpty()){
-            return null;
+        if(dsFormTableSettingDOList == null || dsFormTableSettingDOList.isEmpty()){
+           throw new ResourceNotFoundException("Cannot find TABLE resource from data source key :" + dataSourceKey);
         }
         return realGetDsKeyQueryTableSetting(dsFormTableSettingDOList);
     }
 
     @Override
-    public  List<DsKeyQueryFormSettingVO> getDsKeyQueryFormSetting(String dataSourceKey) throws SQLException, IOException {
+    public  List<DsKeyQueryFormSettingVO> getDsKeyQueryFormSetting(String dataSourceKey) throws Exception {
         List<DsFormTableSettingDO> dsFormTableSettingDOList = getAllDsFormTableSettingByDsKey(dataSourceKey);
-        if(dsFormTableSettingDOList == null && dsFormTableSettingDOList.isEmpty()){
+        if(dsFormTableSettingDOList == null || dsFormTableSettingDOList.isEmpty()){
             return null;
         }
         return realGetDsKeyQueryFormSetting(dsFormTableSettingDOList);
     }
 
     @Override
-    public DsKeyQueryVO getDsKeyQuerySetting(String dataSourceKey) throws SQLException, IOException {
+    public DsKeyQueryVO getDsKeyQuerySetting(String dataSourceKey) throws Exception {
         List<DsFormTableSettingDO> dsFormTableSettingDOList = getAllDsFormTableSettingByDsKey(dataSourceKey);
-        if(dsFormTableSettingDOList == null && dsFormTableSettingDOList.isEmpty()){
-            return null;
+        if(dsFormTableSettingDOList == null || dsFormTableSettingDOList.isEmpty()){
+            throw new ResourceNotFoundException(String.format("DataSourceKey not found:%s ", dataSourceKey));
         }
 
         List<DsKeyQueryFormSettingVO> dsKeyQueryFormSettingVOList = realGetDsKeyQueryFormSetting(dsFormTableSettingDOList);
-        if(dsKeyQueryFormSettingVOList == null && dsKeyQueryFormSettingVOList.isEmpty()){
-            return null;
+        if(dsKeyQueryFormSettingVOList == null || dsKeyQueryFormSettingVOList.isEmpty()){
+            throw new ResourceNotFoundException(String.format("DataSourceKey not found:%s ", dataSourceKey));
         }
 
         List<DsKeyQueryTableSettingVO> dsKeyQueryTableSettingVOList = realGetDsKeyQueryTableSetting(dsFormTableSettingDOList);
-        if(dsKeyQueryTableSettingVOList == null && dsKeyQueryTableSettingVOList.isEmpty()){
-            return null;
+        if(dsKeyQueryTableSettingVOList == null || dsKeyQueryTableSettingVOList.isEmpty()){
+            throw new ResourceNotFoundException(String.format("DataSourceKey not found:%s ", dataSourceKey));
         }
         return new DsKeyQueryVO(dsKeyQueryFormSettingVOList,dsKeyQueryTableSettingVOList);
 
@@ -88,8 +94,13 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
     @Override
     public AssemblyResultDTO generalQuery(String dataSourceKey, Map<String, String[]> simpleParameters, Pageable pageable, String moreWhereClause) throws Exception {
         List<DsFormTableSettingDO> dsFormTableSettingDOList = getAllDsFormTableSettingByDsKey(dataSourceKey);
-        if (dsFormTableSettingDOList == null && dsFormTableSettingDOList.isEmpty()) {
-            throw new Exception(String.format("DataSourceKey not found:%s", dataSourceKey));
+        if (dsFormTableSettingDOList == null || dsFormTableSettingDOList.isEmpty()) {
+            throw new ResourceNotFoundException(String.format("DataSourceKey not found:%s", dataSourceKey));
+        }
+
+        DsKeyBasicConfigDO dsKeyBasicConfigDO = this.dsKeyBasicConfigDao.getDsKeyBasicConfigByDsKey(dataSourceKey);
+        if(dsKeyBasicConfigDO == null){
+            throw new ResourceNotFoundException(String.format("DataSourceKey not found:%s", dataSourceKey));
         }
 
         QueryParameterGroupDTO queryParameterGroup = null;
@@ -98,16 +109,115 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
                     simpleParameters, dsFormTableSettingDOList);
         } catch (Exception e) {
             LOGGER.error("[{}] Failed to transfrom query parameter map", dataSourceKey, e);
-            throw new Exception(dataSourceKey + "Failed to transfrom query parameter map");
+            throw new ServiceException(dataSourceKey + "Failed to transfrom query parameter map");
         }
 
-        DsKeyBasicConfigDO dsKeyBasicConfigDO = this.dsKeyBasicConfigDao.getDsKeyBasicConfigByDsKey(dataSourceKey);
+
+        String tableName = dsKeyBasicConfigDO.getTableName();
+        String schemaName = dsKeyBasicConfigDO.getSchema();
+        if(StringUtils.isNotNullNorEmpty(schemaName)) {
+            tableName = schemaName + "." + tableName;
+        }
+
+        AssemblyResultDTO assemblyResultDTO = new AssemblyResultDTO();
+        SqlConditions sqlConditions = generateSqlConditions(queryParameterGroup);
+        List<Object> paramList = sqlConditions.getParameters();
+        String wholeWhereClause = (StringUtils.isNotNullNorEmpty(sqlConditions.getWhereClause()) ? " AND " : "") + sqlConditions.getWhereClause() + (moreWhereClause == null ? "" : moreWhereClause);
+
+        String countSql = generateCountSql(tableName,wholeWhereClause);
+        LOGGER.info("count sql: {}", countSql);
+        String querySql = generateQuerySql(tableName, wholeWhereClause, pageable);
+        LOGGER.info("query sql: {}", querySql);
+
+        assemblyResultDTO.setCountSql(countSql);
+        assemblyResultDTO.setQuerySql(querySql);
+        assemblyResultDTO.setDsFormTableSettingDOS(dsFormTableSettingDOList);
+        assemblyResultDTO.setParamList(paramList);
+        return assemblyResultDTO;
+    }
 
 
+    private String generateQuerySql(String tableName, String wholeWhereClause, Pageable pageable) {
+        StringBuilder querySqlStringBuilder = new StringBuilder();
+        querySqlStringBuilder.append("SELECT * FROM " + tableName + " WHERE 1 = 1");
+        querySqlStringBuilder.append(wholeWhereClause);
+
+        StringBuilder sorParam = new StringBuilder();
+        StringBuilder pageParam = new StringBuilder();
+        if(pageable != null) {
+            long offset = pageable.getOffset();
+            int limit = pageable.getPageSize();
+            pageParam.append(" LIMIT " + offset + "," +limit);
+
+            Sort sort = pageable.getSort();
+            if (sort != null) {
+                Iterator<Sort.Order> sortIterator = sort.iterator();
+                if (sortIterator.hasNext()) {
+                    sorParam.append(" ORDER BY ");
+
+                    do {
+                        Sort.Order order = sortIterator.next();
+                        if (sortIterator.hasNext()) {
+                            if (order.getProperty() != null && !order.getProperty().isEmpty()
+                                    && order.getDirection() != null)
+                                sorParam.append(order.getProperty() + " " + order.getDirection().toString() + ", ");
+                        } else {
+                            if (order.getProperty() != null && !order.getProperty().isEmpty()
+                                    && order.getDirection() != null)
+                                sorParam.append(order.getProperty() + " " + order.getDirection().toString());
+                        }
+                    } while (sortIterator.hasNext());
+                }
+            }
+        }
+        querySqlStringBuilder.append(sorParam);
+        querySqlStringBuilder.append(pageParam);
+        return querySqlStringBuilder.toString();
+    }
+
+    private String generateCountSql(String tableName, String wholeWhereClause) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("SELECT COUNT(*) FROM " + tableName + " WHERE 1 = 1 ");
+        stringBuilder.append(wholeWhereClause);
+        return  stringBuilder.toString();
+    }
 
 
+    private SqlConditions generateSqlConditions(QueryParameterGroupDTO queryParameterGroup) throws Exception {
+        SqlConditions sqlConditions = new SqlConditions();
+        if (queryParameterGroup != null) {
+            try {
+                Map<String, String> fuzzyLike = queryParameterGroup.getFuzzyLike();
+                Map<String, String> accurateEqualsString = queryParameterGroup.getAccurateEqualsString();
+                Map<String, String[]> accurateInString =queryParameterGroup.getAccurateInString();
+                Map<String, String[]> accurateDateRange = queryParameterGroup.getAccurateDateRange();
+                Map<String, String[]> accurateDateTimeRange = queryParameterGroup.getAccurateDateTimeRange();
+                Map<String, String[]> accurateNumberRange = queryParameterGroup.getAccurateNumberRange();
 
-        return null;
+                if(fuzzyLike != null && !fuzzyLike.isEmpty()){
+                    D1SQLUtils.buildFuzzyLikeQueryParameterString(fuzzyLike, sqlConditions);
+                }
+                if(accurateEqualsString != null && !accurateEqualsString.isEmpty()){
+                    D1SQLUtils.buildAccurateEqualsStringQueryParameterString(accurateEqualsString, sqlConditions);
+                }
+                if(accurateInString != null && !accurateInString.isEmpty()){
+                    D1SQLUtils.buildAccurateInStringQueryParameterString(accurateInString, sqlConditions);
+                }
+                if(accurateDateRange != null && !accurateDateRange.isEmpty()){
+                    D1SQLUtils.buildAccurateDateRangeQueryParameterString(accurateDateRange, sqlConditions);
+                }
+                if(accurateDateTimeRange != null && !accurateDateTimeRange.isEmpty()){
+                    D1SQLUtils.buildAccurateDateTimeRangeQueryParameterString(accurateDateTimeRange, sqlConditions);
+                }
+                if(accurateNumberRange != null && !accurateNumberRange.isEmpty()){
+                    D1SQLUtils.buildAccurateNumberRangeQueryParameterString(accurateNumberRange, sqlConditions);
+                }
+            } catch (Exception e) {
+                LOGGER.error("Failed to build sql", e);
+                throw new ServiceException(String.format("build sql Failed :%s",e.getMessage()));
+            }
+        }
+        return sqlConditions;
     }
 
     private List<DsKeyQueryFormSettingVO> realGetDsKeyQueryFormSetting(List<DsFormTableSettingDO> dsFormTableSettingDOList) throws SQLException, IOException {
@@ -119,7 +229,6 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
                 dsKeyQueryFormSettingVO.setDbFieldName(dsFormTableSettingDO.getDbFieldName());
                 dsKeyQueryFormSettingVO.setViewFieldLable(dsFormTableSettingDO.getViewFieldLable());
                 dsKeyQueryFormSettingVO.setFormFieldSequence(dsFormTableSettingDO.getFormFieldSequence());
-
 
                 String formQueryType = dsFormTableSettingDO.getFormFieldQueryType();
                 if(DsConstants.FormFieldQueryTypeEnum.getChoiceList().contains(formQueryType)){
@@ -148,7 +257,6 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
                 }
             }
         });
-
         return rootDsKeyQueryFormSettingVOList;
     }
 
@@ -181,8 +289,6 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
                         rootDsKeyQueryTableSettingVOList.add(rootDsKeyQueryTableSettingVO);
                     }
                     dsKeyQueryTableSettingVOS.add(dsKeyQueryTableSettingVO);
-
-
                 }else{
                     rootDsKeyQueryTableSettingVOList.add(dsKeyQueryTableSettingVO);
                 }
@@ -196,7 +302,6 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
                 tableFieldAO.setChildren(groupTableFieldVOMap.get(tableFieldAO.getDbFieldName()));
                 if (tableFieldAO.getChildren() != null && tableFieldAO.getChildren().size() != 0) {
                     tableFieldAO.getChildren().sort(new Comparator<DsKeyQueryTableSettingVO>() {
-
                         @Override
                         public int compare(DsKeyQueryTableSettingVO o1, DsKeyQueryTableSettingVO o2) {
                             if (o1.getTableFieldSequence() < o2.getTableFieldSequence()) {
@@ -207,7 +312,6 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
                                 return 0;
                             }
                         }
-
                     });
                 }
             }
@@ -225,7 +329,6 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
                     return 0;
                 }
             }
-
         });
         return rootDsKeyQueryTableSettingVOList;
     }

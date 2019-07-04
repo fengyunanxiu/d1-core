@@ -11,6 +11,8 @@ public class AssemblyResultDTO {
 	
 	List<DsFormTableSettingDO> dsFormTableSettingDOS;
 
+	List<Object> paramList;
+
 	public String getCountSql() {
 		return countSql;
 	}
@@ -31,8 +33,15 @@ public class AssemblyResultDTO {
 		return dsFormTableSettingDOS;
 	}
 
-	public void setQueryTableSettings(List<DsFormTableSettingDO> dsFormTableSettingDOS) {
+	public void setDsFormTableSettingDOS(List<DsFormTableSettingDO> dsFormTableSettingDOS) {
 		this.dsFormTableSettingDOS = dsFormTableSettingDOS;
 	}
-	
+
+	public List<Object> getParamList() {
+		return paramList;
+	}
+
+	public void setParamList(List<Object> paramList) {
+		this.paramList = paramList;
+	}
 }

@@ -63,8 +63,8 @@ public class DsFormTableSettingComponent {
             String[] queryParameterValueArray = entry.getValue();
 
             Optional<DsFormTableSettingDO> optionalDsFormTableSettingDO  = dsFormTableSettingDOList.stream()
-                    .filter(item ->  item.getDbFieldName() != null && (frontFieldName.equals(item.getDbFieldName()) || (frontFieldName).equals(item.getDbFieldName() + DsConstants.RangeFieldSuffixEnum.SUFFIX_START)
-                       || (frontFieldName).equals(item.getDbFieldName() + DsConstants.RangeFieldSuffixEnum.SUFFIX_END))).findFirst();
+                    .filter(item ->  item.getDbFieldName() != null && (frontFieldName.equals(item.getDbFieldName()) || (frontFieldName).equals(item.getDbFieldName() + DsConstants.RangeFieldSuffixEnum.SUFFIX_START.getVal())
+                       || (frontFieldName).equals(item.getDbFieldName() + DsConstants.RangeFieldSuffixEnum.SUFFIX_END.getVal()))).findFirst();
             DsFormTableSettingDO dsFormTableSettingDO = null;
             if(optionalDsFormTableSettingDO.isPresent()){
                 dsFormTableSettingDO = optionalDsFormTableSettingDO.get();
@@ -121,9 +121,9 @@ public class DsFormTableSettingComponent {
                         rangeArr = new String[2];
                         accurateDateRangeQueryParameterMap.put(fieldName, rangeArr);
                     }
-                    if((fieldName + DsConstants.RangeFieldSuffixEnum.SUFFIX_START).equals(frontFieldName)){
+                    if((fieldName + DsConstants.RangeFieldSuffixEnum.SUFFIX_START.getVal()).equals(frontFieldName)){
                         rangeArr[0] = queryParameterValueArray[0];
-                    }else if((fieldName + DsConstants.RangeFieldSuffixEnum.SUFFIX_END).equals(frontFieldName)){
+                    }else if((fieldName + DsConstants.RangeFieldSuffixEnum.SUFFIX_END.getVal()).equals(frontFieldName)){
                         rangeArr[1] = queryParameterValueArray[0];
                     }
                     break;
@@ -135,9 +135,9 @@ public class DsFormTableSettingComponent {
                         dateTimeRangeArr = new String[2];
                         accurateDateTimeRangeQueryParameterMap.put(fieldName, dateTimeRangeArr);
                     }
-                    if((fieldName + DsConstants.RangeFieldSuffixEnum.SUFFIX_START).equals(frontFieldName)){
+                    if((fieldName + DsConstants.RangeFieldSuffixEnum.SUFFIX_START.getVal()).equals(frontFieldName)){
                         dateTimeRangeArr[0] = queryParameterValueArray[0];
-                    }else if((fieldName + DsConstants.RangeFieldSuffixEnum.SUFFIX_END).equals(frontFieldName)){
+                    }else if((fieldName + DsConstants.RangeFieldSuffixEnum.SUFFIX_END.getVal()).equals(frontFieldName)){
                         dateTimeRangeArr[1] = queryParameterValueArray[0];
                     }
                     break;
@@ -149,9 +149,9 @@ public class DsFormTableSettingComponent {
                         numberRangeArr = new String[2];
                         accurateNumberRangeQueryParameterMap.put(fieldName, numberRangeArr);
                     }
-                    if((fieldName + DsConstants.RangeFieldSuffixEnum.SUFFIX_START).equals(frontFieldName)){
+                    if((fieldName + DsConstants.RangeFieldSuffixEnum.SUFFIX_START.getVal()).equals(frontFieldName)){
                         numberRangeArr[0] = queryParameterValueArray[0];
-                    }else if((fieldName + DsConstants.RangeFieldSuffixEnum.SUFFIX_END).equals(frontFieldName)){
+                    }else if((fieldName + DsConstants.RangeFieldSuffixEnum.SUFFIX_END.getVal()).equals(frontFieldName)){
                         numberRangeArr[1] = queryParameterValueArray[0];
                     }
                     break;

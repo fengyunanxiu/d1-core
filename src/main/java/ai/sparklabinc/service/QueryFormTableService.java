@@ -17,11 +17,11 @@ import java.util.Map;
  * @description :
  */
 public interface QueryFormTableService {
-    List<DsKeyQueryTableSettingVO> getDsKeyQueryTableSetting(String dataSourceKey) throws SQLException, IOException;
+    List<DsKeyQueryTableSettingVO> getDsKeyQueryTableSetting(String dataSourceKey) throws Exception;
 
-    List<DsKeyQueryFormSettingVO> getDsKeyQueryFormSetting(String dataSourceKey) throws SQLException, IOException;
+    List<DsKeyQueryFormSettingVO> getDsKeyQueryFormSetting(String dataSourceKey) throws Exception;
 
-    DsKeyQueryVO getDsKeyQuerySetting(String dataSourceKey) throws SQLException, IOException;
+    DsKeyQueryVO getDsKeyQuerySetting(String dataSourceKey) throws Exception;
 
-    AssemblyResultDTO generalQuery(String dataSourceKey, Map<String, String[]> simpleParameters, Pageable pageable, String moreWhereClause) throws SQLException, Exception;
+    AssemblyResultDTO generalQuery(String dataSourceKey, Map<String, String[]> simpleParameters, Pageable pageable, String moreWhereClause) throws Exception;
 }
