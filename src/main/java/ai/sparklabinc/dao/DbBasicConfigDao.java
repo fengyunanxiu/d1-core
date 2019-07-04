@@ -1,10 +1,12 @@
 package ai.sparklabinc.dao;
 
+import ai.sparklabinc.dto.DbInforamtionDTO;
 import ai.sparklabinc.entity.DbBasicConfigDO;
-import ai.sparklabinc.entity.DsFormTableSettingDO;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author : Kingzer
@@ -14,5 +16,15 @@ import java.util.List;
 public interface DbBasicConfigDao {
 
 
-   DbBasicConfigDO findById(Long id) throws SQLException;
+   DbBasicConfigDO findById(Long id) throws SQLException, IOException;
+
+   Long add(DbBasicConfigDO dbBasicConfigDO) throws SQLException, IOException;
+
+   Integer delete(Long dsId) throws SQLException, IOException;
+
+   List<DbInforamtionDTO> selectDataSources(Long dsId) throws IOException, SQLException;
+
+   List<Map<String,Object>> selectDataSourceProperty(Long dsId)throws IOException, SQLException;
+
+   Integer editDataSourceProperty(DbBasicConfigDO dbBasicConfigDO) throws IOException, SQLException;
 }

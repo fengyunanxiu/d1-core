@@ -1,7 +1,9 @@
 package ai.sparklabinc.dao;
 
+import ai.sparklabinc.dto.DbSecurityConfigDTO;
 import ai.sparklabinc.entity.DbSecurityConfigDO;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 /**
@@ -12,5 +14,11 @@ import java.sql.SQLException;
  * @description:
  */
 public interface DbSecurityConfigDao {
-     DbSecurityConfigDO findById(Long id) throws SQLException;
+     DbSecurityConfigDO findById(Long id) throws SQLException, IOException;
+
+     Integer add(DbSecurityConfigDO dbSecurityConfigDO) throws IOException, SQLException;
+
+     Integer delete(Long dsId) throws SQLException, IOException;
+
+     Integer editDataSourceProperty(DbSecurityConfigDO dbSecurityConfigDO) throws IOException, SQLException;
 }

@@ -52,7 +52,7 @@ public class DataSourceFactory {
              */
             //获取本地开放的端口
             boolean useSshTunnel = false;
-            int localPort = findRandomOpenPortOnAllLocalInterfaces();
+            int localPort = findRandomOpenPort();
             String sshUser = "";
             String sshPassword = "";
             String sshHost = "";
@@ -116,12 +116,12 @@ public class DataSourceFactory {
              ***************************************************************
              */
             if (dataSourceMap.get(dsId)==null) {
-                ConnectionPoolService sqlitePoolService = new MysqlPoolServiceImpl();
+                ConnectionPoolService mysqlPoolService = new MysqlPoolServiceImpl();
                 Properties properties = new Properties();
                 properties.setProperty("Url", url);
                 properties.setProperty("User", dbUserName);
                 properties.setProperty("Password", dbPassword);
-                DataSource datasource = sqlitePoolService.createDatasource(properties);
+                DataSource datasource = mysqlPoolService.createDatasource(properties);
                 dataSourceMap.put(dsId,datasource);
                 return datasource;
             } else {
@@ -161,7 +161,7 @@ public class DataSourceFactory {
      * @return
      * @throws IOException
      */
-    private Integer findRandomOpenPortOnAllLocalInterfaces() throws IOException {
+    private Integer findRandomOpenPort() throws IOException {
         try (
                 ServerSocket socket = new ServerSocket(0);
         ) {
