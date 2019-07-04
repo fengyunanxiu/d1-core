@@ -41,7 +41,6 @@ public class DbBasicConfigDaoImpl implements DbBasicConfigDao {
 
         String querySql = "select * from db_basic_config where id = ? ";
 
-
         DbBasicConfigDO dbBasicConfigDO = queryRunner.query(querySql, new ResultSetHandler<DbBasicConfigDO>() {
             @Override
             public DbBasicConfigDO handle(ResultSet resultSet) throws SQLException {
@@ -80,46 +79,56 @@ public class DbBasicConfigDaoImpl implements DbBasicConfigDao {
 
     @Override
     public Long add(DbBasicConfigDO dbBasicConfigDO) throws SQLException, IOException {
-
-        String sql = "insert into db_basic_config( gmt_create, gmt_modified, type, name, host, port, user, password,url)" +
-                "values ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        DataSource dataSource = dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null);
-        Connection conn = dataSource.getConnection();
-        PreparedStatement preparedStatement = conn.prepareStatement(sql);
-        String now = DateUtils.ofLongStr(new java.util.Date());
-        //绑定参数
-        bindParameters(preparedStatement, now, now,
-                dbBasicConfigDO.getType(),
-                dbBasicConfigDO.getName(),
-                dbBasicConfigDO.getHost(),
-                dbBasicConfigDO.getPort(),
-                dbBasicConfigDO.getUser(),
-                dbBasicConfigDO.getPassword(),
-                dbBasicConfigDO.getUrl());
-        preparedStatement.execute();
-        ResultSet rs = preparedStatement.getGeneratedKeys();
-        //返回
+        Connection conn=null;
         Long id = 0L;
-        while (rs.next()) {
-            id = rs.getLong(1);
-        }
-        if (conn != null) {
-            conn.close();
+        try {
+
+            String sql = "insert into db_basic_config( gmt_create, gmt_modified, type, name, host, port, user, password,url)" +
+                    "values ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            DataSource dataSource = dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null);
+            conn = dataSource.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            String now = DateUtils.ofLongStr(new java.util.Date());
+            //绑定参数
+            bindParameters(preparedStatement, now, now,
+                    dbBasicConfigDO.getType(),
+                    dbBasicConfigDO.getName(),
+                    dbBasicConfigDO.getHost(),
+                    dbBasicConfigDO.getPort(),
+                    dbBasicConfigDO.getUser(),
+                    dbBasicConfigDO.getPassword(),
+                    dbBasicConfigDO.getUrl());
+            preparedStatement.execute();
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            //获取生成的id
+            while (rs.next()) {
+                id = rs.getLong(1);
+            }
+        }finally {
+            if (conn != null) {
+                conn.close();
+            }
         }
         return id;
     }
 
+
     @Override
     public Integer delete(Long dsId) throws SQLException, IOException {
-        String sql = "delete from db_basic_config where id = ?";
-        DataSource dataSource = dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null);
-        Connection conn = dataSource.getConnection();
-        PreparedStatement preparedStatement = conn.prepareStatement(sql);
-        //绑定参数
-        bindParameters(preparedStatement,dsId);
-        int update = preparedStatement.executeUpdate();
-        if (conn != null) {
-            conn.close();
+        Connection conn=null;
+        int update=0;
+        try {
+            String sql = "delete from db_basic_config where id = ?";
+            DataSource dataSource = dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null);
+            conn = dataSource.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            //绑定参数
+            bindParameters(preparedStatement, dsId);
+            update = preparedStatement.executeUpdate();
+        }finally {
+            if (conn != null) {
+                conn.close();
+            }
         }
         return update;
     }

@@ -39,6 +39,7 @@ public class DbSecurityConfigDaoImpl implements DbSecurityConfigDao {
         QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, 0L));
 
         String querySql = "select * from db_security_config where id = ? ";
+
         DbSecurityConfigDO dbSecurityConfigDO = queryRunner.query(querySql, new ResultSetHandler<DbSecurityConfigDO>() {
             @Override
             public DbSecurityConfigDO handle(ResultSet resultSet) throws SQLException {
@@ -83,57 +84,66 @@ public class DbSecurityConfigDaoImpl implements DbSecurityConfigDao {
 
     @Override
     public Integer add(DbSecurityConfigDO dbSecurityConfigDO) throws IOException, SQLException {
-
-        String sql = "insert into db_security_config (id,gmt_create, gmt_modified, use_ssl," +
-                " use_ssh_tunnel, ssl_ca_file, " +
-                "ssl_client_certificate_file, " +
-                "ssl_client_key_file, " +
-                "ssh_proxy_host," +
-                " ssh_proxy_port, " +
-                "ssh_proxy_user, " +
-                "ssh_local_port," +
-                " ssh_auth_type, " +
-                "ssh_proxy_password)" +
-                " values (?, ?, ?, ?, ?, ?," +
-                "         ?, ?, ?, ?, ?," +
-                "         ?, ?, ?)";
-        DataSource dataSource = dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null);
-        Connection conn = dataSource.getConnection();
-        PreparedStatement preparedStatement = conn.prepareStatement(sql);
-        String now = DateUtils.ofLongStr(new java.util.Date());
-        //绑定参数
-        bindParameters(preparedStatement,
-                dbSecurityConfigDO.getId(),
-                now, now,
-                dbSecurityConfigDO.getUseSsl() ? 1 : 0,
-                dbSecurityConfigDO.getUseSshTunnel() ? 1 : 0,
-                dbSecurityConfigDO.getSslCaFile(),
-                dbSecurityConfigDO.getSslClientCertificateFile(),
-                dbSecurityConfigDO.getSslClientKeyFile(),
-                dbSecurityConfigDO.getSshProxyHost(),
-                dbSecurityConfigDO.getSshProxyPort(),
-                dbSecurityConfigDO.getSshProxyUser(),
-                dbSecurityConfigDO.getSshLocalPort(),
-                dbSecurityConfigDO.getSshAuthType(),
-                dbSecurityConfigDO.getSshProxyPassword());
-        int update = preparedStatement.executeUpdate();
-        if (conn != null) {
-            conn.close();
+        Connection conn = null;
+        int update = 0;
+        try {
+            String sql = "insert into db_security_config (id,gmt_create, gmt_modified, use_ssl," +
+                    " use_ssh_tunnel, ssl_ca_file, " +
+                    "ssl_client_certificate_file, " +
+                    "ssl_client_key_file, " +
+                    "ssh_proxy_host," +
+                    " ssh_proxy_port, " +
+                    "ssh_proxy_user, " +
+                    "ssh_local_port," +
+                    " ssh_auth_type, " +
+                    "ssh_proxy_password)" +
+                    " values (?, ?, ?, ?, ?, ?," +
+                    "         ?, ?, ?, ?, ?," +
+                    "         ?, ?, ?)";
+            DataSource dataSource = dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null);
+            conn = dataSource.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            String now = DateUtils.ofLongStr(new java.util.Date());
+            //绑定参数
+            bindParameters(preparedStatement,
+                    dbSecurityConfigDO.getId(),
+                    now, now,
+                    dbSecurityConfigDO.getUseSsl() ? 1 : 0,
+                    dbSecurityConfigDO.getUseSshTunnel() ? 1 : 0,
+                    dbSecurityConfigDO.getSslCaFile(),
+                    dbSecurityConfigDO.getSslClientCertificateFile(),
+                    dbSecurityConfigDO.getSslClientKeyFile(),
+                    dbSecurityConfigDO.getSshProxyHost(),
+                    dbSecurityConfigDO.getSshProxyPort(),
+                    dbSecurityConfigDO.getSshProxyUser(),
+                    dbSecurityConfigDO.getSshLocalPort(),
+                    dbSecurityConfigDO.getSshAuthType(),
+                    dbSecurityConfigDO.getSshProxyPassword());
+            update = preparedStatement.executeUpdate();
+        } finally {
+            if (conn != null) {
+                conn.close();
+            }
         }
         return update;
     }
 
     @Override
     public Integer delete(Long dsId) throws SQLException, IOException {
-        String sql = "delete from db_security_config where id = ?";
-        DataSource dataSource = dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null);
-        Connection conn = dataSource.getConnection();
-        PreparedStatement preparedStatement = conn.prepareStatement(sql);
-        //绑定参数
-        bindParameters(preparedStatement,dsId);
-        int update = preparedStatement.executeUpdate();
-        if (conn != null) {
-            conn.close();
+        Connection conn = null;
+        int update = 0;
+        try {
+            String sql = "delete from db_security_config where id = ?";
+            DataSource dataSource = dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null);
+            conn = dataSource.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            //绑定参数
+            bindParameters(preparedStatement, dsId);
+            update = preparedStatement.executeUpdate();
+        } finally {
+            if (conn != null) {
+                conn.close();
+            }
         }
         return update;
     }
@@ -141,7 +151,7 @@ public class DbSecurityConfigDaoImpl implements DbSecurityConfigDao {
     @Override
     public Integer editDataSourceProperty(DbSecurityConfigDO dbSecurityConfigDO) throws IOException, SQLException {
         QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null));
-        String sql="update db_security_config set  gmt_modified  = ?," +
+        String sql = "update db_security_config set  gmt_modified  = ?," +
                 "use_ssl = ?," +
                 "use_ssh_tunnel = ?," +
                 "ssl_ca_file = ?," +
@@ -155,7 +165,7 @@ public class DbSecurityConfigDaoImpl implements DbSecurityConfigDao {
                 "ssh_proxy_password = ?" +
                 "where id = ?;";
         String now = DateUtils.ofLongStr(new java.util.Date());
-        Object[] objectsParams={now,
+        Object[] objectsParams = {now,
                 dbSecurityConfigDO.getUseSsl(),
                 dbSecurityConfigDO.getUseSshTunnel(),
                 dbSecurityConfigDO.getSslCaFile(),
@@ -169,7 +179,7 @@ public class DbSecurityConfigDaoImpl implements DbSecurityConfigDao {
                 dbSecurityConfigDO.getSshProxyPassword(),
                 dbSecurityConfigDO.getId()
         };
-        int update = queryRunner.update(sql,objectsParams);
+        int update = queryRunner.update(sql, objectsParams);
         return update;
     }
 

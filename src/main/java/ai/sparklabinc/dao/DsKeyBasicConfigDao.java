@@ -1,9 +1,11 @@
 package ai.sparklabinc.dao;
 
+import ai.sparklabinc.dto.DbInforamtionDTO;
 import ai.sparklabinc.entity.DsKeyBasicConfigDO;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * @author : Kingzer
@@ -12,4 +14,6 @@ import java.sql.SQLException;
  */
 public interface DsKeyBasicConfigDao {
     DsKeyBasicConfigDO getDsKeyBasicConfigByDsKey(String dataSourceKey) throws SQLException, IOException;
+
+    List<DbInforamtionDTO> getDataSourceKey(Long dsId, String schema, String tableName) throws IOException, SQLException;
 }

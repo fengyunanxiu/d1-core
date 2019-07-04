@@ -28,24 +28,24 @@ public class MysqlDataSourceDaoImpl implements MysqlDataSourceDao {
     @Override
     public List<DbInforamtionDTO> selectAllSchema(Long dsId) throws IOException, SQLException {
         QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_MYSQL, dsId));
-        String sql="select" +
-                "    distinct (table_schema) as label," +
-                "     2 as level" +
-                " from information_schema.tables" +
-                " where table_schema not in ('information_schema','performance_schema')";
+        String sql = "select" +
+                "   schema_name as label," +
+                "    2 as level" +
+                "   from information_schema.schemata" +
+                "   where schema_name not in ('information_schema','performance_schema','tmp','sys','mysql')";
         List<DbInforamtionDTO> dbInforamtionDTOList = queryRunner.query(sql, new BeanListHandler<>(DbInforamtionDTO.class));
-        return  dbInforamtionDTOList;
+        return dbInforamtionDTOList;
     }
 
     @Override
     public List<DbInforamtionDTO> selectAllTableAndView(Long dsId, String schema) throws IOException, SQLException {
         QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_MYSQL, dsId));
-        String sql="select  table_name as label," +
+        String sql = "select  table_name as label," +
                 "       3 as level ," +
                 "       case table_type when 'BASE TABLE' then 'table' else 'view' end as type" +
                 " from information_schema.tables where table_schema=?";
-        List<DbInforamtionDTO> dbInforamtionDTOList = queryRunner.query(sql, new BeanListHandler<>(DbInforamtionDTO.class),schema);
-        return  dbInforamtionDTOList;
+        List<DbInforamtionDTO> dbInforamtionDTOList = queryRunner.query(sql, new BeanListHandler<>(DbInforamtionDTO.class), schema);
+        return dbInforamtionDTOList;
     }
 
 }

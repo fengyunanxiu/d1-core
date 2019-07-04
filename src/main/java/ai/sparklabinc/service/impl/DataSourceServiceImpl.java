@@ -2,6 +2,7 @@ package ai.sparklabinc.service.impl;
 
 import ai.sparklabinc.dao.DbBasicConfigDao;
 import ai.sparklabinc.dao.DbSecurityConfigDao;
+import ai.sparklabinc.dao.DsKeyBasicConfigDao;
 import ai.sparklabinc.dao.MysqlDataSourceDao;
 import ai.sparklabinc.datasource.Constants;
 import ai.sparklabinc.datasource.DataSourceFactory;
@@ -46,9 +47,12 @@ public class DataSourceServiceImpl implements DataSourceService {
     @Autowired
     private MysqlDataSourceDao mysqlDataSourceDao;
 
+    @Autowired
+    private DsKeyBasicConfigDao dsKeyBasicConfigDao;
+
 
     @Override
-    public boolean dataSourcesTestConnection(Long dsId) {
+    public boolean Connection2DataSource(Long dsId) {
         Connection connection = null;
         try {
             DataSource mysql = dataSourceFactory.builder(Constants.DATABASE_TYPE_MYSQL, dsId);
@@ -102,7 +106,7 @@ public class DataSourceServiceImpl implements DataSourceService {
     }
 
     @Override
-    public List<Map<String, Object>> selectDataSources(Long dsId) throws IOException, SQLException {
+    public List<DbInforamtionDTO> selectDataSources(Long dsId) throws IOException, SQLException {
         /*********************************************************************
          * step1 拿到前端需要展示的第一层信息
          * *******************************************************************
@@ -116,34 +120,48 @@ public class DataSourceServiceImpl implements DataSourceService {
          * *******************************************************************
          */
         DbInforamtionDTO dbInforamtionDTO = result.get(0);
-        boolean connection = dataSourcesTestConnection(dbInforamtionDTO.getId());
+        dsId=dbInforamtionDTO.getId();
+
+        boolean connection = Connection2DataSource(dbInforamtionDTO.getId());
         if(connection){
             /*********************************************************************
              * step3 拿到所有的数据库名称
              * *******************************************************************
              */
             List<DbInforamtionDTO> schemas = mysqlDataSourceDao.selectAllSchema(dsId);
+            if(CollectionUtils.isEmpty(schemas)){
+                return result;
+            }
+            dbInforamtionDTO.setChildren(schemas);
+
             for (DbInforamtionDTO schema: schemas){
                 /*********************************************************************
                  * step4 拿到schema所有的表和视图
                  * *******************************************************************
                  */
                 List<DbInforamtionDTO> tableAndViews = mysqlDataSourceDao.selectAllTableAndView(dsId, schema.getLabel());
+                if(CollectionUtils.isEmpty(tableAndViews)){
+                    continue;
+                }
+                schema.setChildren(tableAndViews);
                 /*********************************************************************
                  * step5 拿到表和视图的data source key
                  * *******************************************************************
                  */
                 for(DbInforamtionDTO tableAndView:tableAndViews){
-
+                    List<DbInforamtionDTO> dataSourceKeys = dsKeyBasicConfigDao.getDataSourceKey(dsId, schema.getLabel(), tableAndView.getLabel());
+                        if(CollectionUtils.isEmpty(dataSourceKeys)){
+                            continue;
+                        }
+                        tableAndView.setChildren(dataSourceKeys);
                 }
-
-
             };
         }
-
-        return  null;
-
+        return  result;
     }
+
+
+
 
     @Override
     public List<Map<String, Object>> selectDataSourceProperty(Long dsId) throws IOException, SQLException {

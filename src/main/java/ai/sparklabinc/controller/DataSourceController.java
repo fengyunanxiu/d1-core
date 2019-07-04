@@ -23,9 +23,9 @@ public class DataSourceController {
     private DataSourceService dataSourceService;
 
     @ResponseBody
-    @GetMapping("/test-connection")
-    public Object dataSourcesTestConnection(@RequestParam(required = true) Long dsId){
-       return  dataSourceService.dataSourcesTestConnection(dsId);
+    @GetMapping("/connection")
+    public Object Connection2DataSource(@RequestParam(required = true) Long dsId){
+       return  dataSourceService.Connection2DataSource(dsId);
     }
 
     @ResponseBody
