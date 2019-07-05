@@ -2,6 +2,7 @@ package ai.sparklabinc.controller;
 
 import ai.sparklabinc.dto.DbBasicConfigDTO;
 import ai.sparklabinc.dto.DbSecurityConfigDTO;
+import ai.sparklabinc.dto.DsKeyBasicConfigDTO;
 import ai.sparklabinc.service.DataSourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -57,4 +58,18 @@ public class DataSourceController {
     public Object editDataSourceProperty(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO)throws IOException, SQLException {
         return dataSourceService.editDataSourceProperty(dbBasicConfigDTO,dbSecurityConfigDTO);
     }
+
+    @ResponseBody
+    @PostMapping("/add-dskey")
+    public Object addDataSourceKey(DsKeyBasicConfigDTO dsKeyBasicConfigDTO) throws IOException, SQLException{
+        return dataSourceService.addDataSourceKey(dsKeyBasicConfigDTO);
+    }
+
+
+    @ResponseBody
+    @GetMapping ("/select-ds-form-table-setting")
+    public Object selectAllDsFormTableSettingByDsKey(String dsKey) throws IOException, SQLException{
+        return dataSourceService.selectAllDsFormTableSettingByDsKey(dsKey);
+    }
+
 }

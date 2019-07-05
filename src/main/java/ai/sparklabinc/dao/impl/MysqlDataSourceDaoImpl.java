@@ -4,6 +4,7 @@ import ai.sparklabinc.dao.MysqlDataSourceDao;
 import ai.sparklabinc.datasource.Constants;
 import ai.sparklabinc.datasource.DataSourceFactory;
 import ai.sparklabinc.dto.DbInforamtionDTO;
+import ai.sparklabinc.dto.TableColumnsDetailDTO;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,24 @@ public class MysqlDataSourceDaoImpl implements MysqlDataSourceDao {
                 " from information_schema.tables where table_schema=?";
         List<DbInforamtionDTO> dbInforamtionDTOList = queryRunner.query(sql, new BeanListHandler<>(DbInforamtionDTO.class), schema);
         return dbInforamtionDTOList;
+    }
+
+
+    @Override
+    public List<TableColumnsDetailDTO> selectTableColumnsDetail(Long dsId, String schema, String table) throws IOException, SQLException {
+        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_MYSQL, dsId));
+        String sql = "select column_name as columnName," +
+                "   data_type as dataType," +
+                "   character_maximum_length as characterMaximumLength," +
+                "   column_key as columnKey," +
+                "   extra as extra," +
+                "   ordinal_position as ordinalPosition," +
+                "   column_comment as columnComment" +
+                " from information_schema.columns" +
+                " where table_schema = ?" +
+                " and table_name = ?";
+        List<TableColumnsDetailDTO> tableColumnsDetailDTOList = queryRunner.query(sql, new BeanListHandler<>(TableColumnsDetailDTO.class), schema,table);
+        return  tableColumnsDetailDTOList;
     }
 
 }

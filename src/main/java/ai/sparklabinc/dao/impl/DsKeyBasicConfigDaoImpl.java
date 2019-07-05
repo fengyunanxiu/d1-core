@@ -5,6 +5,7 @@ import ai.sparklabinc.datasource.Constants;
 import ai.sparklabinc.datasource.DataSourceFactory;
 import ai.sparklabinc.dto.DbInforamtionDTO;
 import ai.sparklabinc.entity.DsKeyBasicConfigDO;
+import ai.sparklabinc.util.DateUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
@@ -72,7 +73,7 @@ public class DsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
     }
 
     @Override
-    public List<DbInforamtionDTO> getDataSourceKey(Long dsId,String schema, String tableName) throws IOException, SQLException {
+    public List<DbInforamtionDTO> getDataSourceKey(Long dsId, String schema, String tableName) throws IOException, SQLException {
         QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,dsId));
         String sql ="select  id," +
                 "       ds_key as label," +
@@ -82,6 +83,23 @@ public class DsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
                 " and schemal=? " +
                 " and table_name=?";
         List<DbInforamtionDTO> result = queryRunner.query(sql, new BeanListHandler<>(DbInforamtionDTO.class), dsId, schema, tableName);
+        return  result;
+    }
+
+    @Override
+    public Integer addDataSourceKey(DsKeyBasicConfigDO dsKeyBasicConfigDO) throws IOException, SQLException {
+        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,dsKeyBasicConfigDO.getFkDbId()));
+        String sql ="insert into ds_key_basic_config( ds_key, fk_db_id, schemal, table_name, " +
+                " description, gmt_creat, gmt_modified)" +
+                " values ( ?, ?, ?, ?, ?, ?, ?) ";
+        String now = DateUtils.ofLongStr(new java.util.Date());
+        Object[] objectParams={dsKeyBasicConfigDO.getDsKey(),
+                dsKeyBasicConfigDO.getFkDbId(),
+                dsKeyBasicConfigDO.getSchema(),
+                dsKeyBasicConfigDO.getTableName(),
+                dsKeyBasicConfigDO.getDescription(),
+                now,now};
+        int result = queryRunner.update(sql, objectParams);
         return  result;
     }
 

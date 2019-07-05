@@ -3,6 +3,8 @@ package ai.sparklabinc.service;
 import ai.sparklabinc.dto.DbBasicConfigDTO;
 import ai.sparklabinc.dto.DbInforamtionDTO;
 import ai.sparklabinc.dto.DbSecurityConfigDTO;
+import ai.sparklabinc.dto.DsKeyBasicConfigDTO;
+import ai.sparklabinc.entity.DsFormTableSettingDO;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -28,4 +30,8 @@ public interface DataSourceService {
     List<Map<String, Object>>  selectDataSourceProperty(Long dsId) throws IOException, SQLException;
 
     boolean editDataSourceProperty(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws IOException, SQLException;
+
+    boolean addDataSourceKey(DsKeyBasicConfigDTO dsKeyBasicConfigDTO) throws IOException, SQLException;
+
+    List<Map<String,Object>> selectAllDsFormTableSettingByDsKey(String dsKey) throws IOException, SQLException;
 }

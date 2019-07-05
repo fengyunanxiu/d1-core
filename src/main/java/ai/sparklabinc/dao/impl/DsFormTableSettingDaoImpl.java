@@ -4,8 +4,10 @@ import ai.sparklabinc.dao.DsFormTableSettingDao;
 import ai.sparklabinc.datasource.Constants;
 import ai.sparklabinc.datasource.DataSourceFactory;
 import ai.sparklabinc.entity.DsFormTableSettingDO;
+import ai.sparklabinc.util.DateUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author : Kingzer
@@ -101,6 +104,61 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
         return dsFormTableSettingDOList;
     }
 
+
+    @Override
+    public Integer add(DsFormTableSettingDO dsFormTableSettingDO) throws IOException, SQLException {
+        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,null));
+        String sql ="insert into ds_form_table_setting( gmt_create, gmt_modified, ds_key, db_field_name, db_field_type," +
+                "  view_field_lable, db_field_comment, form_field_visible, form_field_sequence, form_field_query_type," +
+                "  form_field_is_exactly, form_field_children_db_field_name, form_field_dic_domain_name, form_field_auto_collect_dic, form_field_defalut_val_stratege," +
+                "  table_field_visible, table_field_order_by, table_field_query_required, table_field_sequence, table_field_column_width," +
+                "  table_field_lable, export_field_visible, export_field_sequence, export_field_width)" +
+                "  values (?, ?, ?, ?, ?," +
+                "  ?, ?, ?, ?, ?," +
+                "  ?, ?, ?, ?, ?," +
+                "  ?, ?, ?, ?, ?," +
+                "  ?, ?, ?, ?)";
+        String now = DateUtils.ofLongStr(new java.util.Date());
+        Object[] objectParams={now, now,
+                dsFormTableSettingDO.getDsKey(),
+                dsFormTableSettingDO.getDbFieldName(),
+                dsFormTableSettingDO.getDbFieldType(),
+
+                dsFormTableSettingDO.getViewFieldLable(),
+                dsFormTableSettingDO.getDbFieldComment(),
+                dsFormTableSettingDO.getFormFieldVisible()?1:0,
+                dsFormTableSettingDO.getFormFieldSequence(),
+                dsFormTableSettingDO.getFormFieldQueryType(),
+
+                dsFormTableSettingDO.getFormFieldIsExactly()?1:0,
+                dsFormTableSettingDO.getFormFieldChildrenDbFieldName(),
+                dsFormTableSettingDO.getFormFieldDicDomainName(),
+                dsFormTableSettingDO.getFormFieldAutoCollectDic()?1:0,
+                dsFormTableSettingDO.getFormFieldDefaultValStratege(),
+
+                dsFormTableSettingDO.getTableFieldVisible()?1:0,
+                dsFormTableSettingDO.getTableFieldOrderBy(),
+                dsFormTableSettingDO.getTableFieldQueryRequired()?1:0,
+                dsFormTableSettingDO.getTableFieldSequence(),
+                dsFormTableSettingDO.getTableFieldColumnWidth(),
+
+                dsFormTableSettingDO.getViewFieldLable(),
+                dsFormTableSettingDO.getExportFieldVisible()?1:0,
+                dsFormTableSettingDO.getExportFieldSequence(),
+                dsFormTableSettingDO.getExportFieldWidth()
+                };
+        int result = queryRunner.update(sql, objectParams);
+        return  result;
+    }
+
+    @Override
+    public List<Map<String, Object>> selectAllDsFormTableSettingByDsKey(String dataSourceKey) throws SQLException, IOException {
+        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null));
+        String querySql = "select * from ds_form_table_setting where ds_key = ? ";
+        LOGGER.info("querySql:{}", querySql);
+        List<Map<String, Object>> result = queryRunner.query(querySql, new MapListHandler(),dataSourceKey);
+        return result;
+    }
 
 
 }

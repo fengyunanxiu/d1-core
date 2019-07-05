@@ -1,6 +1,7 @@
 package ai.sparklabinc.dao;
 
 import ai.sparklabinc.dto.DbInforamtionDTO;
+import ai.sparklabinc.dto.TableColumnsDetailDTO;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -18,4 +19,6 @@ public interface MysqlDataSourceDao {
     List<DbInforamtionDTO> selectAllSchema(Long dsId) throws IOException, SQLException;
 
     List<DbInforamtionDTO> selectAllTableAndView(Long dsId, String label) throws IOException, SQLException;
+
+    List<TableColumnsDetailDTO> selectTableColumnsDetail(Long dsId, String schema, String table) throws IOException, SQLException;
 }
