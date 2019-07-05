@@ -1,10 +1,13 @@
 package ai.sparklabinc.controller;
 
 import ai.sparklabinc.constant.QueryParamConstants;
+import ai.sparklabinc.exception.custom.IllegalParameterException;
+import ai.sparklabinc.exception.custom.ResourceNotFoundException;
 import ai.sparklabinc.service.QueryFormTableService;
 import ai.sparklabinc.util.ApiUtils;
 import com.mysql.jdbc.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -31,33 +34,28 @@ public class QueryFormTableApiController {
             @RequestParam(name = "data_source_key", required = true) String dataSourceKey, HttpServletRequest request,
             HttpServletResponse response) throws Exception {
         if (StringUtils.isNullOrEmpty(dataSourceKey)) {
-            // TODO 自定义异常体系
-            //throw new ResourceNotFoundException("Empty data source key " + dataSourceKey);
+            throw new IllegalParameterException("Empty data source key " + dataSourceKey);
         }
         Object result = this.queryFormTableService.getDsKeyQuerySetting(dataSourceKey);
         if (result == null) {
-            // TODO 自定义异常体系
-            // throw new ResourceNotFoundException("Cannot find resource from data source key " + dataSourceKey);
+             throw new ResourceNotFoundException("Cannot find resource from data source key " + dataSourceKey);
         }
         return result;
     }
-
 
     @GetMapping("/form-setting")
     @ResponseBody
     public Object queryFormSetting(@RequestParam(name = "data_source_key", required = true) String dataSourceKey,
                                    HttpServletRequest request, HttpServletResponse response) throws Exception {
         if (StringUtils.isNullOrEmpty(dataSourceKey)) {
-           // throw new ResourceNotFoundException("Empty data source key " + dataSourceKey);
+            throw new IllegalParameterException("Empty data source key " + dataSourceKey);
         }
         Object result = this.queryFormTableService.getDsKeyQueryFormSetting(dataSourceKey);
         if (result == null) {
-           // throw new ResourceNotFoundException("Cannot find resource from data source key " + dataSourceKey);
+            throw new ResourceNotFoundException("Cannot find resource from data source key " + dataSourceKey);
         }
         return result;
-
     }
-
 
     /**
      * 获取指定数据源的table设置
@@ -71,11 +69,11 @@ public class QueryFormTableApiController {
     public Object queryTableSetting(@RequestParam(name = "data_source_key", required = true) String dataSourceKey,
                                     HttpServletRequest request, HttpServletResponse response) throws Exception {
         if (StringUtils.isNullOrEmpty(dataSourceKey)) {
-            //throw new ResourceNotFoundException("Empty data source key " + dataSourceKey);
+            throw new IllegalParameterException("Empty data source key " + dataSourceKey);
         }
         Object result = this.queryFormTableService.getDsKeyQueryTableSetting(dataSourceKey);
         if (result == null) {
-            // throw new ResourceNotFoundException("Cannot find resource from data source key " + dataSourceKey);
+            throw new ResourceNotFoundException("Cannot find resource from data source key " + dataSourceKey);
         }
         return result;
     }
@@ -93,15 +91,13 @@ public class QueryFormTableApiController {
     public Object generalQuery(@RequestParam(name = "data_source_key", required = true) String dataSourceKey,
                         HttpServletRequest request, @RequestBody Map<String, String[]> params) throws Exception {
         if (StringUtils.isNullOrEmpty(dataSourceKey)) {
-            throw new Exception("Empty data source key " + dataSourceKey);
-            //throw new ResourceNotFoundException("Empty data source key " + dataSourceKey);
+            throw new ResourceNotFoundException("Empty data source key " + dataSourceKey);
         }
         Pageable pageable = this.extractPageable(params);
         String moreWhereClause = this.extractMoreClause(params);
         Map<String, String[]> simpleParameters = ApiUtils.removeReservedParameters(params);
         return queryFormTableService.generalQuery(dataSourceKey, simpleParameters, pageable,moreWhereClause);
     }
-
 
     private Pageable extractPageable(Map<String, String[]> params) {
         String[] pages = params.get(QueryParamConstants.SQL_PARAMS_KEY_FOR_SQL_PAGE);
@@ -132,7 +128,6 @@ public class QueryFormTableApiController {
                         sigleSort = new Sort(Sort.Direction.ASC, fieldName);
                     }
                 }
-
                 if(sort == null) {
                     sort = sigleSort;
                 }else {
@@ -141,11 +136,10 @@ public class QueryFormTableApiController {
             }
         }
         if (page != null && size != null) {
-            return new PageRequest(page, size, sort);
+            return  PageRequest.of(page, size, sort);
         }
         return null;
     }
-
 
     private String extractMoreClause(Map<String, String[]> params) {
         String moreWhereClause = null;

@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -50,7 +49,7 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
                     String dsKey = resultSet.getString("ds_key");
                     String dbFieldName = resultSet.getString("db_field_name");
                     String dbFieldType = resultSet.getString("db_field_type");
-                    String viewFieldLable = resultSet.getString("view_field_lable");
+                    String viewFieldLabel = resultSet.getString("view_field_label");
                     String dbFieldComment = resultSet.getString("db_field_comment");
                     Boolean formFieldVisible = resultSet.getBoolean("form_field_visible");
                     Integer formFieldSequence = resultSet.getInt("form_field_sequence");
@@ -68,7 +67,7 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
                     Boolean exportFieldVisible= resultSet.getBoolean("export_field_visible");
                     Integer exportFieldSequence = resultSet.getInt("export_field_sequence");
                     Integer exportFieldWidth= resultSet.getInt("export_field_width");
-                    String tableParentLable = resultSet.getString("table_parent_lable");
+                    String tableParentLabel = resultSet.getString("table_parent_label");
 
                     dsFormTableSettingDO = new DsFormTableSettingDO();
                     dsFormTableSettingDO.setId(id);
@@ -77,7 +76,7 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
                     dsFormTableSettingDO.setDsKey(dsKey);
                     dsFormTableSettingDO.setDbFieldName(dbFieldName);
                     dsFormTableSettingDO.setDbFieldType(dbFieldType);
-                    dsFormTableSettingDO.setViewFieldLable(viewFieldLable);
+                    dsFormTableSettingDO.setViewFieldLabel(viewFieldLabel);
                     dsFormTableSettingDO.setDbFieldComment(dbFieldComment);
                     dsFormTableSettingDO.setFormFieldVisible(formFieldVisible);
                     dsFormTableSettingDO.setFormFieldSequence(formFieldSequence);
@@ -95,7 +94,7 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
                     dsFormTableSettingDO.setExportFieldVisible(exportFieldVisible);
                     dsFormTableSettingDO.setExportFieldSequence(exportFieldSequence);
                     dsFormTableSettingDO.setExportFieldWidth(exportFieldWidth);
-                    dsFormTableSettingDO.setTableParentLable(tableParentLable);
+                    dsFormTableSettingDO.setTableParentLabel(tableParentLabel);
                     dsFormTableSettingDOS.add(dsFormTableSettingDO);
                 }
                 return dsFormTableSettingDOS;
