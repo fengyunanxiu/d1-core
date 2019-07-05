@@ -1,7 +1,5 @@
 package ai.sparklabinc.entity;
 
-import java.util.Date;
-
 public class DsFormTableSettingDO {
 
     private Long id;
@@ -19,7 +17,7 @@ public class DsFormTableSettingDO {
     private String dbFieldType;
 
 
-    private String viewFieldLable;
+    private String viewFieldLabel;
 
 
     private String dbFieldComment;
@@ -48,7 +46,7 @@ public class DsFormTableSettingDO {
 
     private String tableFieldOrderBy;
 
-    private String tableParentLable;
+    private String tableParentLabel;
 
     private Boolean tableFieldQueryRequired;
 
@@ -110,12 +108,12 @@ public class DsFormTableSettingDO {
         this.dbFieldType = dbFieldType;
     }
 
-    public String getViewFieldLable() {
-        return viewFieldLable;
+    public String getViewFieldLabel() {
+        return viewFieldLabel;
     }
 
-    public void setViewFieldLable(String viewFieldLable) {
-        this.viewFieldLable = viewFieldLable;
+    public void setViewFieldLabel(String viewFieldLabel) {
+        this.viewFieldLabel = viewFieldLabel;
     }
 
     public String getDbFieldComment() {
@@ -255,11 +253,11 @@ public class DsFormTableSettingDO {
     }
 
 
-    public String getTableParentLable() {
-        return tableParentLable;
+    public String getTableParentLabel() {
+        return tableParentLabel;
     }
 
-    public void setTableParentLable(String tableParentLable) {
-        this.tableParentLable = tableParentLable;
+    public void setTableParentLabel(String tableParentLabel) {
+        this.tableParentLabel = tableParentLabel;
     }
 }

@@ -227,7 +227,7 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
             if(dsFormTableSettingDO.getFormFieldVisible()){
                 dsKeyQueryFormSettingVO = new DsKeyQueryFormSettingVO();
                 dsKeyQueryFormSettingVO.setDbFieldName(dsFormTableSettingDO.getDbFieldName());
-                dsKeyQueryFormSettingVO.setViewFieldLable(dsFormTableSettingDO.getViewFieldLable());
+                dsKeyQueryFormSettingVO.setViewFieldLable(dsFormTableSettingDO.getViewFieldLabel());
                 dsKeyQueryFormSettingVO.setFormFieldSequence(dsFormTableSettingDO.getFormFieldSequence());
 
                 String formQueryType = dsFormTableSettingDO.getFormFieldQueryType();
@@ -267,11 +267,11 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
         for (DsFormTableSettingDO dsFormTableSettingDO : dsFormTableSettingDOList) {
             if(dsFormTableSettingDO.getTableFieldVisible()){
                 DsKeyQueryTableSettingVO dsKeyQueryTableSettingVO = new DsKeyQueryTableSettingVO();
-                String tableParentLable = dsFormTableSettingDO.getTableParentLable();
+                String tableParentLable = dsFormTableSettingDO.getTableParentLabel();
 
                 dsKeyQueryTableSettingVO.setDbFieldName(dsFormTableSettingDO.getDbFieldName());
                 dsKeyQueryTableSettingVO.setTableFieldColumnWidth(dsFormTableSettingDO.getTableFieldColumnWidth());
-                dsKeyQueryTableSettingVO.setViewFieldLable(dsFormTableSettingDO.getViewFieldLable());
+                dsKeyQueryTableSettingVO.setViewFieldLable(dsFormTableSettingDO.getViewFieldLabel());
                 dsKeyQueryTableSettingVO.setTableFieldOrderBy(dsFormTableSettingDO.getTableFieldOrderBy());
                 dsKeyQueryTableSettingVO.setTableFieldSequence(dsFormTableSettingDO.getTableFieldSequence());
 
