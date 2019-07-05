@@ -284,6 +284,22 @@ public class DataSourceServiceImpl implements DataSourceService {
     }
 
 
+    @Override
+    public boolean updateDataSourceKey(String dsKey, String newDsKey, String description) throws IOException, SQLException {
+        boolean updateResult=false;
+        int updateRows = dsKeyBasicConfigDao.updateDataSourceKey(dsKey, newDsKey, description);
+        if(updateRows>0){
+             updateRows = dsFormTableSettingDao.updateDataSourceKey(dsKey, newDsKey);
+             if(updateRows>0){
+                 updateResult=true;
+             }
+        }
+        return updateResult;
+
+    }
+
+
+
 
     /**
      * 获取labelName

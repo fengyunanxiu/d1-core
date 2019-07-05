@@ -37,7 +37,7 @@ public class DsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
 
     @Override
     public DsKeyBasicConfigDO getDsKeyBasicConfigByDsKey(String dataSourceKey) throws SQLException, IOException {
-        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,0L));
+        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,null));
         String querySql = "select * from ds_key_basic_config where ds_key = ? ";
         LOGGER.info("querySql:{}", querySql);
 
@@ -73,8 +73,8 @@ public class DsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
     }
 
     @Override
-    public List<DbInforamtionDTO> getDataSourceKey(Long dsId, String schema, String tableName) throws IOException, SQLException {
-        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,dsId));
+    public List<DbInforamtionDTO> getDataSourceKey(Long dsId,String schema, String tableName) throws IOException, SQLException {
+        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,null));
         String sql ="select  id," +
                 "       ds_key as label," +
                 "       4 as level" +
@@ -88,7 +88,7 @@ public class DsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
 
     @Override
     public Integer addDataSourceKey(DsKeyBasicConfigDO dsKeyBasicConfigDO) throws IOException, SQLException {
-        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,dsKeyBasicConfigDO.getFkDbId()));
+        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,null));
         String sql ="insert into ds_key_basic_config( ds_key, fk_db_id, schemal, table_name, " +
                 " description, gmt_creat, gmt_modified)" +
                 " values ( ?, ?, ?, ?, ?, ?, ?) ";
@@ -99,6 +99,18 @@ public class DsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
                 dsKeyBasicConfigDO.getTableName(),
                 dsKeyBasicConfigDO.getDescription(),
                 now,now};
+        int result = queryRunner.update(sql, objectParams);
+        return  result;
+    }
+
+
+    @Override
+    public Integer updateDataSourceKey(String dsKey,String newDsKey,String description) throws IOException, SQLException {
+        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,null));
+        String sql =" update ds_key_basic_config set ds_key = ?,description = ?,gmt_modified = ?" +
+                    " where ds_key = ? ";
+        String now = DateUtils.ofLongStr(new java.util.Date());
+        Object[] objectParams={newDsKey,description,now,dsKey};
         int result = queryRunner.update(sql, objectParams);
         return  result;
     }

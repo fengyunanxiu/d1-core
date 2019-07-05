@@ -20,4 +20,6 @@ public interface DsFormTableSettingDao {
     Integer add(DsFormTableSettingDO dsFormTableSettingDO) throws IOException, SQLException;
 
     List<Map<String,Object>> selectAllDsFormTableSettingByDsKey(String dataSourceKey) throws SQLException, IOException;
+
+    Integer updateDataSourceKey(String dataSourceKey, String newDataSourceKey) throws SQLException, IOException;
 }

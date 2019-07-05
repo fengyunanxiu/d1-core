@@ -72,4 +72,10 @@ public class DataSourceController {
         return dataSourceService.selectAllDsFormTableSettingByDsKey(dsKey);
     }
 
+    @ResponseBody
+    @PostMapping("/update-dskey")
+    public Object updateDataSourceKey(String dsKey, String newDsKey, String description) throws IOException, SQLException{
+        return dataSourceService.updateDataSourceKey(dsKey,newDsKey,description);
+    }
+
 }

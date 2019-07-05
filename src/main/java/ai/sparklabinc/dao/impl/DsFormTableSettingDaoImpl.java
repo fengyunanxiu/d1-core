@@ -160,4 +160,16 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
     }
 
 
+    @Override
+    public Integer updateDataSourceKey(String dataSourceKey,String newDataSourceKey) throws SQLException, IOException {
+        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null));
+        String querySql = "update ds_form_table_setting set gmt_modified = ?, ds_key = ?" +
+                          "where ds_key = ?";
+        LOGGER.info("querySql:{}", querySql);
+        String now = DateUtils.ofLongStr(new java.util.Date());
+        int update = queryRunner.update(querySql, now, newDataSourceKey, dataSourceKey);
+        return update;
+    }
+
+
 }

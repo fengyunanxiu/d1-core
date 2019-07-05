@@ -34,4 +34,6 @@ public interface DataSourceService {
     boolean addDataSourceKey(DsKeyBasicConfigDTO dsKeyBasicConfigDTO) throws IOException, SQLException;
 
     List<Map<String,Object>> selectAllDsFormTableSettingByDsKey(String dsKey) throws IOException, SQLException;
+
+    boolean updateDataSourceKey(String dsKey, String newDsKey, String description) throws IOException, SQLException;
 }

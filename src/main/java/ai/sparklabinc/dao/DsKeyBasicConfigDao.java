@@ -18,4 +18,6 @@ public interface DsKeyBasicConfigDao {
     List<DbInforamtionDTO> getDataSourceKey(Long dsId, String schema, String tableName) throws IOException, SQLException;
 
     Integer addDataSourceKey(DsKeyBasicConfigDO dsKeyBasicConfigDO) throws IOException, SQLException;
+
+    Integer updateDataSourceKey(String dsKey, String newDsKey, String description) throws IOException, SQLException;
 }
