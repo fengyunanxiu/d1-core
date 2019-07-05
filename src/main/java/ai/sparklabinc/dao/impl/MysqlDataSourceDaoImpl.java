@@ -4,6 +4,7 @@ import ai.sparklabinc.dao.MysqlDataSourceDao;
 import ai.sparklabinc.datasource.Constants;
 import ai.sparklabinc.datasource.DataSourceFactory;
 import ai.sparklabinc.dto.DbInforamtionDTO;
+import ai.sparklabinc.dto.TableAndViewInfoDTO;
 import ai.sparklabinc.dto.TableColumnsDetailDTO;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
@@ -38,15 +39,18 @@ public class MysqlDataSourceDaoImpl implements MysqlDataSourceDao {
         return dbInforamtionDTOList;
     }
 
+
     @Override
-    public List<DbInforamtionDTO> selectAllTableAndView(Long dsId, String schema) throws IOException, SQLException {
+    public List<TableAndViewInfoDTO> selectAllTableAndView(Long dsId) throws IOException, SQLException {
         QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_MYSQL, dsId));
-        String sql = "select  table_name as label," +
-                "       3 as level ," +
-                "       case table_type when 'BASE TABLE' then 'table' else 'view' end as type" +
-                " from information_schema.tables where table_schema=?";
-        List<DbInforamtionDTO> dbInforamtionDTOList = queryRunner.query(sql, new BeanListHandler<>(DbInforamtionDTO.class), schema);
-        return dbInforamtionDTOList;
+        String sql = "select  table_schema as tableSchema," +
+                "   table_name as tableName," +
+                "   3 as level ," +
+                "   case table_type when 'BASE TABLE' then 'table' else 'view' end as type" +
+                " from information_schema.tables" +
+                " where table_schema not in ('information_schema','performance_schema','tmp','sys','mysql')";
+        List<TableAndViewInfoDTO> tableAndViewInfoDTOS = queryRunner.query(sql, new BeanListHandler<>(TableAndViewInfoDTO.class));
+        return tableAndViewInfoDTOS;
     }
 
 

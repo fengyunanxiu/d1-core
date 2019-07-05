@@ -19,8 +19,11 @@ import org.springframework.util.CollectionUtils;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @Function:
@@ -129,16 +132,35 @@ public class DataSourceServiceImpl implements DataSourceService {
                 return result;
             }
             dbInforamtionDTO.setChildren(schemas);
+            /*********************************************************************
+             * step4 拿到所有schema所有的表和视图,提高性能
+             * *******************************************************************
+             */
+            List<TableAndViewInfoDTO> tableAndViewInfoDTOS = mysqlDataSourceDao.selectAllTableAndView(dsId);
+            if(CollectionUtils.isEmpty(tableAndViewInfoDTOS)){
+                return result;
+            }
 
             for (DbInforamtionDTO schema : schemas) {
-                /*********************************************************************
-                 * step4 拿到schema所有的表和视图
-                 * *******************************************************************
-                 */
-                List<DbInforamtionDTO> tableAndViews = mysqlDataSourceDao.selectAllTableAndView(dsId, schema.getLabel());
-                if (CollectionUtils.isEmpty(tableAndViews)) {
+                List<DbInforamtionDTO> tableAndViews=new LinkedList<>();
+                //获取schema的talbe
+                List<TableAndViewInfoDTO> collect = tableAndViewInfoDTOS.stream()
+                        .filter(e -> schema.getLabel().equalsIgnoreCase(e.getTableSchema()))
+                        .collect(Collectors.toList());
+
+                if (CollectionUtils.isEmpty(collect)) {
                     continue;
                 }
+
+                //封装数据
+                collect.forEach(e->{
+                    DbInforamtionDTO dbInfo= new DbInforamtionDTO();
+                    dbInfo.setLabel(e.getTableName());
+                    dbInfo.setType(e.getType());
+                    dbInfo.setLevel(e.getLevel());
+                    tableAndViews.add(dbInfo);
+                });
+
                 schema.setChildren(tableAndViews);
                 /*********************************************************************
                  * step5 拿到表和视图的data source key
