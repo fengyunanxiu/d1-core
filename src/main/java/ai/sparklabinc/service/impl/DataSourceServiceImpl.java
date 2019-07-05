@@ -224,7 +224,7 @@ public class DataSourceServiceImpl implements DataSourceService {
                 dsFormTableSettingDO.setDbFieldType(tableColumnsDetailDTO.getDataType());
 
                 String columnName = tableColumnsDetailDTO.getColumnName();
-                dsFormTableSettingDO.setViewFieldLable(getLabelName(columnName));
+                dsFormTableSettingDO.setViewFieldLabel(getLabelName(columnName));
                 dsFormTableSettingDO.setDbFieldComment(tableColumnsDetailDTO.getColumnComment());
                 dsFormTableSettingDO.setFormFieldVisible(false);
                 dsFormTableSettingDO.setFormFieldSequence(tableColumnsDetailDTO.getOrdinalPosition());
@@ -242,7 +242,7 @@ public class DataSourceServiceImpl implements DataSourceService {
                 dsFormTableSettingDO.setTableFieldSequence(tableColumnsDetailDTO.getOrdinalPosition());
                 dsFormTableSettingDO.setTableFieldColumnWidth(100);
 
-                dsFormTableSettingDO.setViewFieldLable(getLabelName(columnName));
+                dsFormTableSettingDO.setViewFieldLabel(getLabelName(columnName));
                 dsFormTableSettingDO.setExportFieldVisible(true);
                 dsFormTableSettingDO.setExportFieldSequence(tableColumnsDetailDTO.getOrdinalPosition());
                 dsFormTableSettingDO.setExportFieldWidth(100);

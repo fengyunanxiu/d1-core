@@ -123,7 +123,7 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
                 dsFormTableSettingDO.getDbFieldName(),
                 dsFormTableSettingDO.getDbFieldType(),
 
-                dsFormTableSettingDO.getViewFieldLable(),
+                dsFormTableSettingDO.getViewFieldLabel(),
                 dsFormTableSettingDO.getDbFieldComment(),
                 dsFormTableSettingDO.getFormFieldVisible()?1:0,
                 dsFormTableSettingDO.getFormFieldSequence(),
@@ -141,7 +141,7 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
                 dsFormTableSettingDO.getTableFieldSequence(),
                 dsFormTableSettingDO.getTableFieldColumnWidth(),
 
-                dsFormTableSettingDO.getViewFieldLable(),
+                dsFormTableSettingDO.getViewFieldLabel(),
                 dsFormTableSettingDO.getExportFieldVisible()?1:0,
                 dsFormTableSettingDO.getExportFieldSequence(),
                 dsFormTableSettingDO.getExportFieldWidth()
