@@ -24,6 +24,7 @@ import ai.sparklabinc.util.StringUtils;
 import ai.sparklabinc.vo.DsKeyQueryFormSettingVO;
 import ai.sparklabinc.vo.DsKeyQueryTableSettingVO;
 import ai.sparklabinc.vo.DsKeyQueryVO;
+import org.apache.tomcat.jdbc.pool.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -165,7 +166,7 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
             throw new ResourceNotFoundException("data source key is not found!");
         }
         //获取生成sql文件
-        AssemblyResultDTO assemblyResultDTO = generalQuery(dataSourceKey, simpleParameters, pageable, moreWhereClause);
+        AssemblyResultDTO assemblyResultDTO = generalQuery(dataSourceKey, simpleParameters, pageable, moreWhereClause,false);
         PageResultDTO pageResultDTO = dsQueryDao.excuteQuery(assemblyResultDTO, dsKeyBasicConfigDO.getFkDbId());
         return pageResultDTO;
     }
