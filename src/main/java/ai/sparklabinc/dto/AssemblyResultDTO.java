@@ -1,6 +1,8 @@
 package ai.sparklabinc.dto;
 
 import ai.sparklabinc.entity.DsFormTableSettingDO;
+
+import javax.sql.DataSource;
 import java.util.List;
 
 public class AssemblyResultDTO {
@@ -9,9 +11,11 @@ public class AssemblyResultDTO {
 	
 	private String querySql;
 	
-	List<DsFormTableSettingDO> dsFormTableSettingDOS;
+	private List<DsFormTableSettingDO> dsFormTableSettingDOS;
 
-	List<Object> paramList;
+	private List<Object> paramList;
+
+	private DataSource dataSource;
 
 	public String getCountSql() {
 		return countSql;
@@ -43,5 +47,13 @@ public class AssemblyResultDTO {
 
 	public void setParamList(List<Object> paramList) {
 		this.paramList = paramList;
+	}
+
+	public DataSource getDataSource() {
+		return dataSource;
+	}
+
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
 	}
 }

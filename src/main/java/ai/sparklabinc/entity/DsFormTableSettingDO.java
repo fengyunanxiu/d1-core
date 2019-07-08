@@ -37,7 +37,7 @@ public class DsFormTableSettingDO {
 
     private String formFieldDicDomainName;
 
-    private Boolean formFieldAutoCollectDic;
+    private Boolean formFieldUseDic;
 
     private String formFieldDefaultValStratege;
 
@@ -59,6 +59,14 @@ public class DsFormTableSettingDO {
     private Integer exportFieldSequence;
 
     private Integer exportFieldWidth;
+
+
+    private Boolean formFieldUseDefaultVal;
+
+    private String formFieldManMadeDefaultVal;
+
+    private String formFieldDefaultValSql;
+
 
     public Long getId() {
         return id;
@@ -172,12 +180,12 @@ public class DsFormTableSettingDO {
         this.formFieldDicDomainName = formFieldDicDomainName;
     }
 
-    public Boolean getFormFieldAutoCollectDic() {
-        return formFieldAutoCollectDic;
+    public Boolean getFormFieldUseDic() {
+        return formFieldUseDic;
     }
 
-    public void setFormFieldAutoCollectDic(Boolean formFieldAutoCollectDic) {
-        this.formFieldAutoCollectDic = formFieldAutoCollectDic;
+    public void setFormFieldUseDic(Boolean formFieldUseDic) {
+        this.formFieldUseDic = formFieldUseDic;
     }
 
     public String getFormFieldDefaultValStratege() {
@@ -259,5 +267,29 @@ public class DsFormTableSettingDO {
 
     public void setTableParentLabel(String tableParentLabel) {
         this.tableParentLabel = tableParentLabel;
+    }
+
+    public Boolean getFormFieldUseDefaultVal() {
+        return formFieldUseDefaultVal;
+    }
+
+    public void setFormFieldUseDefaultVal(Boolean formFieldUseDefaultVal) {
+        this.formFieldUseDefaultVal = formFieldUseDefaultVal;
+    }
+
+    public String getFormFieldManMadeDefaultVal() {
+        return formFieldManMadeDefaultVal;
+    }
+
+    public void setFormFieldManMadeDefaultVal(String formFieldManMadeDefaultVal) {
+        this.formFieldManMadeDefaultVal = formFieldManMadeDefaultVal;
+    }
+
+    public String getFormFieldDefaultValSql() {
+        return formFieldDefaultValSql;
+    }
+
+    public void setFormFieldDefaultValSql(String formFieldDefaultValSql) {
+        this.formFieldDefaultValSql = formFieldDefaultValSql;
     }
 }

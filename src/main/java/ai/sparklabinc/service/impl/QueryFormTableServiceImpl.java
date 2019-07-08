@@ -2,13 +2,16 @@ package ai.sparklabinc.service.impl;
 
 import ai.sparklabinc.component.DsFormTableSettingComponent;
 import ai.sparklabinc.constant.DsConstants;
+import ai.sparklabinc.dao.DbBasicConfigDao;
 import ai.sparklabinc.dao.DsFormTableSettingDao;
 import ai.sparklabinc.dao.DsKeyBasicConfigDao;
 import ai.sparklabinc.dao.DsQueryDao;
+import ai.sparklabinc.datasource.DataSourceFactory;
 import ai.sparklabinc.dto.AssemblyResultDTO;
 import ai.sparklabinc.dto.OptionListAndDefaultValDTO;
 import ai.sparklabinc.dto.PageResultDTO;
 import ai.sparklabinc.dto.QueryParameterGroupDTO;
+import ai.sparklabinc.entity.DbBasicConfigDO;
 import ai.sparklabinc.entity.DsFormTableSettingDO;
 import ai.sparklabinc.entity.DsKeyBasicConfigDO;
 import ai.sparklabinc.exception.ServiceException;
@@ -56,6 +59,12 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
     private DsKeyBasicConfigDao dsKeyBasicConfigDao;
 
     @Autowired
+    private DataSourceFactory dataSourceFactory;
+
+    @Autowired
+    private DbBasicConfigDao dbBasicConfigDao;
+
+    @Autowired
     private DsQueryDao dsQueryDao;
 
     @Override
@@ -97,7 +106,7 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
     }
 
     @Override
-    public AssemblyResultDTO generalQuery(String dataSourceKey, Map<String, String[]> simpleParameters, Pageable pageable, String moreWhereClause) throws Exception {
+    public AssemblyResultDTO generalQuery(String dataSourceKey, Map<String, String[]> simpleParameters, Pageable pageable, String moreWhereClause, boolean returnDatasource) throws Exception {
         List<DsFormTableSettingDO> dsFormTableSettingDOList = getAllDsFormTableSettingByDsKey(dataSourceKey);
         if (dsFormTableSettingDOList == null || dsFormTableSettingDOList.isEmpty()) {
             throw new ResourceNotFoundException(String.format("DataSourceKey not found:%s", dataSourceKey));
@@ -125,6 +134,14 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
         }
 
         AssemblyResultDTO assemblyResultDTO = new AssemblyResultDTO();
+        if(returnDatasource){
+            Long dbId = dsKeyBasicConfigDO.getFkDbId();
+            DbBasicConfigDO dbBasicConfigDO = this.dbBasicConfigDao.findById(dbId);
+            DataSource dataSource = dataSourceFactory.builder(dbBasicConfigDO.getType(), dbBasicConfigDO.getId());
+            assemblyResultDTO.setDataSource(dataSource);
+        }
+
+
         SqlConditions sqlConditions = generateSqlConditions(queryParameterGroup);
         List<Object> paramList = sqlConditions.getParameters();
         String wholeWhereClause = (StringUtils.isNotNullNorEmpty(sqlConditions.getWhereClause()) ? " AND " : "") + sqlConditions.getWhereClause() + (moreWhereClause == null ? "" : moreWhereClause);
