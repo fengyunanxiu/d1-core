@@ -4,8 +4,6 @@ import ai.sparklabinc.dto.DbBasicConfigDTO;
 import ai.sparklabinc.dto.DbInforamtionDTO;
 import ai.sparklabinc.dto.DbSecurityConfigDTO;
 import ai.sparklabinc.dto.DsKeyBasicConfigDTO;
-import ai.sparklabinc.entity.DsFormTableSettingDO;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;

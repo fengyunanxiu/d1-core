@@ -146,7 +146,8 @@ public class DataSourceFactory {
             int assinged_port = session.setPortForwardingL(localPort, dbHost, dbPort);
             System.out.println("localhost:" + assinged_port + " -> " + dbHost + ":" + dbPort);
             System.out.println("Port Forwarded");
-            if (session != null) {
+            //session不等于null并且已经连接上
+            if (session != null&&session.isConnected()) {
                 sshSessionMap.put(dsId, session);
             }
         } catch (Exception e) {

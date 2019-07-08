@@ -4,6 +4,8 @@ import ai.sparklabinc.datasource.ConnectionPoolService;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Properties;
 
 /**
@@ -18,7 +20,7 @@ public class SqlitePoolServiceImpl implements ConnectionPoolService {
     private DataSource ds=null;
 
     @Override
-    public DataSource createDatasource(Properties properties) {
+    public DataSource createDatasource(Properties properties) throws SQLException {
         if(ds!=null){
             return ds;
         }
@@ -50,8 +52,24 @@ public class SqlitePoolServiceImpl implements ConnectionPoolService {
                 p.setRollbackOnReturn(true);
                 ds = new DataSource();
                 ds.setPoolProperties(p);
+                //校验datasource连接是够有效
+                validDatasourceConnect();
             }
             return ds;
+        }
+    }
+
+    private void validDatasourceConnect() throws SQLException {
+        Connection connection=null;
+        try {
+            connection = ds.getConnection();
+            if (connection == null) {
+                throw new SQLException("data source create failed，because data source can't connect");
+            }
+        }finally {
+            if(connection!=null){
+                connection.close();
+            }
         }
     }
 

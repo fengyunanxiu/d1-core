@@ -2,6 +2,7 @@ package ai.sparklabinc.datasource;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 
+import java.sql.SQLException;
 import java.util.Properties;
 
 /**
@@ -13,5 +14,5 @@ import java.util.Properties;
  */
 public interface ConnectionPoolService {
 
-    DataSource createDatasource(Properties properties);
+    DataSource createDatasource(Properties properties) throws SQLException;
 }
