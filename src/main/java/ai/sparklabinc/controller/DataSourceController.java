@@ -18,7 +18,7 @@ import java.sql.SQLException;
  * @description:
  */
 @RestController
-@RequestMapping("/datasource")
+@RequestMapping("/d1/datasource")
 public class DataSourceController {
     @Autowired
     private DataSourceService dataSourceService;

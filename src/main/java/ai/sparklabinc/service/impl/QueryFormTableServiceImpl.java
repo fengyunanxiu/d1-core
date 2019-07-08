@@ -4,8 +4,10 @@ import ai.sparklabinc.component.DsFormTableSettingComponent;
 import ai.sparklabinc.constant.DsConstants;
 import ai.sparklabinc.dao.DsFormTableSettingDao;
 import ai.sparklabinc.dao.DsKeyBasicConfigDao;
+import ai.sparklabinc.dao.DsQueryDao;
 import ai.sparklabinc.dto.AssemblyResultDTO;
 import ai.sparklabinc.dto.OptionListAndDefaultValDTO;
+import ai.sparklabinc.dto.PageResultDTO;
 import ai.sparklabinc.dto.QueryParameterGroupDTO;
 import ai.sparklabinc.entity.DsFormTableSettingDO;
 import ai.sparklabinc.entity.DsKeyBasicConfigDO;
@@ -52,6 +54,9 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
 
     @Autowired
     private DsKeyBasicConfigDao dsKeyBasicConfigDao;
+
+    @Autowired
+    private DsQueryDao dsQueryDao;
 
     @Override
     public List<DsKeyQueryTableSettingVO> getDsKeyQueryTableSetting(String dataSourceKey) throws Exception {
@@ -135,6 +140,25 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
         assemblyResultDTO.setParamList(paramList);
         return assemblyResultDTO;
     }
+
+    @Override
+    public PageResultDTO executeQuery(String dataSourceKey, Map<String, String[]> simpleParameters, Pageable pageable, String moreWhereClause) throws Exception {
+        DsKeyBasicConfigDO dsKeyBasicConfigDO = dsKeyBasicConfigDao.getDsKeyBasicConfigByDsKey(dataSourceKey);
+        if(dsKeyBasicConfigDO==null){
+            throw new ResourceNotFoundException("data source key is not found!");
+        }
+        //获取生成sql文件
+        AssemblyResultDTO assemblyResultDTO = generalQuery(dataSourceKey, simpleParameters, pageable, moreWhereClause);
+        PageResultDTO pageResultDTO = dsQueryDao.excuteQuery(assemblyResultDTO, dsKeyBasicConfigDO.getFkDbId());
+        return pageResultDTO;
+    }
+
+
+
+
+
+
+
 
 
     private String generateQuerySql(String tableName, String wholeWhereClause, Pageable pageable) {

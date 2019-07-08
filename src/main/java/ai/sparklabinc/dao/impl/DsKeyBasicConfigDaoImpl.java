@@ -80,7 +80,7 @@ public class DsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
                 "       4 as level" +
                 " from ds_key_basic_config" +
                 " where fk_db_id=? " +
-                " and schemal=? " +
+                " and schema=? " +
                 " and table_name=?";
         List<DbInforamtionDTO> result = queryRunner.query(sql, new BeanListHandler<>(DbInforamtionDTO.class), dsId, schema, tableName);
         return  result;
@@ -89,8 +89,8 @@ public class DsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
     @Override
     public Integer addDataSourceKey(DsKeyBasicConfigDO dsKeyBasicConfigDO) throws IOException, SQLException {
         QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,null));
-        String sql ="insert into ds_key_basic_config( ds_key, fk_db_id, schemal, table_name, " +
-                " description, gmt_creat, gmt_modified)" +
+        String sql ="insert into ds_key_basic_config( ds_key, fk_db_id, schema, table_name, " +
+                " description, gmt_create, gmt_modified)" +
                 " values ( ?, ?, ?, ?, ?, ?, ?) ";
         String now = DateUtils.ofLongStr(new java.util.Date());
         Object[] objectParams={dsKeyBasicConfigDO.getDsKey(),

@@ -28,6 +28,7 @@ public class QueryFormTableApiController {
     @Autowired
     private QueryFormTableService queryFormTableService;
 
+
     @GetMapping("/form-table-setting")
     @ResponseBody
     public Object queryDataSourceClassicQueryPageSetting(
@@ -98,6 +99,31 @@ public class QueryFormTableApiController {
         Map<String, String[]> simpleParameters = ApiUtils.removeReservedParameters(params);
         return queryFormTableService.generalQuery(dataSourceKey, simpleParameters, pageable,moreWhereClause);
     }
+
+
+    /**
+     * 执行查询
+     * @param dataSourceKey
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/execute-query")
+    @ResponseBody
+    public Object executeQuery(@RequestParam(name = "data_source_key", required = true) String dataSourceKey,
+                               HttpServletRequest request) throws Exception {
+        if (StringUtils.isNullOrEmpty(dataSourceKey)) {
+            throw new ResourceNotFoundException("Empty data source key " + dataSourceKey);
+        }
+        Map<String, String[]> params = request.getParameterMap();
+
+        Pageable pageable = this.extractPageable(params);
+        String moreWhereClause = this.extractMoreClause(params);
+        Map<String, String[]> simpleParameters = ApiUtils.removeReservedParameters(params);
+        return  queryFormTableService.executeQuery(dataSourceKey, simpleParameters, pageable,moreWhereClause);
+    }
+
+
 
     private Pageable extractPageable(Map<String, String[]> params) {
         String[] pages = params.get(QueryParamConstants.SQL_PARAMS_KEY_FOR_SQL_PAGE);
