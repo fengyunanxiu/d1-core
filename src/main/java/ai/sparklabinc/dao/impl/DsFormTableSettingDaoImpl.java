@@ -57,7 +57,7 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
                     Boolean formFieldIsExactly = resultSet.getBoolean("form_field_is_exactly");
                     String formFieldChildrenDbFieldName = resultSet.getString("form_field_children_db_field_name");
                     String formFieldDicDomainName = resultSet.getString("form_field_dic_domain_name");
-                    Boolean formFieldAutoCollectDic = resultSet.getBoolean("form_field_auto_collect_dic");
+                    Boolean formFieldUseDic = resultSet.getBoolean("form_field_use_dic");
                     String formFieldDefalutValStratege = resultSet.getString("form_field_defalut_val_stratege");
                     Boolean tableFieldVisible = resultSet.getBoolean("table_field_visible");
                     String tableFiedldOrderBy = resultSet.getString("table_field_order_by");
@@ -68,6 +68,10 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
                     Integer exportFieldSequence = resultSet.getInt("export_field_sequence");
                     Integer exportFieldWidth= resultSet.getInt("export_field_width");
                     String tableParentLabel = resultSet.getString("table_parent_label");
+
+                    Boolean formFieldUseDefaultVal = resultSet.getBoolean("form_field_use_default_val");
+                    String formFieldManMadeDefaultVal = resultSet.getString("form_field_man_made_default_val");
+                    String formFieldDefaultValSql = resultSet.getString("form_field_default_val_sql");
 
                     dsFormTableSettingDO = new DsFormTableSettingDO();
                     dsFormTableSettingDO.setId(id);
@@ -84,7 +88,7 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
                     dsFormTableSettingDO.setFormFieldIsExactly(formFieldIsExactly);
                     dsFormTableSettingDO.setFormFieldChildrenDbFieldName(formFieldChildrenDbFieldName);
                     dsFormTableSettingDO.setFormFieldDicDomainName(formFieldDicDomainName);
-                    dsFormTableSettingDO.setFormFieldAutoCollectDic(formFieldAutoCollectDic);
+                    dsFormTableSettingDO.setFormFieldUseDic(formFieldUseDic);
                     dsFormTableSettingDO.setFormFieldDefaultValStratege(formFieldDefalutValStratege);
                     dsFormTableSettingDO.setTableFieldVisible(tableFieldVisible);
                     dsFormTableSettingDO.setTableFieldOrderBy(tableFiedldOrderBy);
@@ -95,7 +99,13 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
                     dsFormTableSettingDO.setExportFieldSequence(exportFieldSequence);
                     dsFormTableSettingDO.setExportFieldWidth(exportFieldWidth);
                     dsFormTableSettingDO.setTableParentLabel(tableParentLabel);
+                    dsFormTableSettingDO.setFormFieldUseDefaultVal(formFieldUseDefaultVal);
+                    dsFormTableSettingDO.setFormFieldManMadeDefaultVal(formFieldManMadeDefaultVal);
+                    dsFormTableSettingDO.setFormFieldDefaultValSql(formFieldDefaultValSql);
+
                     dsFormTableSettingDOS.add(dsFormTableSettingDO);
+
+
                 }
                 return dsFormTableSettingDOS;
             }
@@ -132,7 +142,7 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
                 dsFormTableSettingDO.getFormFieldIsExactly()?1:0,
                 dsFormTableSettingDO.getFormFieldChildrenDbFieldName(),
                 dsFormTableSettingDO.getFormFieldDicDomainName(),
-                dsFormTableSettingDO.getFormFieldAutoCollectDic()?1:0,
+                dsFormTableSettingDO.getFormFieldUseDic()?1:0,
                 dsFormTableSettingDO.getFormFieldDefaultValStratege(),
 
                 dsFormTableSettingDO.getTableFieldVisible()?1:0,

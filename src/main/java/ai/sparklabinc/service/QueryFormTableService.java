@@ -23,5 +23,5 @@ public interface QueryFormTableService {
 
     DsKeyQueryVO getDsKeyQuerySetting(String dataSourceKey) throws Exception;
 
-    AssemblyResultDTO generalQuery(String dataSourceKey, Map<String, String[]> simpleParameters, Pageable pageable, String moreWhereClause) throws Exception;
+    AssemblyResultDTO generalQuery(String dataSourceKey, Map<String, String[]> simpleParameters, Pageable pageable, String moreWhereClause, boolean returnDatasource) throws Exception;
 }

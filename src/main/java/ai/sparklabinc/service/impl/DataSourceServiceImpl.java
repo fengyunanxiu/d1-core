@@ -23,7 +23,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @Function:
@@ -255,7 +254,7 @@ public class DataSourceServiceImpl implements DataSourceService {
                 dsFormTableSettingDO.setFormFieldIsExactly(true);
                 //dsFormTableSettingDO.setFormFieldChildrenDbFieldName();
                 //dsFormTableSettingDO.setFormFieldDicDomainName();
-                dsFormTableSettingDO.setFormFieldAutoCollectDic(false);
+                dsFormTableSettingDO.setFormFieldUseDic(false);
                 //dsFormTableSettingDO.getFormFieldDefaultValStratege();
 
                 dsFormTableSettingDO.setTableFieldVisible(true);
