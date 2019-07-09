@@ -296,10 +296,20 @@ public class DataSourceServiceImpl implements DataSourceService {
              }
         }
         return updateResult;
-
     }
 
-
+    @Override
+    public boolean deleteDataSourceKey(String dsKey) throws IOException, SQLException {
+        boolean updateResult=false;
+        int updateRows = dsKeyBasicConfigDao.deleteDataSourceKey(dsKey);
+        if(updateRows>0){
+            updateRows = dsFormTableSettingDao.deleteDataSourceKey(dsKey);
+            if(updateRows>0){
+                updateResult=true;
+            }
+        }
+        return updateResult;
+    }
 
 
     /**

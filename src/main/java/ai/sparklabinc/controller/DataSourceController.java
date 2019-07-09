@@ -65,6 +65,12 @@ public class DataSourceController {
         return dataSourceService.addDataSourceKey(dsKeyBasicConfigDTO);
     }
 
+    @ResponseBody
+    @PostMapping("/delete-dskey")
+    public Object deleteDataSourceKey(String dsKey) throws IOException, SQLException{
+        return dataSourceService.deleteDataSourceKey(dsKey);
+    }
+
 
     @ResponseBody
     @GetMapping ("/select-ds-form-table-setting")

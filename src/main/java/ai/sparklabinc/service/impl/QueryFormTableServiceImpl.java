@@ -313,7 +313,7 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
 
                 dsKeyQueryTableSettingVO.setDbFieldName(dsFormTableSettingDO.getDbFieldName());
                 dsKeyQueryTableSettingVO.setTableFieldColumnWidth(dsFormTableSettingDO.getTableFieldColumnWidth());
-                dsKeyQueryTableSettingVO.setViewFieldLable(dsFormTableSettingDO.getViewFieldLabel());
+                dsKeyQueryTableSettingVO.setViewFieldLabel(dsFormTableSettingDO.getViewFieldLabel());
                 dsKeyQueryTableSettingVO.setTableFieldOrderBy(dsFormTableSettingDO.getTableFieldOrderBy());
                 dsKeyQueryTableSettingVO.setTableFieldSequence(dsFormTableSettingDO.getTableFieldSequence());
 
@@ -325,7 +325,7 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
 
                         DsKeyQueryTableSettingVO rootDsKeyQueryTableSettingVO = new DsKeyQueryTableSettingVO();
                         BeanUtils.copyProperties(dsFormTableSettingDO,rootDsKeyQueryTableSettingVO);
-                        rootDsKeyQueryTableSettingVO.setViewFieldLable(tableParentLable);
+                        rootDsKeyQueryTableSettingVO.setViewFieldLabel(tableParentLable);
                         rootDsKeyQueryTableSettingVO.setDbFieldName(tableParentLable);
                         // 遍历出来的第一个添加到root里边
                         rootDsKeyQueryTableSettingVOList.add(rootDsKeyQueryTableSettingVO);
@@ -340,7 +340,7 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
         //step2 对二级进行排序
         for (DsKeyQueryTableSettingVO tableFieldAO : rootDsKeyQueryTableSettingVOList) {
             // 对二级表头的一些字段做了特殊处理，它的排序用的第一个子的
-            if (tableFieldAO.getDbFieldName().equals(tableFieldAO.getViewFieldLable()) && groupTableFieldVOMap.containsKey(tableFieldAO.getDbFieldName())) {
+            if (tableFieldAO.getDbFieldName().equals(tableFieldAO.getViewFieldLabel()) && groupTableFieldVOMap.containsKey(tableFieldAO.getDbFieldName())) {
                 tableFieldAO.setChildren(groupTableFieldVOMap.get(tableFieldAO.getDbFieldName()));
                 if (tableFieldAO.getChildren() != null && tableFieldAO.getChildren().size() != 0) {
                     tableFieldAO.getChildren().sort(new Comparator<DsKeyQueryTableSettingVO>() {

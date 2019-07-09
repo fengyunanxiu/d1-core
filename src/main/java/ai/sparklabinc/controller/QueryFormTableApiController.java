@@ -93,8 +93,8 @@ public class QueryFormTableApiController {
         if (StringUtils.isNullOrEmpty(dataSourceKey)) {
             throw new ResourceNotFoundException("Empty data source key " + dataSourceKey);
         }
-        Pageable pageable = this.extractPageable(params);
-        String moreWhereClause = this.extractMoreClause(params);
+        Pageable pageable = extractPageable(params);
+        String moreWhereClause = extractMoreClause(params);
         Map<String, String[]> simpleParameters = ApiUtils.removeReservedParameters(params);
         return queryFormTableService.generalQuery(dataSourceKey, simpleParameters, pageable,moreWhereClause,false);
     }
@@ -113,8 +113,8 @@ public class QueryFormTableApiController {
         if (StringUtils.isNullOrEmpty(dataSourceKey)) {
             throw new ResourceNotFoundException("Empty data source key " + dataSourceKey);
         }
-        Pageable pageable = this.extractPageable(params);
-        String moreWhereClause = this.extractMoreClause(params);
+        Pageable pageable = extractPageable(params);
+        String moreWhereClause = extractMoreClause(params);
         Map<String, String[]> simpleParameters = ApiUtils.removeReservedParameters(params);
         return queryFormTableService.generalQuery(dataSourceKey, simpleParameters, pageable,moreWhereClause,true);
     }
@@ -138,15 +138,15 @@ public class QueryFormTableApiController {
         }
         Map<String, String[]> params = request.getParameterMap();
 
-        Pageable pageable = this.extractPageable(params);
-        String moreWhereClause = this.extractMoreClause(params);
+        Pageable pageable = extractPageable(params);
+        String moreWhereClause = extractMoreClause(params);
         Map<String, String[]> simpleParameters = ApiUtils.removeReservedParameters(params);
         return  queryFormTableService.executeQuery(dataSourceKey, simpleParameters, pageable,moreWhereClause);
     }
 
 
 
-    private Pageable extractPageable(Map<String, String[]> params) {
+    public static Pageable extractPageable(Map<String, String[]> params) {
         String[] pages = params.get(QueryParamConstants.SQL_PARAMS_KEY_FOR_SQL_PAGE);
         String[] sizes = params.get(QueryParamConstants.SQL_PARAMS_KEY_FOR_SQL_SIZE);
         String[] sorts = params.get(QueryParamConstants.SQL_PARAMS_KEY_FOR_SQL_SORT);
@@ -188,7 +188,7 @@ public class QueryFormTableApiController {
         return null;
     }
 
-    private String extractMoreClause(Map<String, String[]> params) {
+    public static String extractMoreClause(Map<String, String[]> params) {
         String moreWhereClause = null;
         String[] moreWhereClauses = params.get(QueryParamConstants.SQL_PARAMS_KEY_FOR_CUSTOMER_SQL_CONDITION_CLAUSE);
         if (moreWhereClauses != null && moreWhereClauses.length > 0) {

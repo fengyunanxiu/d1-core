@@ -22,4 +22,6 @@ public interface DsFormTableSettingDao {
     List<Map<String,Object>> selectAllDsFormTableSettingByDsKey(String dataSourceKey) throws SQLException, IOException;
 
     Integer updateDataSourceKey(String dataSourceKey, String newDataSourceKey) throws SQLException, IOException;
+
+    Integer deleteDataSourceKey(String dsKey) throws SQLException, IOException;
 }

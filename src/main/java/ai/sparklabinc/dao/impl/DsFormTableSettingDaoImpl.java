@@ -188,5 +188,13 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
         return update;
     }
 
+    @Override
+    public Integer deleteDataSourceKey(String dsKey) throws SQLException, IOException {
+        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null));
+        String sql="delete from ds_form_table_setting where ds_key = ?";
+        int update = queryRunner.update(sql, dsKey);
+        return update;
+    }
+
 
 }

@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.ResourceUtils;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -115,6 +116,13 @@ public class DsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
         return  result;
     }
 
+    @Override
+    public Integer deleteDataSourceKey(String dsKey) throws IOException, SQLException {
+        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,null));
+        String sql="delete from ds_key_basic_config where ds_key = ? ";
+        int result=queryRunner.update(sql,dsKey);
+        return result;
+    }
 
 
 }

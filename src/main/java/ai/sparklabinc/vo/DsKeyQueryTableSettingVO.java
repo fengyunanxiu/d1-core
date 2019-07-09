@@ -10,7 +10,7 @@ import java.util.List;
 public class DsKeyQueryTableSettingVO {
 
 
-    private String viewFieldLable;
+    private String viewFieldLabel;
 
     private String dbFieldName;
 
@@ -26,12 +26,12 @@ public class DsKeyQueryTableSettingVO {
      */
     private String tableFieldOrderBy;
 
-    public String getViewFieldLable() {
-        return viewFieldLable;
+    public String getViewFieldLabel() {
+        return viewFieldLabel;
     }
 
-    public void setViewFieldLable(String viewFieldLable) {
-        this.viewFieldLable = viewFieldLable;
+    public void setViewFieldLabel(String viewFieldLabel) {
+        this.viewFieldLabel = viewFieldLabel;
     }
 
     public String getDbFieldName() {
