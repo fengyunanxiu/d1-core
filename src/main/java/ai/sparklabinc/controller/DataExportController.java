@@ -6,6 +6,7 @@ import ai.sparklabinc.service.DataExportService;
 import ai.sparklabinc.service.impl.QueryFormTableServiceImpl;
 import ai.sparklabinc.util.ApiUtils;
 import ai.sparklabinc.util.DateUtils;
+import ai.sparklabinc.util.ParameterHandlerUtils;
 import com.mysql.jdbc.StringUtils;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -48,8 +49,8 @@ public class DataExportController {
         }
         //参数配置
         Map<String, String[]> params = request.getParameterMap();
-        Pageable pageable = QueryFormTableApiController.extractPageable(params);
-        String moreWhereClause = QueryFormTableApiController.extractMoreClause(params);
+        Pageable pageable = ParameterHandlerUtils.extractPageable(params);
+        String moreWhereClause = ParameterHandlerUtils.extractMoreClause(params);
         Map<String, String[]> simpleParameters = ApiUtils.removeReservedParameters(params);
 
         DataExportTaskDO dataExportTask = new DataExportTaskDO();
