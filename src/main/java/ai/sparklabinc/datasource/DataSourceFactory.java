@@ -6,6 +6,7 @@ import ai.sparklabinc.datasource.impl.MysqlPoolServiceImpl;
 import ai.sparklabinc.datasource.impl.SqlitePoolServiceImpl;
 import ai.sparklabinc.entity.DbBasicConfigDO;
 import ai.sparklabinc.entity.DbSecurityConfigDO;
+import ai.sparklabinc.util.StringUtils;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import org.apache.tomcat.jdbc.pool.DataSource;
@@ -70,7 +71,7 @@ public class DataSourceFactory {
 
                 if (dbSecurityConfigDO != null) {
                     useSshTunnel = dbSecurityConfigDO.getUseSshTunnel();
-                    if (dbSecurityConfigDO.getSshLocalPort() != null) {
+                    if (dbSecurityConfigDO.getSshLocalPort()!=null&&dbSecurityConfigDO.getSshLocalPort()>0) {
                         localPort = dbSecurityConfigDO.getSshLocalPort();
                     }
                     sshUser = dbSecurityConfigDO.getSshProxyUser();

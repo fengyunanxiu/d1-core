@@ -1,5 +1,6 @@
 package ai.sparklabinc.service.impl;
 
+import ai.sparklabinc.constant.FormTableSettingConstants;
 import ai.sparklabinc.dao.*;
 import ai.sparklabinc.datasource.Constants;
 import ai.sparklabinc.datasource.DataSourceFactory;
@@ -249,7 +250,7 @@ public class DataSourceServiceImpl implements DataSourceService {
                 dsFormTableSettingDO.setDbFieldComment(tableColumnsDetailDTO.getColumnComment());
                 dsFormTableSettingDO.setFormFieldVisible(false);
                 dsFormTableSettingDO.setFormFieldSequence(tableColumnsDetailDTO.getOrdinalPosition());
-                dsFormTableSettingDO.setFormFieldQueryType("TEXT");
+                dsFormTableSettingDO.setFormFieldQueryType(FormTableSettingConstants.FormType.TEXT.toString());
 
                 dsFormTableSettingDO.setFormFieldIsExactly(true);
                 //dsFormTableSettingDO.setFormFieldChildrenDbFieldName();
@@ -258,15 +259,16 @@ public class DataSourceServiceImpl implements DataSourceService {
                 //dsFormTableSettingDO.getFormFieldDefaultValStratege();
 
                 dsFormTableSettingDO.setTableFieldVisible(true);
-                dsFormTableSettingDO.setTableFieldOrderBy("NONE");
+                dsFormTableSettingDO.setTableFieldOrderBy(FormTableSettingConstants.OrderBy.NONE.toString());
                 dsFormTableSettingDO.setTableFieldQueryRequired(true);
                 dsFormTableSettingDO.setTableFieldSequence(tableColumnsDetailDTO.getOrdinalPosition());
                 dsFormTableSettingDO.setTableFieldColumnWidth(100);
 
-                dsFormTableSettingDO.setViewFieldLabel(getLabelName(columnName));
                 dsFormTableSettingDO.setExportFieldVisible(true);
                 dsFormTableSettingDO.setExportFieldSequence(tableColumnsDetailDTO.getOrdinalPosition());
                 dsFormTableSettingDO.setExportFieldWidth(100);
+                //dsFormTableSettingDO.setTableParentLabel();
+                dsFormTableSettingDO.setFormFieldUseDefaultVal(true);
 
                 dsFormTableSettingDao.add(dsFormTableSettingDO);
             }
