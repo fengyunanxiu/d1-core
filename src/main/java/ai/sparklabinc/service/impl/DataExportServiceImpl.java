@@ -2,6 +2,7 @@ package ai.sparklabinc.service.impl;
 
 import ai.sparklabinc.dao.DsKeyBasicConfigDao;
 import ai.sparklabinc.dto.AssemblyResultDTO;
+import ai.sparklabinc.entity.DataExportTaskDO;
 import ai.sparklabinc.entity.DsKeyBasicConfigDO;
 import ai.sparklabinc.exception.custom.PropertyNotFoundException;
 import ai.sparklabinc.exception.custom.ResourceNotFoundException;
@@ -11,11 +12,14 @@ import ai.sparklabinc.executor.impl.CommonExportExecutor;
 import ai.sparklabinc.executor.impl.ExecutorBuilder;
 import ai.sparklabinc.service.DataExportService;
 import ai.sparklabinc.service.QueryFormTableService;
+import ai.sparklabinc.util.FileUtils;
 import ai.sparklabinc.vo.DsKeyQueryTableSettingVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
@@ -41,15 +45,21 @@ public class DataExportServiceImpl implements DataExportService {
     @Autowired
     private DsKeyBasicConfigDao dsKeyBasicConfigDao;
 
+    @Value("${file.temp.path}")
+    private String fileTempPath;
+
     @Override
-    public File export(String dataSourceKey, Map<String, String[]> simpleParameters, Pageable pageable, String moreWhereClause) throws Exception {
+    public File export(String dataSourceKey, Map<String, String[]> simpleParameters,
+                       Pageable pageable, String moreWhereClause,
+                       DataExportTaskDO dataExportTaskDO) throws Exception {
         DsKeyBasicConfigDO dsKeyBasicConfigDO = dsKeyBasicConfigDao.getDsKeyBasicConfigByDsKey(dataSourceKey);
         if(dsKeyBasicConfigDO==null){
             throw new ResourceNotFoundException("data source key is not found!");
         }
 
-        String qualifiedFileName="demo.xlsx";
-
+        long now=System.currentTimeMillis();
+        String fileName=dataExportTaskDO.getFileName()+"-"+now+".xlsx";
+        String fullFilePathOfExportFile = FileUtils.contact(this.fileTempPath,fileName);
         //获取生成sql文件
         AssemblyResultDTO assemblyResultDTO = queryFormTableService.generalQuery(dataSourceKey, simpleParameters, pageable, moreWhereClause,true);
 
@@ -58,10 +68,11 @@ public class DataExportServiceImpl implements DataExportService {
         String querySql=assemblyResultDTO.getQuerySql();
 
         DataSource dataSource = assemblyResultDTO.getDataSource();
+
         Executor build = ExecutorBuilder.getInstance().dataSource(dataSource).exportExecutor(new CommonExportExecutor()).build();
 
         try {
-            return build.exportExcel(querySql, queryTableSettings, Paths.get(qualifiedFileName));
+            return build.exportExcel(querySql, queryTableSettings, Paths.get(fullFilePathOfExportFile));
         } catch (PropertyNotFoundException e) {
             LOGGER.error("", e);
         }

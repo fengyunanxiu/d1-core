@@ -1,9 +1,11 @@
 package ai.sparklabinc.controller;
 
 import ai.sparklabinc.dto.DbBasicConfigDTO;
+import ai.sparklabinc.dto.DbFullConfigDTO;
 import ai.sparklabinc.dto.DbSecurityConfigDTO;
 import ai.sparklabinc.dto.DsKeyBasicConfigDTO;
 import ai.sparklabinc.service.DataSourceService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +21,7 @@ import java.sql.SQLException;
  */
 @RestController
 @RequestMapping("/d1/datasource")
+@Api(tags = "DataSourceController")
 public class DataSourceController {
     @Autowired
     private DataSourceService dataSourceService;
@@ -31,8 +34,8 @@ public class DataSourceController {
 
     @ResponseBody
     @PostMapping("/add")
-    public Object addDataSources(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO)throws IOException, SQLException {
-        return dataSourceService.addDataSources(dbBasicConfigDTO,dbSecurityConfigDTO);
+    public Object addDataSources(@RequestBody DbFullConfigDTO dbFullConfigDTO )throws IOException, SQLException {
+        return dataSourceService.addDataSources(dbFullConfigDTO.getDbBasicConfigDTO(),dbFullConfigDTO.getDbSecurityConfigDTO());
     }
 
     @ResponseBody
@@ -55,8 +58,8 @@ public class DataSourceController {
 
     @ResponseBody
     @PostMapping("/edit-property")
-    public Object editDataSourceProperty(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO)throws IOException, SQLException {
-        return dataSourceService.editDataSourceProperty(dbBasicConfigDTO,dbSecurityConfigDTO);
+    public Object editDataSourceProperty(@RequestBody DbFullConfigDTO dbFullConfigDTO )throws IOException, SQLException {
+        return dataSourceService.editDataSourceProperty(dbFullConfigDTO.getDbBasicConfigDTO(),dbFullConfigDTO.getDbSecurityConfigDTO());
     }
 
     @ResponseBody

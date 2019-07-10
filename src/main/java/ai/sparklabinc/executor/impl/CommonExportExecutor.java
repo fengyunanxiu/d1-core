@@ -46,7 +46,7 @@ public class CommonExportExecutor implements ExportExecutor {
                     .sorted(Comparator.comparing(DsKeyQueryTableSettingVO::getTableFieldSequence))
                     .map(DsKeyQueryTableSettingVO::getViewFieldLabel).collect(Collectors.toList());
 
-            String filePath = path.toAbsolutePath().toString();
+            String filePath = path.toString();
             file = new File(filePath);
             connection = dataSource.getConnection();
             connection.setNetworkTimeout(Executors.newFixedThreadPool(1), 3600000);
