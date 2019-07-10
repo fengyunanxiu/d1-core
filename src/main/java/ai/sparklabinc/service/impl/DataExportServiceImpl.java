@@ -76,11 +76,7 @@ public class DataExportServiceImpl implements DataExportService {
 
         Executor build = ExecutorBuilder.getInstance().dataSource(dataSource).exportExecutor(new CommonExportExecutor()).build();
 
-        try {
-            return build.exportExcel(querySql, queryTableSettings, Paths.get(fullFilePathOfExportFile));
-        } catch (PropertyNotFoundException e) {
-            LOGGER.error("", e);
-        }
-        return null;
+        return build.exportExcel(querySql, queryTableSettings, Paths.get(fullFilePathOfExportFile));
+
     }
 }

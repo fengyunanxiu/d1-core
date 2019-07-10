@@ -64,7 +64,7 @@ public class DataSourceController {
 
     @ResponseBody
     @PostMapping("/add-dskey")
-    public Object addDataSourceKey(DsKeyBasicConfigDTO dsKeyBasicConfigDTO) throws IOException, SQLException{
+    public Object addDataSourceKey(@RequestBody DsKeyBasicConfigDTO dsKeyBasicConfigDTO) throws IOException, SQLException{
         return dataSourceService.addDataSourceKey(dsKeyBasicConfigDTO);
     }
 

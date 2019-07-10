@@ -48,11 +48,11 @@ public class CommonExportExecutor implements ExportExecutor {
                     .map(DsFormTableSettingDO::getViewFieldLabel).collect(Collectors.toList());
 
             //设置默认宽度
-            queryTableSettings.forEach(e->{
-                if(e.getExportFieldWidth()==null&&e.getExportFieldWidth()<=0){
+            for (DsFormTableSettingDO e:queryTableSettings) {
+                if(e.getExportFieldWidth()==null||e.getExportFieldWidth()<=0){
                     e.setExportFieldWidth(15);
                 }
-            });
+            }
             //表格列宽度
             List<Integer> fieldAliasLabelWidth = queryTableSettings.stream()
                     .sorted(Comparator.comparing(DsFormTableSettingDO::getExportFieldSequence))
