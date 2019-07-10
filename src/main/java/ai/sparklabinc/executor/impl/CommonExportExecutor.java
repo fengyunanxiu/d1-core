@@ -1,5 +1,6 @@
 package ai.sparklabinc.executor.impl;
 
+import ai.sparklabinc.entity.DsFormTableSettingDO;
 import ai.sparklabinc.executor.ExportExecutor;
 import ai.sparklabinc.poi.CommonExcelWriter;
 import ai.sparklabinc.poi.RowUnit;
@@ -28,7 +29,7 @@ public class CommonExportExecutor implements ExportExecutor {
 
 
     @Override
-    public File exportExcel(DataSource dataSource, String querySql, List<DsKeyQueryTableSettingVO> queryTableSettings, Path path) {
+    public File exportExcel(DataSource dataSource, String querySql, List<DsFormTableSettingDO>  queryTableSettings, Path path) {
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -39,12 +40,12 @@ public class CommonExportExecutor implements ExportExecutor {
              * 按照顺序
              */
             List<String> fieldKeyList = queryTableSettings.stream()
-                    .sorted(Comparator.comparing(DsKeyQueryTableSettingVO::getTableFieldSequence))
-                    .map(DsKeyQueryTableSettingVO::getDbFieldName).collect(Collectors.toList());
+                    .sorted(Comparator.comparing(DsFormTableSettingDO ::getExportFieldSequence))
+                    .map(DsFormTableSettingDO::getDbFieldName).collect(Collectors.toList());
 
             List<String> fieldAliasLabelList = queryTableSettings.stream()
-                    .sorted(Comparator.comparing(DsKeyQueryTableSettingVO::getTableFieldSequence))
-                    .map(DsKeyQueryTableSettingVO::getViewFieldLabel).collect(Collectors.toList());
+                    .sorted(Comparator.comparing(DsFormTableSettingDO::getExportFieldSequence))
+                    .map(DsFormTableSettingDO::getViewFieldLabel).collect(Collectors.toList());
 
             String filePath = path.toString();
             file = new File(filePath);
@@ -96,7 +97,7 @@ public class CommonExportExecutor implements ExportExecutor {
     }
 
 
-    private void write2Excel(List<Map<String, String>> cacheRowMapList, List<DsKeyQueryTableSettingVO> queryTableSettings, File file, List<String> fieldAliasLabelList) {
+    private void write2Excel(List<Map<String, String>> cacheRowMapList,  List<DsFormTableSettingDO>  queryTableSettings, File file, List<String> fieldAliasLabelList) {
         if (queryTableSettings != null && cacheRowMapList != null && !cacheRowMapList.isEmpty()) {
             
             OutputStream outputStream =  null;

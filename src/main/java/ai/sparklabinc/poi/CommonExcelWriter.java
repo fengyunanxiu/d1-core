@@ -160,6 +160,8 @@ public class CommonExcelWriter {
         Sheet sheet = workbook.createSheet(sheetName + index);
 
         sheet.setDefaultColumnWidth(20);
+        //s
+       // sheet.setColumnWidth();
         // 写入第一行
         if (headers != null && headers.length > 0) {
             Row row = sheet.createRow(0);

@@ -1,8 +1,10 @@
 package ai.sparklabinc.service.impl;
 
+import ai.sparklabinc.dao.DsFormTableSettingDao;
 import ai.sparklabinc.dao.DsKeyBasicConfigDao;
 import ai.sparklabinc.dto.AssemblyResultDTO;
 import ai.sparklabinc.entity.DataExportTaskDO;
+import ai.sparklabinc.entity.DsFormTableSettingDO;
 import ai.sparklabinc.entity.DsKeyBasicConfigDO;
 import ai.sparklabinc.exception.custom.PropertyNotFoundException;
 import ai.sparklabinc.exception.custom.ResourceNotFoundException;
@@ -43,6 +45,9 @@ public class DataExportServiceImpl implements DataExportService {
     private QueryFormTableService queryFormTableService;
 
     @Autowired
+    private DsFormTableSettingDao dsFormTableSettingDao;
+
+    @Autowired
     private DsKeyBasicConfigDao dsKeyBasicConfigDao;
 
     @Value("${file.temp.path}")
@@ -63,7 +68,7 @@ public class DataExportServiceImpl implements DataExportService {
         //获取生成sql文件
         AssemblyResultDTO assemblyResultDTO = queryFormTableService.generalQuery(dataSourceKey, simpleParameters, pageable, moreWhereClause,true);
 
-        List<DsKeyQueryTableSettingVO> queryTableSettings = queryFormTableService.getDsKeyQueryTableSetting(dataSourceKey);
+        List<DsFormTableSettingDO> queryTableSettings = dsFormTableSettingDao.getAllDsFormTableSettingByDsKeyForExport(dataSourceKey);
 
         String querySql=assemblyResultDTO.getQuerySql();
 
