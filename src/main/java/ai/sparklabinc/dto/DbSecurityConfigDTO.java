@@ -2,9 +2,9 @@ package ai.sparklabinc.dto;
 
 public class DbSecurityConfigDTO {
 
-    private Boolean useSsl;
+    private Boolean useSsl=false;
 
-    private Boolean useSshTunnel;
+    private Boolean useSshTunnel=false;
 
     private String sslCaFile;
 

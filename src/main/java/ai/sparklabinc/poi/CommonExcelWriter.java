@@ -30,6 +30,7 @@ public class CommonExcelWriter {
     public static void wirteCommonData(OutputStream outputStream,
                                        String[] headers,
                                        String sheetName,
+                                       Integer[] cellWidths,
                                        RowUnitConverter converter) {
         /**
          * 当数据量达到1000时，写入磁盘
@@ -52,7 +53,7 @@ public class CommonExcelWriter {
 
             /*超过65535个的时候, 创建新的Sheet*/
             if (rowSize == 0 || sheet == null) {
-                sheet = createSheet(workbook, sheetName, pageIndex + 1, headers);
+                sheet = createSheet(workbook, sheetName, pageIndex + 1, headers,cellWidths);
             }
             if (sheet != null) {
                 Row row = sheet.createRow(rowUnit.getRowIndex());
@@ -84,6 +85,7 @@ public class CommonExcelWriter {
 
     public static void appendCommonData(OutputStream outputStream,
                                          String[] headers,
+                                         Integer[] cellWidths,
                                          String sheetName,
                                          RowUnitConverter converter) {
 
@@ -96,14 +98,14 @@ public class CommonExcelWriter {
         int numberOfSheets = workbook.getNumberOfSheets();
         Sheet sheet = null;
         if (numberOfSheets <= 0) {
-            sheet = createSheet(workbook, sheetName, 0, headers);
+            sheet = createSheet(workbook, sheetName, 0, headers,cellWidths);
         }
         int activeSheetIndex = workbook.getActiveSheetIndex();
         sheet = workbook.getSheetAt(activeSheetIndex);
         // 写入数据
         Iterator<RowUnit> iterator = cellUnitIterable.iterator();
         if (sheet == null) {
-            sheet = createSheet(workbook, sheetName, activeSheetIndex, headers);
+            sheet = createSheet(workbook, sheetName, activeSheetIndex, headers,cellWidths);
         }
 
         // 当前sheet的行数
@@ -114,7 +116,7 @@ public class CommonExcelWriter {
             /*超过100万个的时候, 创建新的Sheet*/
             if (currentRowNum >= 1000000) {
                 activeSheetIndex = activeSheetIndex + 1;
-                sheet = createSheet(workbook, sheetName, activeSheetIndex, headers);
+                sheet = createSheet(workbook, sheetName, activeSheetIndex, headers,cellWidths);
                 // count从头计算
                 currentRowNum = 0;
             }
@@ -153,15 +155,19 @@ public class CommonExcelWriter {
     private static Sheet createSheet(Workbook workbook,
                                      String sheetName,
                                      Integer index,
-                                     String[] headers) {
+                                     String[] headers,
+                                     Integer[] cellWidths) {
         if (sheetName == null || sheetName.isEmpty()) {
             sheetName = "Sheet";
         }
         Sheet sheet = workbook.createSheet(sheetName + index);
 
         sheet.setDefaultColumnWidth(20);
-        //s
-       // sheet.setColumnWidth();
+        //设置表格列宽度
+        for(int i=0;i<cellWidths.length;i++){
+             //设置第i列的列宽为i个字符宽度
+            sheet.setColumnWidth(i,cellWidths[i]*256);
+        }
         // 写入第一行
         if (headers != null && headers.length > 0) {
             Row row = sheet.createRow(0);

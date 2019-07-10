@@ -80,7 +80,7 @@ public class DataSourceServiceImpl implements DataSourceService {
         DbBasicConfigDO dbBasicConfigDO = new DbBasicConfigDO();
         BeanUtils.copyProperties(dbBasicConfigDTO, dbBasicConfigDO);
         Long dsId = dbBasicConfigDao.add(dbBasicConfigDO);
-        if (dsId > 0L) {
+        if (dsId > 0L&&dbSecurityConfigDTO!=null) {
             DbSecurityConfigDO dbSecurityConfigDO = new DbSecurityConfigDO();
             BeanUtils.copyProperties(dbSecurityConfigDTO, dbSecurityConfigDO);
             dbSecurityConfigDO.setId(dsId);
@@ -266,7 +266,7 @@ public class DataSourceServiceImpl implements DataSourceService {
 
                 dsFormTableSettingDO.setExportFieldVisible(true);
                 dsFormTableSettingDO.setExportFieldSequence(tableColumnsDetailDTO.getOrdinalPosition());
-                dsFormTableSettingDO.setExportFieldWidth(100);
+                dsFormTableSettingDO.setExportFieldWidth(20);
                 //dsFormTableSettingDO.setTableParentLabel();
                 dsFormTableSettingDO.setFormFieldUseDefaultVal(true);
 
