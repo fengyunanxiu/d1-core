@@ -2,6 +2,7 @@ package ai.sparklabinc.service.impl;
 
 import ai.sparklabinc.constant.FormTableSettingConstants;
 import ai.sparklabinc.dao.*;
+import ai.sparklabinc.datasource.ConnectionService;
 import ai.sparklabinc.datasource.Constants;
 import ai.sparklabinc.datasource.DataSourceFactory;
 import ai.sparklabinc.dto.*;
@@ -53,6 +54,9 @@ public class DataSourceServiceImpl implements DataSourceService {
     @Autowired
     private DsFormTableSettingDao dsFormTableSettingDao;
 
+    @Autowired
+    private ConnectionService connectionService;
+
 
     @Override
     public boolean Connection2DataSource(Long dsId) throws SQLException, IOException {
@@ -80,7 +84,10 @@ public class DataSourceServiceImpl implements DataSourceService {
         DbBasicConfigDO dbBasicConfigDO = new DbBasicConfigDO();
         BeanUtils.copyProperties(dbBasicConfigDTO, dbBasicConfigDO);
         Long dsId = dbBasicConfigDao.add(dbBasicConfigDO);
-        if (dsId > 0L&&dbSecurityConfigDTO!=null) {
+        if(dbSecurityConfigDTO==null){
+            dbSecurityConfigDTO=new DbSecurityConfigDTO();
+        }
+        if (dsId > 0L) {
             DbSecurityConfigDO dbSecurityConfigDO = new DbSecurityConfigDO();
             BeanUtils.copyProperties(dbSecurityConfigDTO, dbSecurityConfigDO);
             dbSecurityConfigDO.setId(dsId);
@@ -248,7 +255,7 @@ public class DataSourceServiceImpl implements DataSourceService {
                 String columnName = tableColumnsDetailDTO.getColumnName();
                 dsFormTableSettingDO.setViewFieldLabel(getLabelName(columnName));
                 dsFormTableSettingDO.setDbFieldComment(tableColumnsDetailDTO.getColumnComment());
-                dsFormTableSettingDO.setFormFieldVisible(false);
+                dsFormTableSettingDO.setFormFieldVisible(true);
                 dsFormTableSettingDO.setFormFieldSequence(tableColumnsDetailDTO.getOrdinalPosition());
                 dsFormTableSettingDO.setFormFieldQueryType(FormTableSettingConstants.FormType.TEXT.toString());
 
@@ -309,6 +316,11 @@ public class DataSourceServiceImpl implements DataSourceService {
             }
         }
         return updateResult;
+    }
+
+    @Override
+    public boolean dataSourceTestConnection(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws Exception {
+        return connectionService.createConnection(dbBasicConfigDTO,dbSecurityConfigDTO);
     }
 
 

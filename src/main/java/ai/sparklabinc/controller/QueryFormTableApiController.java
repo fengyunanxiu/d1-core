@@ -128,7 +128,7 @@ public class QueryFormTableApiController {
      * @param dataSourceKey
      * @param request
      * @return
-     * @throws Exceptions
+     * @throws Exception
      */
     @GetMapping("/execute-query")
     @ResponseBody

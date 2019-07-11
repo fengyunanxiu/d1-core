@@ -61,6 +61,8 @@ public class MysqlPoolServiceImpl implements ConnectionPoolService {
         try {
             connection = ds.getConnection();
             if (connection == null) {
+                //注销连接池
+                ds.postDeregister();
                 throw new SQLException("data source create failed，because data source can't connect");
             }
         }finally {

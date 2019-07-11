@@ -6,6 +6,8 @@ package ai.sparklabinc.datasource;
 public interface  Constants {
 	 String DATABASE_TYPE_MYSQL = "MYSQL";
 	 String DATABASE_TYPE_ORACLE = "ORACLE";
+	 String DATABASE_TYPE_SQLSERVER = "SQLSERVER";
+	 String DATABASE_TYPE_POSTGRESQL = "POSTGRESQL";
 	 String DATABASE_TYPE_DB2 = "DB2";
 	 String DATABASE_TYPE_SQLITE ="SQLITE";
 }

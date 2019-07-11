@@ -1,8 +1,6 @@
 package ai.sparklabinc.controller;
 
-import ai.sparklabinc.dto.DbBasicConfigDTO;
 import ai.sparklabinc.dto.DbFullConfigDTO;
-import ai.sparklabinc.dto.DbSecurityConfigDTO;
 import ai.sparklabinc.dto.DsKeyBasicConfigDTO;
 import ai.sparklabinc.service.DataSourceService;
 import io.swagger.annotations.Api;
@@ -33,13 +31,19 @@ public class DataSourceController {
     }
 
     @ResponseBody
+    @PostMapping("/test-connection")
+    public Object dataSourceTestConnection(@RequestBody DbFullConfigDTO dbFullConfigDTO) throws Exception {
+        return  dataSourceService.dataSourceTestConnection(dbFullConfigDTO.getDbBasicConfigDTO(),dbFullConfigDTO.getDbSecurityConfigDTO());
+    }
+
+    @ResponseBody
     @PostMapping("/add")
     public Object addDataSources(@RequestBody DbFullConfigDTO dbFullConfigDTO )throws IOException, SQLException {
         return dataSourceService.addDataSources(dbFullConfigDTO.getDbBasicConfigDTO(),dbFullConfigDTO.getDbSecurityConfigDTO());
     }
 
     @ResponseBody
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     public Object deleteDataSources(@RequestParam(required = true) Long dsId)throws IOException, SQLException {
         return dataSourceService.deleteDataSources(dsId);
     }
@@ -69,7 +73,7 @@ public class DataSourceController {
     }
 
     @ResponseBody
-    @PostMapping("/delete-dskey")
+    @DeleteMapping("/delete-dskey")
     public Object deleteDataSourceKey(String dsKey) throws IOException, SQLException{
         return dataSourceService.deleteDataSourceKey(dsKey);
     }
@@ -86,5 +90,6 @@ public class DataSourceController {
     public Object updateDataSourceKey(String dsKey, String newDsKey, String description) throws IOException, SQLException{
         return dataSourceService.updateDataSourceKey(dsKey,newDsKey,description);
     }
+
 
 }
