@@ -58,7 +58,7 @@ public class MysqlDataSourceDaoImpl implements MysqlDataSourceDao {
     public List<TableColumnsDetailDTO> selectTableColumnsDetail(Long dsId, String schema, String table) throws IOException, SQLException {
         QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_MYSQL, dsId));
         String sql = "select column_name as columnName," +
-                "   data_type as dataType," +
+                "   column_type as dataType," +
                 "   character_maximum_length as characterMaximumLength," +
                 "   column_key as columnKey," +
                 "   extra as extra," +

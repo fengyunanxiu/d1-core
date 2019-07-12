@@ -4,6 +4,7 @@ import ai.sparklabinc.dao.DsKeyBasicConfigDao;
 import ai.sparklabinc.datasource.Constants;
 import ai.sparklabinc.datasource.DataSourceFactory;
 import ai.sparklabinc.dto.DbInforamtionDTO;
+import ai.sparklabinc.dto.DsKeyInfoDTO;
 import ai.sparklabinc.entity.DsKeyBasicConfigDO;
 import ai.sparklabinc.util.DateUtils;
 import org.apache.commons.dbutils.QueryRunner;
@@ -13,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.ResourceUtils;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -84,6 +84,24 @@ public class DsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
                 " and schema=? " +
                 " and table_name=?";
         List<DbInforamtionDTO> result = queryRunner.query(sql, new BeanListHandler<>(DbInforamtionDTO.class), dsId, schema, tableName);
+        return  result;
+    }
+
+
+    @Override
+    public List<DsKeyInfoDTO> getAllDataSourceKey() throws IOException, SQLException {
+        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,null));
+        String sql ="select  id," +
+                "       fk_db_id as fkDbId," +
+                "       schema ," +
+                "       table_name as tableName," +
+                "       ds_key as label," +
+                "       4 as level" +
+                " from ds_key_basic_config" +
+                " where fk_db_id is not null " +
+                " and schema is not null " +
+                " and table_name is not null";
+        List<DsKeyInfoDTO> result = queryRunner.query(sql, new BeanListHandler<>(DsKeyInfoDTO.class));
         return  result;
     }
 

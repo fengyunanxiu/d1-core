@@ -11,7 +11,6 @@ import ai.sparklabinc.util.ParameterHandlerUtils;
 import com.mysql.jdbc.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.net.InetAddress;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Map;
@@ -125,7 +123,7 @@ public class DataExportController {
         try {
             res.setHeader("Content-Disposition", "attachment;filename=" + java.net.URLEncoder.encode(file.getName(), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
-            System.out.println("error:"+e);
+            System.out.println("error:" + e);
         }
         byte[] buff = new byte[1024];
         BufferedInputStream bis = null;
@@ -150,12 +148,12 @@ public class DataExportController {
                     System.out.println("error:" + e);
                 }
             }
-            if(os!=null){
+            if (os != null) {
                 try {
                     os.close();
                     os.flush();
                 } catch (IOException e) {
-                    System.out.println("error:"+e);
+                    System.out.println("error:" + e);
                 }
             }
         }

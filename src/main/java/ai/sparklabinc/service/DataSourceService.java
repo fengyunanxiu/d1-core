@@ -4,6 +4,8 @@ import ai.sparklabinc.dto.DbBasicConfigDTO;
 import ai.sparklabinc.dto.DbInforamtionDTO;
 import ai.sparklabinc.dto.DbSecurityConfigDTO;
 import ai.sparklabinc.dto.DsKeyBasicConfigDTO;
+import ai.sparklabinc.entity.DsFormTableSettingDO;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -23,13 +25,13 @@ public interface DataSourceService {
 
     boolean deleteDataSources(Long dsId) throws IOException, SQLException;
 
-    List<DbInforamtionDTO> selectDataSources(Long dsId) throws IOException, SQLException;
+    List<DbInforamtionDTO> selectDataSources(Long dsId, Integer dsKeyFilter) throws IOException, SQLException;
 
     List<Map<String, Object>>  selectDataSourceProperty(Long dsId) throws IOException, SQLException;
 
     boolean editDataSourceProperty(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws IOException, SQLException;
 
-    boolean addDataSourceKey(DsKeyBasicConfigDTO dsKeyBasicConfigDTO) throws IOException, SQLException;
+    boolean addDataSourceKey(DsKeyBasicConfigDTO dsKeyBasicConfigDTO) throws Exception;
 
     List<Map<String,Object>> selectAllDsFormTableSettingByDsKey(String dsKey) throws IOException, SQLException;
 
@@ -38,4 +40,8 @@ public interface DataSourceService {
     boolean deleteDataSourceKey(String dsKey) throws IOException, SQLException;
 
     boolean dataSourceTestConnection(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws Exception;
+
+    boolean updateDsFormTableSetting(DsFormTableSettingDO dsFormTableSettingDO) throws IOException, SQLException;
+
+    List<Map<String,Object>> RefreshDsFormTableSetting(String dsKey) throws Exception;
 }

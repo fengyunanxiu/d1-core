@@ -10,6 +10,8 @@ import ai.sparklabinc.entity.DbBasicConfigDO;
 import ai.sparklabinc.entity.DbSecurityConfigDO;
 import ai.sparklabinc.entity.DsFormTableSettingDO;
 import ai.sparklabinc.entity.DsKeyBasicConfigDO;
+import ai.sparklabinc.exception.custom.IllegalParameterException;
+import ai.sparklabinc.exception.custom.ResourceNotFoundException;
 import ai.sparklabinc.service.DataSourceService;
 import com.jcraft.jsch.Session;
 import org.apache.tomcat.jdbc.pool.DataSource;
@@ -21,6 +23,7 @@ import org.springframework.util.CollectionUtils;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -84,8 +87,8 @@ public class DataSourceServiceImpl implements DataSourceService {
         DbBasicConfigDO dbBasicConfigDO = new DbBasicConfigDO();
         BeanUtils.copyProperties(dbBasicConfigDTO, dbBasicConfigDO);
         Long dsId = dbBasicConfigDao.add(dbBasicConfigDO);
-        if(dbSecurityConfigDTO==null){
-            dbSecurityConfigDTO=new DbSecurityConfigDTO();
+        if (dbSecurityConfigDTO == null) {
+            dbSecurityConfigDTO = new DbSecurityConfigDTO();
         }
         if (dsId > 0L) {
             DbSecurityConfigDO dbSecurityConfigDO = new DbSecurityConfigDO();
@@ -112,7 +115,8 @@ public class DataSourceServiceImpl implements DataSourceService {
     }
 
     @Override
-    public List<DbInforamtionDTO> selectDataSources(Long dsId) throws IOException, SQLException {
+    public List<DbInforamtionDTO> selectDataSources(Long dsId, Integer dsKeyFilter) throws IOException, SQLException {
+
         /*********************************************************************
          * step1 拿到前端需要展示的第一层信息
          * *******************************************************************
@@ -129,6 +133,7 @@ public class DataSourceServiceImpl implements DataSourceService {
         dsId = dbInforamtionDTO.getId();
 
         boolean connection = Connection2DataSource(dbInforamtionDTO.getId());
+
         if (connection) {
             /*********************************************************************
              * step3 拿到所有的数据库名称
@@ -140,16 +145,21 @@ public class DataSourceServiceImpl implements DataSourceService {
             }
             dbInforamtionDTO.setChildren(schemas);
             /*********************************************************************
-             * step4 拿到所有schema所有的表和视图,提高性能
+             * step4 拿到所有schema所有的表和视图,还有所有的data source key，提高性能
              * *******************************************************************
              */
+            //所有schema所有的表和视图
             List<TableAndViewInfoDTO> tableAndViewInfoDTOS = mysqlDataSourceDao.selectAllTableAndView(dsId);
-            if(CollectionUtils.isEmpty(tableAndViewInfoDTOS)){
+            //获取所有的data source key
+            List<DsKeyInfoDTO> allDataSourceKey = dsKeyBasicConfigDao.getAllDataSourceKey();
+
+            if (CollectionUtils.isEmpty(tableAndViewInfoDTOS)) {
                 return result;
             }
 
+
             for (DbInforamtionDTO schema : schemas) {
-                List<DbInforamtionDTO> tableAndViews=new LinkedList<>();
+                List<DbInforamtionDTO> tableAndViews = new LinkedList<>();
                 //获取schema的talbe
                 List<TableAndViewInfoDTO> collect = tableAndViewInfoDTOS.stream()
                         .filter(e -> schema.getLabel().equalsIgnoreCase(e.getTableSchema()))
@@ -160,30 +170,84 @@ public class DataSourceServiceImpl implements DataSourceService {
                 }
 
                 //封装数据
-                collect.forEach(e->{
-                    DbInforamtionDTO dbInfo= new DbInforamtionDTO();
+                collect.forEach(e -> {
+                    DbInforamtionDTO dbInfo = new DbInforamtionDTO();
                     dbInfo.setLabel(e.getTableName());
                     dbInfo.setType(e.getType());
                     dbInfo.setLevel(e.getLevel());
                     tableAndViews.add(dbInfo);
                 });
 
-                schema.setChildren(tableAndViews);
                 /*********************************************************************
                  * step5 拿到表和视图的data source key
                  * *******************************************************************
                  */
-                for (DbInforamtionDTO tableAndView : tableAndViews) {
-                    List<DbInforamtionDTO> dataSourceKeys = dsKeyBasicConfigDao.getDataSourceKey(dsId, schema.getLabel(), tableAndView.getLabel());
+
+                getDsKeyOfTableAndView(dsId, dsKeyFilter, schema, tableAndViews, allDataSourceKey);
+
+                //加入 table and view
+                schema.setChildren(tableAndViews);
+            }
+
+
+            //如果选了过滤ds key则过滤掉没有tableAndView 为空的schema和ds
+            if (dsKeyFilter == 1 || dsKeyFilter == 2) {
+                List<DbInforamtionDTO> schemasHasChildren = schemas.stream()
+                        .filter(e -> e.getChildren() != null && e.getChildren().size() > 0)
+                        .collect(Collectors.toList());
+                dbInforamtionDTO.setChildren(schemasHasChildren);
+                //删除其他的数据源信息
+                int size = result.size();
+                for (int i = size - 1; i > 0; i--) {
+                    result.remove(i);
+                }
+            }
+
+        }
+
+        return result;
+    }
+
+
+    private void getDsKeyOfTableAndView(Long dsId, Integer dsKeyFilter, DbInforamtionDTO schema, List<DbInforamtionDTO> tableAndViews, List<DsKeyInfoDTO> allDataSourceKey) throws IOException, SQLException {
+        Iterator<DbInforamtionDTO> tableAndViewsIterator = tableAndViews.iterator();
+        while (tableAndViewsIterator.hasNext()) {
+            DbInforamtionDTO tableAndView = tableAndViewsIterator.next();
+            //从内存中拿数据筛选
+            List<DsKeyInfoDTO> dsKeyInfoDTOList = allDataSourceKey.stream()
+                    .filter(e -> e.getFkDbId().equals(dsId)
+                            && e.getSchema().equals(schema.getLabel())
+                            && e.getTableName().equals(tableAndView.getLabel()))
+                    .collect(Collectors.toList());
+            List<DbInforamtionDTO> dataSourceKeys = new LinkedList<>();
+            //封装数据
+            dsKeyInfoDTOList.forEach(e -> {
+                DbInforamtionDTO dbInforamtionDTO = new DbInforamtionDTO();
+                dbInforamtionDTO.setLevel(e.getLevel());
+                dbInforamtionDTO.setLabel(e.getLabel());
+                dbInforamtionDTO.setId(e.getId());
+                dataSourceKeys.add(dbInforamtionDTO);
+            });
+            //List<DbInforamtionDTO> dataSourceKeys = dsKeyBasicConfigDao.getDataSourceKey(dsId, schema.getLabel(), tableAndView.getLabel());
+            switch (dsKeyFilter) {
+                case 1:
+                    if (CollectionUtils.isEmpty(dataSourceKeys)) {
+                        tableAndViewsIterator.remove();
+                    }
+                    tableAndView.setChildren(dataSourceKeys);
+                    break;
+                case 2:
+                    if (!CollectionUtils.isEmpty(dataSourceKeys)) {
+                        tableAndViewsIterator.remove();
+                    }
+                    break;
+                default:
                     if (CollectionUtils.isEmpty(dataSourceKeys)) {
                         continue;
                     }
                     tableAndView.setChildren(dataSourceKeys);
-                }
             }
-            ;
         }
-        return result;
     }
 
 
@@ -214,14 +278,12 @@ public class DataSourceServiceImpl implements DataSourceService {
                 dataSourceFactory.dataSourceMap.remove(dbBasicConfigDO.getId());
             }
 
-
             Session session = dataSourceFactory.sshSessionMap.get(dbBasicConfigDO.getId());
             if (session != null) {
                 //关闭连接
                 session.disconnect();
                 dataSourceFactory.sshSessionMap.remove(dbBasicConfigDO.getId());
             }
-
             updateResult = true;
         }
 
@@ -229,7 +291,13 @@ public class DataSourceServiceImpl implements DataSourceService {
     }
 
     @Override
-    public boolean addDataSourceKey(DsKeyBasicConfigDTO dsKeyBasicConfigDTO) throws IOException, SQLException {
+    public boolean addDataSourceKey(DsKeyBasicConfigDTO dsKeyBasicConfigDTO) throws Exception {
+        DsKeyBasicConfigDO dsKeyBasicConfigByDsKey = dsKeyBasicConfigDao.getDsKeyBasicConfigByDsKey(dsKeyBasicConfigDTO.getDsKey());
+        //新加的ds key 是否已经存在
+        if (dsKeyBasicConfigByDsKey != null) {
+            throw new IllegalParameterException("data source key already exists!");
+        }
+
         boolean addResult = false;
         DsKeyBasicConfigDO dsKeyBasicConfigDO = new DsKeyBasicConfigDO();
         BeanUtils.copyProperties(dsKeyBasicConfigDTO, dsKeyBasicConfigDO);
@@ -286,33 +354,33 @@ public class DataSourceServiceImpl implements DataSourceService {
 
 
     @Override
-    public List<Map<String,Object>> selectAllDsFormTableSettingByDsKey(String dsKey) throws IOException, SQLException {
-        List<Map<String,Object>> allDsFormTableSettingByDsKey = dsFormTableSettingDao.selectAllDsFormTableSettingByDsKey(dsKey);
+    public List<Map<String, Object>> selectAllDsFormTableSettingByDsKey(String dsKey) throws IOException, SQLException {
+        List<Map<String, Object>> allDsFormTableSettingByDsKey = dsFormTableSettingDao.selectAllDsFormTableSettingByDsKey(dsKey);
         return allDsFormTableSettingByDsKey;
     }
 
 
     @Override
     public boolean updateDataSourceKey(String dsKey, String newDsKey, String description) throws IOException, SQLException {
-        boolean updateResult=false;
+        boolean updateResult = false;
         int updateRows = dsKeyBasicConfigDao.updateDataSourceKey(dsKey, newDsKey, description);
-        if(updateRows>0){
-             updateRows = dsFormTableSettingDao.updateDataSourceKey(dsKey, newDsKey);
-             if(updateRows>0){
-                 updateResult=true;
-             }
+        if (updateRows > 0) {
+            updateRows = dsFormTableSettingDao.updateDataSourceKey(dsKey, newDsKey);
+            if (updateRows > 0) {
+                updateResult = true;
+            }
         }
         return updateResult;
     }
 
     @Override
     public boolean deleteDataSourceKey(String dsKey) throws IOException, SQLException {
-        boolean updateResult=false;
+        boolean updateResult = false;
         int updateRows = dsKeyBasicConfigDao.deleteDataSourceKey(dsKey);
-        if(updateRows>0){
+        if (updateRows > 0) {
             updateRows = dsFormTableSettingDao.deleteDataSourceKey(dsKey);
-            if(updateRows>0){
-                updateResult=true;
+            if (updateRows > 0) {
+                updateResult = true;
             }
         }
         return updateResult;
@@ -320,7 +388,81 @@ public class DataSourceServiceImpl implements DataSourceService {
 
     @Override
     public boolean dataSourceTestConnection(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws Exception {
-        return connectionService.createConnection(dbBasicConfigDTO,dbSecurityConfigDTO);
+        return connectionService.createConnection(dbBasicConfigDTO, dbSecurityConfigDTO);
+    }
+
+    @Override
+    public boolean updateDsFormTableSetting(DsFormTableSettingDO dsFormTableSettingDO) throws IOException, SQLException {
+        Integer updateResult = dsFormTableSettingDao.updateDsFormTableSetting(dsFormTableSettingDO);
+        return updateResult > 0 ? true : false;
+    }
+
+    @Override
+    public List<Map<String, Object>> RefreshDsFormTableSetting(String dsKey) throws Exception {
+        DsKeyBasicConfigDO dsKeyBasicConfigDO = dsKeyBasicConfigDao.getDsKeyBasicConfigByDsKey(dsKey);
+        if (dsKeyBasicConfigDO == null) {
+            throw new ResourceNotFoundException("data source key config is not found!");
+        }
+
+        //从ddl语句中获取table columns setting的配置信息
+        List<TableColumnsDetailDTO> tableColumnsDetailDTOList = mysqlDataSourceDao.selectTableColumnsDetail(dsKeyBasicConfigDO.getFkDbId(),
+                dsKeyBasicConfigDO.getSchema(),
+                dsKeyBasicConfigDO.getTableName());
+        if (CollectionUtils.isEmpty(tableColumnsDetailDTOList)) {
+            throw new ResourceNotFoundException("table or view probably was removed！");
+        }
+        //获dsKey FormTableSetting的信息
+        List<DsFormTableSettingDO> allDsFormTableSettingByDsKey = dsFormTableSettingDao.getAllDsFormTableSettingByDsKey(dsKey);
+
+        for (TableColumnsDetailDTO tableColumnsDetailDTO : tableColumnsDetailDTOList) {
+            boolean columnIsExist = false;
+            for (DsFormTableSettingDO dsFormTableSettingDO : allDsFormTableSettingByDsKey) {
+                if (tableColumnsDetailDTO.getColumnName().equalsIgnoreCase(dsFormTableSettingDO.getDbFieldName())) {
+                    columnIsExist = true;
+                    //如果存在，更新最新的值
+                    dsFormTableSettingDO.setDbFieldType(tableColumnsDetailDTO.getDataType());
+                    dsFormTableSettingDO.setDbFieldComment(tableColumnsDetailDTO.getColumnComment());
+                    dsFormTableSettingDao.updateDsFormTableSetting(dsFormTableSettingDO);
+                }
+            }
+            //如果不存在，则加入配置
+            if (!columnIsExist) {
+                DsFormTableSettingDO dsFormTableSettingDO = new DsFormTableSettingDO();
+
+                dsFormTableSettingDO.setDsKey(dsKeyBasicConfigDO.getDsKey());
+                dsFormTableSettingDO.setDbFieldName(tableColumnsDetailDTO.getColumnName());
+                dsFormTableSettingDO.setDbFieldType(tableColumnsDetailDTO.getDataType());
+
+                String columnName = tableColumnsDetailDTO.getColumnName();
+                dsFormTableSettingDO.setViewFieldLabel(getLabelName(columnName));
+                dsFormTableSettingDO.setDbFieldComment(tableColumnsDetailDTO.getColumnComment());
+                dsFormTableSettingDO.setFormFieldVisible(true);
+                dsFormTableSettingDO.setFormFieldSequence(tableColumnsDetailDTO.getOrdinalPosition());
+                dsFormTableSettingDO.setFormFieldQueryType(FormTableSettingConstants.FormType.TEXT.toString());
+
+                dsFormTableSettingDO.setFormFieldIsExactly(true);
+                //dsFormTableSettingDO.setFormFieldChildrenDbFieldName();
+                //dsFormTableSettingDO.setFormFieldDicDomainName();
+                dsFormTableSettingDO.setFormFieldUseDic(false);
+                //dsFormTableSettingDO.getFormFieldDefaultValStratege();
+
+                dsFormTableSettingDO.setTableFieldVisible(true);
+                dsFormTableSettingDO.setTableFieldOrderBy(FormTableSettingConstants.OrderBy.NONE.toString());
+                dsFormTableSettingDO.setTableFieldQueryRequired(true);
+                dsFormTableSettingDO.setTableFieldSequence(tableColumnsDetailDTO.getOrdinalPosition());
+                dsFormTableSettingDO.setTableFieldColumnWidth(100);
+
+                dsFormTableSettingDO.setExportFieldVisible(true);
+                dsFormTableSettingDO.setExportFieldSequence(tableColumnsDetailDTO.getOrdinalPosition());
+                dsFormTableSettingDO.setExportFieldWidth(20);
+                //dsFormTableSettingDO.setTableParentLabel();
+                dsFormTableSettingDO.setFormFieldUseDefaultVal(true);
+
+                dsFormTableSettingDao.add(dsFormTableSettingDO);
+            }
+        }
+
+        return selectAllDsFormTableSettingByDsKey(dsKey);
     }
 
 
@@ -358,8 +500,6 @@ public class DataSourceServiceImpl implements DataSourceService {
         string = new String(chars);
         return string;
     }
-
-
 
 
 }

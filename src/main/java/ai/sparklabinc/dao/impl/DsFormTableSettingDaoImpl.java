@@ -201,7 +201,7 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
 
     @Override
     public List<DsFormTableSettingDO> getAllDsFormTableSettingByDsKeyForExport(String dataSourceKey) throws SQLException, IOException {
-        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,0L));
+        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,null));
         String querySql = "" +
                 "select id as  id," +
                 "  gmt_create as  gmtCreate," +
@@ -235,6 +235,78 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
         LOGGER.info("querySql:{}", querySql);
         List<DsFormTableSettingDO> dsFormTableSettingDOList = queryRunner.query(querySql, new BeanListHandler<>(DsFormTableSettingDO.class), dataSourceKey, 1);
         return dsFormTableSettingDOList;
+    }
+
+
+    @Override
+    public Integer updateDsFormTableSetting(DsFormTableSettingDO dsFormTableSettingDO) throws SQLException, IOException {
+        int result=0;
+        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,null));
+        String updateSql = "update ds_form_table_setting " +
+                "set gmt_modified = ?," +
+                "   ds_key = ?," +
+                "   db_field_name = ?," +
+                "   db_field_type = ?," +
+                "   view_field_label = ?," +
+                "   db_field_comment = ?," +
+                "   form_field_visible = ?," +
+                "   form_field_sequence = ?," +
+                "   form_field_query_type = ?," +
+                "   form_field_is_exactly = ?," +
+                "   form_field_children_db_field_name = ?," +
+                "   form_field_dic_domain_name = ?," +
+                "   form_field_use_dic = ?," +
+                "   form_field_defalut_val_stratege = ?," +
+                "   table_field_visible = ?," +
+                "   table_field_order_by = ?," +
+                "   table_field_query_required = ?," +
+                "   table_field_sequence = ?," +
+                "   table_field_column_width = ?," +
+                "   export_field_visible = ?," +
+                "   export_field_sequence = ?," +
+                "   export_field_width = ?," +
+                "   table_parent_label = ?," +
+                "   form_field_use_default_val = ?," +
+                "   form_field_man_made_default_val = ?," +
+                "   form_field_default_val_sql=?" +
+                " where id = ?";
+        LOGGER.info("updateSql:{}", updateSql);
+        String now = DateUtils.ofLongStr(new java.util.Date());
+        Object[] objectParams={now,
+                dsFormTableSettingDO.getDsKey(),
+                dsFormTableSettingDO.getDbFieldName(),
+                dsFormTableSettingDO.getDbFieldType(),
+                dsFormTableSettingDO.getViewFieldLabel(),
+
+                dsFormTableSettingDO.getDbFieldComment(),
+                dsFormTableSettingDO.getFormFieldVisible()?1:0,
+                dsFormTableSettingDO.getFormFieldSequence(),
+                dsFormTableSettingDO.getFormFieldQueryType(),
+                dsFormTableSettingDO.getFormFieldIsExactly()?1:0,
+
+                dsFormTableSettingDO.getFormFieldChildrenDbFieldName(),
+                dsFormTableSettingDO.getFormFieldDicDomainName(),
+                dsFormTableSettingDO.getFormFieldUseDic()?1:0,
+                dsFormTableSettingDO.getFormFieldDefaultValStratege(),
+                dsFormTableSettingDO.getTableFieldVisible()?1:0,
+
+                dsFormTableSettingDO.getTableFieldOrderBy(),
+                dsFormTableSettingDO.getTableFieldQueryRequired()?1:0,
+                dsFormTableSettingDO.getTableFieldSequence(),
+                dsFormTableSettingDO.getTableFieldColumnWidth(),
+                dsFormTableSettingDO.getExportFieldVisible()?1:0,
+
+                dsFormTableSettingDO.getExportFieldSequence(),
+                dsFormTableSettingDO.getExportFieldWidth(),
+                dsFormTableSettingDO.getTableParentLabel(),
+                dsFormTableSettingDO.getFormFieldUseDefaultVal()?1:0,
+
+                dsFormTableSettingDO.getFormFieldManMadeDefaultVal(),
+                dsFormTableSettingDO.getFormFieldDefaultValSql(),
+                dsFormTableSettingDO.getId()
+        };
+        result = queryRunner.update(updateSql, objectParams);
+        return result;
     }
 
 
