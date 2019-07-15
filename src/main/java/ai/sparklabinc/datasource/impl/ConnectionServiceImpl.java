@@ -43,11 +43,11 @@ public class ConnectionServiceImpl implements ConnectionService {
         String sshUser = dbSecurityConfigDTO.getSshProxyUser();
         String sshPassword = dbSecurityConfigDTO.getSshProxyPassword();
         String sshHost = dbSecurityConfigDTO.getSshProxyHost();
-        int sshPort = dbSecurityConfigDTO.getSshProxyPort();
+        Integer sshPort = dbSecurityConfigDTO.getSshProxyPort();
 
         //db basic
         String dbHost = dbBasicConfigDTO.getHost();
-        int dbPort = dbBasicConfigDTO.getPort();
+        Integer dbPort = dbBasicConfigDTO.getPort();
         String dbUserName = dbBasicConfigDTO.getUser();
         String dbPassword = dbBasicConfigDTO.getPassword();
         String url = "";
@@ -83,16 +83,16 @@ public class ConnectionServiceImpl implements ConnectionService {
                 case Constants.DATABASE_TYPE_MYSQL:
                     //url
                     if (useSshTunnel) {
-                        url = "jdbc:mysql://localhost:" + localPort + "/" + dbBasicConfigDTO.getUrl();
+                        url = "jdbc:mysql://localhost:" + localPort + (dbBasicConfigDTO.getUrl() == null ? "" : ("/" + dbBasicConfigDTO.getUrl()));
                     } else {
-                        url = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbBasicConfigDTO.getUrl();
+                        url = "jdbc:mysql://" + dbHost + ":" + dbPort + (dbBasicConfigDTO.getUrl() == null ? "" : ("/" + dbBasicConfigDTO.getUrl()));
                     }
                     //驱动
                     driverName = "com.mysql.jdbc.Driver";
                     break;
                 case Constants.DATABASE_TYPE_ORACLE:
                     if (useSshTunnel) {
-                        url = "jdbc:mysql://localhost:" + localPort + "/" + dbBasicConfigDTO.getUrl();
+                        url = "jdbc:mysql://localhost:" + localPort + (dbBasicConfigDTO.getUrl() == null ? "" : ("/" + dbBasicConfigDTO.getUrl()));
                     } else {
                         url = dbBasicConfigDTO.getUrl();
                     }
@@ -100,7 +100,7 @@ public class ConnectionServiceImpl implements ConnectionService {
                     break;
                 case Constants.DATABASE_TYPE_SQLSERVER:
                     if (useSshTunnel) {
-                        url = "jdbc:mysql://localhost:" + localPort + "/" + dbBasicConfigDTO.getUrl();
+                        url = "jdbc:mysql://localhost:" + localPort + (dbBasicConfigDTO.getUrl() == null ? "" : ("/" + dbBasicConfigDTO.getUrl()));
                     } else {
                         url = dbBasicConfigDTO.getUrl();
                     }
@@ -108,7 +108,7 @@ public class ConnectionServiceImpl implements ConnectionService {
                     break;
                 case Constants.DATABASE_TYPE_SQLITE:
                     if (useSshTunnel) {
-                        url = "jdbc:mysql://localhost:" + localPort + "/" + dbBasicConfigDTO.getUrl();
+                        url = "jdbc:mysql://localhost:" + localPort + (dbBasicConfigDTO.getUrl() == null ? "" : ("/" + dbBasicConfigDTO.getUrl()));
                     } else {
                         url = dbBasicConfigDTO.getUrl();
                     }
@@ -116,7 +116,7 @@ public class ConnectionServiceImpl implements ConnectionService {
                     break;
                 case Constants.DATABASE_TYPE_POSTGRESQL:
                     if (useSshTunnel) {
-                        url = "jdbc:mysql://localhost:" + localPort + "/" + dbBasicConfigDTO.getUrl();
+                        url = "jdbc:mysql://localhost:" + localPort + (dbBasicConfigDTO.getUrl() == null ? "" : ("/" + dbBasicConfigDTO.getUrl())) ;
                     } else {
                         url = dbBasicConfigDTO.getUrl();
                     }
