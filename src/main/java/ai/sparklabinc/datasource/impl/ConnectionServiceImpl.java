@@ -116,7 +116,7 @@ public class ConnectionServiceImpl implements ConnectionService {
                     break;
                 case Constants.DATABASE_TYPE_POSTGRESQL:
                     if (useSshTunnel) {
-                        url = "jdbc:mysql://localhost:" + localPort + (dbBasicConfigDTO.getUrl() == null ? "" : ("/" + dbBasicConfigDTO.getUrl())) ;
+                        url = "jdbc:mysql://localhost:" + localPort + (dbBasicConfigDTO.getUrl() == null ? "" : ("/" + dbBasicConfigDTO.getUrl()));
                     } else {
                         url = dbBasicConfigDTO.getUrl();
                     }

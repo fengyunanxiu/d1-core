@@ -189,7 +189,6 @@ public class DataSourceServiceImpl implements DataSourceService {
                 schema.setChildren(tableAndViews);
             }
 
-
             //如果选了过滤ds key则过滤掉没有tableAndView 为空的schema和ds
             if (dsKeyFilter == 1 || dsKeyFilter == 2) {
                 List<DbInforamtionDTO> schemasHasChildren = schemas.stream()
