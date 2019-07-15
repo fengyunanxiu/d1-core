@@ -87,13 +87,15 @@ public class QueryFormTableApiController {
      * @return
      * @throws Exception
      */
-    @PostMapping("/query")
+    @GetMapping("/query")
     @ResponseBody
     public Object generalQuery(@RequestParam(name = "data_source_key", required = true) String dataSourceKey,
-                        HttpServletRequest request, @RequestBody Map<String, String[]> params) throws Exception {
+                        HttpServletRequest request) throws Exception {
         if (StringUtils.isNullOrEmpty(dataSourceKey)) {
             throw new ResourceNotFoundException("Empty data source key " + dataSourceKey);
         }
+        Map<String, String[]> params = request.getParameterMap();
+
         Pageable pageable = ParameterHandlerUtils.extractPageable(params);
         String moreWhereClause = ParameterHandlerUtils.extractMoreClause(params);
         Map<String, String[]> simpleParameters = ApiUtils.removeReservedParameters(params);
@@ -107,13 +109,16 @@ public class QueryFormTableApiController {
      * @return
      * @throws Exception
      */
-    @PostMapping("/query-and-datasource")
+    @GetMapping("/query-and-datasource")
     @ResponseBody
     public Object generalQueryAndDataSource(@RequestParam(name = "data_source_key", required = true) String dataSourceKey,
-                               HttpServletRequest request, @RequestBody Map<String, String[]> params) throws Exception {
+                               HttpServletRequest request) throws Exception {
         if (StringUtils.isNullOrEmpty(dataSourceKey)) {
             throw new ResourceNotFoundException("Empty data source key " + dataSourceKey);
         }
+        Map<String, String[]> params = request.getParameterMap();
+
+
         Pageable pageable = ParameterHandlerUtils.extractPageable(params);
         String moreWhereClause = ParameterHandlerUtils.extractMoreClause(params);
         Map<String, String[]> simpleParameters = ApiUtils.removeReservedParameters(params);
