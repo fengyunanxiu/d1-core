@@ -42,7 +42,7 @@ public class ConnectionServiceImpl implements ConnectionService {
         int localPort = findRandomOpenPort();
         String sshUser = dbSecurityConfigDTO.getSshProxyUser();
         String sshPassword = dbSecurityConfigDTO.getSshProxyPassword();
-        String sshHost = dbSecurityConfigDTO.getSshProxyHost();
+        String sshHost = dbSecurityConfigDTO.getSshProxyHost()==null?"":dbSecurityConfigDTO.getSshProxyHost();
         int sshPort = dbSecurityConfigDTO.getSshProxyPort();
 
         //db basic

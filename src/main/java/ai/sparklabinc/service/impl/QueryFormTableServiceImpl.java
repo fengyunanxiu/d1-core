@@ -124,7 +124,7 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
                     simpleParameters, dsFormTableSettingDOList);
         } catch (Exception e) {
             LOGGER.error("[{}] Failed to transfrom query parameter map", dataSourceKey, e);
-            throw new ServiceException(dataSourceKey + "Failed to transfrom query parameter map");
+            throw new ServiceException(dataSourceKey + " Failed to transfrom query parameter map");
         }
 
 

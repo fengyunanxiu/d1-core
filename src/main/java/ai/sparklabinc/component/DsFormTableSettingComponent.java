@@ -95,7 +95,7 @@ public class DsFormTableSettingComponent {
                 }
                 case MULTIPLE_CHOICE_LIST:
                 case CHECKBOX_CHOICE:{
-                    if (queryParameterValueArray.length > 1) {
+                    if (queryParameterValueArray.length == 1) {
                         accurateEqualsStringQueryParameterMap.put(fieldName, queryParameterValueArray[0]);
                     }else{
                         accurateInStringQueryParameterMap.put(fieldName, queryParameterValueArray);
