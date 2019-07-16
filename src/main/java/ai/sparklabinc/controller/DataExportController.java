@@ -99,6 +99,7 @@ public class DataExportController {
         return toWaitSaveExportTask.getId();
     }
 
+
     @ApiOperation(value = "selectTaskStatus")
     @GetMapping("/task-status")
     @ResponseBody
@@ -158,6 +159,28 @@ public class DataExportController {
             }
         }
         return null;
+    }
+
+
+    @ApiOperation(value = "getAllDsFormTableSettingByDsKeyForExport")
+    @GetMapping("/form-table-setting")
+    @ResponseBody
+    public Object getAllDsFormTableSettingByDsKeyForExport(@RequestParam(required = true,name = "data_source_key") String dataSourceKey) throws Exception {
+        return dataExportService.getAllDsFormTableSettingByDsKeyForExport(dataSourceKey);
+    }
+
+    @ApiOperation(value = "addDataExportTask")
+    @PostMapping("/add-task")
+    @ResponseBody
+    public Object addDataExportTask(@RequestBody DataExportTaskDO dataExportTask) throws Exception {
+        return dataExportTaskDao.addDataExportTask(dataExportTask);
+    }
+
+    @ApiOperation(value = "updateDataExportTask")
+    @PostMapping("/update-task")
+    @ResponseBody
+    public Object updateDataExportTask(@RequestBody DataExportTaskDO dataExportTask) throws Exception {
+        return dataExportTaskDao.updateDataExportTask(dataExportTask);
     }
 
 

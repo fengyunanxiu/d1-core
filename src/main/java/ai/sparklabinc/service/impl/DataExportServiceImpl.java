@@ -23,7 +23,9 @@ import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -75,5 +77,11 @@ public class DataExportServiceImpl implements DataExportService {
 
         return build.exportExcel(querySql, queryTableSettings, Paths.get(fullFilePathOfExportFile));
 
+    }
+
+
+    @Override
+    public List<DsFormTableSettingDO> getAllDsFormTableSettingByDsKeyForExport(String dataSourceKey) throws Exception {
+        return dsFormTableSettingDao.getAllDsFormTableSettingByDsKeyForExport(dataSourceKey);
     }
 }

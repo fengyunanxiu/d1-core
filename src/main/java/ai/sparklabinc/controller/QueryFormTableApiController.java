@@ -90,7 +90,7 @@ public class QueryFormTableApiController {
     @GetMapping("/query")
     @ResponseBody
     public Object generalQuery(@RequestParam(name = "data_source_key", required = true) String dataSourceKey,
-                        HttpServletRequest request) throws Exception {
+                               HttpServletRequest request) throws Exception {
         if (StringUtils.isNullOrEmpty(dataSourceKey)) {
             throw new ResourceNotFoundException("Empty data source key " + dataSourceKey);
         }
@@ -101,6 +101,8 @@ public class QueryFormTableApiController {
         Map<String, String[]> simpleParameters = ApiUtils.removeReservedParameters(params);
         return queryFormTableService.generalQuery(dataSourceKey, simpleParameters, pageable,moreWhereClause,false);
     }
+
+
 
     /**
      * 获取指定数据源的table设置
@@ -117,8 +119,6 @@ public class QueryFormTableApiController {
             throw new ResourceNotFoundException("Empty data source key " + dataSourceKey);
         }
         Map<String, String[]> params = request.getParameterMap();
-
-
         Pageable pageable = ParameterHandlerUtils.extractPageable(params);
         String moreWhereClause = ParameterHandlerUtils.extractMoreClause(params);
         Map<String, String[]> simpleParameters = ApiUtils.removeReservedParameters(params);
