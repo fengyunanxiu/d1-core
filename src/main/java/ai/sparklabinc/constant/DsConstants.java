@@ -97,4 +97,7 @@ public interface DsConstants {
         }
     }
 
+
+    String urlSuffix = "?useUnicode=true&characterEncoding=UTF-8";
+
 }
