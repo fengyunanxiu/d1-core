@@ -1,5 +1,6 @@
 package ai.sparklabinc.service.impl;
 
+import ai.sparklabinc.constant.DsConstants;
 import ai.sparklabinc.constant.FormTableSettingConstants;
 import ai.sparklabinc.dao.*;
 import ai.sparklabinc.datasource.ConnectionService;
@@ -86,6 +87,17 @@ public class DataSourceServiceImpl implements DataSourceService {
     public boolean addDataSources(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws IOException, SQLException {
         DbBasicConfigDO dbBasicConfigDO = new DbBasicConfigDO();
         BeanUtils.copyProperties(dbBasicConfigDTO, dbBasicConfigDO);
+
+        String urlSuffix = DsConstants.urlSuffix;
+        if(dbSecurityConfigDTO.getUseSshTunnel()){
+            if(dbSecurityConfigDTO.getUseSsl()!= null && dbSecurityConfigDTO.getUseSsl() ){
+                urlSuffix += "&useSSL=true";
+            }else{
+                urlSuffix += "&useSSL=false";
+            }
+        }
+        dbBasicConfigDO.setUrl(urlSuffix);
+
         Long dsId = dbBasicConfigDao.add(dbBasicConfigDO);
         if (dbSecurityConfigDTO == null) {
             dbSecurityConfigDTO = new DbSecurityConfigDTO();
@@ -261,6 +273,16 @@ public class DataSourceServiceImpl implements DataSourceService {
         boolean updateResult = false;
         DbBasicConfigDO dbBasicConfigDO = new DbBasicConfigDO();
         BeanUtils.copyProperties(dbBasicConfigDTO, dbBasicConfigDO);
+        String urlSuffix = DsConstants.urlSuffix;
+        if(dbSecurityConfigDTO.getUseSshTunnel()){
+            if(dbSecurityConfigDTO.getUseSsl()!= null && dbSecurityConfigDTO.getUseSsl() ){
+                urlSuffix += "&useSSL=true";
+            }else{
+                urlSuffix += "&useSSL=false";
+            }
+        }
+        dbBasicConfigDO.setUrl(urlSuffix);
+
         Integer dbBasicUpdate = dbBasicConfigDao.editDataSourceProperty(dbBasicConfigDO);
 
         DbSecurityConfigDO dbSecurityConfigDO = new DbSecurityConfigDO();

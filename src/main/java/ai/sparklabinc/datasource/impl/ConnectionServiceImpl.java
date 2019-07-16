@@ -1,5 +1,6 @@
 package ai.sparklabinc.datasource.impl;
 
+import ai.sparklabinc.constant.DsConstants;
 import ai.sparklabinc.datasource.ConnectionService;
 import ai.sparklabinc.datasource.Constants;
 import ai.sparklabinc.dto.DbBasicConfigDTO;
@@ -79,6 +80,15 @@ public class ConnectionServiceImpl implements ConnectionService {
 
             }
 
+            String urlSuffix = DsConstants.urlSuffix;
+            if(useSshTunnel){
+                if(dbSecurityConfigDTO.getUseSsl()!= null && dbSecurityConfigDTO.getUseSsl() ){
+                    urlSuffix += "&useSSL=true";
+                }else{
+                    urlSuffix += "&useSSL=false";
+                }
+            }
+
             switch (dbType) {
                 case Constants.DATABASE_TYPE_MYSQL:
                     //url
@@ -125,6 +135,8 @@ public class ConnectionServiceImpl implements ConnectionService {
                 default:
                     driverName = "com.mysql.jdbc.Driver";
             }
+
+            url += urlSuffix;
             //mysql database connectivity
             Class.forName(driverName).newInstance();
             conn = DriverManager.getConnection(url, dbUserName, dbPassword);
