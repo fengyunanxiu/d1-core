@@ -65,7 +65,7 @@ public class DataExportController {
         DataExportTaskDO dataExportTask = new DataExportTaskDO();
         String now = DateUtils.ofLongStr(new Date());
         dataExportTask.setStartAt(now);
-        dataExportTask.setFileName("demo");
+        dataExportTask.setFileName(dataSourceKey);
         long start = System.currentTimeMillis();
         LOGGER.info("async export 开始调用data export record");
         final DataExportTaskDO toWaitSaveExportTask = dataExportTaskDao.addDataExportTask(dataExportTask);
