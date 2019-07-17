@@ -139,9 +139,10 @@ public class DbBasicConfigDaoImpl implements DbBasicConfigDao {
         String querySql = "select id,name as label,1 as level,'' as type from db_basic_config where 1=1 ";
         List<DbInforamtionDTO> dbInforamtionDTOList=null;
         if(dsId!=null){
-            querySql+=" and id = ?";
+            querySql+=" and id = ? order by id asc";
             dbInforamtionDTOList=queryRunner.query(querySql, new BeanListHandler<>(DbInforamtionDTO.class),dsId);
         }else {
+            querySql+=" order by id asc";
             dbInforamtionDTOList=queryRunner.query(querySql, new BeanListHandler<>(DbInforamtionDTO.class));
         }
         return  dbInforamtionDTOList;
