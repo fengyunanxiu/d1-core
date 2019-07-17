@@ -486,6 +486,11 @@ public class DataSourceServiceImpl implements DataSourceService {
         return selectAllDsFormTableSettingByDsKey(dsKey);
     }
 
+    @Override
+    public DsKeyBasicConfigDO getDsKeyBasicInfo(String dsKey) throws Exception {
+       return this.dsKeyBasicConfigDao.getDsKeyBasicConfigByDsKey(dsKey);
+    }
+
 
     /**
      * 获取labelName

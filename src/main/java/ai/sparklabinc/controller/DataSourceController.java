@@ -131,4 +131,11 @@ public class DataSourceController {
     }
 
 
+    @ResponseBody
+    @GetMapping("/basic-dskey-info")
+    public Object getDsKeyBasicInfo(String dsKey) throws Exception{
+        return dataSourceService.getDsKeyBasicInfo(dsKey);
+    }
+
+
 }

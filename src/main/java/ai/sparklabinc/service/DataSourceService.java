@@ -5,6 +5,7 @@ import ai.sparklabinc.dto.DbInforamtionDTO;
 import ai.sparklabinc.dto.DbSecurityConfigDTO;
 import ai.sparklabinc.dto.DsKeyBasicConfigDTO;
 import ai.sparklabinc.entity.DsFormTableSettingDO;
+import ai.sparklabinc.entity.DsKeyBasicConfigDO;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -44,4 +45,6 @@ public interface DataSourceService {
     boolean updateDsFormTableSetting(DsFormTableSettingDO dsFormTableSettingDO) throws IOException, SQLException;
 
     List<Map<String,Object>> RefreshDsFormTableSetting(String dsKey) throws Exception;
+
+    DsKeyBasicConfigDO getDsKeyBasicInfo(String dsKey) throws Exception;
 }
