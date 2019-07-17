@@ -59,9 +59,9 @@ public class DataSourceFactory {
             String sshPassword = "";
             String sshHost = "";
             int sshPort = 22;
-            String sshAuthType=Constants.SshAuthType.PASSWORD.toString();
-            String sshKeyFile="";
-            String sshPassPhrase="";
+            String sshAuthType = Constants.SshAuthType.PASSWORD.toString();
+            String sshKeyFile = "";
+            String sshPassPhrase = "";
 
             String dbHost = "";
             int dbPort = 3306;
@@ -82,9 +82,11 @@ public class DataSourceFactory {
                     sshPassword = dbSecurityConfigDO.getSshProxyPassword();
                     sshHost = dbSecurityConfigDO.getSshProxyHost();
                     sshPort = dbSecurityConfigDO.getSshProxyPort();
-                    sshAuthType = dbSecurityConfigDO.getSshAuthType();
+                    if(StringUtils.isNotNullNorEmpty(dbSecurityConfigDO.getSshAuthType())){
+                        sshAuthType = dbSecurityConfigDO.getSshAuthType();
+                    }
                     sshKeyFile = dbSecurityConfigDO.getSshKeyFile();
-                    sshPassPhrase=dbSecurityConfigDO.getSshPassPhrase();
+                    sshPassPhrase = dbSecurityConfigDO.getSshPassPhrase();
 
                 }
 
@@ -113,7 +115,7 @@ public class DataSourceFactory {
             if (useSshTunnel && sshSessionMap.get(dsId) == null) {
                 if (createSshSession(dsId, localPort, sshUser,
                         sshPassword, sshHost, sshPort,
-                        dbHost, dbPort,sshKeyFile,
+                        dbHost, dbPort, sshKeyFile,
                         sshAuthType, sshPassPhrase)) {
                     //创建失败
                     return null;
@@ -145,7 +147,7 @@ public class DataSourceFactory {
     private boolean createSshSession(Long dsId, int localPort, String sshUser,
                                      String sshPassword, String sshHost, int sshPort,
                                      String dbHost, int dbPort, String sshKeyFile,
-                                     String sshAuthType,String sshPassPhrase) {
+                                     String sshAuthType, String sshPassPhrase) {
         Session session;
         try {
             //Set StrictHostKeyChecking property to no to avoid UnknownHostKey issue
@@ -153,13 +155,13 @@ public class DataSourceFactory {
             config.put("StrictHostKeyChecking", "no");
             JSch jsch = new JSch();
             session = jsch.getSession(sshUser, sshHost, sshPort);
-            if(sshAuthType.equalsIgnoreCase(Constants.SshAuthType.KEY_PAIR.toString())){
-                if(org.apache.commons.lang3.StringUtils.isBlank(sshKeyFile)){
+            if (sshAuthType.equalsIgnoreCase(Constants.SshAuthType.KEY_PAIR.toString())) {
+                if (org.apache.commons.lang3.StringUtils.isBlank(sshKeyFile)) {
                     throw new IllegalParameterException("ssh key file can not be null");
                 }
-                jsch.addIdentity(sshKeyFile,sshPassPhrase);
-            }else {
-             session.setPassword(sshPassword);
+                jsch.addIdentity(sshKeyFile, sshPassPhrase);
+            } else {
+                session.setPassword(sshPassword);
             }
             session.setConfig(config);
             session.connect();
