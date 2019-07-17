@@ -10,4 +10,19 @@ public interface  Constants {
 	 String DATABASE_TYPE_POSTGRESQL = "POSTGRESQL";
 	 String DATABASE_TYPE_DB2 = "DB2";
 	 String DATABASE_TYPE_SQLITE ="SQLITE";
+
+	/**
+	 * ssh验证方式
+	 */
+	enum SshAuthType {
+		/**
+		 * 密码
+		 */
+		PASSWORD,
+		/**
+		 * 密钥
+		 */
+		KEY_PAIR
+	}
+
 }

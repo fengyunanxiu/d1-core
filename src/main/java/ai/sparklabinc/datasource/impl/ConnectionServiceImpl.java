@@ -45,6 +45,9 @@ public class ConnectionServiceImpl implements ConnectionService {
         String sshPassword = dbSecurityConfigDTO.getSshProxyPassword();
         String sshHost = dbSecurityConfigDTO.getSshProxyHost();
         Integer sshPort = dbSecurityConfigDTO.getSshProxyPort();
+        String sshAuthType=dbSecurityConfigDTO.getSshAuthType();
+        String sshKeyFile=dbSecurityConfigDTO.getSshKeyFile();
+        String sshPassPhrase=dbSecurityConfigDTO.getSshPassPhrase();
 
         //db basic
         String dbHost = dbBasicConfigDTO.getHost();
@@ -70,6 +73,14 @@ public class ConnectionServiceImpl implements ConnectionService {
                 config.put("StrictHostKeyChecking", "no");
                 JSch jsch = new JSch();
                 session = jsch.getSession(sshUser, sshHost, sshPort);
+                if(sshAuthType.equalsIgnoreCase(Constants.SshAuthType.KEY_PAIR.toString())){
+                    if(org.apache.commons.lang3.StringUtils.isBlank(sshKeyFile)){
+                        throw new IllegalParameterException("ssh key file can not be null");
+                    }
+                    jsch.addIdentity(sshKeyFile,sshPassPhrase);
+                }else {
+                    session.setPassword(sshPassword);
+                }
                 session.setPassword(sshPassword);
                 session.setConfig(config);
                 session.connect();
@@ -77,7 +88,6 @@ public class ConnectionServiceImpl implements ConnectionService {
                 int assinged_port = session.setPortForwardingL(localPort, dbHost, dbPort);
                 System.out.println("localhost:" + assinged_port + " -> " + dbHost + ":" + dbPort);
                 System.out.println("Port Forwarded");
-
             }
 
             String urlSuffix = DsConstants.urlSuffix;

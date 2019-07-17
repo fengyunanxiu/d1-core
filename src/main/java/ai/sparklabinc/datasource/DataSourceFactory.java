@@ -6,6 +6,7 @@ import ai.sparklabinc.datasource.impl.MysqlPoolServiceImpl;
 import ai.sparklabinc.datasource.impl.SqlitePoolServiceImpl;
 import ai.sparklabinc.entity.DbBasicConfigDO;
 import ai.sparklabinc.entity.DbSecurityConfigDO;
+import ai.sparklabinc.exception.custom.IllegalParameterException;
 import ai.sparklabinc.util.StringUtils;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
@@ -58,6 +59,9 @@ public class DataSourceFactory {
             String sshPassword = "";
             String sshHost = "";
             int sshPort = 22;
+            String sshAuthType=Constants.SshAuthType.PASSWORD.toString();
+            String sshKeyFile="";
+            String sshPassPhrase="";
 
             String dbHost = "";
             int dbPort = 3306;
@@ -65,19 +69,23 @@ public class DataSourceFactory {
             String dbPassword = "";
             String url = "";
 
-            if (dataSourceMap.get(dsId)==null) {
+            if (dataSourceMap.get(dsId) == null) {
                 DbBasicConfigDO dbBasicConfigDO = dbBasicConfigDao.findById(dsId);
                 DbSecurityConfigDO dbSecurityConfigDO = dbSecurityConfigDao.findById(dsId);
 
                 if (dbSecurityConfigDO != null) {
                     useSshTunnel = dbSecurityConfigDO.getUseSshTunnel();
-                    if (dbSecurityConfigDO.getSshLocalPort()!=null&&dbSecurityConfigDO.getSshLocalPort()>0) {
+                    if (dbSecurityConfigDO.getSshLocalPort() != null && dbSecurityConfigDO.getSshLocalPort() > 0) {
                         localPort = dbSecurityConfigDO.getSshLocalPort();
                     }
                     sshUser = dbSecurityConfigDO.getSshProxyUser();
                     sshPassword = dbSecurityConfigDO.getSshProxyPassword();
                     sshHost = dbSecurityConfigDO.getSshProxyHost();
                     sshPort = dbSecurityConfigDO.getSshProxyPort();
+                    sshAuthType = dbSecurityConfigDO.getSshAuthType();
+                    sshKeyFile = dbSecurityConfigDO.getSshKeyFile();
+                    sshPassPhrase=dbSecurityConfigDO.getSshPassPhrase();
+
                 }
 
                 if (dbBasicConfigDO == null) {
@@ -102,9 +110,11 @@ public class DataSourceFactory {
              * 并放到内存中
              ***************************************************************
              */
-            if (useSshTunnel && sshSessionMap.get(dsId)==null) {
-
-                if (createSshSession(dsId, localPort, sshUser, sshPassword, sshHost, sshPort, dbHost, dbPort)) {
+            if (useSshTunnel && sshSessionMap.get(dsId) == null) {
+                if (createSshSession(dsId, localPort, sshUser,
+                        sshPassword, sshHost, sshPort,
+                        dbHost, dbPort,sshKeyFile,
+                        sshAuthType, sshPassPhrase)) {
                     //创建失败
                     return null;
                 }
@@ -116,14 +126,14 @@ public class DataSourceFactory {
              * 并放到内存中
              ***************************************************************
              */
-            if (dataSourceMap.get(dsId)==null) {
+            if (dataSourceMap.get(dsId) == null) {
                 ConnectionPoolService mysqlPoolService = new MysqlPoolServiceImpl();
                 Properties properties = new Properties();
                 properties.setProperty("Url", url);
                 properties.setProperty("User", dbUserName);
                 properties.setProperty("Password", dbPassword);
                 DataSource datasource = mysqlPoolService.createDatasource(properties);
-                dataSourceMap.put(dsId,datasource);
+                dataSourceMap.put(dsId, datasource);
                 return datasource;
             } else {
                 return dataSourceMap.get(dsId);
@@ -132,7 +142,10 @@ public class DataSourceFactory {
 
     }
 
-    private boolean createSshSession(Long dsId, int localPort, String sshUser, String sshPassword, String sshHost, int sshPort, String dbHost, int dbPort) {
+    private boolean createSshSession(Long dsId, int localPort, String sshUser,
+                                     String sshPassword, String sshHost, int sshPort,
+                                     String dbHost, int dbPort, String sshKeyFile,
+                                     String sshAuthType,String sshPassPhrase) {
         Session session;
         try {
             //Set StrictHostKeyChecking property to no to avoid UnknownHostKey issue
@@ -140,7 +153,14 @@ public class DataSourceFactory {
             config.put("StrictHostKeyChecking", "no");
             JSch jsch = new JSch();
             session = jsch.getSession(sshUser, sshHost, sshPort);
-            session.setPassword(sshPassword);
+            if(sshAuthType.equalsIgnoreCase(Constants.SshAuthType.KEY_PAIR.toString())){
+                if(org.apache.commons.lang3.StringUtils.isBlank(sshKeyFile)){
+                    throw new IllegalParameterException("ssh key file can not be null");
+                }
+                jsch.addIdentity(sshKeyFile,sshPassPhrase);
+            }else {
+             session.setPassword(sshPassword);
+            }
             session.setConfig(config);
             session.connect();
             System.out.println("Connected");
@@ -148,7 +168,7 @@ public class DataSourceFactory {
             System.out.println("localhost:" + assinged_port + " -> " + dbHost + ":" + dbPort);
             System.out.println("Port Forwarded");
             //session不等于null并且已经连接上
-            if (session != null&&session.isConnected()) {
+            if (session != null && session.isConnected()) {
                 sshSessionMap.put(dsId, session);
             }
         } catch (Exception e) {
@@ -160,6 +180,7 @@ public class DataSourceFactory {
 
     /**
      * 获取端口
+     *
      * @return
      * @throws IOException
      */

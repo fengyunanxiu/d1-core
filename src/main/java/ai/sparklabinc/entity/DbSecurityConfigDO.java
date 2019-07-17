@@ -31,6 +31,10 @@ public class DbSecurityConfigDO {
 
     private String sshProxyPassword;
 
+    private String sshKeyFile;
+
+    private String sshPassPhrase;
+
 
     public Long getId() {
         return id;
@@ -143,5 +147,21 @@ public class DbSecurityConfigDO {
 
     public void setSshProxyPassword(String sshProxyPassword) {
         this.sshProxyPassword = sshProxyPassword;
+    }
+
+    public String getSshKeyFile() {
+        return sshKeyFile;
+    }
+
+    public void setSshKeyFile(String sshKeyFile) {
+        this.sshKeyFile = sshKeyFile;
+    }
+
+    public String getSshPassPhrase() {
+        return sshPassPhrase;
+    }
+
+    public void setSshPassPhrase(String sshPassPhrase) {
+        this.sshPassPhrase = sshPassPhrase;
     }
 }

@@ -24,6 +24,10 @@ public class DbSecurityConfigDTO {
 
     private String sshProxyPassword;
 
+    private String sshKeyFile;
+
+    private String sshPassPhrase;
+
 
     public Boolean getUseSsl() {
         return useSsl;
@@ -111,5 +115,21 @@ public class DbSecurityConfigDTO {
 
     public void setSshProxyPassword(String sshProxyPassword) {
         this.sshProxyPassword = sshProxyPassword;
+    }
+
+    public String getSshKeyFile() {
+        return sshKeyFile;
+    }
+
+    public void setSshKeyFile(String sshKeyFile) {
+        this.sshKeyFile = sshKeyFile;
+    }
+
+    public String getSshPassPhrase() {
+        return sshPassPhrase;
+    }
+
+    public void setSshPassPhrase(String sshPassPhrase) {
+        this.sshPassPhrase = sshPassPhrase;
     }
 }

@@ -59,6 +59,8 @@ public class DbSecurityConfigDaoImpl implements DbSecurityConfigDao {
                     Integer sshLocalPort = resultSet.getInt("ssh_local_port");
                     String sshAuthType = resultSet.getString("ssh_auth_type");
                     String sshProxyPassword = resultSet.getString("ssh_proxy_password");
+                    String sshKeyFile = resultSet.getString("ssh_key_file");
+                    String sshPassPhrase = resultSet.getString("ssh_pass_phrase");
                     //封装数据
                     dbSecurityConfigDO.setId(id);
                     dbSecurityConfigDO.setGmtCreate(gmtCreateStr);
@@ -74,6 +76,8 @@ public class DbSecurityConfigDaoImpl implements DbSecurityConfigDao {
                     dbSecurityConfigDO.setSshLocalPort(sshLocalPort);
                     dbSecurityConfigDO.setSshAuthType(sshAuthType);
                     dbSecurityConfigDO.setSshProxyPassword(sshProxyPassword);
+                    dbSecurityConfigDO.setSshKeyFile(sshKeyFile);
+                    dbSecurityConfigDO.setSshPassPhrase(sshPassPhrase);
                     return dbSecurityConfigDO;
                 }
                 return null;
@@ -96,10 +100,12 @@ public class DbSecurityConfigDaoImpl implements DbSecurityConfigDao {
                     "ssh_proxy_user, " +
                     "ssh_local_port," +
                     " ssh_auth_type, " +
-                    "ssh_proxy_password)" +
+                    "ssh_proxy_password," +
+                    "ssh_key_file," +
+                    "ssh_pass_phrase)" +
                     " values (?, ?, ?, ?, ?, ?," +
                     "         ?, ?, ?, ?, ?," +
-                    "         ?, ?, ?)";
+                    "         ?, ?, ?, ?, ?)";
             DataSource dataSource = dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null);
             conn = dataSource.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
@@ -118,7 +124,10 @@ public class DbSecurityConfigDaoImpl implements DbSecurityConfigDao {
                     dbSecurityConfigDO.getSshProxyUser(),
                     dbSecurityConfigDO.getSshLocalPort(),
                     dbSecurityConfigDO.getSshAuthType(),
-                    dbSecurityConfigDO.getSshProxyPassword());
+                    dbSecurityConfigDO.getSshProxyPassword(),
+                    dbSecurityConfigDO.getSshKeyFile(),
+                    dbSecurityConfigDO.getSshPassPhrase()
+            );
             update = preparedStatement.executeUpdate();
         } finally {
             if (conn != null) {
@@ -162,8 +171,10 @@ public class DbSecurityConfigDaoImpl implements DbSecurityConfigDao {
                 "ssh_proxy_user = ?," +
                 "ssh_local_port = ?," +
                 "ssh_auth_type = ?," +
-                "ssh_proxy_password = ?" +
-                "where id = ?;";
+                "ssh_proxy_password = ?," +
+                "ssh_key_file = ?," +
+                "ssh_pass_phrase = ?" +
+                " where id = ?";
         String now = DateUtils.ofLongStr(new java.util.Date());
         Object[] objectsParams = {now,
                 dbSecurityConfigDO.getUseSsl(),
@@ -177,6 +188,8 @@ public class DbSecurityConfigDaoImpl implements DbSecurityConfigDao {
                 dbSecurityConfigDO.getSshLocalPort(),
                 dbSecurityConfigDO.getSshAuthType(),
                 dbSecurityConfigDO.getSshProxyPassword(),
+                dbSecurityConfigDO.getSshKeyFile(),
+                dbSecurityConfigDO.getSshPassPhrase(),
                 dbSecurityConfigDO.getId()
         };
         int update = queryRunner.update(sql, objectsParams);
