@@ -70,12 +70,13 @@ public class DataExportServiceImpl implements DataExportService {
         List<DsFormTableSettingDO> queryTableSettings = dsFormTableSettingDao.getAllDsFormTableSettingByDsKeyForExport(dataSourceKey);
 
         String querySql=assemblyResultDTO.getQuerySql();
+        List<Object> paramList = assemblyResultDTO.getParamList();
 
         DataSource dataSource = assemblyResultDTO.getDataSource();
 
         Executor build = ExecutorBuilder.getInstance().dataSource(dataSource).exportExecutor(new CommonExportExecutor()).build();
 
-        return build.exportExcel(querySql, queryTableSettings, Paths.get(fullFilePathOfExportFile));
+        return build.exportExcel(querySql,paramList, queryTableSettings, Paths.get(fullFilePathOfExportFile));
 
     }
 

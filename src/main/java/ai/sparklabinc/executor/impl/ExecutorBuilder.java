@@ -6,10 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
-
 /**
- * @author :  zxiuwu
- * @date : 2019-03-21 15:27
+ * @function:
+ * @author:   dengam
+ * @date:    2019/7/18 17:25
+ * @param:
+ * @return:
  */
 public class ExecutorBuilder {
 

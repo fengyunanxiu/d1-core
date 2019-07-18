@@ -4,7 +4,6 @@ import ai.sparklabinc.entity.DsFormTableSettingDO;
 import ai.sparklabinc.exception.custom.PropertyNotFoundException;
 import ai.sparklabinc.executor.Executor;
 import ai.sparklabinc.executor.ExportExecutor;
-import ai.sparklabinc.vo.DsKeyQueryTableSettingVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,8 +13,11 @@ import java.nio.file.Path;
 import java.util.List;
 
 /**
- * @author :  zxiuwu
- * @date : 2019-03-21 15:33
+ * @function:
+ * @author:   dengam
+ * @date:    2019/7/18 17:24
+ * @param:
+ * @return:
  */
 public class CommonExecutor implements Executor {
     private static final Logger LOGGER = LoggerFactory.getLogger(CommonExecutor.class);
@@ -33,10 +35,10 @@ public class CommonExecutor implements Executor {
     }
 
     @Override
-    public File exportExcel(String querySql, List<DsFormTableSettingDO> queryTableSettings, Path path) throws PropertyNotFoundException {
+    public File exportExcel(String querySql, List<Object> paramList, List<DsFormTableSettingDO> queryTableSettings, Path path) throws PropertyNotFoundException {
         if (exportExecutor != null) {
             // 查询sql
-            return this.exportExecutor.exportExcel(dataSource, querySql, queryTableSettings, path);
+            return this.exportExecutor.exportExcel(dataSource, querySql,paramList, queryTableSettings, path);
         }
         throw new PropertyNotFoundException("ExportExecutor Not Found" );
     }

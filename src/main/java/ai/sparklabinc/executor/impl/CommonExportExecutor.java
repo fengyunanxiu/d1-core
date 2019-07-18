@@ -4,9 +4,9 @@ import ai.sparklabinc.entity.DsFormTableSettingDO;
 import ai.sparklabinc.executor.ExportExecutor;
 import ai.sparklabinc.poi.CommonExcelWriter;
 import ai.sparklabinc.poi.RowUnit;
-import ai.sparklabinc.vo.DsKeyQueryTableSettingVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 import javax.sql.DataSource;
 import java.io.*;
@@ -20,8 +20,11 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 /**
- * @author :  zxiuwu
- * @date : 2019-03-21 15:32
+ * @function:
+ * @author:   dengam
+ * @date:    2019/7/18 17:24
+ * @param:
+ * @return:
  */
 public class CommonExportExecutor implements ExportExecutor {
 
@@ -29,7 +32,7 @@ public class CommonExportExecutor implements ExportExecutor {
 
 
     @Override
-    public File exportExcel(DataSource dataSource, String querySql, List<DsFormTableSettingDO> queryTableSettings, Path path) {
+    public File exportExcel(DataSource dataSource, String querySql, List<Object> paramList, List<DsFormTableSettingDO> queryTableSettings, Path path) {
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -63,6 +66,10 @@ public class CommonExportExecutor implements ExportExecutor {
             connection = dataSource.getConnection();
             connection.setNetworkTimeout(Executors.newFixedThreadPool(1), 3600000);
             preparedStatement = connection.prepareStatement(querySql);
+            //绑定参数
+            if(!CollectionUtils.isEmpty(paramList)){
+                bindParameters(preparedStatement,paramList);
+            }
             preparedStatement.setQueryTimeout(3600);
             resultSet = preparedStatement.executeQuery();
             List<Map<String, String>> cacheRowMapList = new ArrayList<>();
@@ -109,6 +116,20 @@ public class CommonExportExecutor implements ExportExecutor {
             }
         }
         return file;
+    }
+
+    /**
+     * 绑定参数方法
+     *
+     * @param stmt
+     * @param params
+     * @throws SQLException
+     */
+    private void bindParameters(PreparedStatement stmt, Object... params) throws SQLException {
+        //绑定参数
+        for (int i = 0; i < params.length; i++) {
+            stmt.setObject(i + 1, params[i]);
+        }
     }
 
 
