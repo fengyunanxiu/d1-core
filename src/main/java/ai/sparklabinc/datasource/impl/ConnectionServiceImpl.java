@@ -45,7 +45,7 @@ public class ConnectionServiceImpl implements ConnectionService {
         String sshPassword = dbSecurityConfigDTO.getSshProxyPassword();
         String sshHost = dbSecurityConfigDTO.getSshProxyHost();
         Integer sshPort = dbSecurityConfigDTO.getSshProxyPort();
-        String sshAuthType=dbSecurityConfigDTO.getSshAuthType();
+        String sshAuthType=StringUtils.isBlank(dbSecurityConfigDTO.getSshAuthType())?Constants.SshAuthType.PASSWORD.toString():dbSecurityConfigDTO.getSshAuthType();
         String sshKeyFile=dbSecurityConfigDTO.getSshKeyFile();
         String sshPassPhrase=dbSecurityConfigDTO.getSshPassPhrase();
 

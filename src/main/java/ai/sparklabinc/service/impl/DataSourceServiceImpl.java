@@ -89,10 +89,10 @@ public class DataSourceServiceImpl implements DataSourceService {
         BeanUtils.copyProperties(dbBasicConfigDTO, dbBasicConfigDO);
 
         String urlSuffix = DsConstants.urlSuffix;
-        if(dbSecurityConfigDTO.getUseSshTunnel()){
-            if(dbSecurityConfigDTO.getUseSsl()!= null && dbSecurityConfigDTO.getUseSsl() ){
+        if (dbSecurityConfigDTO.getUseSshTunnel()) {
+            if (dbSecurityConfigDTO.getUseSsl() != null && dbSecurityConfigDTO.getUseSsl()) {
                 urlSuffix += "&useSSL=true";
-            }else{
+            } else {
                 urlSuffix += "&useSSL=false";
             }
         }
@@ -274,10 +274,10 @@ public class DataSourceServiceImpl implements DataSourceService {
         DbBasicConfigDO dbBasicConfigDO = new DbBasicConfigDO();
         BeanUtils.copyProperties(dbBasicConfigDTO, dbBasicConfigDO);
         String urlSuffix = DsConstants.urlSuffix;
-        if(dbSecurityConfigDTO.getUseSshTunnel()){
-            if(dbSecurityConfigDTO.getUseSsl()!= null && dbSecurityConfigDTO.getUseSsl() ){
+        if (dbSecurityConfigDTO.getUseSshTunnel()) {
+            if (dbSecurityConfigDTO.getUseSsl() != null && dbSecurityConfigDTO.getUseSsl()) {
                 urlSuffix += "&useSSL=true";
-            }else{
+            } else {
                 urlSuffix += "&useSSL=false";
             }
         }
@@ -375,8 +375,33 @@ public class DataSourceServiceImpl implements DataSourceService {
 
 
     @Override
-    public List<Map<String, Object>> selectAllDsFormTableSettingByDsKey(String dsKey) throws IOException, SQLException {
+    public List<Map<String, Object>> selectAllDsFormTableSettingByDsKey(String dsKey) throws Exception {
         List<Map<String, Object>> allDsFormTableSettingByDsKey = dsFormTableSettingDao.selectAllDsFormTableSettingByDsKey(dsKey);
+        DsKeyBasicConfigDO dsKeyBasicConfigDO = dsKeyBasicConfigDao.getDsKeyBasicConfigByDsKey(dsKey);
+        if (dsKeyBasicConfigDO == null) {
+            throw new ResourceNotFoundException("ds config is not found!");
+        }
+        //获取data source key真实的table字段
+        List<TableColumnsDetailDTO> tableColumnsDetailDTOList = mysqlDataSourceDao.selectTableColumnsDetail(dsKeyBasicConfigDO.getFkDbId(),
+                dsKeyBasicConfigDO.getSchema(),
+                dsKeyBasicConfigDO.getTableName());
+
+        List<String> colunmNames = tableColumnsDetailDTOList.stream()
+                .map(TableColumnsDetailDTO::getColumnName)
+                .collect(Collectors.toList());
+
+        allDsFormTableSettingByDsKey.forEach(e -> {
+            if(CollectionUtils.isEmpty(colunmNames)){
+                e.put("table_is_exist",false);
+            }else{
+                e.put("table_is_exist",true);
+            }
+            if (!colunmNames.contains(e.get("db_field_name"))) {
+                e.put("colum_is_exist", false);
+            } else {
+                e.put("colum_is_exist", true);
+            }
+        });
         return allDsFormTableSettingByDsKey;
     }
 
@@ -442,7 +467,7 @@ public class DataSourceServiceImpl implements DataSourceService {
                     columnIsExist = true;
                     //如果存在，更新最新的值
                     dsFormTableSettingDO.setDbFieldType(tableColumnsDetailDTO.getDataType());
-                    dsFormTableSettingDO.setDbFieldComment(tableColumnsDetailDTO.getColumnComment());
+                    //dsFormTableSettingDO.setDbFieldComment(tableColumnsDetailDTO.getColumnComment());
                     dsFormTableSettingDao.updateDsFormTableSetting(dsFormTableSettingDO);
                 }
             }
@@ -488,7 +513,7 @@ public class DataSourceServiceImpl implements DataSourceService {
 
     @Override
     public DsKeyBasicConfigDO getDsKeyBasicInfo(String dsKey) throws Exception {
-       return this.dsKeyBasicConfigDao.getDsKeyBasicConfigByDsKey(dsKey);
+        return this.dsKeyBasicConfigDao.getDsKeyBasicConfigByDsKey(dsKey);
     }
 
 

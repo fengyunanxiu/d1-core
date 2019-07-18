@@ -1,17 +1,25 @@
 package ai.sparklabinc.controller;
 
+import ai.sparklabinc.datasource.Constants;
 import ai.sparklabinc.dto.DbFullConfigDTO;
+import ai.sparklabinc.dto.DbSecurityConfigDTO;
 import ai.sparklabinc.dto.DsKeyBasicConfigDTO;
 import ai.sparklabinc.entity.DsFormTableSettingDO;
 import ai.sparklabinc.exception.custom.IllegalParameterException;
 import ai.sparklabinc.service.DataSourceService;
+import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.UUID;
 
 /**
  * @version V1.0
@@ -34,14 +42,40 @@ public class DataSourceController {
     }
 
     @ResponseBody
-    @PostMapping("/test-connection")
-    public Object dataSourceTestConnection(@RequestBody DbFullConfigDTO dbFullConfigDTO) throws Exception {
+    @PostMapping(value = "/test-connection", consumes = {"multipart/form-data"})
+    public Object dataSourceTestConnection(@RequestParam(name = "ssh_key_file",required = false) MultipartFile sshKeyFile,
+                                           @RequestParam(name="db_full_config")  String dbFullConfigJson,
+                                           HttpServletRequest request) throws Exception {
+        DbFullConfigDTO dbFullConfigDTO = JSONObject.parseObject(dbFullConfigJson, DbFullConfigDTO.class);
+        if(sshKeyFile!=null){
+            String sshKeyfilePath = uploadFile(sshKeyFile, request);
+            DbSecurityConfigDTO dbSecurityConfigDTO = dbFullConfigDTO.getDbSecurityConfigDTO();
+            if(dbSecurityConfigDTO==null){
+              throw new IllegalParameterException("db security config can not be null");
+            }
+            dbSecurityConfigDTO.setSshKeyFile(sshKeyfilePath);
+            dbSecurityConfigDTO.setSshAuthType(Constants.SshAuthType.KEY_PAIR.toString());
+        }
         return  dataSourceService.dataSourceTestConnection(dbFullConfigDTO.getDbBasicConfigDTO(),dbFullConfigDTO.getDbSecurityConfigDTO());
     }
 
+
+
     @ResponseBody
     @PostMapping("/add")
-    public Object addDataSources(@RequestBody DbFullConfigDTO dbFullConfigDTO )throws IOException, SQLException {
+    public Object addDataSources(@RequestParam(name = "ssh_key_file",required = false) MultipartFile sshKeyFile,
+                                 @RequestParam(name="db_full_config")  String dbFullConfigJson,
+                                 HttpServletRequest request )throws Exception {
+        DbFullConfigDTO dbFullConfigDTO = JSONObject.parseObject(dbFullConfigJson, DbFullConfigDTO.class);
+        if(sshKeyFile!=null){
+            String sshKeyfilePath = uploadFile(sshKeyFile, request);
+            DbSecurityConfigDTO dbSecurityConfigDTO = dbFullConfigDTO.getDbSecurityConfigDTO();
+            if(dbSecurityConfigDTO==null){
+                throw new IllegalParameterException("db security config can not be null");
+            }
+            dbSecurityConfigDTO.setSshKeyFile(sshKeyfilePath);
+            dbSecurityConfigDTO.setSshAuthType(Constants.SshAuthType.KEY_PAIR.toString());
+        }
         return dataSourceService.addDataSources(dbFullConfigDTO.getDbBasicConfigDTO(),dbFullConfigDTO.getDbSecurityConfigDTO());
     }
 
@@ -77,9 +111,23 @@ public class DataSourceController {
 
     @ResponseBody
     @PostMapping("/edit-property")
-    public Object editDataSourceProperty(@RequestBody DbFullConfigDTO dbFullConfigDTO )throws IOException, SQLException {
+    public Object editDataSourceProperty(@RequestParam(name = "ssh_key_file",required = false) MultipartFile multipartFile,
+                                         @RequestParam(name="db_full_config")  String dbFullConfigJson,
+                                         HttpServletRequest request )throws Exception {
+        DbFullConfigDTO dbFullConfigDTO = JSONObject.parseObject(dbFullConfigJson, DbFullConfigDTO.class);
+        if(multipartFile!=null){
+            String sshKeyfilePath = uploadFile(multipartFile, request);
+            DbSecurityConfigDTO dbSecurityConfigDTO = dbFullConfigDTO.getDbSecurityConfigDTO();
+            if(dbSecurityConfigDTO==null){
+                throw new IllegalParameterException("db security config can not be null");
+            }
+            dbSecurityConfigDTO.setSshKeyFile(sshKeyfilePath);
+            dbSecurityConfigDTO.setSshAuthType(Constants.SshAuthType.KEY_PAIR.toString());
+        }
         return dataSourceService.editDataSourceProperty(dbFullConfigDTO.getDbBasicConfigDTO(),dbFullConfigDTO.getDbSecurityConfigDTO());
     }
+
+
 
     @ResponseBody
     @PostMapping("/add-dskey")
@@ -99,7 +147,7 @@ public class DataSourceController {
 
     @ResponseBody
     @GetMapping ("/select-ds-form-table-setting")
-    public Object selectAllDsFormTableSettingByDsKey(String dsKey) throws IOException, SQLException{
+    public Object selectAllDsFormTableSettingByDsKey(String dsKey) throws Exception{
         return dataSourceService.selectAllDsFormTableSettingByDsKey(dsKey);
     }
 
@@ -135,6 +183,26 @@ public class DataSourceController {
     @GetMapping("/basic-dskey-info")
     public Object getDsKeyBasicInfo(String dsKey) throws Exception{
         return dataSourceService.getDsKeyBasicInfo(dsKey);
+    }
+
+
+
+    public String uploadFile(MultipartFile file, HttpServletRequest request) throws IOException {
+
+        String fileName = file.getOriginalFilename();
+        String projectPath = System.getProperty("user.dir");
+        String savePath=projectPath+File.separator+"ssh-key-file";
+        System.out.println(projectPath);
+
+        File tempFile = new File(savePath, UUID.randomUUID()+"_"+String.valueOf(fileName));
+        if (!tempFile.getParentFile().exists()) {    //创建文件夹
+            tempFile.getParentFile().mkdir();
+        }
+        if (!tempFile.exists()) {
+            tempFile.createNewFile();
+        }
+        file.transferTo(tempFile);
+        return tempFile.getAbsolutePath();
     }
 
 

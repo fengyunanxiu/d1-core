@@ -69,8 +69,12 @@ public class CommonExportExecutor implements ExportExecutor {
             while (resultSet.next()) {
                 Map<String, String> rowMap = new LinkedHashMap<>();
                 for (String fieldKey : fieldKeyList) {
-                    String value = resultSet.getString(fieldKey);
-                    rowMap.put(fieldKey, value);
+                    try {
+                        String value = resultSet.getString(fieldKey);
+                        rowMap.put(fieldKey, value);
+                    }catch (Exception e){
+                        rowMap.put(fieldKey,null);
+                    }
                 }
                 cacheRowMapList.add(rowMap);
             }

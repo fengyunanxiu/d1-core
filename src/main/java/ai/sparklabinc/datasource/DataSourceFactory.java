@@ -147,7 +147,7 @@ public class DataSourceFactory {
     private boolean createSshSession(Long dsId, int localPort, String sshUser,
                                      String sshPassword, String sshHost, int sshPort,
                                      String dbHost, int dbPort, String sshKeyFile,
-                                     String sshAuthType, String sshPassPhrase) {
+                                     String sshAuthType, String sshPassPhrase) throws IOException {
         Session session;
         try {
             //Set StrictHostKeyChecking property to no to avoid UnknownHostKey issue
@@ -175,7 +175,7 @@ public class DataSourceFactory {
             }
         } catch (Exception e) {
             System.out.println("error>>>>" + e.getMessage());
-            return true;
+            throw new IOException(e.getMessage());
         }
         return false;
     }
