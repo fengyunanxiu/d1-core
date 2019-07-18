@@ -269,7 +269,7 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
             if(dsFormTableSettingDO.getFormFieldVisible()){
                 dsKeyQueryFormSettingVO = new DsKeyQueryFormSettingVO();
                 dsKeyQueryFormSettingVO.setDbFieldName(dsFormTableSettingDO.getDbFieldName());
-                dsKeyQueryFormSettingVO.setViewFieldLable(dsFormTableSettingDO.getViewFieldLabel());
+                dsKeyQueryFormSettingVO.setViewFieldLabel(dsFormTableSettingDO.getViewFieldLabel());
                 dsKeyQueryFormSettingVO.setFormFieldSequence(dsFormTableSettingDO.getFormFieldSequence());
 
                 String formQueryType = dsFormTableSettingDO.getFormFieldQueryType();
