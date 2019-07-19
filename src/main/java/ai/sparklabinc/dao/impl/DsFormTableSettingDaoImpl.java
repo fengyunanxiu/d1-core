@@ -124,13 +124,13 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
                 " form_field_is_exactly, form_field_children_db_field_name, form_field_dic_domain_name, form_field_use_dic, form_field_defalut_val_stratege," +
                 " table_field_visible, table_field_order_by, table_field_query_required, table_field_sequence, table_field_column_width," +
                 " export_field_visible, export_field_sequence, export_field_width,table_parent_label,form_field_use_default_val," +
-                " form_field_man_made_default_val,form_field_default_val_sql)" +
+                " form_field_man_made_default_val,form_field_default_val_sql,column_is_exist)" +
                 " values (?, ?, ?, ?, ?," +
                 "  ?, ?, ?, ?, ?," +
                 "  ?, ?, ?, ?, ?," +
                 "  ?, ?, ?, ?, ?," +
                 "  ?, ?, ?, ?, ?," +
-                "  ?, ?)";
+                "  ?, ?, ?)";
         String now = DateUtils.ofLongStr(new java.util.Date());
         Object[] objectParams={now, now,
                 dsFormTableSettingDO.getDsKey(),

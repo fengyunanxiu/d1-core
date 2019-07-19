@@ -28,7 +28,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @Function:
@@ -370,6 +372,8 @@ public class DataSourceServiceImpl implements DataSourceService {
                 //dsFormTableSettingDO.setTableParentLabel();
                 dsFormTableSettingDO.setFormFieldUseDefaultVal(true);
 
+                dsFormTableSettingDO.setColumnIsExist(true);
+
                 dsFormTableSettingDao.add(dsFormTableSettingDO);
             }
         }
@@ -399,9 +403,9 @@ public class DataSourceServiceImpl implements DataSourceService {
 
         allDsFormTableSettingByDsKey.forEach(e -> {
             if (!colunmNames.contains(e.get("db_field_name"))) {
-                e.put("column_is_exist", 1);
-            } else {
                 e.put("column_is_exist", 0);
+            } else {
+                e.put("column_is_exist", 1);
             }
         });
         return allDsFormTableSettingByDsKey;
@@ -452,6 +456,9 @@ public class DataSourceServiceImpl implements DataSourceService {
             throw new ResourceNotFoundException("data source key config is not found!");
         }
 
+        //获dsKey FormTableSetting的信息
+        List<DsFormTableSettingDO> allDsFormTableSettingByDsKey = dsFormTableSettingDao.getAllDsFormTableSettingByDsKey(dsKey);
+
         //从ddl语句中获取table columns setting的配置信息
         List<TableColumnsDetailDTO> tableColumnsDetailDTOList = mysqlDataSourceDao.selectTableColumnsDetail(dsKeyBasicConfigDO.getFkDbId(),
                 dsKeyBasicConfigDO.getSchema(),
@@ -459,8 +466,18 @@ public class DataSourceServiceImpl implements DataSourceService {
         if (CollectionUtils.isEmpty(tableColumnsDetailDTOList)) {
             throw new ResourceNotFoundException("table or view probably was removed！");
         }
-        //获dsKey FormTableSetting的信息
-        List<DsFormTableSettingDO> allDsFormTableSettingByDsKey = dsFormTableSettingDao.getAllDsFormTableSettingByDsKey(dsKey);
+
+        //真实表中不存在的字段设置为不存在
+        for(DsFormTableSettingDO dsFormTableSettingDO:allDsFormTableSettingByDsKey){
+            List<String> collect = tableColumnsDetailDTOList.stream()
+                    .filter(e -> e.getColumnName().equalsIgnoreCase(dsFormTableSettingDO.getDbFieldName()))
+                    .map(TableColumnsDetailDTO::getColumnName)
+                    .collect(Collectors.toList());
+            if(CollectionUtils.isEmpty(collect)){
+                dsFormTableSettingDO.setColumnIsExist(false);
+                dsFormTableSettingDao.updateDsFormTableSetting(dsFormTableSettingDO);
+            }
+        }
 
         for (TableColumnsDetailDTO tableColumnsDetailDTO : tableColumnsDetailDTOList) {
             boolean columnIsExist = false;
@@ -469,6 +486,7 @@ public class DataSourceServiceImpl implements DataSourceService {
                     columnIsExist = true;
                     //如果存在，更新最新的值
                     dsFormTableSettingDO.setDbFieldType(tableColumnsDetailDTO.getDataType());
+                    dsFormTableSettingDO.setColumnIsExist(true);
                     //dsFormTableSettingDO.setDbFieldComment(tableColumnsDetailDTO.getColumnComment());
                     dsFormTableSettingDao.updateDsFormTableSetting(dsFormTableSettingDO);
                 }
@@ -506,11 +524,13 @@ public class DataSourceServiceImpl implements DataSourceService {
                 //dsFormTableSettingDO.setTableParentLabel();
                 dsFormTableSettingDO.setFormFieldUseDefaultVal(true);
 
+                dsFormTableSettingDO.setColumnIsExist(true);
+
                 dsFormTableSettingDao.add(dsFormTableSettingDO);
             }
         }
 
-        return selectAllDsFormTableSettingByDsKey(dsKey);
+        return dsFormTableSettingDao.selectAllDsFormTableSettingByDsKey(dsKey);
     }
 
     @Override
