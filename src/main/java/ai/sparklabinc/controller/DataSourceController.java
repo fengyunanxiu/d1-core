@@ -42,40 +42,23 @@ public class DataSourceController {
     }
 
     @ResponseBody
-    @PostMapping(value = "/test-connection", consumes = {"multipart/form-data"})
-    public Object dataSourceTestConnection(@RequestParam(name = "ssh_key_file",required = false) MultipartFile sshKeyFile,
-                                           @RequestParam(name="db_full_config")  String dbFullConfigJson,
-                                           HttpServletRequest request) throws Exception {
-        DbFullConfigDTO dbFullConfigDTO = JSONObject.parseObject(dbFullConfigJson, DbFullConfigDTO.class);
-        if(sshKeyFile!=null){
-            String sshKeyfilePath = uploadFile(sshKeyFile, request);
-            DbSecurityConfigDTO dbSecurityConfigDTO = dbFullConfigDTO.getDbSecurityConfigDTO();
-            if(dbSecurityConfigDTO==null){
-              throw new IllegalParameterException("db security config can not be null");
-            }
-            dbSecurityConfigDTO.setSshKeyFile(sshKeyfilePath);
-            dbSecurityConfigDTO.setSshAuthType(Constants.SshAuthType.KEY_PAIR.toString());
-        }
+    @PostMapping(value = "/test-connection")
+    public Object dataSourceTestConnection( @RequestBody DbFullConfigDTO dbFullConfigDTO) throws Exception {
         return  dataSourceService.dataSourceTestConnection(dbFullConfigDTO.getDbBasicConfigDTO(),dbFullConfigDTO.getDbSecurityConfigDTO());
+    }
+
+    @ResponseBody
+    @PostMapping(value = "/file-upLoad")
+    public Object fileUpload(@RequestParam(required = true) MultipartFile multipartFile,HttpServletRequest request) throws IOException {
+        String filePath = uploadFile(multipartFile, request);
+        return filePath;
     }
 
 
 
     @ResponseBody
     @PostMapping("/add")
-    public Object addDataSources(@RequestParam(name = "ssh_key_file",required = false) MultipartFile sshKeyFile,
-                                 @RequestParam(name="db_full_config")  String dbFullConfigJson,
-                                 HttpServletRequest request )throws Exception {
-        DbFullConfigDTO dbFullConfigDTO = JSONObject.parseObject(dbFullConfigJson, DbFullConfigDTO.class);
-        if(sshKeyFile!=null){
-            String sshKeyfilePath = uploadFile(sshKeyFile, request);
-            DbSecurityConfigDTO dbSecurityConfigDTO = dbFullConfigDTO.getDbSecurityConfigDTO();
-            if(dbSecurityConfigDTO==null){
-                throw new IllegalParameterException("db security config can not be null");
-            }
-            dbSecurityConfigDTO.setSshKeyFile(sshKeyfilePath);
-            dbSecurityConfigDTO.setSshAuthType(Constants.SshAuthType.KEY_PAIR.toString());
-        }
+    public Object addDataSources(@RequestBody DbFullConfigDTO dbFullConfigDTO)throws Exception {
         return dataSourceService.addDataSources(dbFullConfigDTO.getDbBasicConfigDTO(),dbFullConfigDTO.getDbSecurityConfigDTO());
     }
 
@@ -111,19 +94,7 @@ public class DataSourceController {
 
     @ResponseBody
     @PostMapping("/edit-property")
-    public Object editDataSourceProperty(@RequestParam(name = "ssh_key_file",required = false) MultipartFile multipartFile,
-                                         @RequestParam(name="db_full_config")  String dbFullConfigJson,
-                                         HttpServletRequest request )throws Exception {
-        DbFullConfigDTO dbFullConfigDTO = JSONObject.parseObject(dbFullConfigJson, DbFullConfigDTO.class);
-        if(multipartFile!=null){
-            String sshKeyfilePath = uploadFile(multipartFile, request);
-            DbSecurityConfigDTO dbSecurityConfigDTO = dbFullConfigDTO.getDbSecurityConfigDTO();
-            if(dbSecurityConfigDTO==null){
-                throw new IllegalParameterException("db security config can not be null");
-            }
-            dbSecurityConfigDTO.setSshKeyFile(sshKeyfilePath);
-            dbSecurityConfigDTO.setSshAuthType(Constants.SshAuthType.KEY_PAIR.toString());
-        }
+    public Object editDataSourceProperty(@RequestBody DbFullConfigDTO dbFullConfigDTO )throws Exception {
         return dataSourceService.editDataSourceProperty(dbFullConfigDTO.getDbBasicConfigDTO(),dbFullConfigDTO.getDbSecurityConfigDTO());
     }
 

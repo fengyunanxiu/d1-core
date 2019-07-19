@@ -389,17 +389,15 @@ public class DataSourceServiceImpl implements DataSourceService {
         List<String> colunmNames = tableColumnsDetailDTOList.stream()
                 .map(TableColumnsDetailDTO::getColumnName)
                 .collect(Collectors.toList());
+        if(CollectionUtils.isEmpty(colunmNames)){
+            throw new ResourceNotFoundException("table is not exist");
+        }
 
         allDsFormTableSettingByDsKey.forEach(e -> {
-            if(CollectionUtils.isEmpty(colunmNames)){
-                e.put("table_is_exist",false);
-            }else{
-                e.put("table_is_exist",true);
-            }
             if (!colunmNames.contains(e.get("db_field_name"))) {
-                e.put("colum_is_exist", false);
+                e.put("column_is_exist", 1);
             } else {
-                e.put("colum_is_exist", true);
+                e.put("column_is_exist", 0);
             }
         });
         return allDsFormTableSettingByDsKey;

@@ -74,6 +74,7 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
                     Boolean formFieldUseDefaultVal = resultSet.getBoolean("form_field_use_default_val");
                     String formFieldManMadeDefaultVal = resultSet.getString("form_field_man_made_default_val");
                     String formFieldDefaultValSql = resultSet.getString("form_field_default_val_sql");
+                    Boolean columIsExist = resultSet.getBoolean("column_is_exist");
 
                     dsFormTableSettingDO = new DsFormTableSettingDO();
                     dsFormTableSettingDO.setId(id);
@@ -104,10 +105,9 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
                     dsFormTableSettingDO.setFormFieldUseDefaultVal(formFieldUseDefaultVal);
                     dsFormTableSettingDO.setFormFieldManMadeDefaultVal(formFieldManMadeDefaultVal);
                     dsFormTableSettingDO.setFormFieldDefaultValSql(formFieldDefaultValSql);
+                    dsFormTableSettingDO.setColumnIsExist(columIsExist);
 
                     dsFormTableSettingDOS.add(dsFormTableSettingDO);
-
-
                 }
                 return dsFormTableSettingDOS;
             }
@@ -162,7 +162,8 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
                 dsFormTableSettingDO.getFormFieldUseDefaultVal()?1:0,
 
                 dsFormTableSettingDO.getFormFieldManMadeDefaultVal(),
-                dsFormTableSettingDO.getFormFieldDefaultValSql()
+                dsFormTableSettingDO.getFormFieldDefaultValSql(),
+                dsFormTableSettingDO.getColumnIsExist()?1:0
                 };
         LOGGER.info("insert sql:{}",sql);
         int result = queryRunner.update(sql, objectParams);
@@ -230,7 +231,8 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
                 "  table_parent_label as  tableParentLabel," +
                 "  form_field_use_default_val as  formFieldUseDefaultVal," +
                 "  form_field_man_made_default_val as  formFieldManMadeDefaultVal," +
-                "  form_field_default_val_sql  formFieldDefaultValSql " +
+                "  form_field_default_val_sql as formFieldDefaultValSql ," +
+                "  column_is_exist as columIsExist" +
                 "from ds_form_table_setting where ds_key = ? and exportFieldVisible = ?";
         LOGGER.info("querySql:{}", querySql);
         List<DsFormTableSettingDO> dsFormTableSettingDOList = queryRunner.query(querySql, new BeanListHandler<>(DsFormTableSettingDO.class), dataSourceKey, 1);
@@ -268,7 +270,8 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
                 "   table_parent_label = ?," +
                 "   form_field_use_default_val = ?," +
                 "   form_field_man_made_default_val = ?," +
-                "   form_field_default_val_sql=?" +
+                "   form_field_default_val_sql = ?," +
+                "   column_is_exist = ?" +
                 " where id = ?";
         LOGGER.info("updateSql:{}", updateSql);
         String now = DateUtils.ofLongStr(new java.util.Date());
@@ -303,6 +306,7 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
 
                 dsFormTableSettingDO.getFormFieldManMadeDefaultVal(),
                 dsFormTableSettingDO.getFormFieldDefaultValSql(),
+                dsFormTableSettingDO.getColumnIsExist()?1:0,
                 dsFormTableSettingDO.getId()
         };
         result = queryRunner.update(updateSql, objectParams);

@@ -67,6 +67,8 @@ public class DsFormTableSettingDO {
 
     private String formFieldDefaultValSql;
 
+    private Boolean columnIsExist;
+
 
     public Long getId() {
         return id;
@@ -291,5 +293,13 @@ public class DsFormTableSettingDO {
 
     public void setFormFieldDefaultValSql(String formFieldDefaultValSql) {
         this.formFieldDefaultValSql = formFieldDefaultValSql;
+    }
+
+    public Boolean getColumnIsExist() {
+        return columnIsExist;
+    }
+
+    public void setColumnIsExist(Boolean columnIsExist) {
+        this.columnIsExist = columnIsExist;
     }
 }
