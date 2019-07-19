@@ -162,7 +162,7 @@ public class DataSourceController {
 
         String fileName = file.getOriginalFilename();
         String projectPath = System.getProperty("user.dir");
-        String savePath=projectPath+File.separator+"ssh-key-file";
+        String savePath=projectPath+File.separator+"UploadFile";
         System.out.println(projectPath);
 
         File tempFile = new File(savePath, UUID.randomUUID()+"_"+String.valueOf(fileName));
