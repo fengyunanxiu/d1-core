@@ -3,7 +3,6 @@ package ai.sparklabinc.vo;
 import ai.sparklabinc.dto.OptionDTO;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author : Kingzer
@@ -12,7 +11,7 @@ import java.util.Map;
  */
 public class DsKeyQueryFormSettingVO {
 
-    private String viewFieldLable;
+    private String viewFieldLabel;
 
     private String dbFieldName;
 
@@ -34,12 +33,12 @@ public class DsKeyQueryFormSettingVO {
 
     private Integer formFieldSequence;
 
-    public String getViewFieldLable() {
-        return viewFieldLable;
+    public String getViewFieldLabel() {
+        return viewFieldLabel;
     }
 
-    public void setViewFieldLable(String viewFieldLable) {
-        this.viewFieldLable = viewFieldLable;
+    public void setViewFieldLabel(String viewFieldLabel) {
+        this.viewFieldLabel = viewFieldLabel;
     }
 
     public String getDbFieldName() {

@@ -141,80 +141,84 @@ public class DataSourceServiceImpl implements DataSourceService {
          * step2 连接数据库
          * *******************************************************************
          */
-        DbInforamtionDTO dbInforamtionDTO = result.get(0);
-        dsId = dbInforamtionDTO.getId();
 
-        boolean connection = Connection2DataSource(dbInforamtionDTO.getId());
+        if(dsId != null){
+            DbInforamtionDTO dbInforamtionDTO = result.get(0);
+            dsId = dbInforamtionDTO.getId();
 
-        if (connection) {
-            /*********************************************************************
-             * step3 拿到所有的数据库名称
-             * *******************************************************************
-             */
-            List<DbInforamtionDTO> schemas = mysqlDataSourceDao.selectAllSchema(dsId);
-            if (CollectionUtils.isEmpty(schemas)) {
-                return result;
-            }
-            dbInforamtionDTO.setChildren(schemas);
-            /*********************************************************************
-             * step4 拿到所有schema所有的表和视图,还有所有的data source key，提高性能
-             * *******************************************************************
-             */
-            //所有schema所有的表和视图
-            List<TableAndViewInfoDTO> tableAndViewInfoDTOS = mysqlDataSourceDao.selectAllTableAndView(dsId);
-            //获取所有的data source key
-            List<DsKeyInfoDTO> allDataSourceKey = dsKeyBasicConfigDao.getAllDataSourceKey();
+            boolean connection = Connection2DataSource(dbInforamtionDTO.getId());
 
-            if (CollectionUtils.isEmpty(tableAndViewInfoDTOS)) {
-                return result;
-            }
-
-
-            for (DbInforamtionDTO schema : schemas) {
-                List<DbInforamtionDTO> tableAndViews = new LinkedList<>();
-                //获取schema的talbe
-                List<TableAndViewInfoDTO> collect = tableAndViewInfoDTOS.stream()
-                        .filter(e -> schema.getLabel().equalsIgnoreCase(e.getTableSchema()))
-                        .collect(Collectors.toList());
-
-                if (CollectionUtils.isEmpty(collect)) {
-                    continue;
-                }
-
-                //封装数据
-                collect.forEach(e -> {
-                    DbInforamtionDTO dbInfo = new DbInforamtionDTO();
-                    dbInfo.setLabel(e.getTableName());
-                    dbInfo.setType(e.getType());
-                    dbInfo.setLevel(e.getLevel());
-                    tableAndViews.add(dbInfo);
-                });
-
+            if (connection) {
                 /*********************************************************************
-                 * step5 拿到表和视图的data source key
+                 * step3 拿到所有的数据库名称
                  * *******************************************************************
                  */
-
-                getDsKeyOfTableAndView(dsId, dsKeyFilter, schema, tableAndViews, allDataSourceKey);
-
-                //加入 table and view
-                schema.setChildren(tableAndViews);
-            }
-
-            //如果选了过滤ds key则过滤掉没有tableAndView 为空的schema和ds
-            if (dsKeyFilter == 1 || dsKeyFilter == 2) {
-                List<DbInforamtionDTO> schemasHasChildren = schemas.stream()
-                        .filter(e -> e.getChildren() != null && e.getChildren().size() > 0)
-                        .collect(Collectors.toList());
-                dbInforamtionDTO.setChildren(schemasHasChildren);
-                //删除其他的数据源信息
-                int size = result.size();
-                for (int i = size - 1; i > 0; i--) {
-                    result.remove(i);
+                List<DbInforamtionDTO> schemas = mysqlDataSourceDao.selectAllSchema(dsId);
+                if (CollectionUtils.isEmpty(schemas)) {
+                    return result;
                 }
-            }
+                dbInforamtionDTO.setChildren(schemas);
+                /*********************************************************************
+                 * step4 拿到所有schema所有的表和视图,还有所有的data source key，提高性能
+                 * *******************************************************************
+                 */
+                //所有schema所有的表和视图
+                List<TableAndViewInfoDTO> tableAndViewInfoDTOS = mysqlDataSourceDao.selectAllTableAndView(dsId);
+                //获取所有的data source key
+                List<DsKeyInfoDTO> allDataSourceKey = dsKeyBasicConfigDao.getAllDataSourceKey();
 
+                if (CollectionUtils.isEmpty(tableAndViewInfoDTOS)) {
+                    return result;
+                }
+
+
+                for (DbInforamtionDTO schema : schemas) {
+                    List<DbInforamtionDTO> tableAndViews = new LinkedList<>();
+                    //获取schema的talbe
+                    List<TableAndViewInfoDTO> collect = tableAndViewInfoDTOS.stream()
+                            .filter(e -> schema.getLabel().equalsIgnoreCase(e.getTableSchema()))
+                            .collect(Collectors.toList());
+
+                    if (CollectionUtils.isEmpty(collect)) {
+                        continue;
+                    }
+
+                    //封装数据
+                    collect.forEach(e -> {
+                        DbInforamtionDTO dbInfo = new DbInforamtionDTO();
+                        dbInfo.setLabel(e.getTableName());
+                        dbInfo.setType(e.getType());
+                        dbInfo.setLevel(e.getLevel());
+                        tableAndViews.add(dbInfo);
+                    });
+
+                    /*********************************************************************
+                     * step5 拿到表和视图的data source key
+                     * *******************************************************************
+                     */
+
+                    getDsKeyOfTableAndView(dsId, dsKeyFilter, schema, tableAndViews, allDataSourceKey);
+
+                    //加入 table and view
+                    schema.setChildren(tableAndViews);
+                }
+
+                //如果选了过滤ds key则过滤掉没有tableAndView 为空的schema和ds
+                if (dsKeyFilter == 1 || dsKeyFilter == 2) {
+                    List<DbInforamtionDTO> schemasHasChildren = schemas.stream()
+                            .filter(e -> e.getChildren() != null && e.getChildren().size() > 0)
+                            .collect(Collectors.toList());
+                    dbInforamtionDTO.setChildren(schemasHasChildren);
+                    //删除其他的数据源信息
+                    int size = result.size();
+                    for (int i = size - 1; i > 0; i--) {
+                        result.remove(i);
+                    }
+                }
+
+            }
         }
+
 
         return result;
     }
