@@ -6,14 +6,19 @@ import ai.sparklabinc.datasource.Constants;
 import ai.sparklabinc.dto.DbBasicConfigDTO;
 import ai.sparklabinc.dto.DbSecurityConfigDTO;
 import ai.sparklabinc.exception.custom.IllegalParameterException;
+import com.alibaba.fastjson.JSONObject;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.Map;
 
 /**
  * @function:
@@ -24,6 +29,8 @@ import java.sql.DriverManager;
  */
 @Service
 public class ConnectionServiceImpl implements ConnectionService {
+    private final static Logger LOGGER = LoggerFactory.getLogger(ConnectionServiceImpl.class);
+
     @Override
     public boolean createConnection(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws Exception {
         boolean connectResult = false;
@@ -45,9 +52,9 @@ public class ConnectionServiceImpl implements ConnectionService {
         String sshPassword = dbSecurityConfigDTO.getSshProxyPassword();
         String sshHost = dbSecurityConfigDTO.getSshProxyHost();
         Integer sshPort = dbSecurityConfigDTO.getSshProxyPort();
-        String sshAuthType=StringUtils.isBlank(dbSecurityConfigDTO.getSshAuthType())?Constants.SshAuthType.PASSWORD.toString():dbSecurityConfigDTO.getSshAuthType();
-        String sshKeyFile=dbSecurityConfigDTO.getSshKeyFile();
-        String sshPassPhrase=dbSecurityConfigDTO.getSshPassPhrase();
+        String sshAuthType = StringUtils.isBlank(dbSecurityConfigDTO.getSshAuthType()) ? Constants.SshAuthType.PASSWORD.toString() : dbSecurityConfigDTO.getSshAuthType();
+        String sshKeyFile = dbSecurityConfigDTO.getSshKeyFile();
+        String sshPassPhrase = dbSecurityConfigDTO.getSshPassPhrase();
 
         //db basic
         String dbHost = dbBasicConfigDTO.getHost();
@@ -73,46 +80,45 @@ public class ConnectionServiceImpl implements ConnectionService {
                 config.put("StrictHostKeyChecking", "no");
                 JSch jsch = new JSch();
                 session = jsch.getSession(sshUser, sshHost, sshPort);
-                if(sshAuthType.equalsIgnoreCase(Constants.SshAuthType.KEY_PAIR.toString())){
-                    if(org.apache.commons.lang3.StringUtils.isBlank(sshKeyFile)){
+                if (sshAuthType.equalsIgnoreCase(Constants.SshAuthType.KEY_PAIR.toString())) {
+                    if (org.apache.commons.lang3.StringUtils.isBlank(sshKeyFile)) {
                         throw new IllegalParameterException("ssh key file can not be null");
                     }
-                    jsch.addIdentity(sshKeyFile,sshPassPhrase);
-                }else {
+                    jsch.addIdentity(sshKeyFile, sshPassPhrase);
+                } else {
                     session.setPassword(sshPassword);
                 }
                 session.setPassword(sshPassword);
                 session.setConfig(config);
                 session.connect();
-                System.out.println("Connected");
+                LOGGER.info("Connected");
                 int assinged_port = session.setPortForwardingL(localPort, dbHost, dbPort);
-                System.out.println("localhost:" + assinged_port + " -> " + dbHost + ":" + dbPort);
-                System.out.println("Port Forwarded");
+                LOGGER.info("localhost:" + assinged_port + " -> " + dbHost + ":" + dbPort);
+                LOGGER.info("Port Forwarded");
             }
 
             String urlSuffix = DsConstants.urlSuffix;
-            if(useSshTunnel){
-                if(dbSecurityConfigDTO.getUseSsl()!= null && dbSecurityConfigDTO.getUseSsl() ){
-                    urlSuffix += "&useSSL=true";
-                }else{
-                    urlSuffix += "&useSSL=false";
-                }
-            }
+
 
             switch (dbType) {
                 case Constants.DATABASE_TYPE_MYSQL:
                     //url
                     if (useSshTunnel) {
-                        url = "jdbc:mysql://localhost:" + localPort + (dbBasicConfigDTO.getUrl() == null ? "" : ("/" + dbBasicConfigDTO.getUrl()));
+                        if (dbSecurityConfigDTO.getUseSsl() != null && dbSecurityConfigDTO.getUseSsl()) {
+                            urlSuffix += "&useSSL=true";
+                        } else {
+                            urlSuffix += "&useSSL=false";
+                        }
+                        url = "jdbc:mysql://localhost:" + localPort + (StringUtils.isBlank(dbBasicConfigDTO.getUrl()) ? "" : ("/" + dbBasicConfigDTO.getUrl()));
                     } else {
-                        url = "jdbc:mysql://" + dbHost + ":" + dbPort + (dbBasicConfigDTO.getUrl() == null ? "" : ("/" + dbBasicConfigDTO.getUrl()));
+                        url = "jdbc:mysql://" + dbHost + ":" + dbPort + (StringUtils.isBlank(dbBasicConfigDTO.getUrl()) ? "" : ("/" + dbBasicConfigDTO.getUrl()));
                     }
                     //驱动
                     driverName = "com.mysql.jdbc.Driver";
                     break;
                 case Constants.DATABASE_TYPE_ORACLE:
                     if (useSshTunnel) {
-                        url = "jdbc:mysql://localhost:" + localPort + (dbBasicConfigDTO.getUrl() == null ? "" : ("/" + dbBasicConfigDTO.getUrl()));
+                        url = "jdbc:mysql://localhost:" + localPort + (dbBasicConfigDTO.getUrl() == null ? "" : (dbBasicConfigDTO.getUrl()));
                     } else {
                         url = dbBasicConfigDTO.getUrl();
                     }
@@ -120,11 +126,28 @@ public class ConnectionServiceImpl implements ConnectionService {
                     break;
                 case Constants.DATABASE_TYPE_SQLSERVER:
                     if (useSshTunnel) {
-                        url = "jdbc:mysql://localhost:" + localPort + (dbBasicConfigDTO.getUrl() == null ? "" : ("/" + dbBasicConfigDTO.getUrl()));
+                        url = "jdbc:mysql://localhost:" + localPort + (dbBasicConfigDTO.getUrl() == null ? "" : (dbBasicConfigDTO.getUrl()));
                     } else {
                         url = dbBasicConfigDTO.getUrl();
                     }
                     driverName = "com.microsoft.jdbc.sqlserver.SQLServerDriver";
+                    break;
+                case Constants.DATABASE_TYPE_POSTGRESQL:
+                    Map<String, String> otherParams = dbBasicConfigDTO.getOtherParams();
+                    String database = otherParams.get("database");
+                    if (StringUtils.isBlank(database)) {
+                        throw new IllegalParameterException("database can not be null");
+                    }
+                    if (dbSecurityConfigDTO.getUseSsl() != null && dbSecurityConfigDTO.getUseSsl()) {
+                        urlSuffix += "&sslmode=require";
+                    }
+
+                    if (useSshTunnel) {
+                        url = "jdbc:postgresql://localhost:" + localPort + "/" + database + (StringUtils.isBlank(dbBasicConfigDTO.getUrl()) ? "" : (dbBasicConfigDTO.getUrl()));
+                    } else {
+                        url = "jdbc:postgresql://" + dbHost + ":" + dbPort + "/" + database + (StringUtils.isBlank(dbBasicConfigDTO.getUrl()) ? "" : (dbBasicConfigDTO.getUrl()));
+                    }
+                    driverName = "org.postgresql.Driver";
                     break;
                 case Constants.DATABASE_TYPE_SQLITE:
                     if (useSshTunnel) {
@@ -134,14 +157,6 @@ public class ConnectionServiceImpl implements ConnectionService {
                     }
                     driverName = "org.sqlite.JDBC";
                     break;
-                case Constants.DATABASE_TYPE_POSTGRESQL:
-                    if (useSshTunnel) {
-                        url = "jdbc:mysql://localhost:" + localPort + (dbBasicConfigDTO.getUrl() == null ? "" : ("/" + dbBasicConfigDTO.getUrl()));
-                    } else {
-                        url = dbBasicConfigDTO.getUrl();
-                    }
-                    driverName = "org.postgresql.Driver";
-                    break;
                 default:
                     driverName = "com.mysql.jdbc.Driver";
             }
@@ -150,26 +165,22 @@ public class ConnectionServiceImpl implements ConnectionService {
             //mysql database connectivity
             Class.forName(driverName).newInstance();
             conn = DriverManager.getConnection(url, dbUserName, dbPassword);
-//            PreparedStatement preparedStatement = conn.prepareStatement("show databases");
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//            while (resultSet.next()) {
-//                System.out.println(resultSet.getString(1));
-//            }
-            System.out.println("Database connection established");
-            System.out.println("DONE");
+
+            LOGGER.info("Database connection established");
+            LOGGER.info("DONE");
             if (conn != null) {
                 connectResult = true;
             }
         } catch (Exception e) {
-            System.out.println("error>>>" + e);
+            LOGGER.error("error>>>" + e);
         } finally {
             if (conn != null && !conn.isClosed()) {
-                System.out.println("Closing Database Connection");
+                LOGGER.info("Closing Database Connection");
                 conn.close();
             }
 
             if (session != null && session.isConnected()) {
-                System.out.println("Closing SSH Connection");
+                LOGGER.info("Closing SSH Connection");
                 session.disconnect();
             }
         }

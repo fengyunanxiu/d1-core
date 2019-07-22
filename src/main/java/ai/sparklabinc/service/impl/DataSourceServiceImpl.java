@@ -14,12 +14,14 @@ import ai.sparklabinc.entity.DsKeyBasicConfigDO;
 import ai.sparklabinc.exception.custom.IllegalParameterException;
 import ai.sparklabinc.exception.custom.ResourceNotFoundException;
 import ai.sparklabinc.service.DataSourceService;
+import com.alibaba.fastjson.JSON;
 import com.jcraft.jsch.Session;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -87,8 +89,12 @@ public class DataSourceServiceImpl implements DataSourceService {
 
     @Override
     public DbInforamtionDTO addDataSources(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws IOException, SQLException {
-            DbBasicConfigDO dbBasicConfigDO = new DbBasicConfigDO();
+        DbBasicConfigDO dbBasicConfigDO = new DbBasicConfigDO();
         BeanUtils.copyProperties(dbBasicConfigDTO, dbBasicConfigDO);
+        if (dbBasicConfigDTO.getOtherParams()!=null) {
+            String jsonString = JSON.toJSONString(dbBasicConfigDTO.getOtherParams());
+            dbBasicConfigDO.setOtherParams(jsonString);
+        }
 
         String urlSuffix = DsConstants.urlSuffix;
         if (dbSecurityConfigDTO.getUseSshTunnel()) {
@@ -148,7 +154,7 @@ public class DataSourceServiceImpl implements DataSourceService {
          * *******************************************************************
          */
 
-        if(dsId != null){
+        if (dsId != null) {
             DbInforamtionDTO dbInforamtionDTO = result.get(0);
             dsId = dbInforamtionDTO.getId();
 
@@ -409,7 +415,7 @@ public class DataSourceServiceImpl implements DataSourceService {
         List<String> colunmNames = tableColumnsDetailDTOList.stream()
                 .map(TableColumnsDetailDTO::getColumnName)
                 .collect(Collectors.toList());
-        if(CollectionUtils.isEmpty(colunmNames)){
+        if (CollectionUtils.isEmpty(colunmNames)) {
             throw new ResourceNotFoundException("table is not exist");
         }
 
@@ -480,12 +486,12 @@ public class DataSourceServiceImpl implements DataSourceService {
         }
 
         //真实表中不存在的字段设置为不存在
-        for(DsFormTableSettingDO dsFormTableSettingDO:allDsFormTableSettingByDsKey){
+        for (DsFormTableSettingDO dsFormTableSettingDO : allDsFormTableSettingByDsKey) {
             List<String> collect = tableColumnsDetailDTOList.stream()
                     .filter(e -> e.getColumnName().equalsIgnoreCase(dsFormTableSettingDO.getDbFieldName()))
                     .map(TableColumnsDetailDTO::getColumnName)
                     .collect(Collectors.toList());
-            if(CollectionUtils.isEmpty(collect)){
+            if (CollectionUtils.isEmpty(collect)) {
                 dsFormTableSettingDO.setColumnIsExist(false);
                 dsFormTableSettingDao.updateDsFormTableSetting(dsFormTableSettingDO);
             }

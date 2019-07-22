@@ -1,5 +1,7 @@
 package ai.sparklabinc.dto;
 
+import java.util.Map;
+
 public class DbBasicConfigDTO {
     private Long id;
     /**
@@ -19,6 +21,8 @@ public class DbBasicConfigDTO {
     private String password;
 
     private String url;
+
+    private Map<String,String> otherParams;
 
     public String getType() {
         return type;
@@ -82,5 +86,13 @@ public class DbBasicConfigDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Map<String, String> getOtherParams() {
+        return otherParams;
+    }
+
+    public void setOtherParams(Map<String, String> otherParams) {
+        this.otherParams = otherParams;
     }
 }

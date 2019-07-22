@@ -85,7 +85,7 @@ public class TestController {
         QueryRunner queryRunner = new QueryRunner(dataSource);
 
         String sql = "insert into db_basic_config" +
-                "(gmt_create,gmt_modified,type,name,host,port,user,password,url) values (datetime('now'),datetime('now'),?,?,?,?,?,?,?) ";
+                "(gmt_create,gmt_modified,type,name,host,port,user,password,url,other_params) values (datetime('now'),datetime('now'),?,?,?,?,?,?,?,?) ";
 
         DbBasicConfigDO basicConfigDO = new DbBasicConfigDO();
 

@@ -66,6 +66,20 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
+        <!--oracle驱动包-->
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc</artifactId>
+            <version>8</version>
+        </dependency>
+
+        <!--POSTGRESQL-->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.6</version>
+        </dependency>
+
         <!-- poi-ooxml支持XSSF -->
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -123,12 +137,7 @@
             <version>3.8.1</version>
         </dependency>
 
-        <!--oracle驱动包-->
-        <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc</artifactId>
-            <version>8</version>
-        </dependency>
+
 
         <dependency>
             <groupId>org.springframework.cloud</groupId>

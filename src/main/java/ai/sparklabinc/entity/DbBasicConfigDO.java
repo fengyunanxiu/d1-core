@@ -1,7 +1,5 @@
 package ai.sparklabinc.entity;
 
-import java.util.Date;
-
 public class DbBasicConfigDO {
 
     private Long id;
@@ -28,6 +26,8 @@ public class DbBasicConfigDO {
     private String password;
 
     private String url;
+
+    private String otherParams;
 
     public Long getId() {
         return id;
@@ -108,5 +108,13 @@ public class DbBasicConfigDO {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getOtherParams() {
+        return otherParams;
+    }
+
+    public void setOtherParams(String otherParams) {
+        this.otherParams = otherParams;
     }
 }

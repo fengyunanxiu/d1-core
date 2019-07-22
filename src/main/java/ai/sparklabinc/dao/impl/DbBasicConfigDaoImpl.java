@@ -56,6 +56,7 @@ public class DbBasicConfigDaoImpl implements DbBasicConfigDao {
                     String user = resultSet.getString("user");
                     String password = resultSet.getString("password");
                     String url = resultSet.getString("url");
+                    String otherParams = resultSet.getString("other_params");
                     //封装数据
                     dbBasicConfigDO.setId(id);
                     dbBasicConfigDO.setGmtCreate(gmtCreateStr);
@@ -67,6 +68,7 @@ public class DbBasicConfigDaoImpl implements DbBasicConfigDao {
                     dbBasicConfigDO.setUser(user);
                     dbBasicConfigDO.setPassword(password);
                     dbBasicConfigDO.setUrl(url);
+                    dbBasicConfigDO.setOtherParams(otherParams);
                     return dbBasicConfigDO;
                 }
                 return null;
@@ -83,8 +85,8 @@ public class DbBasicConfigDaoImpl implements DbBasicConfigDao {
         Long id = 0L;
         try {
 
-            String sql = "insert into db_basic_config( gmt_create, gmt_modified, type, name, host, port, user, password,url)" +
-                    "values ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "insert into db_basic_config( gmt_create, gmt_modified, type, name, host, port, user, password,url,other_params)" +
+                    "values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             DataSource dataSource = dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null);
             conn = dataSource.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
@@ -97,7 +99,8 @@ public class DbBasicConfigDaoImpl implements DbBasicConfigDao {
                     dbBasicConfigDO.getPort(),
                     dbBasicConfigDO.getUser(),
                     dbBasicConfigDO.getPassword(),
-                    dbBasicConfigDO.getUrl());
+                    dbBasicConfigDO.getUrl(),
+                    dbBasicConfigDO.getOtherParams());
             preparedStatement.execute();
             ResultSet rs = preparedStatement.getGeneratedKeys();
             //获取生成的id
@@ -156,6 +159,7 @@ public class DbBasicConfigDaoImpl implements DbBasicConfigDao {
         return  result;
     }
 
+
     @Override
     public Integer editDataSourceProperty(DbBasicConfigDO dbBasicConfigDO) throws IOException, SQLException {
         QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null));
@@ -166,7 +170,8 @@ public class DbBasicConfigDaoImpl implements DbBasicConfigDao {
                 "   port = ?," +
                 "   user = ?," +
                 "   password = ?," +
-                "   url = ?" +
+                "   url = ? ," +
+                "   other_params = ? " +
                 "where  id = ?";
         String now = DateUtils.ofLongStr(new java.util.Date());
         Object[] objectsParams={now,
@@ -177,6 +182,7 @@ public class DbBasicConfigDaoImpl implements DbBasicConfigDao {
                 dbBasicConfigDO.getUser(),
                 dbBasicConfigDO.getPassword(),
                 dbBasicConfigDO.getUrl(),
+                dbBasicConfigDO.getOtherParams(),
                 dbBasicConfigDO.getId()
         };
         int update = queryRunner.update(sql,objectsParams);

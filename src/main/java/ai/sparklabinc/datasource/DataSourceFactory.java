@@ -3,11 +3,14 @@ package ai.sparklabinc.datasource;
 import ai.sparklabinc.dao.DbBasicConfigDao;
 import ai.sparklabinc.dao.DbSecurityConfigDao;
 import ai.sparklabinc.datasource.impl.MysqlPoolServiceImpl;
+import ai.sparklabinc.datasource.impl.PostGresqlPoolServiceImpl;
 import ai.sparklabinc.datasource.impl.SqlitePoolServiceImpl;
 import ai.sparklabinc.entity.DbBasicConfigDO;
 import ai.sparklabinc.entity.DbSecurityConfigDO;
 import ai.sparklabinc.exception.custom.IllegalParameterException;
 import ai.sparklabinc.util.StringUtils;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import org.apache.tomcat.jdbc.pool.DataSource;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -68,7 +72,6 @@ public class DataSourceFactory {
             String dbUserName = "";
             String dbPassword = "";
             String url = "";
-
             if (dataSourceMap.get(dsId) == null) {
                 DbBasicConfigDO dbBasicConfigDO = dbBasicConfigDao.findById(dsId);
                 DbSecurityConfigDO dbSecurityConfigDO = dbSecurityConfigDao.findById(dsId);
@@ -99,11 +102,6 @@ public class DataSourceFactory {
                 dbUserName = dbBasicConfigDO.getUser();
                 dbPassword = dbBasicConfigDO.getPassword();
 
-                if (useSshTunnel) {
-                    url = "jdbc:mysql://localhost:" + localPort + "/" + dbBasicConfigDO.getUrl();
-                } else {
-                    url = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbBasicConfigDO.getUrl();
-                }
             }
 
 
@@ -129,20 +127,14 @@ public class DataSourceFactory {
              ***************************************************************
              */
             if (dataSourceMap.get(dsId) == null) {
-                ConnectionPoolService mysqlPoolService = new MysqlPoolServiceImpl();
-                Properties properties = new Properties();
-                properties.setProperty("Url", url);
-                properties.setProperty("User", dbUserName);
-                properties.setProperty("Password", dbPassword);
-                DataSource datasource = mysqlPoolService.createDatasource(properties);
-                dataSourceMap.put(dsId, datasource);
-                return datasource;
+                return createDataSource(dsId, useSshTunnel, localPort, dbHost, dbPort, dbUserName, dbPassword, url);
             } else {
                 return dataSourceMap.get(dsId);
             }
         }
-
     }
+
+
 
     private boolean createSshSession(Long dsId, int localPort, String sshUser,
                                      String sshPassword, String sshHost, int sshPort,
@@ -194,6 +186,110 @@ public class DataSourceFactory {
 
         }
     }
+
+    /**
+     * 创建数据源
+     * @param dsId
+     * @param useSshTunnel
+     * @param localPort
+     * @param dbHost
+     * @param dbPort
+     * @param dbUserName
+     * @param dbPassword
+     * @param url
+     * @return
+     * @throws SQLException
+     * @throws IOException
+     */
+    private DataSource createDataSource(Long dsId, boolean useSshTunnel, int localPort, String dbHost, int dbPort, String dbUserName, String dbPassword, String url) throws SQLException, IOException {
+        DataSource datasource=null;
+        String driverName="";
+        DbBasicConfigDO dbBasicConfigDO = dbBasicConfigDao.findById(dsId);
+        DbSecurityConfigDO dbSecurityConfigDTO = dbSecurityConfigDao.findById(dsId);
+        if(dbBasicConfigDO==null||StringUtils.isNullOrEmpty(dbBasicConfigDO.getType())){
+            throw new SQLException("database type can not be null");
+        }
+        switch (dbBasicConfigDO.getType()){
+            case Constants.DATABASE_TYPE_MYSQL:
+                //url
+                datasource = CreateMysqlDataSource(dsId, useSshTunnel, localPort, dbHost, dbPort, dbUserName, dbPassword, dbBasicConfigDO, dbSecurityConfigDTO);
+                break;
+            case Constants.DATABASE_TYPE_POSTGRESQL:
+                datasource = createPostGresqlDataSource(dsId, useSshTunnel, localPort, dbHost, dbPort, dbUserName, dbPassword, dbBasicConfigDO, dbSecurityConfigDTO);
+                break;
+            default:
+                return null;
+        }
+        return datasource;
+    }
+
+    private DataSource CreateMysqlDataSource(Long dsId, boolean useSshTunnel, int localPort, String dbHost, int dbPort, String dbUserName, String dbPassword, DbBasicConfigDO dbBasicConfigDO, DbSecurityConfigDO dbSecurityConfigDTO) throws SQLException {
+        String url;
+        String driverName;
+        DataSource datasource;
+        if (useSshTunnel) {
+            url = "jdbc:mysql://localhost:" + localPort + (org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getUrl()) ? "" : (dbBasicConfigDO.getUrl()));
+        } else {
+            url = "jdbc:mysql://" + dbHost + ":" + dbPort + (org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getUrl())? "" : (dbBasicConfigDO.getUrl()));
+        }
+        if(dbSecurityConfigDTO.getUseSsl()!= null && dbSecurityConfigDTO.getUseSsl() ){
+            url += "&useSSL=true";
+        }else{
+            url += "&useSSL=false";
+        }
+        //驱动
+        driverName = "com.mysql.jdbc.Driver";
+        ConnectionPoolService mysqlPoolService = new MysqlPoolServiceImpl();
+        Properties mysqlProperties = new Properties();
+        mysqlProperties.setProperty("Url", url);
+        mysqlProperties.setProperty("User", dbUserName);
+        mysqlProperties.setProperty("Password", dbPassword);
+        datasource = mysqlPoolService.createDatasource(mysqlProperties);
+        dataSourceMap.put(dsId, datasource);
+        return datasource;
+    }
+
+
+
+    private DataSource createPostGresqlDataSource(Long dsId, boolean useSshTunnel, int localPort, String dbHost, int dbPort, String dbUserName, String dbPassword, DbBasicConfigDO dbBasicConfigDO, DbSecurityConfigDO dbSecurityConfigDTO) throws SQLException {
+        String url;
+        String driverName;
+        DataSource datasource;
+        String otherParams = dbBasicConfigDO.getOtherParams();
+        if(StringUtils.isNullOrEmpty(otherParams)){
+            throw new SQLException("database can not be null");
+        }
+        Map otherParamsMap = JSON.parseObject(otherParams, Map.class);
+
+        String database = otherParamsMap.get("database")+"";
+        if(org.apache.commons.lang3.StringUtils.isBlank(database)){
+            throw new SQLException("database can not be null");
+        }
+        if (useSshTunnel) {
+            url = "jdbc:postgresql://localhost:" + localPort +"/"+database+ (org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getUrl())? "" : (dbBasicConfigDO.getUrl()));
+        } else {
+            url = "jdbc:postgresql://"+dbHost+":" + dbPort +"/"+database+ (org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getUrl())? "" : ( dbBasicConfigDO.getUrl()));
+        }
+
+        if(dbSecurityConfigDTO.getUseSsl()!= null && dbSecurityConfigDTO.getUseSsl() ){
+            url += "&sslmode=require";
+        }
+        //驱动
+        driverName = "org.postgresql.Driver";
+        ConnectionPoolService postGresqlPoolService = new PostGresqlPoolServiceImpl();
+        Properties postGresqlProperties = new Properties();
+        postGresqlProperties.setProperty("Url", url);
+        postGresqlProperties.setProperty("User", dbUserName);
+        postGresqlProperties.setProperty("Password", dbPassword);
+        datasource = postGresqlPoolService.createDatasource(postGresqlProperties);
+        dataSourceMap.put(dsId, datasource);
+        return datasource;
+    }
+
+
+
+
+
 
 
 }
