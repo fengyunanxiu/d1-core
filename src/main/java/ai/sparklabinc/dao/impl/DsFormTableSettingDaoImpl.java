@@ -183,8 +183,8 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
     @Override
     public Integer updateDataSourceKey(String dataSourceKey,String newDataSourceKey) throws SQLException, IOException {
         QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null));
-        String querySql = "update ds_form_table_setting set gmt_modified = ?, ds_key = ?" +
-                          "where ds_key = ?";
+        String querySql = " update ds_form_table_setting set gmt_modified = ?, ds_key = ? " +
+                          " where ds_key = ?";
         LOGGER.info("querySql:{}", querySql);
         String now = DateUtils.ofLongStr(new java.util.Date());
         int update = queryRunner.update(querySql, now, newDataSourceKey, dataSourceKey);
@@ -232,8 +232,8 @@ public class DsFormTableSettingDaoImpl implements DsFormTableSettingDao {
                 "  form_field_use_default_val as  formFieldUseDefaultVal," +
                 "  form_field_man_made_default_val as  formFieldManMadeDefaultVal," +
                 "  form_field_default_val_sql as formFieldDefaultValSql ," +
-                "  column_is_exist as columIsExist" +
-                "from ds_form_table_setting where ds_key = ? and exportFieldVisible = ?";
+                "  column_is_exist as columIsExist " +
+                " from ds_form_table_setting where ds_key = ? and exportFieldVisible = ?";
         LOGGER.info("querySql:{}", querySql);
         List<DsFormTableSettingDO> dsFormTableSettingDOList = queryRunner.query(querySql, new BeanListHandler<>(DsFormTableSettingDO.class), dataSourceKey, 1);
         return dsFormTableSettingDOList;
