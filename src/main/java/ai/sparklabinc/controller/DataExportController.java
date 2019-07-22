@@ -138,9 +138,9 @@ public class DataExportController {
                 os.flush();
                 i = bis.read(buff);
             }
-            System.out.println("下载成功,filePath=" + filePath);
+            LOGGER.info("下载成功,filePath={}", filePath);
         } catch (IOException e) {
-            System.out.println("下载失败,filePath=" + filePath);
+            LOGGER.error("下载失败,filePath={}",filePath);
         } finally {
             if (bis != null) {
                 try {
