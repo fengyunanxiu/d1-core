@@ -86,8 +86,8 @@ public class DataSourceServiceImpl implements DataSourceService {
     }
 
     @Override
-    public boolean addDataSources(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws IOException, SQLException {
-        DbBasicConfigDO dbBasicConfigDO = new DbBasicConfigDO();
+    public DbInforamtionDTO addDataSources(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws IOException, SQLException {
+            DbBasicConfigDO dbBasicConfigDO = new DbBasicConfigDO();
         BeanUtils.copyProperties(dbBasicConfigDTO, dbBasicConfigDO);
 
         String urlSuffix = DsConstants.urlSuffix;
@@ -108,13 +108,17 @@ public class DataSourceServiceImpl implements DataSourceService {
             DbSecurityConfigDO dbSecurityConfigDO = new DbSecurityConfigDO();
             BeanUtils.copyProperties(dbSecurityConfigDTO, dbSecurityConfigDO);
             dbSecurityConfigDO.setId(dsId);
-            Integer add = dbSecurityConfigDao.add(dbSecurityConfigDO);
-            if (add > 0) {
-                return true;
+            int row = dbSecurityConfigDao.add(dbSecurityConfigDO);
+            if (row > 0) {
+                DbInforamtionDTO dbInforamtionDTO = new DbInforamtionDTO();
+                dbInforamtionDTO.setLabel(dbBasicConfigDO.getName());
+                dbInforamtionDTO.setLevel(1);
+                dbInforamtionDTO.setId(dsId);
+                return dbInforamtionDTO;
             }
 
         }
-        return false;
+        return null;
 
     }
 
@@ -318,25 +322,32 @@ public class DataSourceServiceImpl implements DataSourceService {
     }
 
     @Override
-    public boolean addDataSourceKey(DsKeyBasicConfigDTO dsKeyBasicConfigDTO) throws Exception {
+    public DbInforamtionDTO addDataSourceKey(DsKeyBasicConfigDTO dsKeyBasicConfigDTO) throws Exception {
         DsKeyBasicConfigDO dsKeyBasicConfigByDsKey = dsKeyBasicConfigDao.getDsKeyBasicConfigByDsKey(dsKeyBasicConfigDTO.getDsKey());
         //新加的ds key 是否已经存在
         if (dsKeyBasicConfigByDsKey != null) {
             throw new IllegalParameterException("data source key already exists!");
         }
 
-        boolean addResult = false;
         DsKeyBasicConfigDO dsKeyBasicConfigDO = new DsKeyBasicConfigDO();
         BeanUtils.copyProperties(dsKeyBasicConfigDTO, dsKeyBasicConfigDO);
-        int addRow = dsKeyBasicConfigDao.addDataSourceKey(dsKeyBasicConfigDO);
-        if (addRow > 0) {
-            addResult = true;
+        Long dsId = dsKeyBasicConfigDao.addDataSourceKeyAndReturnId(dsKeyBasicConfigDO);
+
+
+        DbInforamtionDTO dbInforamtionDTO = new DbInforamtionDTO();
+        dbInforamtionDTO.setId(dsId);
+        dbInforamtionDTO.setLevel(4);
+        dbInforamtionDTO.setLabel(dsKeyBasicConfigDTO.getDsKey());
+
+
+        if (dsId != null) {
+
             //添加data source key form table setting 配置信息
             List<TableColumnsDetailDTO> tableColumnsDetailDTOList = mysqlDataSourceDao.selectTableColumnsDetail(dsKeyBasicConfigDO.getFkDbId(),
                     dsKeyBasicConfigDO.getSchema(),
                     dsKeyBasicConfigDO.getTableName());
             if (CollectionUtils.isEmpty(tableColumnsDetailDTOList)) {
-                return addResult;
+                return dbInforamtionDTO;
             }
 
             DsFormTableSettingDO dsFormTableSettingDO = null;
@@ -378,7 +389,8 @@ public class DataSourceServiceImpl implements DataSourceService {
             }
         }
 
-        return addResult;
+
+        return dbInforamtionDTO;
     }
 
 

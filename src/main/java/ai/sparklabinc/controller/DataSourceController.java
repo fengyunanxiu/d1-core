@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -51,7 +53,9 @@ public class DataSourceController {
     @PostMapping(value = "/file-upLoad")
     public Object fileUpload(@RequestParam(required = true) MultipartFile multipartFile,HttpServletRequest request) throws IOException {
         String filePath = uploadFile(multipartFile, request);
-        return filePath;
+        Map<String,String> resultMap = new HashMap<>();
+        resultMap.put("file_path",filePath);
+        return resultMap;
     }
 
 
@@ -159,7 +163,6 @@ public class DataSourceController {
 
 
     public String uploadFile(MultipartFile file, HttpServletRequest request) throws IOException {
-
         String fileName = file.getOriginalFilename();
         String projectPath = System.getProperty("user.dir");
         String savePath=projectPath+File.separator+"UploadFile";
