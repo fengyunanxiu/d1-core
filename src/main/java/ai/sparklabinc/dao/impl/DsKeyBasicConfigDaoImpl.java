@@ -10,12 +10,15 @@ import ai.sparklabinc.util.DateUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.tomcat.jdbc.pool.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -135,11 +138,63 @@ public class DsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
     }
 
     @Override
-    public Integer deleteDataSourceKey(String dsKey) throws IOException, SQLException {
+    public Integer deleteDataSourceKey(String dsKey) throws SQLException, IOException {
         QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,null));
         String sql="delete from ds_key_basic_config where ds_key = ? ";
         int result=queryRunner.update(sql,dsKey);
         return result;
+    }
+
+    @Override
+    public Long addDataSourceKeyAndReturnId(DsKeyBasicConfigDO dsKeyBasicConfigDO) throws Exception {
+        Connection conn=null;
+        Long id = 0L;
+        try {
+            String sql = "insert into ds_key_basic_config( ds_key, fk_db_id, schema, table_name, " +
+                    " description, gmt_create, gmt_modified)" +
+                    " values ( ?, ?, ?, ?, ?, ?, ?) ";
+            DataSource dataSource = dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null);
+            conn = dataSource.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            String now = DateUtils.ofLongStr(new java.util.Date());
+            //绑定参数
+            bindParameters(preparedStatement, dsKeyBasicConfigDO.getDsKey(),
+                    dsKeyBasicConfigDO.getFkDbId(),
+                    dsKeyBasicConfigDO.getSchema(),
+                    dsKeyBasicConfigDO.getTableName(),
+                    dsKeyBasicConfigDO.getDescription(),
+                    now,now);
+            preparedStatement.execute();
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            //获取生成的id
+            while (rs.next()) {
+                id = rs.getLong(1);
+            }
+        }catch (Exception e){
+            throw  e;
+        }
+        finally {
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return id;
+    }
+
+
+
+    /**
+     * 绑定参数方法
+     *
+     * @param stmt
+     * @param params
+     * @throws SQLException
+     */
+    private void bindParameters(PreparedStatement stmt, Object... params) throws SQLException {
+        //绑定参数
+        for (int i = 0; i < params.length; i++) {
+            stmt.setObject(i + 1, params[i]);
+        }
     }
 
 

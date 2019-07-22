@@ -25,4 +25,6 @@ public interface DsKeyBasicConfigDao {
     Integer updateDataSourceKey(String dsKey, String newDsKey, String description) throws IOException, SQLException;
 
     Integer deleteDataSourceKey(String dsKey)throws IOException, SQLException;
+
+    Long addDataSourceKeyAndReturnId(DsKeyBasicConfigDO dsKeyBasicConfigDO) throws Exception;
 }

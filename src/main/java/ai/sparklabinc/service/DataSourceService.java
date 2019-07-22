@@ -22,7 +22,7 @@ import java.util.Map;
 public interface DataSourceService {
     boolean Connection2DataSource(Long dsId) throws SQLException, IOException;
 
-    boolean addDataSources(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO)  throws IOException, SQLException;
+    DbInforamtionDTO addDataSources(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO)  throws IOException, SQLException;
 
     boolean deleteDataSources(Long dsId) throws IOException, SQLException;
 
@@ -32,7 +32,7 @@ public interface DataSourceService {
 
     boolean editDataSourceProperty(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws IOException, SQLException;
 
-    boolean addDataSourceKey(DsKeyBasicConfigDTO dsKeyBasicConfigDTO) throws Exception;
+    DbInforamtionDTO addDataSourceKey(DsKeyBasicConfigDTO dsKeyBasicConfigDTO) throws Exception;
 
     List<Map<String,Object>> selectAllDsFormTableSettingByDsKey(String dsKey) throws Exception;
 
