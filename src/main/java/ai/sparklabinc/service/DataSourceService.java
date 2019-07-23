@@ -44,7 +44,7 @@ public interface DataSourceService {
 
     boolean updateDsFormTableSetting(DsFormTableSettingDO dsFormTableSettingDO) throws IOException, SQLException;
 
-    List<Map<String,Object>> RefreshDsFormTableSetting(String dsKey) throws Exception;
+    List<Map<String,Object>> refreshDsFormTableSetting(String dsKey) throws Exception;
 
     DsKeyBasicConfigDO getDsKeyBasicInfo(String dsKey) throws Exception;
 }

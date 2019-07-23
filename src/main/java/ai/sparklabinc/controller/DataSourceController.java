@@ -110,6 +110,7 @@ public class DataSourceController {
         if(StringUtils.isBlank(dsKeyBasicConfigDTO.getDsKey())){
             throw new IllegalParameterException("dsKey can not be null!");
         }
+
         return dataSourceService.addDataSourceKey(dsKeyBasicConfigDTO);
     }
 
@@ -139,11 +140,11 @@ public class DataSourceController {
 
     @ResponseBody
     @PostMapping("/refresh-ds-form-table-setting")
-    public Object RefreshDsFormTableSetting(String dsKey) throws Exception {
+    public Object refreshDsFormTableSetting(String dsKey) throws Exception {
         if(StringUtils.isBlank(dsKey)){
             throw new IllegalParameterException("dsKey can not be null!");
         }
-        return dataSourceService.RefreshDsFormTableSetting(dsKey);
+        return dataSourceService.refreshDsFormTableSetting(dsKey);
     }
 
 

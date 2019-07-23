@@ -108,7 +108,7 @@ public class DataExportController {
     }
 
     @ApiOperation(value = "fileDownload")
-    @RequestMapping(value = "/download", method = RequestMethod.POST)
+    @RequestMapping(value = "/download", method = RequestMethod.GET)
     public String fileDownload(Long taskId, HttpServletResponse res) throws Exception {
         DataExportTaskDO dataExportTaskDO = dataExportTaskDao.findById(taskId);
         if (dataExportTaskDO == null) {

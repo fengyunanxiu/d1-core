@@ -1,5 +1,6 @@
 package ai.sparklabinc.service.impl;
 
+import ai.sparklabinc.component.MysqlDataSourceComponent;
 import ai.sparklabinc.constant.DsConstants;
 import ai.sparklabinc.constant.FormTableSettingConstants;
 import ai.sparklabinc.dao.*;
@@ -65,6 +66,9 @@ public class DataSourceServiceImpl implements DataSourceService {
     @Autowired
     private ConnectionService connectionService;
 
+    @Autowired
+    private MysqlDataSourceComponent mysqlDataSourceComponent;
+
 
     @Override
     public boolean Connection2DataSource(Long dsId) throws SQLException, IOException {
@@ -91,7 +95,7 @@ public class DataSourceServiceImpl implements DataSourceService {
     public DbInforamtionDTO addDataSources(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws IOException, SQLException {
         DbBasicConfigDO dbBasicConfigDO = new DbBasicConfigDO();
         BeanUtils.copyProperties(dbBasicConfigDTO, dbBasicConfigDO);
-        if (dbBasicConfigDTO.getOtherParams()!=null) {
+        if (dbBasicConfigDTO.getOtherParams() != null) {
             String jsonString = JSON.toJSONString(dbBasicConfigDTO.getOtherParams());
             dbBasicConfigDO.setOtherParams(jsonString);
         }
@@ -125,8 +129,10 @@ public class DataSourceServiceImpl implements DataSourceService {
 
         }
         return null;
-
     }
+
+
+
 
     @Override
     public boolean deleteDataSources(Long dsId) throws IOException, SQLException {
@@ -327,6 +333,7 @@ public class DataSourceServiceImpl implements DataSourceService {
         return updateResult;
     }
 
+
     @Override
     public DbInforamtionDTO addDataSourceKey(DsKeyBasicConfigDTO dsKeyBasicConfigDTO) throws Exception {
         DsKeyBasicConfigDO dsKeyBasicConfigByDsKey = dsKeyBasicConfigDao.getDsKeyBasicConfigByDsKey(dsKeyBasicConfigDTO.getDsKey());
@@ -334,69 +341,15 @@ public class DataSourceServiceImpl implements DataSourceService {
         if (dsKeyBasicConfigByDsKey != null) {
             throw new IllegalParameterException("data source key already exists!");
         }
-
-        DsKeyBasicConfigDO dsKeyBasicConfigDO = new DsKeyBasicConfigDO();
-        BeanUtils.copyProperties(dsKeyBasicConfigDTO, dsKeyBasicConfigDO);
-        Long dsId = dsKeyBasicConfigDao.addDataSourceKeyAndReturnId(dsKeyBasicConfigDO);
-
-
-        DbInforamtionDTO dbInforamtionDTO = new DbInforamtionDTO();
-        dbInforamtionDTO.setId(dsId);
-        dbInforamtionDTO.setLevel(4);
-        dbInforamtionDTO.setLabel(dsKeyBasicConfigDTO.getDsKey());
-
-
-        if (dsId != null) {
-
-            //添加data source key form table setting 配置信息
-            List<TableColumnsDetailDTO> tableColumnsDetailDTOList = mysqlDataSourceDao.selectTableColumnsDetail(dsKeyBasicConfigDO.getFkDbId(),
-                    dsKeyBasicConfigDO.getSchema(),
-                    dsKeyBasicConfigDO.getTableName());
-            if (CollectionUtils.isEmpty(tableColumnsDetailDTOList)) {
-                return dbInforamtionDTO;
-            }
-
-            DsFormTableSettingDO dsFormTableSettingDO = null;
-            for (TableColumnsDetailDTO tableColumnsDetailDTO : tableColumnsDetailDTOList) {
-                dsFormTableSettingDO = new DsFormTableSettingDO();
-
-                dsFormTableSettingDO.setDsKey(dsKeyBasicConfigDO.getDsKey());
-                dsFormTableSettingDO.setDbFieldName(tableColumnsDetailDTO.getColumnName());
-                dsFormTableSettingDO.setDbFieldType(tableColumnsDetailDTO.getDataType());
-
-                String columnName = tableColumnsDetailDTO.getColumnName();
-                dsFormTableSettingDO.setViewFieldLabel(getLabelName(columnName));
-                dsFormTableSettingDO.setDbFieldComment(tableColumnsDetailDTO.getColumnComment());
-                dsFormTableSettingDO.setFormFieldVisible(true);
-                dsFormTableSettingDO.setFormFieldSequence(tableColumnsDetailDTO.getOrdinalPosition());
-                dsFormTableSettingDO.setFormFieldQueryType(FormTableSettingConstants.FormType.TEXT.toString());
-
-                dsFormTableSettingDO.setFormFieldIsExactly(true);
-                //dsFormTableSettingDO.setFormFieldChildrenDbFieldName();
-                //dsFormTableSettingDO.setFormFieldDicDomainName();
-                dsFormTableSettingDO.setFormFieldUseDic(false);
-                //dsFormTableSettingDO.getFormFieldDefaultValStratege();
-
-                dsFormTableSettingDO.setTableFieldVisible(true);
-                dsFormTableSettingDO.setTableFieldOrderBy(FormTableSettingConstants.OrderBy.NONE.toString());
-                dsFormTableSettingDO.setTableFieldQueryRequired(true);
-                dsFormTableSettingDO.setTableFieldSequence(tableColumnsDetailDTO.getOrdinalPosition());
-                dsFormTableSettingDO.setTableFieldColumnWidth(100);
-
-                dsFormTableSettingDO.setExportFieldVisible(true);
-                dsFormTableSettingDO.setExportFieldSequence(tableColumnsDetailDTO.getOrdinalPosition());
-                dsFormTableSettingDO.setExportFieldWidth(20);
-                //dsFormTableSettingDO.setTableParentLabel();
-                dsFormTableSettingDO.setFormFieldUseDefaultVal(true);
-
-                dsFormTableSettingDO.setColumnIsExist(true);
-
-                dsFormTableSettingDao.add(dsFormTableSettingDO);
-            }
+        DbBasicConfigDO dbBasicConfigDO = dbBasicConfigDao.findById(dsKeyBasicConfigDTO.getFkDbId());
+        switch (dbBasicConfigDO.getType()) {
+            case Constants.DATABASE_TYPE_MYSQL:
+                return mysqlDataSourceComponent.addDataSourceKeyProcess(dsKeyBasicConfigDTO);
+            case Constants.DATABASE_TYPE_POSTGRESQL:
+                return null;
+            default:
+                return mysqlDataSourceComponent.addDataSourceKeyProcess(dsKeyBasicConfigDTO);
         }
-
-
-        return dbInforamtionDTO;
     }
 
 
@@ -468,128 +421,26 @@ public class DataSourceServiceImpl implements DataSourceService {
     }
 
     @Override
-    public List<Map<String, Object>> RefreshDsFormTableSetting(String dsKey) throws Exception {
+    public List<Map<String, Object>> refreshDsFormTableSetting(String dsKey) throws Exception {
         DsKeyBasicConfigDO dsKeyBasicConfigDO = dsKeyBasicConfigDao.getDsKeyBasicConfigByDsKey(dsKey);
         if (dsKeyBasicConfigDO == null) {
             throw new ResourceNotFoundException("data source key config is not found!");
         }
-
-        //获dsKey FormTableSetting的信息
-        List<DsFormTableSettingDO> allDsFormTableSettingByDsKey = dsFormTableSettingDao.getAllDsFormTableSettingByDsKey(dsKey);
-
-        //从ddl语句中获取table columns setting的配置信息
-        List<TableColumnsDetailDTO> tableColumnsDetailDTOList = mysqlDataSourceDao.selectTableColumnsDetail(dsKeyBasicConfigDO.getFkDbId(),
-                dsKeyBasicConfigDO.getSchema(),
-                dsKeyBasicConfigDO.getTableName());
-        if (CollectionUtils.isEmpty(tableColumnsDetailDTOList)) {
-            throw new ResourceNotFoundException("table or view probably was removed！");
+        DbBasicConfigDO dbBasicConfigDO = dbBasicConfigDao.findById(dsKeyBasicConfigDO.getFkDbId());
+        switch (dbBasicConfigDO.getType()) {
+            case Constants.DATABASE_TYPE_MYSQL:
+                return mysqlDataSourceComponent.refreshDsFormTableSettingProcess(dsKey, dsKeyBasicConfigDO);
+            case Constants.DATABASE_TYPE_POSTGRESQL:
+                return null;
+            default:
+                return mysqlDataSourceComponent.refreshDsFormTableSettingProcess(dsKey, dsKeyBasicConfigDO);
         }
-
-        //真实表中不存在的字段设置为不存在
-        for (DsFormTableSettingDO dsFormTableSettingDO : allDsFormTableSettingByDsKey) {
-            List<String> collect = tableColumnsDetailDTOList.stream()
-                    .filter(e -> e.getColumnName().equalsIgnoreCase(dsFormTableSettingDO.getDbFieldName()))
-                    .map(TableColumnsDetailDTO::getColumnName)
-                    .collect(Collectors.toList());
-            if (CollectionUtils.isEmpty(collect)) {
-                dsFormTableSettingDO.setColumnIsExist(false);
-                dsFormTableSettingDao.updateDsFormTableSetting(dsFormTableSettingDO);
-            }
-        }
-
-        for (TableColumnsDetailDTO tableColumnsDetailDTO : tableColumnsDetailDTOList) {
-            boolean columnIsExist = false;
-            for (DsFormTableSettingDO dsFormTableSettingDO : allDsFormTableSettingByDsKey) {
-                if (tableColumnsDetailDTO.getColumnName().equalsIgnoreCase(dsFormTableSettingDO.getDbFieldName())) {
-                    columnIsExist = true;
-                    //如果存在，更新最新的值
-                    dsFormTableSettingDO.setDbFieldType(tableColumnsDetailDTO.getDataType());
-                    dsFormTableSettingDO.setColumnIsExist(true);
-                    //dsFormTableSettingDO.setDbFieldComment(tableColumnsDetailDTO.getColumnComment());
-                    dsFormTableSettingDao.updateDsFormTableSetting(dsFormTableSettingDO);
-                }
-            }
-            //如果不存在，则加入配置
-            if (!columnIsExist) {
-                DsFormTableSettingDO dsFormTableSettingDO = new DsFormTableSettingDO();
-
-                dsFormTableSettingDO.setDsKey(dsKeyBasicConfigDO.getDsKey());
-                dsFormTableSettingDO.setDbFieldName(tableColumnsDetailDTO.getColumnName());
-                dsFormTableSettingDO.setDbFieldType(tableColumnsDetailDTO.getDataType());
-
-                String columnName = tableColumnsDetailDTO.getColumnName();
-                dsFormTableSettingDO.setViewFieldLabel(getLabelName(columnName));
-                dsFormTableSettingDO.setDbFieldComment(tableColumnsDetailDTO.getColumnComment());
-                dsFormTableSettingDO.setFormFieldVisible(true);
-                dsFormTableSettingDO.setFormFieldSequence(tableColumnsDetailDTO.getOrdinalPosition());
-                dsFormTableSettingDO.setFormFieldQueryType(FormTableSettingConstants.FormType.TEXT.toString());
-
-                dsFormTableSettingDO.setFormFieldIsExactly(true);
-                //dsFormTableSettingDO.setFormFieldChildrenDbFieldName();
-                //dsFormTableSettingDO.setFormFieldDicDomainName();
-                dsFormTableSettingDO.setFormFieldUseDic(false);
-                //dsFormTableSettingDO.getFormFieldDefaultValStratege();
-
-                dsFormTableSettingDO.setTableFieldVisible(true);
-                dsFormTableSettingDO.setTableFieldOrderBy(FormTableSettingConstants.OrderBy.NONE.toString());
-                dsFormTableSettingDO.setTableFieldQueryRequired(true);
-                dsFormTableSettingDO.setTableFieldSequence(tableColumnsDetailDTO.getOrdinalPosition());
-                dsFormTableSettingDO.setTableFieldColumnWidth(100);
-
-                dsFormTableSettingDO.setExportFieldVisible(true);
-                dsFormTableSettingDO.setExportFieldSequence(tableColumnsDetailDTO.getOrdinalPosition());
-                dsFormTableSettingDO.setExportFieldWidth(20);
-                //dsFormTableSettingDO.setTableParentLabel();
-                dsFormTableSettingDO.setFormFieldUseDefaultVal(true);
-
-                dsFormTableSettingDO.setColumnIsExist(true);
-
-                dsFormTableSettingDao.add(dsFormTableSettingDO);
-            }
-        }
-
-        return dsFormTableSettingDao.selectAllDsFormTableSettingByDsKey(dsKey);
     }
+
 
     @Override
     public DsKeyBasicConfigDO getDsKeyBasicInfo(String dsKey) throws Exception {
         return this.dsKeyBasicConfigDao.getDsKeyBasicConfigByDsKey(dsKey);
-    }
-
-
-    /**
-     * 获取labelName
-     *
-     * @param columnName
-     * @return
-     */
-    private String getLabelName(String columnName) {
-        StringBuilder labelNameSb = new StringBuilder();
-        String[] words = columnName.split("_");
-        for (String word : words) {
-            String firstCharUpperString = getFirstCharUpperString(word);
-            labelNameSb.append(firstCharUpperString);
-            labelNameSb.append(" ");
-        }
-        labelNameSb.deleteCharAt(labelNameSb.length() - 1);
-        return labelNameSb.toString();
-    }
-
-
-    /**
-     * 字符串首字符大写
-     *
-     * @param str
-     * @return
-     */
-    private String getFirstCharUpperString(String str) {
-        String string = "";
-        char[] chars = str.toCharArray();
-        if (chars[0] >= 'a' && chars[0] <= 'z') {
-            chars[0] = (char) (chars[0] - 32);
-        }
-        string = new String(chars);
-        return string;
     }
 
 
