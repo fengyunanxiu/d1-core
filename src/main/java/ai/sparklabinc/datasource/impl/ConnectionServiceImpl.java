@@ -116,22 +116,6 @@ public class ConnectionServiceImpl implements ConnectionService {
                     //驱动
                     driverName = "com.mysql.jdbc.Driver";
                     break;
-                case Constants.DATABASE_TYPE_ORACLE:
-                    if (useSshTunnel) {
-                        url = "jdbc:mysql://localhost:" + localPort + (dbBasicConfigDTO.getUrl() == null ? "" : (dbBasicConfigDTO.getUrl()));
-                    } else {
-                        url = dbBasicConfigDTO.getUrl();
-                    }
-                    driverName = "oracle.jdbc.driver.OracleDriver";
-                    break;
-                case Constants.DATABASE_TYPE_SQLSERVER:
-                    if (useSshTunnel) {
-                        url = "jdbc:mysql://localhost:" + localPort + (dbBasicConfigDTO.getUrl() == null ? "" : (dbBasicConfigDTO.getUrl()));
-                    } else {
-                        url = dbBasicConfigDTO.getUrl();
-                    }
-                    driverName = "com.microsoft.jdbc.sqlserver.SQLServerDriver";
-                    break;
                 case Constants.DATABASE_TYPE_POSTGRESQL:
                     Map<String, String> otherParams = dbBasicConfigDTO.getOtherParams();
                     String database = otherParams.get("database");
@@ -148,14 +132,6 @@ public class ConnectionServiceImpl implements ConnectionService {
                         url = "jdbc:postgresql://" + dbHost + ":" + dbPort + "/" + database + (StringUtils.isBlank(dbBasicConfigDTO.getUrl()) ? "" : (dbBasicConfigDTO.getUrl()));
                     }
                     driverName = "org.postgresql.Driver";
-                    break;
-                case Constants.DATABASE_TYPE_SQLITE:
-                    if (useSshTunnel) {
-                        url = "jdbc:mysql://localhost:" + localPort + (dbBasicConfigDTO.getUrl() == null ? "" : ("/" + dbBasicConfigDTO.getUrl()));
-                    } else {
-                        url = dbBasicConfigDTO.getUrl();
-                    }
-                    driverName = "org.sqlite.JDBC";
                     break;
                 default:
                     driverName = "com.mysql.jdbc.Driver";

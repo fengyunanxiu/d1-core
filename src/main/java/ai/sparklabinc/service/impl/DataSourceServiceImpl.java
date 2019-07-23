@@ -295,6 +295,11 @@ public class DataSourceServiceImpl implements DataSourceService {
         boolean updateResult = false;
         DbBasicConfigDO dbBasicConfigDO = new DbBasicConfigDO();
         BeanUtils.copyProperties(dbBasicConfigDTO, dbBasicConfigDO);
+        if (dbBasicConfigDTO.getOtherParams() != null) {
+            String jsonString = JSON.toJSONString(dbBasicConfigDTO.getOtherParams());
+            dbBasicConfigDO.setOtherParams(jsonString);
+        }
+
         String urlSuffix = DsConstants.urlSuffix;
         if (dbSecurityConfigDTO.getUseSshTunnel()) {
             if (dbSecurityConfigDTO.getUseSsl() != null && dbSecurityConfigDTO.getUseSsl()) {

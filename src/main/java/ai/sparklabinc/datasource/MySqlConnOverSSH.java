@@ -24,7 +24,7 @@ public class MySqlConnOverSSH {
 		int rport=3306;
 	    String dbuserName = "pgadmin@b2b-prd-ipbm-ipbm-0";
         String dbpassword = "dNxFDpsr3E61";
-        String dbName = "ipbm_yhis?useSSL=true&requireSSL=false&useUnicode=true&characterEncoding=UTF-8";
+        String dbName = "ipbm_yhis?useSSL=true&useUnicode=true&characterEncoding=UTF-8";
         String url = "jdbc:mysql://localhost:"+lport+"/"+dbName;
         String driverName="com.mysql.jdbc.Driver";
         Connection conn = null;
