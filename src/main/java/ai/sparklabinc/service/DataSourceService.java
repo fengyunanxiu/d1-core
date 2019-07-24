@@ -42,7 +42,7 @@ public interface DataSourceService {
 
     boolean dataSourceTestConnection(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws Exception;
 
-    boolean updateDsFormTableSetting(DsFormTableSettingDO dsFormTableSettingDO) throws IOException, SQLException;
+    Boolean saveDsFormTableSetting(List<DsFormTableSettingDO> dsFormTableSettingDOSForUpdate,List<DsFormTableSettingDO> dsFormTableSettingDOSForAdd) throws Exception;
 
     List<Map<String,Object>> refreshDsFormTableSetting(String dsKey) throws Exception;
 

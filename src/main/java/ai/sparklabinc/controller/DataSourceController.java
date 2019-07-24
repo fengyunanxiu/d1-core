@@ -1,17 +1,14 @@
 package ai.sparklabinc.controller;
 
-import ai.sparklabinc.datasource.Constants;
 import ai.sparklabinc.dto.DbFullConfigDTO;
-import ai.sparklabinc.dto.DbSecurityConfigDTO;
 import ai.sparklabinc.dto.DsKeyBasicConfigDTO;
 import ai.sparklabinc.entity.DsFormTableSettingDO;
 import ai.sparklabinc.exception.custom.IllegalParameterException;
 import ai.sparklabinc.service.DataSourceService;
-import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,8 +17,10 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @version V1.0
@@ -129,12 +128,20 @@ public class DataSourceController {
 
 
     @ResponseBody
-    @PostMapping("/update-ds-form-table-setting")
-    public Object updateDsFormTableSetting(@RequestBody DsFormTableSettingDO dsFormTableSettingDO) throws Exception {
-        if(dsFormTableSettingDO.getId()==null||dsFormTableSettingDO.getId()<=0){
-            throw new IllegalParameterException("Id can not be null!");
+    @PostMapping("/save-ds-form-table-setting")
+    public boolean saveDsFormTableSetting(@RequestBody List<DsFormTableSettingDO> dsFormTableSettingDOS) throws Exception {
+        if(CollectionUtils.isEmpty(dsFormTableSettingDOS)){
+            throw new IllegalParameterException("form infomation can not be null!");
         }
-        return dataSourceService.updateDsFormTableSetting(dsFormTableSettingDO);
+        List<DsFormTableSettingDO> dsFormTableSettingDOSForUpdate = dsFormTableSettingDOS.stream()
+                .filter(e -> e.getId() != null && e.getId() > 0)
+                .collect(Collectors.toList());
+
+        List<DsFormTableSettingDO> dsFormTableSettingDOSForAdd= dsFormTableSettingDOS.stream()
+                .filter(e -> e.getId() == null || e.getId() <= 0)
+                .collect(Collectors.toList());
+
+        return dataSourceService.saveDsFormTableSetting(dsFormTableSettingDOSForUpdate,dsFormTableSettingDOSForAdd);
     }
 
 

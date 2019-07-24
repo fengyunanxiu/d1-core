@@ -420,9 +420,22 @@ public class DataSourceServiceImpl implements DataSourceService {
     }
 
     @Override
-    public boolean updateDsFormTableSetting(DsFormTableSettingDO dsFormTableSettingDO) throws IOException, SQLException {
-        Integer updateResult = dsFormTableSettingDao.updateDsFormTableSetting(dsFormTableSettingDO);
-        return updateResult > 0 ? true : false;
+    public Boolean saveDsFormTableSetting(List<DsFormTableSettingDO> dsFormTableSettingDOSForUpdate,List<DsFormTableSettingDO> dsFormTableSettingDOSForAdd) throws Exception{
+        //更新操作
+        for(DsFormTableSettingDO dsFormTableSettingDO:dsFormTableSettingDOSForUpdate){
+            Integer updateResult = dsFormTableSettingDao.updateDsFormTableSetting(dsFormTableSettingDO);
+            if(updateResult<=0){
+                return false;
+            }
+        }
+        //添加操作
+        for(DsFormTableSettingDO dsFormTableSettingDO:dsFormTableSettingDOSForAdd){
+            Integer add = dsFormTableSettingDao.add(dsFormTableSettingDO);
+            if(add<=0){
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
