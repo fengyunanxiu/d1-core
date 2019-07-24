@@ -422,19 +422,25 @@ public class DataSourceServiceImpl implements DataSourceService {
     @Override
     public Boolean saveDsFormTableSetting(List<DsFormTableSettingDO> dsFormTableSettingDOSForUpdate,List<DsFormTableSettingDO> dsFormTableSettingDOSForAdd) throws Exception{
         //更新操作
-        for(DsFormTableSettingDO dsFormTableSettingDO:dsFormTableSettingDOSForUpdate){
-            Integer updateResult = dsFormTableSettingDao.updateDsFormTableSetting(dsFormTableSettingDO);
-            if(updateResult<=0){
-                return false;
+        if(!CollectionUtils.isEmpty(dsFormTableSettingDOSForUpdate)){
+            for(DsFormTableSettingDO dsFormTableSettingDO:dsFormTableSettingDOSForUpdate){
+                Integer updateResult = dsFormTableSettingDao.updateDsFormTableSetting(dsFormTableSettingDO);
+                if(updateResult<=0){
+                    return false;
+                }
             }
         }
+
         //添加操作
-        for(DsFormTableSettingDO dsFormTableSettingDO:dsFormTableSettingDOSForAdd){
-            Integer add = dsFormTableSettingDao.add(dsFormTableSettingDO);
-            if(add<=0){
-                return false;
+        if(!CollectionUtils.isEmpty(dsFormTableSettingDOSForAdd)){
+            for(DsFormTableSettingDO dsFormTableSettingDO:dsFormTableSettingDOSForAdd){
+                Integer add = dsFormTableSettingDao.add(dsFormTableSettingDO);
+                if(add<=0){
+                    return false;
+                }
             }
         }
+
         return true;
     }
 
