@@ -430,7 +430,6 @@ public class DataSourceServiceImpl implements DataSourceService {
                 }
             }
         }
-
         //添加操作
         if(!CollectionUtils.isEmpty(dsFormTableSettingDOSForAdd)){
             for(DsFormTableSettingDO dsFormTableSettingDO:dsFormTableSettingDOSForAdd){

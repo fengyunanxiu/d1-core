@@ -138,7 +138,7 @@ public class DataSourceController {
                 .collect(Collectors.toList());
 
         List<DsFormTableSettingDO> dsFormTableSettingDOSForAdd= dsFormTableSettingDOS.stream()
-                .filter(e -> e.getId() == null || e.getId() <= 0)
+                .filter((e) -> e.getId() == null || e.getId() <= 0)
                 .collect(Collectors.toList());
 
         return dataSourceService.saveDsFormTableSetting(dsFormTableSettingDOSForUpdate,dsFormTableSettingDOSForAdd);

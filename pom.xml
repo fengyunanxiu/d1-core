@@ -20,8 +20,37 @@
         <start-class>ai.sparklabinc.D1CoreApplication</start-class>
         <springfox.version>2.7.0</springfox.version>
         <poi.version>3.9</poi.version>
-
     </properties>
+
+    <repositories>
+        <!-- 代码库 -->
+        <repository>
+            <id>maven-ali</id>
+            <url>http://maven.aliyun.com/nexus/content/groups/public//</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
+        </repository>
+
+        <repository>
+            <id>maven-center</id>
+            <url>https://nexus.pentaho.org/content/repositories/omni/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
 
     <dependencies>
         <dependency>
@@ -73,12 +102,20 @@
             <version>8</version>
         </dependency>
 
-        <!--POSTGRESQL-->
+        <!--postgresql驱动包-->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.2.6</version>
         </dependency>
+
+        <!--sqlserver-->
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>7.2.0.jre8</version>
+        </dependency>
+
 
         <!-- poi-ooxml支持XSSF -->
         <dependency>

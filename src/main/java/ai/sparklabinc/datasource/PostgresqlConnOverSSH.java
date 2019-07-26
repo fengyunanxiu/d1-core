@@ -46,7 +46,7 @@ public class PostgresqlConnOverSSH {
 	    	//mysql database connectivity
             Class.forName(driverName).newInstance();
             conn = DriverManager.getConnection (url, dbuserName, dbpassword);
-			PreparedStatement preparedStatement = conn.prepareStatement("SELECT datname FROM pg_database;");
+			PreparedStatement preparedStatement = conn.prepareStatement("SELECT datname FROM pg_database");
 			ResultSet resultSet = preparedStatement.executeQuery();
 			while (resultSet.next()){
 				System.out.println(resultSet.getString(1));
