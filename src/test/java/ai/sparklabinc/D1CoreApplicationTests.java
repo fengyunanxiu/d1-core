@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -39,7 +36,8 @@ public class D1CoreApplicationTests {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
+
+
 
 }

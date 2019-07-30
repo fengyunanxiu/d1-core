@@ -74,5 +74,16 @@ public class ApiUtils {
 	}
 
 
+	public static Map<String, String[]> restructureParameter(Map<String, String[]> requestParameterMap) {
+		Map<String, String[]> parameterMap = new LinkedHashMap<>();
+		//先copy map的值
+		for(Map.Entry<String, String[]> entry : requestParameterMap.entrySet()) {
+			parameterMap.put(entry.getKey(), entry.getValue());
+		}
+		return parameterMap;
+	}
+
+
+
 
 }

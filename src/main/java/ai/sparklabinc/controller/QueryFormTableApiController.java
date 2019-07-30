@@ -151,7 +151,22 @@ public class QueryFormTableApiController {
     }
 
 
-
-
+    /**
+     * 获取指定数据源的table设置(新)
+     *
+     * @param dataSourceKey
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/general-sql")
+    @ResponseBody
+    public Object generalSQL(@RequestParam(name = "data_source_key", required = true) String dataSourceKey,
+                               HttpServletRequest request) throws Exception {
+        if (StringUtils.isNullOrEmpty(dataSourceKey)) {
+            throw new ResourceNotFoundException("Empty data source key " + dataSourceKey);
+        }
+        Map<String, String[]> requestParams = ApiUtils.restructureParameter(request.getParameterMap());
+        return queryFormTableService.generalSQL(dataSourceKey,requestParams);
+    }
 
 }

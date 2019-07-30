@@ -1,6 +1,7 @@
 package ai.sparklabinc.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -13,23 +14,29 @@ public class SqlConditions {
 	
 	private  List<String>  conditions = new ArrayList<>();
 	private List<Object> parameters = new ArrayList<>();
+	private List<String> paramTypes=new ArrayList<>();
+
+
+
 	/**
 	 * like查询
 	 * @param tableFieldName 字段名
 	 * @param value 
 	 */
-	public void createLikeCondions(String tableFieldName, Object value) {
+	public void createLikeCondions(String tableFieldName, Object value,String tableFieldType) {
 		conditions.add( tableFieldName + " like ?");
 		parameters.add("%" + value +"%");
+		paramTypes.add(tableFieldType);
 	}
 	/**
 	 * 等于
 	 * @param tableFieldName
 	 * @param value
 	 */
-	public void createEqualCondition(String tableFieldName, Object value) {
+	public void createEqualCondition(String tableFieldName, Object value,String tableFieldType) {
 		conditions.add( tableFieldName + "= ?");
 		parameters.add(value);
+		paramTypes.add(tableFieldType);
 	}
 
     /**
@@ -37,9 +44,10 @@ public class SqlConditions {
      * @param tableFieldName
      * @param value
      */
-    public void createNotEqualCondition(String tableFieldName, Object value) {
+    public void createNotEqualCondition(String tableFieldName, Object value,String tableFieldType) {
         conditions.add( tableFieldName + "<> ?");
         parameters.add(value);
+		paramTypes.add(tableFieldType);
     }
 	
 	/**
@@ -48,10 +56,13 @@ public class SqlConditions {
 	 * @param start
 	 * @param end
 	 */
-	public void createBetweenCondition(String tableFieldName, Object start, Object end) {
+	public void createBetweenCondition(String tableFieldName, Object start, Object end ,String tableFieldType) {
 		conditions.add("(" + tableFieldName + " BETWEEN ? AND ? )" );
 		parameters.add(start);
+		paramTypes.add(tableFieldType);
 		parameters.add(end);
+		paramTypes.add(tableFieldType);
+
 	}
 
 	/**
@@ -60,12 +71,19 @@ public class SqlConditions {
 	 * @param start
 	 * @param end
 	 */
-	public void createBetweenUnknown(String tableFieldName, Object value1, Object value2) {
+	public void createBetweenUnknown(String tableFieldName, Object value1, Object value2,String tableFieldType) {
 		conditions.add("(" + tableFieldName + " BETWEEN ? AND ? or " + tableFieldName + " BETWEEN ? AND ?)");
 		parameters.add(value1);
+		paramTypes.add(tableFieldType);
+
 		parameters.add(value2);
+		paramTypes.add(tableFieldType);
+
 		parameters.add(value2);
+		paramTypes.add(tableFieldType);
+
 		parameters.add(value1);
+		paramTypes.add(tableFieldType);
 	}
 
 	/**
@@ -73,11 +91,12 @@ public class SqlConditions {
 	 * @param tableFieldName
 	 * @param objs
 	 */
-	public void createEqualOneFieldAndMultipleValue(String tableFieldName, Object[] objs) {
+	public void createEqualOneFieldAndMultipleValue(String tableFieldName, Object[] objs,String tableFieldType) {
 		List<String> mayClause = new ArrayList<>();
 		for (Object obj : objs) {
 			mayClause.add(tableFieldName + "=?");
 			parameters.add(obj);
+			paramTypes.add(tableFieldType);
 		}
 		conditions.add("(" + org.apache.commons.lang3.StringUtils.join(mayClause," or ") +")");
 	}
@@ -86,28 +105,31 @@ public class SqlConditions {
 	 * @param tableFieldName
 	 * @param objs
 	 */
-	public void createLikeOneFieldAndMultipleValue(String tableFieldName, Object[] objs) {
+	public void createLikeOneFieldAndMultipleValue(String tableFieldName, Object[] objs,String tableFieldType) {
 		List<String> mayClause = new ArrayList<>();
 		
 		for (Object obj : objs) {
 			mayClause.add(tableFieldName + " like ?");
 			parameters.add("%" + obj +"%");
+			paramTypes.add(tableFieldType);
 		}
-		
 		conditions.add("(" + org.apache.commons.lang3.StringUtils.join(mayClause," or ") +")");
 	}
+	
 	/**
 	 * or条件，一个值查询多个字段 =
 	 * @param tableFieldNames
 	 * @param value
 	 */
-	public void createEqualMultipleFieldAndOneCondition(String[] tableFieldNames,Object  value) {
+	public void createEqualMultipleFieldAndOneCondition(String[] tableFieldNames,String[] tableFieldTypes,Object value) {
 		List<String> mayClause = new ArrayList<>();
 		
 		for (String fieldName : tableFieldNames) {
 			mayClause.add(fieldName + "=?");
 			parameters.add(value);
 		}
+		paramTypes.addAll(Arrays.asList(tableFieldTypes));
+
 		conditions.add("(" + org.apache.commons.lang3.StringUtils.join(mayClause," or ") +")");
 	}
 	
@@ -116,13 +138,14 @@ public class SqlConditions {
 	 * @param tableFieldNames
 	 * @param value
 	 */
-	public void createLikeMultipleFieldAndOneValue(String[] tableFieldNames,Object  value) {
+	public void createLikeMultipleFieldAndOneValue(String[] tableFieldNames,Object  value,String[] tableFieldTypes) {
 		List<String> mayClause = new ArrayList<>();
 		
 		for (String fieldName : tableFieldNames) {
 			mayClause.add(fieldName + " like ?");
 			parameters.add("%" + value +"%");
 		}
+		paramTypes.addAll(Arrays.asList(tableFieldTypes));
 		conditions.add("(" + org.apache.commons.lang3.StringUtils.join(mayClause," or ") +")");
 	}
 	/**
@@ -135,6 +158,7 @@ public class SqlConditions {
 			for (Object value : values) {
 				mayClause.add(fieldName + " like ?");
 				parameters.add("%" + value +"%");
+				paramTypes.add("varchar(20)");
 			}
 		}
 		conditions.add("(" + org.apache.commons.lang3.StringUtils.join(mayClause," or ") +")");
@@ -156,7 +180,7 @@ public class SqlConditions {
 	 * @param tableFieldName
 	 * @param objects
 	 */
-	public void createInOneFieldAndMultipleValue(String tableFieldName, Object[] objects) {
+	public void createInOneFieldAndMultipleValue(String tableFieldName, Object[] objects,String tableFieldType) {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(tableFieldName + " in (");
 
@@ -164,6 +188,7 @@ public class SqlConditions {
 		for (Object parameter : objects) {
 			conditionBuider.append("?,");
 			parameters.add(parameter);
+			paramTypes.add(tableFieldType);
 		}
 
 		if(conditionBuider.length() > 0){
@@ -181,7 +206,7 @@ public class SqlConditions {
 	 * @param start
 	 * @param end
 	 */
-	public  void createRangeCondition(String tableFieldName, Object start, Object end) {
+	public  void createRangeCondition(String tableFieldName, Object start, Object end,String tableFieldType ) {
 
 		if(start == null && end == null){
 			return;
@@ -195,15 +220,20 @@ public class SqlConditions {
 			stringBuilder.append(tableFieldName);
 			stringBuilder.append(" <= ?");
 			parameters.add(start);
+			paramTypes.add(tableFieldType);
 			parameters.add(end);
+			paramTypes.add(tableFieldType);
 		}else if(start != null && end == null){
 			stringBuilder.append(tableFieldName);
 			stringBuilder.append(" >= ? ");
 			parameters.add(start);
+			paramTypes.add(tableFieldType);
+
 		}else{
 			stringBuilder.append(tableFieldName);
 			stringBuilder.append(" <= ?");
 			parameters.add(end);
+			paramTypes.add(tableFieldType);
 		}
 		stringBuilder.append(")");
 		conditions.add(stringBuilder.toString());
@@ -216,6 +246,9 @@ public class SqlConditions {
 
 	public List<Object> getParameters() {
 		return parameters;
+	}
+	public List<String> getParamTypes() {
+		return paramTypes;
 	}
 	public boolean isEmptyConditions() {
 		return conditions.isEmpty();

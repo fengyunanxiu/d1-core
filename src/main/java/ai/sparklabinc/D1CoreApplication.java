@@ -13,9 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @EnableEurekaClient
 @EnableFeignClients
 public class D1CoreApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(D1CoreApplication.class, args);
     }
-
 }

@@ -2,6 +2,7 @@ package ai.sparklabinc.service;
 
 import ai.sparklabinc.dto.AssemblyResultDTO;
 import ai.sparklabinc.dto.PageResultDTO;
+import ai.sparklabinc.dto.SQLGenerResultDTO;
 import ai.sparklabinc.vo.DsKeyQueryFormSettingVO;
 import ai.sparklabinc.vo.DsKeyQueryTableSettingVO;
 import ai.sparklabinc.vo.DsKeyQueryVO;
@@ -25,4 +26,6 @@ public interface QueryFormTableService {
     AssemblyResultDTO generalQuery(String dataSourceKey, Map<String, String[]> simpleParameters, Pageable pageable, String moreWhereClause, boolean returnDatasource) throws Exception;
 
     PageResultDTO executeQuery(String dataSourceKey, Map<String,String[]> simpleParameters, Pageable pageable, String moreWhereClause) throws Exception;
+
+    SQLGenerResultDTO generalSQL(String dataSourceKey, Map<String, String[]> requestParams) throws Exception;
 }

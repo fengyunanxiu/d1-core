@@ -20,7 +20,7 @@ public class PostgresqlConnOverSSH {
 	    String password="zj7UPo7fXkh#f#CX3";
 		String host="10.126.147.5";
 
-		String rhost="b2b-qa-blackhawk-blackhawk-0.postgres.database.chinacloudapi.cn";
+		String rhost="b2b-qa-blackhawk-blackhawk-0.jdbc.database.chinacloudapi.cn";
 		int rport=5432;
 	    String dbuserName = "pgadmin@b2b-qa-blackhawk-blackhawk-0";
         String dbpassword = "buQqO$$3KUeQlD15";

@@ -7,17 +7,16 @@ import ai.sparklabinc.dao.DsFormTableSettingDao;
 import ai.sparklabinc.dao.DsKeyBasicConfigDao;
 import ai.sparklabinc.dao.DsQueryDao;
 import ai.sparklabinc.datasource.DataSourceFactory;
-import ai.sparklabinc.dto.AssemblyResultDTO;
-import ai.sparklabinc.dto.OptionListAndDefaultValDTO;
-import ai.sparklabinc.dto.PageResultDTO;
-import ai.sparklabinc.dto.QueryParameterGroupDTO;
+import ai.sparklabinc.dto.*;
 import ai.sparklabinc.entity.DbBasicConfigDO;
 import ai.sparklabinc.entity.DsFormTableSettingDO;
 import ai.sparklabinc.entity.DsKeyBasicConfigDO;
 import ai.sparklabinc.exception.ServiceException;
 import ai.sparklabinc.exception.custom.ResourceNotFoundException;
+import ai.sparklabinc.generator.SQLGeneratorFactory;
 import ai.sparklabinc.service.DsBasicDictionaryService;
 import ai.sparklabinc.service.QueryFormTableService;
+import ai.sparklabinc.util.ApiUtils;
 import ai.sparklabinc.util.D1SQLUtils;
 import ai.sparklabinc.util.SqlConditions;
 import ai.sparklabinc.util.StringUtils;
@@ -67,6 +66,9 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
 
     @Autowired
     private DsQueryDao dsQueryDao;
+
+    @Autowired
+    private SQLGeneratorFactory sqlGeneratorFactory;
 
     @Override
     public List<DsKeyQueryTableSettingVO> getDsKeyQueryTableSetting(String dataSourceKey) throws Exception {
@@ -127,7 +129,6 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
             throw new ServiceException(dataSourceKey + " Failed to transfrom query parameter map");
         }
 
-
         String tableName = dsKeyBasicConfigDO.getTableName();
         String schemaName = dsKeyBasicConfigDO.getSchema();
         if(StringUtils.isNotNullNorEmpty(schemaName)) {
@@ -142,8 +143,7 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
             assemblyResultDTO.setDataSource(dataSource);
         }
 
-
-        SqlConditions sqlConditions = generateSqlConditions(queryParameterGroup);
+        SqlConditions sqlConditions = generateSqlConditions(queryParameterGroup,dsFormTableSettingDOList);
         List<Object> paramList = sqlConditions.getParameters();
         String wholeWhereClause = (StringUtils.isNotNullNorEmpty(sqlConditions.getWhereClause()) ? " AND " : "") + sqlConditions.getWhereClause() + (moreWhereClause == null ? "" : moreWhereClause);
 
@@ -172,9 +172,40 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
     }
 
 
+    @Override
+    public SQLGenerResultDTO generalSQL(String dataSourceKey, Map<String, String[]> requestParams) throws Exception {
+        List<DsFormTableSettingDO> dsFormTableSettingDOList = getAllDsFormTableSettingByDsKey(dataSourceKey);
+        if (dsFormTableSettingDOList == null || dsFormTableSettingDOList.isEmpty()) {
+            throw new ResourceNotFoundException(String.format("DataSourceKey not found:%s", dataSourceKey));
+        }
+
+        DsKeyBasicConfigDO dsKeyBasicConfigDO = this.dsKeyBasicConfigDao.getDsKeyBasicConfigByDsKey(dataSourceKey);
+        if(dsKeyBasicConfigDO == null){
+            throw new ResourceNotFoundException(String.format("DataSourceKey not found:%s", dataSourceKey));
+        }
+        String tableName = dsKeyBasicConfigDO.getTableName();
+        String schemaName = dsKeyBasicConfigDO.getSchema();
+        DbBasicConfigDO dbBasicConfigDO = dbBasicConfigDao.findById(dsKeyBasicConfigDO.getFkDbId());
+        if(dbBasicConfigDO==null|| org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getType())){
+            throw new ServiceException("db config is not found or db type is null");
+        }
+
+        QueryParameterGroupDTO queryParameterGroup = null;
+        try {
+            Map<String, String[]> simpleParameters = ApiUtils.removeReservedParameters(requestParams);
+            queryParameterGroup = this.dsFormTableSettingComponent.transformQueryParameterMap("",
+                    simpleParameters, dsFormTableSettingDOList);
+        } catch (Exception e) {
+            LOGGER.error("[{}] Failed to transfrom query parameter map", e);
+            throw new ServiceException(" Failed to transfrom query parameter map");
+        }
 
 
-
+        SQLGenerResultDTO sqlGenerResultDTO = sqlGeneratorFactory.builder(dbBasicConfigDO.getType())
+                .buildSQL(null, schemaName, tableName, requestParams, queryParameterGroup, dsFormTableSettingDOList);
+        sqlGenerResultDTO.setSqlType(dbBasicConfigDO.getType());
+        return sqlGenerResultDTO;
+    }
 
 
 
@@ -225,7 +256,7 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
     }
 
 
-    private SqlConditions generateSqlConditions(QueryParameterGroupDTO queryParameterGroup) throws Exception {
+    private SqlConditions generateSqlConditions(QueryParameterGroupDTO queryParameterGroup, List<DsFormTableSettingDO> dsFormTableSettingDOList) throws Exception {
         SqlConditions sqlConditions = new SqlConditions();
         if (queryParameterGroup != null) {
             try {
@@ -237,22 +268,22 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
                 Map<String, String[]> accurateNumberRange = queryParameterGroup.getAccurateNumberRange();
 
                 if(fuzzyLike != null && !fuzzyLike.isEmpty()){
-                    D1SQLUtils.buildFuzzyLikeQueryParameterString(fuzzyLike, sqlConditions);
+                    D1SQLUtils.buildFuzzyLikeQueryParameterString(fuzzyLike, sqlConditions,dsFormTableSettingDOList);
                 }
                 if(accurateEqualsString != null && !accurateEqualsString.isEmpty()){
-                    D1SQLUtils.buildAccurateEqualsStringQueryParameterString(accurateEqualsString, sqlConditions);
+                    D1SQLUtils.buildAccurateEqualsStringQueryParameterString(accurateEqualsString, sqlConditions,dsFormTableSettingDOList);
                 }
                 if(accurateInString != null && !accurateInString.isEmpty()){
-                    D1SQLUtils.buildAccurateInStringQueryParameterString(accurateInString, sqlConditions);
+                    D1SQLUtils.buildAccurateInStringQueryParameterString(accurateInString, sqlConditions,dsFormTableSettingDOList);
                 }
                 if(accurateDateRange != null && !accurateDateRange.isEmpty()){
-                    D1SQLUtils.buildAccurateDateRangeQueryParameterString(accurateDateRange, sqlConditions);
+                    D1SQLUtils.buildAccurateDateRangeQueryParameterString(accurateDateRange, sqlConditions,dsFormTableSettingDOList);
                 }
                 if(accurateDateTimeRange != null && !accurateDateTimeRange.isEmpty()){
-                    D1SQLUtils.buildAccurateDateTimeRangeQueryParameterString(accurateDateTimeRange, sqlConditions);
+                    D1SQLUtils.buildAccurateDateTimeRangeQueryParameterString(accurateDateTimeRange, sqlConditions,dsFormTableSettingDOList);
                 }
                 if(accurateNumberRange != null && !accurateNumberRange.isEmpty()){
-                    D1SQLUtils.buildAccurateNumberRangeQueryParameterString(accurateNumberRange, sqlConditions);
+                    D1SQLUtils.buildAccurateNumberRangeQueryParameterString(accurateNumberRange, sqlConditions,dsFormTableSettingDOList);
                 }
             } catch (Exception e) {
                 LOGGER.error("Failed to build sql", e);
