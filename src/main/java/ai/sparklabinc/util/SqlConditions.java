@@ -171,7 +171,9 @@ public class SqlConditions {
 	public void createTimeIntersection(String timeStart, String timeEnd,Object valueStart,Object valueEnd) {
 		conditions.add("NOT ((" + timeEnd + " < ? ) OR ("+timeStart+" > ?))" );
 		parameters.add(valueStart);
+		paramTypes.add("datetime");
 		parameters.add(valueEnd);
+		paramTypes.add("datetime");
 	}
 
 
