@@ -17,10 +17,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 import java.util.Map;
 
@@ -97,7 +94,7 @@ public class OracleDbBasicConfigDaoImpl implements DbBasicConfigDao {
                     "values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             DataSource dataSource = d1BasicDataSoure;
             conn = dataSource.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            PreparedStatement preparedStatement = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
             String now = DateUtils.ofLongStr(new java.util.Date());
             //绑定参数
             bindParameters(preparedStatement, now, now,
@@ -132,7 +129,7 @@ public class OracleDbBasicConfigDaoImpl implements DbBasicConfigDao {
             String sql = "delete from db_basic_config where id = ?";
             DataSource dataSource = d1BasicDataSoure;
             conn = dataSource.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            PreparedStatement preparedStatement = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
             //绑定参数
             bindParameters(preparedStatement, dsId);
             update = preparedStatement.executeUpdate();

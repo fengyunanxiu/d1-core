@@ -14,10 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 /**
  * @version V1.0
@@ -43,7 +40,7 @@ public class MysqlDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
 
     @Override
     public DbSecurityConfigDO findById(Long id) throws SQLException, IOException {
-        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, 0L));
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
 
         String querySql = "select * from db_security_config where id = ? ";
 
@@ -115,7 +112,7 @@ public class MysqlDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
                     "         ?, ?, ?, ?, ?)";
             DataSource dataSource = d1BasicDataSoure;
             conn = dataSource.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            PreparedStatement preparedStatement = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
             String now = DateUtils.ofLongStr(new java.util.Date());
             //绑定参数
             bindParameters(preparedStatement,
@@ -152,7 +149,7 @@ public class MysqlDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
             String sql = "delete from db_security_config where id = ?";
             DataSource dataSource = d1BasicDataSoure;
             conn = dataSource.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            PreparedStatement preparedStatement = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
             //绑定参数
             bindParameters(preparedStatement, dsId);
             update = preparedStatement.executeUpdate();

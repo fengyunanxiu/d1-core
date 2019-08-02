@@ -129,7 +129,7 @@ public class OracleDsFormTableSettingDaoImpl implements DsFormTableSettingDao {
 
     @Override
     public Integer add(DsFormTableSettingDO dsFormTableSettingDO) throws IOException, SQLException {
-        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,null));
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
         String sql ="insert into ds_form_table_setting(gmt_create, gmt_modified, ds_key, db_field_name, db_field_type," +
                 " view_field_label, db_field_comment, form_field_visible, form_field_sequence, form_field_query_type," +
                 " form_field_is_exactly, form_field_child_field_name, form_field_dic_domain_name, form_field_use_dic, form_field_def_val_stratege," +
@@ -213,7 +213,7 @@ public class OracleDsFormTableSettingDaoImpl implements DsFormTableSettingDao {
 
     @Override
     public List<DsFormTableSettingDO> getAllDsFormTableSettingByDsKeyForExport(String dataSourceKey) throws SQLException, IOException {
-        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,null));
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
         String querySql = "" +
                 "select id as  id," +
                 "  gmt_create as  gmtCreate," +
@@ -254,7 +254,7 @@ public class OracleDsFormTableSettingDaoImpl implements DsFormTableSettingDao {
     @Override
     public Integer updateDsFormTableSetting(DsFormTableSettingDO dsFormTableSettingDO) throws SQLException, IOException {
         int result=0;
-        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,null));
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
         String updateSql = "update ds_form_table_setting " +
                 "set gmt_modified = ?," +
                 "   ds_key = ?," +
