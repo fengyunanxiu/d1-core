@@ -10,7 +10,7 @@ package ai.sparklabinc.d1.dto;
 public class DsKeyInfoDTO {
     private Long id;
     private Long fkDbId;
-    private String schema;
+    private String schemaName;
     private String tableName;
     private String label;
     private Integer level;
@@ -31,12 +31,12 @@ public class DsKeyInfoDTO {
         this.fkDbId = fkDbId;
     }
 
-    public String getSchema() {
-        return schema;
+    public String getSchemaName() {
+        return schemaName;
     }
 
-    public void setSchema(String schema) {
-        this.schema = schema;
+    public void setSchemaName(String schemaName) {
+        this.schemaName = schemaName;
     }
 
     public String getTableName() {

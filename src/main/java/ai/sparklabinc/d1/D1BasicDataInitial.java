@@ -43,9 +43,9 @@ public class D1BasicDataInitial implements ApplicationListener<ContextRefreshedE
                 LOGGER.error("D1 Basic Data Initial is falied!");
                 LOGGER.error("",e);
             }
-
         }
     }
+
 
      @Bean("D1BasicDataSoure")
      public DataSource createD1BasicDataSoure(BasicDbConfig basicDbConfig) throws Exception {

@@ -132,7 +132,7 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
         }
 
         String tableName = dsKeyBasicConfigDO.getTableName();
-        String schemaName = dsKeyBasicConfigDO.getSchema();
+        String schemaName = dsKeyBasicConfigDO.getSchemaName();
         if(StringUtils.isNotNullNorEmpty(schemaName)) {
             tableName = schemaName + "." + tableName;
         }
@@ -141,7 +141,7 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
         if(returnDatasource){
             Long dbId = dsKeyBasicConfigDO.getFkDbId();
             DbBasicConfigDO dbBasicConfigDO = this.dbBasicConfigDao.findById(dbId);
-            DataSource dataSource = dataSourceFactory.builder(dbBasicConfigDO.getType(), dbBasicConfigDO.getId());
+            DataSource dataSource = dataSourceFactory.builder(dbBasicConfigDO.getDbType(), dbBasicConfigDO.getId());
             assemblyResultDTO.setDataSource(dataSource);
         }
 
@@ -186,9 +186,9 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
             throw new ResourceNotFoundException(String.format("DataSourceKey not found:%s", dataSourceKey));
         }
         String tableName = dsKeyBasicConfigDO.getTableName();
-        String schemaName = dsKeyBasicConfigDO.getSchema();
+        String schemaName = dsKeyBasicConfigDO.getSchemaName();
         DbBasicConfigDO dbBasicConfigDO = dbBasicConfigDao.findById(dsKeyBasicConfigDO.getFkDbId());
-        if(dbBasicConfigDO==null|| org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getType())){
+        if(dbBasicConfigDO==null|| org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getDbType())){
             throw new ServiceException("db config is not found or db type is null");
         }
 
@@ -203,9 +203,9 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
         }
 
 
-        SQLGenerResultDTO sqlGenerResultDTO = sqlGeneratorFactory.builder(dbBasicConfigDO.getType())
+        SQLGenerResultDTO sqlGenerResultDTO = sqlGeneratorFactory.builder(dbBasicConfigDO.getDbType())
                 .buildSQL(null, schemaName, tableName, requestParams, queryParameterGroup, dsFormTableSettingDOList);
-        sqlGenerResultDTO.setSqlType(dbBasicConfigDO.getType());
+        sqlGenerResultDTO.setSqlType(dbBasicConfigDO.getDbType());
         return sqlGenerResultDTO;
     }
 

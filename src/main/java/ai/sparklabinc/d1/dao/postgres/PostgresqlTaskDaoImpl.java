@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,8 +30,11 @@ import java.sql.SQLException;
 @Repository("PostgresqlTaskDaoImpl")
 public class PostgresqlTaskDaoImpl implements DataExportTaskDao {
     private final static Logger LOGGER = LoggerFactory.getLogger(PostgresqlTaskDaoImpl.class);
-    @Autowired
-    private DataSourceFactory dataSourceFactory;
+
+    @Resource(name="D1BasicDataSoure")
+    private DataSource d1BasicDataSoure;
+
+
     @Override
     public DataDaoType getDataDaoType() {
         return DataDaoType.POSTGRESQL;
@@ -38,7 +42,7 @@ public class PostgresqlTaskDaoImpl implements DataExportTaskDao {
 
     @Override
     public DataExportTaskDO addDataExportTask(DataExportTaskDO dataExportTaskDO) throws Exception {
-        DataSource dataSource = dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null);
+        DataSource dataSource = d1BasicDataSoure;
         Connection connection = null;
         Long id = 0L;
         try {
@@ -77,7 +81,7 @@ public class PostgresqlTaskDaoImpl implements DataExportTaskDao {
 
     @Override
     public DataExportTaskDO findById(Long id) throws IOException, SQLException {
-        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null));
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
         String sql = "select id," +
                 "   start_at as startAt," +
                 "   end_at as endAt," +
@@ -94,7 +98,7 @@ public class PostgresqlTaskDaoImpl implements DataExportTaskDao {
 
     @Override
     public DataExportTaskDO updateDataExportTask(DataExportTaskDO dataExportTaskDO) throws IOException, SQLException {
-        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null));
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
         String sql = "update data_export_task set start_at=?," +
                 "  end_at=?," +
                 "  failed_at=?, " +

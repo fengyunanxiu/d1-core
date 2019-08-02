@@ -105,7 +105,7 @@ public class DataSourceServiceImpl implements DataSourceService {
                 urlSuffix += "&useSSL=false";
             }
         }
-        dbBasicConfigDO.setUrl(urlSuffix);
+        dbBasicConfigDO.setDbUrl(urlSuffix);
 
         Long dsId = dbBasicConfigDao.add(dbBasicConfigDO);
         if (dbSecurityConfigDTO == null) {
@@ -118,7 +118,7 @@ public class DataSourceServiceImpl implements DataSourceService {
             int row = dbSecurityConfigDao.add(dbSecurityConfigDO);
             if (row > 0) {
                 DbInforamtionDTO dbInforamtionDTO = new DbInforamtionDTO();
-                dbInforamtionDTO.setLabel(dbBasicConfigDO.getName());
+                dbInforamtionDTO.setLabel(dbBasicConfigDO.getDbName());
                 dbInforamtionDTO.setLevel(1);
                 dbInforamtionDTO.setId(dsId);
                 return dbInforamtionDTO;
@@ -246,7 +246,7 @@ public class DataSourceServiceImpl implements DataSourceService {
             //从内存中拿数据筛选
             List<DsKeyInfoDTO> dsKeyInfoDTOList = allDataSourceKey.stream()
                     .filter(e -> e.getFkDbId().equals(dsId)
-                            && e.getSchema().equals(schema.getLabel())
+                            && e.getSchemaName().equals(schema.getLabel())
                             && e.getTableName().equals(tableAndView.getLabel()))
                     .collect(Collectors.toList());
             List<DbInforamtionDTO> dataSourceKeys = new LinkedList<>();
@@ -305,7 +305,7 @@ public class DataSourceServiceImpl implements DataSourceService {
                 urlSuffix += "&useSSL=false";
             }
         }
-        dbBasicConfigDO.setUrl(urlSuffix);
+        dbBasicConfigDO.setDbUrl(urlSuffix);
 
         Integer dbBasicUpdate = dbBasicConfigDao.editDataSourceProperty(dbBasicConfigDO);
 
@@ -344,7 +344,7 @@ public class DataSourceServiceImpl implements DataSourceService {
             throw new IllegalParameterException("data source key already exists!");
         }
         DbBasicConfigDO dbBasicConfigDO = dbBasicConfigDao.findById(dsKeyBasicConfigDTO.getFkDbId());
-        switch (dbBasicConfigDO.getType()) {
+        switch (dbBasicConfigDO.getDbType()) {
             case Constants.DATABASE_TYPE_MYSQL:
                 return mysqlDataSourceComponent.addDataSourceKeyProcess(dsKeyBasicConfigDTO);
             case Constants.DATABASE_TYPE_POSTGRESQL:
@@ -364,7 +364,7 @@ public class DataSourceServiceImpl implements DataSourceService {
         }
         //获取data source key真实的table字段
         List<TableColumnsDetailDTO> tableColumnsDetailDTOList = mysqlDataSourceDao.selectTableColumnsDetail(dsKeyBasicConfigDO.getFkDbId(),
-                dsKeyBasicConfigDO.getSchema(),
+                dsKeyBasicConfigDO.getSchemaName(),
                 dsKeyBasicConfigDO.getTableName());
 
         List<String> colunmNames = tableColumnsDetailDTOList.stream()
@@ -447,7 +447,7 @@ public class DataSourceServiceImpl implements DataSourceService {
             throw new ResourceNotFoundException("data source key config is not found!");
         }
         DbBasicConfigDO dbBasicConfigDO = dbBasicConfigDao.findById(dsKeyBasicConfigDO.getFkDbId());
-        switch (dbBasicConfigDO.getType()) {
+        switch (dbBasicConfigDO.getDbType()) {
             case Constants.DATABASE_TYPE_MYSQL:
                 return mysqlDataSourceComponent.refreshDsFormTableSettingProcess(dsKey, dsKeyBasicConfigDO);
             case Constants.DATABASE_TYPE_POSTGRESQL:

@@ -8,77 +8,22 @@ public class DbBasicConfigDTO {
      * 枚举类型，MySQL,Sql Server等（见DsConstant）
      */
 
-    private String type;
+    private String dbType;
 
-    private String name;
+    private String dbName;
 
-    private String host;
+    private String dbHost;
 
-    private Integer port;
+    private Integer dbPort;
 
-    private String user;
+    private String dbUser;
 
-    private String password;
+    private String dbPassword;
 
-    private String url;
+    private String dbUrl;
 
     private Map<String,String> otherParams;
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public Integer getPort() {
-        return port;
-    }
-
-    public void setPort(Integer port) {
-        this.port = port;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
 
     public Long getId() {
         return id;
@@ -86,6 +31,62 @@ public class DbBasicConfigDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getDbType() {
+        return dbType;
+    }
+
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
+    }
+
+    public String getDbName() {
+        return dbName;
+    }
+
+    public void setDbName(String dbName) {
+        this.dbName = dbName;
+    }
+
+    public String getDbHost() {
+        return dbHost;
+    }
+
+    public void setDbHost(String dbHost) {
+        this.dbHost = dbHost;
+    }
+
+    public Integer getDbPort() {
+        return dbPort;
+    }
+
+    public void setDbPort(Integer dbPort) {
+        this.dbPort = dbPort;
+    }
+
+    public String getDbUser() {
+        return dbUser;
+    }
+
+    public void setDbUser(String dbUser) {
+        this.dbUser = dbUser;
+    }
+
+    public String getDbPassword() {
+        return dbPassword;
+    }
+
+    public void setDbPassword(String dbPassword) {
+        this.dbPassword = dbPassword;
+    }
+
+    public String getDbUrl() {
+        return dbUrl;
+    }
+
+    public void setDbUrl(String dbUrl) {
+        this.dbUrl = dbUrl;
     }
 
     public Map<String, String> getOtherParams() {

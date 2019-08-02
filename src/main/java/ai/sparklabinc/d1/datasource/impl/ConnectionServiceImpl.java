@@ -34,7 +34,7 @@ public class ConnectionServiceImpl implements ConnectionService {
     public boolean createConnection(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws Exception {
         boolean connectResult = false;
         //数据库类型
-        String dbType = dbBasicConfigDTO.getType();
+        String dbType = dbBasicConfigDTO.getDbType();
         //驱动包名称
         String driverName = "";
         if (StringUtils.isBlank(dbType)) {
@@ -56,10 +56,10 @@ public class ConnectionServiceImpl implements ConnectionService {
         String sshPassPhrase = dbSecurityConfigDTO.getSshPassPhrase();
 
         //db basic
-        String dbHost = dbBasicConfigDTO.getHost();
-        Integer dbPort = dbBasicConfigDTO.getPort();
-        String dbUserName = dbBasicConfigDTO.getUser();
-        String dbPassword = dbBasicConfigDTO.getPassword();
+        String dbHost = dbBasicConfigDTO.getDbHost();
+        Integer dbPort = dbBasicConfigDTO.getDbPort();
+        String dbUserName = dbBasicConfigDTO.getDbUser();
+        String dbPassword = dbBasicConfigDTO.getDbPassword();
         String url = "";
         Connection conn = null;
         Session session = null;
@@ -107,9 +107,9 @@ public class ConnectionServiceImpl implements ConnectionService {
                         } else {
                             urlSuffix += "&useSSL=false";
                         }
-                        url = "jdbc:mysql://localhost:" + localPort + (StringUtils.isBlank(dbBasicConfigDTO.getUrl()) ? "" : ("/" + dbBasicConfigDTO.getUrl()));
+                        url = "jdbc:mysql://localhost:" + localPort + (StringUtils.isBlank(dbBasicConfigDTO.getDbUrl()) ? "" : ("/" + dbBasicConfigDTO.getDbUrl()));
                     } else {
-                        url = "jdbc:mysql://" + dbHost + ":" + dbPort + (StringUtils.isBlank(dbBasicConfigDTO.getUrl()) ? "" : ("/" + dbBasicConfigDTO.getUrl()));
+                        url = "jdbc:mysql://" + dbHost + ":" + dbPort + (StringUtils.isBlank(dbBasicConfigDTO.getDbUrl()) ? "" : ("/" + dbBasicConfigDTO.getDbUrl()));
                     }
                     //驱动
                     driverName = "com.mysql.jdbc.Driver";
@@ -125,9 +125,9 @@ public class ConnectionServiceImpl implements ConnectionService {
                     }
 
                     if (useSshTunnel) {
-                        url = "jdbc:postgresql://localhost:" + localPort + "/" + database + (StringUtils.isBlank(dbBasicConfigDTO.getUrl()) ? "" : (dbBasicConfigDTO.getUrl()));
+                        url = "jdbc:postgresql://localhost:" + localPort + "/" + database + (StringUtils.isBlank(dbBasicConfigDTO.getDbUrl()) ? "" : (dbBasicConfigDTO.getDbUrl()));
                     } else {
-                        url = "jdbc:postgresql://" + dbHost + ":" + dbPort + "/" + database + (StringUtils.isBlank(dbBasicConfigDTO.getUrl()) ? "" : (dbBasicConfigDTO.getUrl()));
+                        url = "jdbc:postgresql://" + dbHost + ":" + dbPort + "/" + database + (StringUtils.isBlank(dbBasicConfigDTO.getDbUrl()) ? "" : (dbBasicConfigDTO.getDbUrl()));
                     }
                     driverName = "org.postgresql.Driver";
                     break;

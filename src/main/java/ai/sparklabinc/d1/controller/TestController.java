@@ -59,13 +59,13 @@ public class TestController {
                     dbBasicConfigDO.setId(id);
                     dbBasicConfigDO.setGmtCreate(gmtCreateStr);
                     dbBasicConfigDO.setGmtModified(gmtModifiedStr);
-                    dbBasicConfigDO.setType(type);
-                    dbBasicConfigDO.setName(name);
-                   // dbBasicConfigDO.setHost(host);
-                    dbBasicConfigDO.setPort(port);
-                    dbBasicConfigDO.setUser(user);
-                    dbBasicConfigDO.setPassword(password);
-                    dbBasicConfigDO.setUrl(url);
+                    dbBasicConfigDO.setDbType(type);
+                    dbBasicConfigDO.setDbName(name);
+                   // dbBasicConfigDO.setDBHost(host);
+                    dbBasicConfigDO.setDbPort(port);
+                    dbBasicConfigDO.setDbUser(user);
+                    dbBasicConfigDO.setDbPassword(password);
+                    dbBasicConfigDO.setDbUrl(url);
                     dbBasicConfigDOS.add(dbBasicConfigDO);
                 }
                 return dbBasicConfigDOS;
@@ -91,8 +91,8 @@ public class TestController {
 
         DbBasicConfigDO basicConfigDO = new DbBasicConfigDO();
 
-        basicConfigDO.setHost("test");
-        Object[] params = new Object[]{basicConfigDO.getType(),basicConfigDO.getName(),basicConfigDO.getHost(),basicConfigDO.getPort(),basicConfigDO.getUser(),basicConfigDO.getPassword(),basicConfigDO.getUrl()};
+        basicConfigDO.setDbHost("test");
+        Object[] params = new Object[]{basicConfigDO.getDbType(),basicConfigDO.getDbName(),basicConfigDO.getDbHost(),basicConfigDO.getDbPort(),basicConfigDO.getDbUser(),basicConfigDO.getDbPassword(),basicConfigDO.getDbUrl()};
         queryRunner.update(sql,params);
         return null;
     }

@@ -44,6 +44,7 @@ if total<1 then
 end if;
 end;
 
+
 ###
 
 
@@ -116,7 +117,7 @@ if total<1 then
     gmt_create          varchar(30)  not null,
     gmt_modified        varchar(30)  not null,
     fk_db_id            number       not null,
-    schema_             varchar(100) not null,
+    schema_name            varchar(100) not null,
     table_name          varchar(100) not null,
     item_id_field_name  varchar(100) not null,
     item_val_field_name varchar(100) not null,

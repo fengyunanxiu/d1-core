@@ -97,10 +97,10 @@ public class DataSourceFactory {
                     return null;
                 }
 
-                dbHost = dbBasicConfigDO.getHost();
-                dbPort = dbBasicConfigDO.getPort();
-                dbUserName = dbBasicConfigDO.getUser();
-                dbPassword = dbBasicConfigDO.getPassword();
+                dbHost = dbBasicConfigDO.getDbHost();
+                dbPort = dbBasicConfigDO.getDbPort();
+                dbUserName = dbBasicConfigDO.getDbUser();
+                dbPassword = dbBasicConfigDO.getDbPassword();
 
             }
 
@@ -206,10 +206,10 @@ public class DataSourceFactory {
         String driverName="";
         DbBasicConfigDO dbBasicConfigDO = dbBasicConfigDao.findById(dsId);
         DbSecurityConfigDO dbSecurityConfigDTO = dbSecurityConfigDao.findById(dsId);
-        if(dbBasicConfigDO==null||StringUtils.isNullOrEmpty(dbBasicConfigDO.getType())){
+        if(dbBasicConfigDO==null||StringUtils.isNullOrEmpty(dbBasicConfigDO.getDbType())){
             throw new SQLException("database type can not be null");
         }
-        switch (dbBasicConfigDO.getType()){
+        switch (dbBasicConfigDO.getDbType()){
             case Constants.DATABASE_TYPE_MYSQL:
                 //url
                 datasource = CreateMysqlDataSource(dsId, useSshTunnel, localPort, dbHost, dbPort, dbUserName, dbPassword, dbBasicConfigDO, dbSecurityConfigDTO);
@@ -228,9 +228,9 @@ public class DataSourceFactory {
         String driverName;
         DataSource datasource;
         if (useSshTunnel) {
-            url = "jdbc:mysql://localhost:" + localPort + (org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getUrl()) ? "" : (dbBasicConfigDO.getUrl()));
+            url = "jdbc:mysql://localhost:" + localPort + (org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getDbUrl()) ? "" : (dbBasicConfigDO.getDbUrl()));
         } else {
-            url = "jdbc:mysql://" + dbHost + ":" + dbPort + (org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getUrl())? "" : (dbBasicConfigDO.getUrl()));
+            url = "jdbc:mysql://" + dbHost + ":" + dbPort + (org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getDbUrl())? "" : (dbBasicConfigDO.getDbUrl()));
         }
         if(dbSecurityConfigDTO.getUseSsl()!= null && dbSecurityConfigDTO.getUseSsl() ){
             url += "?&useSSL=true";
@@ -266,9 +266,9 @@ public class DataSourceFactory {
             throw new SQLException("database can not be null");
         }
         if (useSshTunnel) {
-            url = "jdbc:postgresql://localhost:" + localPort +"/"+database+ (org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getUrl())? "" : (dbBasicConfigDO.getUrl()));
+            url = "jdbc:postgresql://localhost:" + localPort +"/"+database+ (org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getDbUrl())? "" : (dbBasicConfigDO.getDbUrl()));
         } else {
-            url = "jdbc:postgresql://"+dbHost+":" + dbPort +"/"+database+ (org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getUrl())? "" : ( dbBasicConfigDO.getUrl()));
+            url = "jdbc:postgresql://"+dbHost+":" + dbPort +"/"+database+ (org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getDbUrl())? "" : ( dbBasicConfigDO.getDbUrl()));
         }
 
         if(dbSecurityConfigDTO.getUseSsl()!= null && dbSecurityConfigDTO.getUseSsl() ){

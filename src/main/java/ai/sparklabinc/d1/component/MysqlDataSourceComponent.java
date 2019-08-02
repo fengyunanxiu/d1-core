@@ -34,8 +34,6 @@ import java.util.stream.Collectors;
 public class MysqlDataSourceComponent {
 
 
-
-
     @Autowired
     @Qualifier("DsKeyBasicConfigDao")
     private DsKeyBasicConfigDao dsKeyBasicConfigDao;
@@ -60,7 +58,7 @@ public class MysqlDataSourceComponent {
 
             //添加data source key form table setting 配置信息
             List<TableColumnsDetailDTO> tableColumnsDetailDTOList = dataSourceDao.selectTableColumnsDetail(dsKeyBasicConfigDO.getFkDbId(),
-                    dsKeyBasicConfigDO.getSchema(),
+                    dsKeyBasicConfigDO.getSchemaName(),
                     dsKeyBasicConfigDO.getTableName());
             if (CollectionUtils.isEmpty(tableColumnsDetailDTOList)) {
                 return dbInforamtionDTO;
@@ -146,7 +144,7 @@ public class MysqlDataSourceComponent {
 
         //从ddl语句中获取table columns setting的配置信息
         List<TableColumnsDetailDTO> tableColumnsDetailDTOList = dataSourceDao.selectTableColumnsDetail(dsKeyBasicConfigDO.getFkDbId(),
-                dsKeyBasicConfigDO.getSchema(),
+                dsKeyBasicConfigDO.getSchemaName(),
                 dsKeyBasicConfigDO.getTableName());
         if (CollectionUtils.isEmpty(tableColumnsDetailDTOList)) {
             throw new ResourceNotFoundException("table or view probably was removed！");

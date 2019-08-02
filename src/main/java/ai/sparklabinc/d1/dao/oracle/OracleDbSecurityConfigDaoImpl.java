@@ -12,6 +12,7 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,6 +30,9 @@ import java.sql.SQLException;
 public class OracleDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
     @Autowired
     private DataSourceFactory dataSourceFactory;
+
+    @Resource(name="D1BasicDataSoure")
+    private DataSource d1BasicDataSoure;
 
 
     @Override
@@ -108,7 +112,7 @@ public class OracleDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
                     " values (?, ?, ?, ?, ?, ?," +
                     "         ?, ?, ?, ?, ?," +
                     "         ?, ?, ?, ?, ?)";
-            DataSource dataSource = dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null);
+            DataSource dataSource = d1BasicDataSoure;
             conn = dataSource.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             String now = DateUtils.ofLongStr(new java.util.Date());
@@ -145,7 +149,7 @@ public class OracleDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
         int update = 0;
         try {
             String sql = "delete from db_security_config where id = ?";
-            DataSource dataSource = dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null);
+            DataSource dataSource = d1BasicDataSoure;
             conn = dataSource.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             //绑定参数
@@ -161,7 +165,7 @@ public class OracleDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
 
     @Override
     public Integer editDataSourceProperty(DbSecurityConfigDO dbSecurityConfigDO) throws IOException, SQLException {
-        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null));
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
         String sql = "update db_security_config set  gmt_modified  = ?," +
                 "use_ssl = ?," +
                 "use_ssh_tunnel = ?," +

@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -36,12 +37,14 @@ public class PostgresqlDsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
 
     @Autowired
     private DataSourceFactory dataSourceFactory;
+
+    @Resource(name="D1BasicDataSoure")
+    private DataSource d1BasicDataSoure;
+
     @Override
     public DataDaoType getDataDaoType() {
         return DataDaoType.POSTGRESQL;
     }
-
-
 
 
     @Override
@@ -60,7 +63,7 @@ public class PostgresqlDsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
                     String gmtModifiedStr = resultSet.getString("gmt_modified");
                     String dsKey = resultSet.getString("ds_key");
                     Long fkDbId = resultSet.getLong("fk_db_id");
-                    String schema = resultSet.getString("schema");
+                    String schema = resultSet.getString("schema_name");
                     String tableName = resultSet.getString("table_name");
                     String description = resultSet.getString("description");
 
@@ -70,7 +73,7 @@ public class PostgresqlDsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
                     resultDsKeyBasicConfigDO.setGmtModified(gmtModifiedStr);
                     resultDsKeyBasicConfigDO.setDsKey(dsKey);
                     resultDsKeyBasicConfigDO.setFkDbId(fkDbId);
-                    resultDsKeyBasicConfigDO.setSchema(schema);
+                    resultDsKeyBasicConfigDO.setSchemaName(schema);
                     resultDsKeyBasicConfigDO.setTableName(tableName);
                     resultDsKeyBasicConfigDO.setDescription(description);
                 }
@@ -89,7 +92,7 @@ public class PostgresqlDsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
                 "       4 as level" +
                 " from ds_key_basic_config" +
                 " where fk_db_id=? " +
-                " and schema=? " +
+                " and schema_name=? " +
                 " and table_name=?";
         List<DbInforamtionDTO> result = queryRunner.query(sql, new BeanListHandler<>(DbInforamtionDTO.class), dsId, schema, tableName);
         return  result;
@@ -101,13 +104,13 @@ public class PostgresqlDsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
         QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,null));
         String sql ="select  id," +
                 "       fk_db_id as fkDbId," +
-                "       schema ," +
+                "       schema_name as schemaName ," +
                 "       table_name as tableName," +
                 "       ds_key as label," +
                 "       4 as level" +
                 " from ds_key_basic_config" +
                 " where fk_db_id is not null " +
-                " and schema is not null " +
+                " and schema_name is not null " +
                 " and table_name is not null";
         List<DsKeyInfoDTO> result = queryRunner.query(sql, new BeanListHandler<>(DsKeyInfoDTO.class));
         return  result;
@@ -116,13 +119,13 @@ public class PostgresqlDsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
     @Override
     public Integer addDataSourceKey(DsKeyBasicConfigDO dsKeyBasicConfigDO) throws IOException, SQLException {
         QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,null));
-        String sql ="insert into ds_key_basic_config( ds_key, fk_db_id, schema, table_name, " +
+        String sql ="insert into ds_key_basic_config( ds_key, fk_db_id, schema_name, table_name, " +
                 " description, gmt_create, gmt_modified)" +
                 " values ( ?, ?, ?, ?, ?, ?, ?) ";
         String now = DateUtils.ofLongStr(new java.util.Date());
         Object[] objectParams={dsKeyBasicConfigDO.getDsKey(),
                 dsKeyBasicConfigDO.getFkDbId(),
-                dsKeyBasicConfigDO.getSchema(),
+                dsKeyBasicConfigDO.getSchemaName(),
                 dsKeyBasicConfigDO.getTableName(),
                 dsKeyBasicConfigDO.getDescription(),
                 now,now};
@@ -135,7 +138,7 @@ public class PostgresqlDsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
     public Integer updateDataSourceKey(String dsKey,String newDsKey,String description) throws IOException, SQLException {
         QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,null));
         String sql =" update ds_key_basic_config set ds_key = ?,description = ?,gmt_modified = ?" +
-                    " where ds_key = ? ";
+                " where ds_key = ? ";
         String now = DateUtils.ofLongStr(new java.util.Date());
         Object[] objectParams={newDsKey,description,now,dsKey};
         int result = queryRunner.update(sql, objectParams);
@@ -155,17 +158,17 @@ public class PostgresqlDsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
         Connection conn=null;
         Long id = 0L;
         try {
-            String sql = "insert into ds_key_basic_config( ds_key, fk_db_id, schema, table_name, " +
+            String sql = "insert into ds_key_basic_config( ds_key, fk_db_id, schema_name, table_name, " +
                     " description, gmt_create, gmt_modified)" +
                     " values ( ?, ?, ?, ?, ?, ?, ?) ";
-            DataSource dataSource = dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null);
+            DataSource dataSource = d1BasicDataSoure;
             conn = dataSource.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             String now = DateUtils.ofLongStr(new java.util.Date());
             //绑定参数
             bindParameters(preparedStatement, dsKeyBasicConfigDO.getDsKey(),
                     dsKeyBasicConfigDO.getFkDbId(),
-                    dsKeyBasicConfigDO.getSchema(),
+                    dsKeyBasicConfigDO.getSchemaName(),
                     dsKeyBasicConfigDO.getTableName(),
                     dsKeyBasicConfigDO.getDescription(),
                     now,now);

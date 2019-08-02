@@ -45,7 +45,7 @@ public class MysqlDsQueryDaoImpl implements DsQueryDao {
     @Override
     public PageResultDTO excuteQuery(AssemblyResultDTO assemblyResultDTO, Long fkDbId) throws IOException, SQLException {
         DbBasicConfigDO dbBasicConfigDO = dbBasicConfigDao.findById(fkDbId);
-        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(dbBasicConfigDO.getType(), dbBasicConfigDO.getId()));
+        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(dbBasicConfigDO.getDbType(), dbBasicConfigDO.getId()));
 
         String countSql=assemblyResultDTO.getCountSql();
         String querySql=assemblyResultDTO.getQuerySql();

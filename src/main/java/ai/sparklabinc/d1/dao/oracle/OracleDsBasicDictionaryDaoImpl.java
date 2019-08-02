@@ -7,11 +7,13 @@ import ai.sparklabinc.d1.datasource.DataSourceFactory;
 import ai.sparklabinc.d1.entity.DsBasicDictionaryDO;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.tomcat.jdbc.pool.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,8 +30,8 @@ public class OracleDsBasicDictionaryDaoImpl implements DsBasicDictionaryDao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OracleDsBasicDictionaryDaoImpl.class);
 
-    @Autowired
-    private DataSourceFactory dataSourceFactory;
+    @Resource(name="D1BasicDataSoure")
+    private DataSource d1BasicDataSoure;
 
 
     @Override
@@ -40,7 +42,7 @@ public class OracleDsBasicDictionaryDaoImpl implements DsBasicDictionaryDao {
     @Override
     public List<DsBasicDictionaryDO> findListByDomainName(String domainName) throws SQLException, IOException {
 
-        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,0L));
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
         String querySql = "select * from ds_basic_dictionary where domain_name = ?  order by gmt_modified desc ";
         LOGGER.info("querySql:{}",querySql);
 

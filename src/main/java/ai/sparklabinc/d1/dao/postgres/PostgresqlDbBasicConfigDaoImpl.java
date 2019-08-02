@@ -15,6 +15,7 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -32,8 +33,8 @@ import java.util.Map;
  */
 @Repository("PostgresqlDbBasicConfigDaoImpl")
 public class PostgresqlDbBasicConfigDaoImpl implements DbBasicConfigDao {
-    @Autowired
-    private DataSourceFactory dataSourceFactory;
+    @Resource(name="D1BasicDataSoure")
+    private DataSource d1BasicDataSoure;
 
     @Override
     public DataDaoType getDataDaoType() {
@@ -43,7 +44,7 @@ public class PostgresqlDbBasicConfigDaoImpl implements DbBasicConfigDao {
     @Override
     public DbBasicConfigDO findById(Long id) throws SQLException, IOException {
 
-        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null));
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
 
         String querySql = "select * from db_basic_config where id = ? ";
 
@@ -55,25 +56,25 @@ public class PostgresqlDbBasicConfigDaoImpl implements DbBasicConfigDao {
                     Long id = resultSet.getLong("id");
                     String gmtCreateStr = resultSet.getString("gmt_create");
                     String gmtModifiedStr = resultSet.getString("gmt_modified");
-                    String type = resultSet.getString("type");
-                    String name = resultSet.getString("name");
-                    String host = resultSet.getString("host");
-                    Integer port = resultSet.getInt("port");
-                    String user = resultSet.getString("user");
-                    String password = resultSet.getString("password");
-                    String url = resultSet.getString("url");
+                    String type = resultSet.getString("db_type");
+                    String name = resultSet.getString("db_name");
+                    String host = resultSet.getString("db_host");
+                    Integer port = resultSet.getInt("db_port");
+                    String user = resultSet.getString("db_user");
+                    String password = resultSet.getString("db_password");
+                    String url = resultSet.getString("db_url");
                     String otherParams = resultSet.getString("other_params");
                     //封装数据
                     dbBasicConfigDO.setId(id);
                     dbBasicConfigDO.setGmtCreate(gmtCreateStr);
                     dbBasicConfigDO.setGmtModified(gmtModifiedStr);
-                    dbBasicConfigDO.setType(type);
-                    dbBasicConfigDO.setName(name);
-                    dbBasicConfigDO.setHost(host);
-                    dbBasicConfigDO.setPort(port);
-                    dbBasicConfigDO.setUser(user);
-                    dbBasicConfigDO.setPassword(password);
-                    dbBasicConfigDO.setUrl(url);
+                    dbBasicConfigDO.setDbType(type);
+                    dbBasicConfigDO.setDbName(name);
+                    dbBasicConfigDO.setDbHost(host);
+                    dbBasicConfigDO.setDbPort(port);
+                    dbBasicConfigDO.setDbUser(user);
+                    dbBasicConfigDO.setDbPassword(password);
+                    dbBasicConfigDO.setDbUrl(url);
                     dbBasicConfigDO.setOtherParams(otherParams);
                     return dbBasicConfigDO;
                 }
@@ -91,21 +92,21 @@ public class PostgresqlDbBasicConfigDaoImpl implements DbBasicConfigDao {
         Long id = 0L;
         try {
 
-            String sql = "insert into db_basic_config( gmt_create, gmt_modified, type, name, host, port, user, password,url,other_params)" +
+            String sql = "insert into db_basic_config( gmt_create, gmt_modified, db_type, db_name, db_host, db_port, db_user, db_password,db_url,other_params)" +
                     "values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            DataSource dataSource = dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null);
+            DataSource dataSource = d1BasicDataSoure;
             conn = dataSource.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             String now = DateUtils.ofLongStr(new java.util.Date());
             //绑定参数
             bindParameters(preparedStatement, now, now,
-                    dbBasicConfigDO.getType(),
-                    dbBasicConfigDO.getName(),
-                    dbBasicConfigDO.getHost(),
-                    dbBasicConfigDO.getPort(),
-                    dbBasicConfigDO.getUser(),
-                    dbBasicConfigDO.getPassword(),
-                    dbBasicConfigDO.getUrl(),
+                    dbBasicConfigDO.getDbType(),
+                    dbBasicConfigDO.getDbName(),
+                    dbBasicConfigDO.getDbHost(),
+                    dbBasicConfigDO.getDbPort(),
+                    dbBasicConfigDO.getDbUser(),
+                    dbBasicConfigDO.getDbPassword(),
+                    dbBasicConfigDO.getDbUrl(),
                     dbBasicConfigDO.getOtherParams());
             preparedStatement.execute();
             ResultSet rs = preparedStatement.getGeneratedKeys();
@@ -128,7 +129,7 @@ public class PostgresqlDbBasicConfigDaoImpl implements DbBasicConfigDao {
         int update=0;
         try {
             String sql = "delete from db_basic_config where id = ?";
-            DataSource dataSource = dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null);
+            DataSource dataSource = d1BasicDataSoure;
             conn = dataSource.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             //绑定参数
@@ -144,8 +145,8 @@ public class PostgresqlDbBasicConfigDaoImpl implements DbBasicConfigDao {
 
     @Override
     public List<DbInforamtionDTO> selectDataSources(Long dsId) throws IOException, SQLException {
-        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null));
-        String querySql = "select id,name as label,1 as level,'' as type from db_basic_config where 1=1 ";
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
+        String querySql = "select id,db_name as label,1 as level,'' as type from db_basic_config where 1=1 ";
         List<DbInforamtionDTO> dbInforamtionDTOList=null;
         if(dsId!=null){
             querySql+=" and id = ? order by id asc";
@@ -159,7 +160,7 @@ public class PostgresqlDbBasicConfigDaoImpl implements DbBasicConfigDao {
 
     @Override
     public List<Map<String, Object>> selectDataSourceProperty(Long dsId) throws IOException, SQLException {
-        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null));
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
         String querySql = "select * from ds_full_config_view where id = ?";
         List<Map<String, Object>> result = queryRunner.query(querySql, new MapListHandler(),dsId);
         return  result;
@@ -168,26 +169,26 @@ public class PostgresqlDbBasicConfigDaoImpl implements DbBasicConfigDao {
 
     @Override
     public Integer editDataSourceProperty(DbBasicConfigDO dbBasicConfigDO) throws IOException, SQLException {
-        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null));
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
         String sql="update db_basic_config set  gmt_modified = ?," +
-                "   type = ?," +
-                "   name = ?," +
-                "   host = ?," +
-                "   port = ?," +
-                "   user = ?," +
-                "   password = ?," +
-                "   url = ? ," +
+                "   db_type = ?," +
+                "   db_name = ?," +
+                "   db_host = ?," +
+                "   db_port = ?," +
+                "   db_user = ?," +
+                "   db_password = ?," +
+                "   db_url = ? ," +
                 "   other_params = ? " +
                 "where  id = ?";
         String now = DateUtils.ofLongStr(new java.util.Date());
         Object[] objectsParams={now,
-                dbBasicConfigDO.getType(),
-                dbBasicConfigDO.getName(),
-                dbBasicConfigDO.getHost(),
-                dbBasicConfigDO.getPort(),
-                dbBasicConfigDO.getUser(),
-                dbBasicConfigDO.getPassword(),
-                dbBasicConfigDO.getUrl(),
+                dbBasicConfigDO.getDbType(),
+                dbBasicConfigDO.getDbName(),
+                dbBasicConfigDO.getDbHost(),
+                dbBasicConfigDO.getDbPort(),
+                dbBasicConfigDO.getDbUser(),
+                dbBasicConfigDO.getDbPassword(),
+                dbBasicConfigDO.getDbUrl(),
                 dbBasicConfigDO.getOtherParams(),
                 dbBasicConfigDO.getId()
         };

@@ -32,14 +32,14 @@ public class DsFormTableSettingDO {
     private Boolean formFieldIsExactly;
 
 
-    private String formFieldChildrenDbFieldName;
+    private String formFieldChildFieldName;
 
 
     private String formFieldDicDomainName;
 
     private Boolean formFieldUseDic;
 
-    private String formFieldDefaultValStratege;
+    private String formFieldDefValStratege;
 
 
     private Boolean tableFieldVisible;
@@ -63,7 +63,7 @@ public class DsFormTableSettingDO {
 
     private Boolean formFieldUseDefaultVal;
 
-    private String formFieldManMadeDefaultVal;
+    private String formFieldDefaultVal;
 
     private String formFieldDefaultValSql;
 
@@ -166,14 +166,6 @@ public class DsFormTableSettingDO {
         this.formFieldIsExactly = formFieldIsExactly;
     }
 
-    public String getFormFieldChildrenDbFieldName() {
-        return formFieldChildrenDbFieldName;
-    }
-
-    public void setFormFieldChildrenDbFieldName(String formFieldChildrenDbFieldName) {
-        this.formFieldChildrenDbFieldName = formFieldChildrenDbFieldName;
-    }
-
     public String getFormFieldDicDomainName() {
         return formFieldDicDomainName;
     }
@@ -190,13 +182,6 @@ public class DsFormTableSettingDO {
         this.formFieldUseDic = formFieldUseDic;
     }
 
-    public String getFormFieldDefaultValStratege() {
-        return formFieldDefaultValStratege;
-    }
-
-    public void setFormFieldDefaultValStratege(String formFieldDefaultValStratege) {
-        this.formFieldDefaultValStratege = formFieldDefaultValStratege;
-    }
 
     public Boolean getTableFieldVisible() {
         return tableFieldVisible;
@@ -279,20 +264,36 @@ public class DsFormTableSettingDO {
         this.formFieldUseDefaultVal = formFieldUseDefaultVal;
     }
 
-    public String getFormFieldManMadeDefaultVal() {
-        return formFieldManMadeDefaultVal;
-    }
-
-    public void setFormFieldManMadeDefaultVal(String formFieldManMadeDefaultVal) {
-        this.formFieldManMadeDefaultVal = formFieldManMadeDefaultVal;
-    }
-
     public String getFormFieldDefaultValSql() {
         return formFieldDefaultValSql;
     }
 
     public void setFormFieldDefaultValSql(String formFieldDefaultValSql) {
         this.formFieldDefaultValSql = formFieldDefaultValSql;
+    }
+
+    public String getFormFieldChildFieldName() {
+        return formFieldChildFieldName;
+    }
+
+    public void setFormFieldChildFieldName(String formFieldChildFieldName) {
+        this.formFieldChildFieldName = formFieldChildFieldName;
+    }
+
+    public String getFormFieldDefValStratege() {
+        return formFieldDefValStratege;
+    }
+
+    public void setFormFieldDefValStratege(String formFieldDefValStratege) {
+        this.formFieldDefValStratege = formFieldDefValStratege;
+    }
+
+    public String getFormFieldDefaultVal() {
+        return formFieldDefaultVal;
+    }
+
+    public void setFormFieldDefaultVal(String formFieldDefaultVal) {
+        this.formFieldDefaultVal = formFieldDefaultVal;
     }
 
     public Boolean getColumnIsExist() {

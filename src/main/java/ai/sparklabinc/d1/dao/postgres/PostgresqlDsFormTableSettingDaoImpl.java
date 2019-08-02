@@ -10,11 +10,13 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.MapListHandler;
+import org.apache.tomcat.jdbc.pool.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,14 +35,19 @@ public class PostgresqlDsFormTableSettingDaoImpl implements DsFormTableSettingDa
     private static final Logger LOGGER = LoggerFactory.getLogger(PostgresqlDsFormTableSettingDaoImpl.class);
     @Autowired
     private DataSourceFactory dataSourceFactory;
+
+    @Resource(name="D1BasicDataSoure")
+    private DataSource d1BasicDataSoure;
+
     @Override
     public DataDaoType getDataDaoType() {
         return DataDaoType.POSTGRESQL;
     }
 
+
     @Override
     public List<DsFormTableSettingDO> getAllDsFormTableSettingByDsKey(String dataSourceKey) throws SQLException, IOException {
-        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,0L));
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
         String querySql = "select * from ds_form_table_setting where ds_key = ? ";
         LOGGER.info("querySql:{}", querySql);
         List<DsFormTableSettingDO>  dsFormTableSettingDOList = queryRunner.query(querySql, new ResultSetHandler<List<DsFormTableSettingDO>>() {
@@ -61,10 +68,10 @@ public class PostgresqlDsFormTableSettingDaoImpl implements DsFormTableSettingDa
                     Integer formFieldSequence = resultSet.getInt("form_field_sequence");
                     String formFieldQueryType = resultSet.getString("form_field_query_type");
                     Boolean formFieldIsExactly = resultSet.getBoolean("form_field_is_exactly");
-                    String formFieldChildrenDbFieldName = resultSet.getString("form_field_children_db_field_name");
+                    String formFieldChildrenDbFieldName = resultSet.getString("form_field_child_field_name");
                     String formFieldDicDomainName = resultSet.getString("form_field_dic_domain_name");
                     Boolean formFieldUseDic = resultSet.getBoolean("form_field_use_dic");
-                    String formFieldDefalutValStratege = resultSet.getString("form_field_defalut_val_stratege");
+                    String formFieldDefalutValStratege = resultSet.getString("form_field_def_val_stratege");
                     Boolean tableFieldVisible = resultSet.getBoolean("table_field_visible");
                     String tableFiedldOrderBy = resultSet.getString("table_field_order_by");
                     Boolean tableFieldQueryRequired = resultSet.getBoolean("table_field_query_required");
@@ -76,7 +83,7 @@ public class PostgresqlDsFormTableSettingDaoImpl implements DsFormTableSettingDa
                     String tableParentLabel = resultSet.getString("table_parent_label");
 
                     Boolean formFieldUseDefaultVal = resultSet.getBoolean("form_field_use_default_val");
-                    String formFieldManMadeDefaultVal = resultSet.getString("form_field_man_made_default_val");
+                    String formFieldManMadeDefaultVal = resultSet.getString("form_field_default_val");
                     String formFieldDefaultValSql = resultSet.getString("form_field_default_val_sql");
                     Boolean columIsExist = resultSet.getBoolean("column_is_exist");
 
@@ -93,10 +100,10 @@ public class PostgresqlDsFormTableSettingDaoImpl implements DsFormTableSettingDa
                     dsFormTableSettingDO.setFormFieldSequence(formFieldSequence);
                     dsFormTableSettingDO.setFormFieldQueryType(formFieldQueryType);
                     dsFormTableSettingDO.setFormFieldIsExactly(formFieldIsExactly);
-                    dsFormTableSettingDO.setFormFieldChildrenDbFieldName(formFieldChildrenDbFieldName);
+                    dsFormTableSettingDO.setFormFieldChildFieldName(formFieldChildrenDbFieldName);
                     dsFormTableSettingDO.setFormFieldDicDomainName(formFieldDicDomainName);
                     dsFormTableSettingDO.setFormFieldUseDic(formFieldUseDic);
-                    dsFormTableSettingDO.setFormFieldDefaultValStratege(formFieldDefalutValStratege);
+                    dsFormTableSettingDO.setFormFieldDefValStratege(formFieldDefalutValStratege);
                     dsFormTableSettingDO.setTableFieldVisible(tableFieldVisible);
                     dsFormTableSettingDO.setTableFieldOrderBy(tableFiedldOrderBy);
                     dsFormTableSettingDO.setTableFieldQueryRequired(tableFieldQueryRequired);
@@ -107,7 +114,7 @@ public class PostgresqlDsFormTableSettingDaoImpl implements DsFormTableSettingDa
                     dsFormTableSettingDO.setExportFieldWidth(exportFieldWidth);
                     dsFormTableSettingDO.setTableParentLabel(tableParentLabel);
                     dsFormTableSettingDO.setFormFieldUseDefaultVal(formFieldUseDefaultVal);
-                    dsFormTableSettingDO.setFormFieldManMadeDefaultVal(formFieldManMadeDefaultVal);
+                    dsFormTableSettingDO.setFormFieldDefaultVal(formFieldManMadeDefaultVal);
                     dsFormTableSettingDO.setFormFieldDefaultValSql(formFieldDefaultValSql);
                     dsFormTableSettingDO.setColumnIsExist(columIsExist);
 
@@ -125,10 +132,10 @@ public class PostgresqlDsFormTableSettingDaoImpl implements DsFormTableSettingDa
         QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,null));
         String sql ="insert into ds_form_table_setting(gmt_create, gmt_modified, ds_key, db_field_name, db_field_type," +
                 " view_field_label, db_field_comment, form_field_visible, form_field_sequence, form_field_query_type," +
-                " form_field_is_exactly, form_field_children_db_field_name, form_field_dic_domain_name, form_field_use_dic, form_field_defalut_val_stratege," +
+                " form_field_is_exactly, form_field_child_field_name, form_field_dic_domain_name, form_field_use_dic, form_field_def_val_stratege," +
                 " table_field_visible, table_field_order_by, table_field_query_required, table_field_sequence, table_field_column_width," +
                 " export_field_visible, export_field_sequence, export_field_width,table_parent_label,form_field_use_default_val," +
-                " form_field_man_made_default_val,form_field_default_val_sql,column_is_exist)" +
+                " form_field_default_val,form_field_default_val_sql,column_is_exist)" +
                 " values (?, ?, ?, ?, ?," +
                 "  ?, ?, ?, ?, ?," +
                 "  ?, ?, ?, ?, ?," +
@@ -148,10 +155,10 @@ public class PostgresqlDsFormTableSettingDaoImpl implements DsFormTableSettingDa
                 dsFormTableSettingDO.getFormFieldQueryType(),
 
                 dsFormTableSettingDO.getFormFieldIsExactly()?1:0,
-                dsFormTableSettingDO.getFormFieldChildrenDbFieldName(),
+                dsFormTableSettingDO.getFormFieldChildFieldName(),
                 dsFormTableSettingDO.getFormFieldDicDomainName(),
                 dsFormTableSettingDO.getFormFieldUseDic()?1:0,
-                dsFormTableSettingDO.getFormFieldDefaultValStratege(),
+                dsFormTableSettingDO.getFormFieldDefValStratege(),
 
                 dsFormTableSettingDO.getTableFieldVisible()?1:0,
                 dsFormTableSettingDO.getTableFieldOrderBy(),
@@ -165,10 +172,10 @@ public class PostgresqlDsFormTableSettingDaoImpl implements DsFormTableSettingDa
                 dsFormTableSettingDO.getTableParentLabel(),
                 dsFormTableSettingDO.getFormFieldUseDefaultVal()?1:0,
 
-                dsFormTableSettingDO.getFormFieldManMadeDefaultVal(),
+                dsFormTableSettingDO.getFormFieldDefaultVal(),
                 dsFormTableSettingDO.getFormFieldDefaultValSql(),
                 dsFormTableSettingDO.getColumnIsExist()?1:0
-                };
+        };
         LOGGER.info("insert sql:{}",sql);
         int result = queryRunner.update(sql, objectParams);
         return  result;
@@ -176,7 +183,7 @@ public class PostgresqlDsFormTableSettingDaoImpl implements DsFormTableSettingDa
 
     @Override
     public List<Map<String, Object>> selectAllDsFormTableSettingByDsKey(String dataSourceKey) throws SQLException, IOException {
-        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null));
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
         String querySql = "select * from ds_form_table_setting where ds_key = ? ";
         LOGGER.info("querySql:{}", querySql);
         List<Map<String, Object>> result = queryRunner.query(querySql, new MapListHandler(),dataSourceKey);
@@ -186,9 +193,9 @@ public class PostgresqlDsFormTableSettingDaoImpl implements DsFormTableSettingDa
 
     @Override
     public Integer updateDataSourceKey(String dataSourceKey,String newDataSourceKey) throws SQLException, IOException {
-        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null));
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
         String querySql = " update ds_form_table_setting set gmt_modified = ?, ds_key = ? " +
-                          " where ds_key = ?";
+                " where ds_key = ?";
         LOGGER.info("querySql:{}", querySql);
         String now = DateUtils.ofLongStr(new java.util.Date());
         int update = queryRunner.update(querySql, now, newDataSourceKey, dataSourceKey);
@@ -197,7 +204,7 @@ public class PostgresqlDsFormTableSettingDaoImpl implements DsFormTableSettingDa
 
     @Override
     public Integer deleteDataSourceKey(String dsKey) throws SQLException, IOException {
-        QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE, null));
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
         String sql="delete from ds_form_table_setting where ds_key = ?";
         int update = queryRunner.update(sql, dsKey);
         return update;
@@ -220,10 +227,10 @@ public class PostgresqlDsFormTableSettingDaoImpl implements DsFormTableSettingDa
                 "  form_field_sequence as  formFieldSequence ," +
                 "  form_field_query_type as  formFieldQueryType," +
                 "  form_field_is_exactly as  formFieldIsExactly ," +
-                "  form_field_children_db_field_name as  formFieldChildrenDbFieldName ," +
+                "  form_field_child_field_name as  formFieldChildrenDbFieldName ," +
                 "  form_field_dic_domain_name as  formFieldDicDomainName ," +
                 "  form_field_use_dic as  formFieldUseDic ," +
-                "  form_field_defalut_val_stratege as  formFieldDefalutValStratege ," +
+                "  form_field_def_val_stratege as  formFieldDefalutValStratege ," +
                 "  table_field_visible as  tableFieldVisible," +
                 "  table_field_order_by as  tableFieldOrderBy ," +
                 "  table_field_query_required as  tableFieldQueryRequired," +
@@ -234,7 +241,7 @@ public class PostgresqlDsFormTableSettingDaoImpl implements DsFormTableSettingDa
                 "  export_field_width as  exportFieldWidth," +
                 "  table_parent_label as  tableParentLabel," +
                 "  form_field_use_default_val as  formFieldUseDefaultVal," +
-                "  form_field_man_made_default_val as  formFieldManMadeDefaultVal," +
+                "  form_field_default_val as  formFieldManMadeDefaultVal," +
                 "  form_field_default_val_sql as formFieldDefaultValSql ," +
                 "  column_is_exist as columIsExist " +
                 " from ds_form_table_setting where ds_key = ? and exportFieldVisible = ?";
@@ -259,10 +266,10 @@ public class PostgresqlDsFormTableSettingDaoImpl implements DsFormTableSettingDa
                 "   form_field_sequence = ?," +
                 "   form_field_query_type = ?," +
                 "   form_field_is_exactly = ?," +
-                "   form_field_children_db_field_name = ?," +
+                "   form_field_child_field_name = ?," +
                 "   form_field_dic_domain_name = ?," +
                 "   form_field_use_dic = ?," +
-                "   form_field_defalut_val_stratege = ?," +
+                "   form_field_def_val_stratege = ?," +
                 "   table_field_visible = ?," +
                 "   table_field_order_by = ?," +
                 "   table_field_query_required = ?," +
@@ -273,7 +280,7 @@ public class PostgresqlDsFormTableSettingDaoImpl implements DsFormTableSettingDa
                 "   export_field_width = ?," +
                 "   table_parent_label = ?," +
                 "   form_field_use_default_val = ?," +
-                "   form_field_man_made_default_val = ?," +
+                "   form_field_default_val = ?," +
                 "   form_field_default_val_sql = ?," +
                 "   column_is_exist = ?" +
                 " where id = ?";
@@ -291,10 +298,10 @@ public class PostgresqlDsFormTableSettingDaoImpl implements DsFormTableSettingDa
                 dsFormTableSettingDO.getFormFieldQueryType(),
                 dsFormTableSettingDO.getFormFieldIsExactly()?1:0,
 
-                dsFormTableSettingDO.getFormFieldChildrenDbFieldName(),
+                dsFormTableSettingDO.getFormFieldChildFieldName(),
                 dsFormTableSettingDO.getFormFieldDicDomainName(),
                 dsFormTableSettingDO.getFormFieldUseDic()?1:0,
-                dsFormTableSettingDO.getFormFieldDefaultValStratege(),
+                dsFormTableSettingDO.getFormFieldDefValStratege(),
                 dsFormTableSettingDO.getTableFieldVisible()?1:0,
 
                 dsFormTableSettingDO.getTableFieldOrderBy(),
@@ -308,7 +315,7 @@ public class PostgresqlDsFormTableSettingDaoImpl implements DsFormTableSettingDa
                 dsFormTableSettingDO.getTableParentLabel(),
                 dsFormTableSettingDO.getFormFieldUseDefaultVal()?1:0,
 
-                dsFormTableSettingDO.getFormFieldManMadeDefaultVal(),
+                dsFormTableSettingDO.getFormFieldDefaultVal(),
                 dsFormTableSettingDO.getFormFieldDefaultValSql(),
                 dsFormTableSettingDO.getColumnIsExist()?1:0,
                 dsFormTableSettingDO.getId()
@@ -316,8 +323,6 @@ public class PostgresqlDsFormTableSettingDaoImpl implements DsFormTableSettingDa
         result = queryRunner.update(updateSql, objectParams);
         return result;
     }
-
-
 
 
 

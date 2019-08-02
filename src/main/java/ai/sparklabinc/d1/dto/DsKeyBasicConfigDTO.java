@@ -6,7 +6,7 @@ public class DsKeyBasicConfigDTO {
 
     private Long fkDbId;
 
-    private String schema;
+    private String schemaName;
 
     private String tableName;
 
@@ -29,12 +29,12 @@ public class DsKeyBasicConfigDTO {
         this.fkDbId = fkDbId;
     }
 
-    public String getSchema() {
-        return schema;
+    public String getSchemaName() {
+        return schemaName;
     }
 
-    public void setSchema(String schema) {
-        this.schema = schema;
+    public void setSchemaName(String schemaName) {
+        this.schemaName = schemaName;
     }
 
     public String getTableName() {
