@@ -1,6 +1,5 @@
 package ai.sparklabinc.d1.controller;
 
-import ai.sparklabinc.d1.dto.D1ParamsDTO;
 import ai.sparklabinc.d1.exception.custom.IllegalParameterException;
 import ai.sparklabinc.d1.exception.custom.ResourceNotFoundException;
 import ai.sparklabinc.d1.service.QueryFormTableService;
