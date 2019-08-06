@@ -48,11 +48,14 @@ public class D1BasicTableService {
             throw new ServiceException("create table sql string can not be null");
         }
 
+        System.out.println(sql);
+
         Connection connection = null;
         PreparedStatement preparedStatement=null;
         try {
             connection=dataSource.getConnection();
             switch (basicDbConfig.getType().toUpperCase()) {
+                case Constants.DATABASE_TYPE_SQLITE:
                 case Constants.DATABASE_TYPE_MYSQL:
                 case Constants.DATABASE_TYPE_POSTGRESQL:
                 case Constants.DATABASE_TYPE_SQLSERVER:
@@ -69,7 +72,6 @@ public class D1BasicTableService {
                     preparedStatement = connection.prepareStatement(sql);
                     preparedStatement.executeUpdate();
             }
-
 
         } catch (Exception e) {
             LOGGER.error("", e);
