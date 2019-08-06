@@ -10,7 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.ContextStartedEvent;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 
@@ -21,7 +23,8 @@ import java.io.File;
  * @param:
  * @return:
  */
-public class D1BasicDataInitial implements ApplicationListener<ContextStartedEvent>{
+@Component
+public class D1BasicDataInitial implements ApplicationListener<ContextRefreshedEvent>{
 
     @Autowired
     private BasicDbConfig basicDbConfig;
@@ -35,7 +38,7 @@ public class D1BasicDataInitial implements ApplicationListener<ContextStartedEve
     private final static Logger LOGGER = LoggerFactory.getLogger(D1BasicDataService.class);
 
     @Override
-    public void onApplicationEvent(ContextStartedEvent contextRefreshedEvent){
+    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent){
         if(contextRefreshedEvent.getApplicationContext().getParent() == null){
             //建表初始化语句
             try {

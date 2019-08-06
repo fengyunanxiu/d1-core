@@ -1,6 +1,7 @@
 package ai.sparklabinc.d1.config;
 
 import ai.sparklabinc.d1.dao.*;
+import ai.sparklabinc.d1.dict.dao.DictRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -24,9 +25,9 @@ public class DaoBeanConfig {
 
     @Bean("DsFormTableSettingDao")
     public DsFormTableSettingDao getDsFormTableSettingDao(){
-      /*  if(StringUtils.isBlank(basicDbConfig.getType())){
+        if(StringUtils.isBlank(basicDbConfig.getType())){
             basicDbConfig.setType("sqlite");
-        }*/
+        }
         return dataDaoFactory.getDaoBean(DsFormTableSettingDao.class, basicDbConfig.getType());
     }
 
@@ -91,6 +92,16 @@ public class DaoBeanConfig {
         }
         return dataDaoFactory.getDaoBean(DataExportTaskDao.class, basicDbConfig.getType());
     }
+
+
+    @Bean("DictRepository")
+    public DictRepository getDataDictRepository(){
+        if(StringUtils.isBlank(basicDbConfig.getType())){
+            basicDbConfig.setType("sqlite");
+        }
+        return dataDaoFactory.getDaoBean(DictRepository.class, basicDbConfig.getType());
+    }
+
 
 
 
