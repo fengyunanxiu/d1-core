@@ -11,11 +11,12 @@ import java.util.List;
 public interface DsConstants {
 
     enum FormFieldQueryTypeEnum{
-        DATE("DATE"),
+        SINGLE_DATE("SINGLE_DATE"),
         DATE_RANGE("DATE_RANGE"),
         DATE_TIME_RANGE("DATE_TIME_RANGE"),
         SINGLE_CHOICE_LIST("SINGLE_CHOICE_LIST"),
         MULTIPLE_CHOICE_LIST("MULTIPLE_CHOICE_LIST"),
+
 
 //        暂时组件没提供，不考虑RADIOBOX_CHOICE   CHECKBOX_CHOICE
         RADIOBOX_CHOICE("RADIOBOX_CHOICE"),
@@ -26,7 +27,13 @@ public interface DsConstants {
         NUMBER("NUMBER"),
         NUMBER_RANGE("NUMBER_RANGE"),
 
-        SWITCH("SWITCH");
+        SWITCH("SWITCH"),
+        SINGLE_CHOICE_LIST_W_EMPTY("SINGLE_CHOICE_LIST_W_EMPTY"),
+        NULL_VALUE("NULL_VALUE"),
+        EMPTY_VALUE("EMPTY_VALUE"),
+        SEGMENTATION_TEXT("SEGMENTATION_TEXT"),
+        AUTO_COMPLETION("AUTO_COMPLETION");
+
 
 
         private String val;
@@ -54,6 +61,7 @@ public interface DsConstants {
             List<String> choiceList = new ArrayList<>();
             choiceList.add(SINGLE_CHOICE_LIST.getVal());
             choiceList.add(MULTIPLE_CHOICE_LIST.getVal());
+            choiceList.add(SINGLE_CHOICE_LIST_W_EMPTY.getVal());
             return choiceList;
         }
 

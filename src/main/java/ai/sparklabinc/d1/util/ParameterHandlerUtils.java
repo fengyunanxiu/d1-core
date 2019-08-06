@@ -1,11 +1,16 @@
 package ai.sparklabinc.d1.util;
 
 import ai.sparklabinc.d1.constant.QueryParamConstants;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author : Kingzer
@@ -58,7 +63,6 @@ public class ParameterHandlerUtils {
     }
 
 
-
     public static String extractMoreClause(Map<String, String[]> params) {
         String moreWhereClause = null;
         String[] moreWhereClauses = params.get(QueryParamConstants.SQL_PARAMS_KEY_FOR_CUSTOMER_SQL_CONDITION_CLAUSE);
@@ -68,4 +72,75 @@ public class ParameterHandlerUtils {
         return moreWhereClause;
     }
 
+
+    /*
+    * 解析json字符串
+    * */
+    public static String extractMoreClause(JSONObject d1ParamsObj) {
+        String moreWhereClause = null;
+        if(StringUtils.isNotNullNorEmpty(d1ParamsObj.getString("more_where_clauses"))){
+            moreWhereClause = " and " + d1ParamsObj.getString("more_where_clauses");
+        }
+        return moreWhereClause;
+    }
+
+
+    /*
+    * 获取参数
+    * */
+    public static Map<String, String[]> extractParameterMap(JSONObject d1ParamsObj) {
+        JSONObject sqlParam = d1ParamsObj.getJSONObject("sql_param");
+        Map<String, String[]> parameterMap = new HashMap<>();
+
+        if(sqlParam != null){
+            Set<String> fieldKeys = sqlParam.keySet();
+            for (String fieldKey : fieldKeys) {
+               JSONArray fieldValArr = sqlParam.getJSONArray(fieldKey);
+               if(fieldValArr !=null && !fieldValArr.isEmpty()){
+                   String[] fileldStrValArr = ArrayUtils.toStringArray(fieldValArr.toArray());
+                   parameterMap.put(fieldKey, fileldStrValArr);
+               }
+            }
+        }
+        return parameterMap;
+    }
+
+    public static Pageable extractPageable(JSONObject d1ParamsObj) {
+        Integer page = d1ParamsObj.getInteger("page");
+        Integer size = d1ParamsObj.getInteger("size");
+
+        JSONArray sortJSONArray = d1ParamsObj.getJSONArray("sort");
+        Sort sort = null;
+
+        if(sortJSONArray != null && !sortJSONArray.isEmpty()){
+            for (Object sortObj : sortJSONArray) {
+                JSONObject sortJSONObj = (JSONObject) sortObj;
+                String[] propertiesArr = ArrayUtils.toStringArray(sortJSONObj.getJSONArray("properties").toArray());
+                String direction = sortJSONObj.getString("direction");
+                Sort.Direction sortDirection = null;
+                Sort subSort = null;
+                if(direction != null && Sort.Direction.ASC.name().equalsIgnoreCase(direction)){
+                    sortDirection = Sort.Direction.ASC;
+                }else{
+                    sortDirection = Sort.Direction.DESC;
+                }
+                subSort = new Sort(sortDirection,propertiesArr);
+
+                if(sort == null){
+                    sort = subSort;
+                }else{
+                    sort = sort.and(subSort);
+                }
+            }
+
+        }
+        if(size == null){
+            page = 0;
+            size = 0;
+        }
+
+        return PageRequest.of(page,size,sort);
+
+
+    }
 }

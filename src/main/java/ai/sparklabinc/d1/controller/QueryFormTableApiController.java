@@ -1,13 +1,19 @@
 package ai.sparklabinc.d1.controller;
 
+import ai.sparklabinc.d1.dto.D1ParamsDTO;
 import ai.sparklabinc.d1.exception.custom.IllegalParameterException;
 import ai.sparklabinc.d1.exception.custom.ResourceNotFoundException;
 import ai.sparklabinc.d1.service.QueryFormTableService;
 import ai.sparklabinc.d1.util.ApiUtils;
 import ai.sparklabinc.d1.util.ParameterHandlerUtils;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.mysql.jdbc.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -79,6 +85,47 @@ public class QueryFormTableApiController {
     /**
      * 获取指定数据源的table设置
      *
+     * @param d1Params  封装的d1 需要的参数，json化参数；如下面示意；前端需要统一处理这类查询（为了过滤掉某些字段使用，为了通用性）
+     *  {
+     *     "sql_param": {
+     *       "id": [2,3],
+     *       "field":["yield"]
+     *     },
+     *     "ds_key": "",
+     *     "more_where_clauses": "",
+     *     "page_size": "",
+     *     "page": "",
+     *     "sort": [{"properties":[],
+     *       "direction": ""
+     *     }]
+     *   }
+     * @return
+     * @throws Exception
+     */
+
+
+//    @GetMapping("/query")
+//    @ResponseBody
+//    public Object generalQuery(@RequestParam(name = "d1_params", required = true) String d1Params) throws Exception {
+//
+//        if(StringUtils.isNullOrEmpty(d1Params)){
+//            throw new IllegalParameterException("parameter is empty");
+//        }
+//        JSONObject d1ParamsObj = JSON.parseObject(d1Params);
+//
+//        String moreWhereClause = ParameterHandlerUtils.extractMoreClause(d1ParamsObj);
+//        String dataFacetKey = d1ParamsObj.getString("data_facet_key");
+//        Map<String, String[]> simpleParameters = ParameterHandlerUtils.extractParameterMap(d1ParamsObj);
+//        Pageable pageable = ParameterHandlerUtils.extractPageable(d1ParamsObj);
+//
+//        return queryFormTableService.generalQuery(dataFacetKey, simpleParameters, pageable,moreWhereClause,false);
+//    }
+
+
+
+    /**
+     * 获取指定数据源的table设置
+     *
      * @param dataSourceKey
      * @return
      * @throws Exception
@@ -110,7 +157,7 @@ public class QueryFormTableApiController {
     @GetMapping("/query-and-datasource")
     @ResponseBody
     public Object generalQueryAndDataSource(@RequestParam(name = "data_source_key", required = true) String dataSourceKey,
-                               HttpServletRequest request) throws Exception {
+                                            HttpServletRequest request) throws Exception {
         if (StringUtils.isNullOrEmpty(dataSourceKey)) {
             throw new ResourceNotFoundException("Empty data source key " + dataSourceKey);
         }
@@ -120,9 +167,6 @@ public class QueryFormTableApiController {
         Map<String, String[]> simpleParameters = ApiUtils.removeReservedParameters(params);
         return queryFormTableService.generalQuery(dataSourceKey, simpleParameters, pageable,moreWhereClause,true);
     }
-
-
-
 
     /**
      * 执行查询
