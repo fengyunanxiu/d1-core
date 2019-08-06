@@ -39,7 +39,10 @@ public class D1BasicTableService {
         if (basicDbConfig == null || StringUtils.isBlank(basicDbConfig.getType())) {
             throw new ServiceException("db type cant not be null");
         }
-        String sqlClassPath =  File.separator + "sql" + File.separator + basicDbConfig.getType().toUpperCase() + ".sql";
+        String sqlClassPath =  "sql/" + basicDbConfig.getType().toUpperCase() + ".sql";
+        LOGGER.info("=======sql class path=========" + sqlClassPath);
+        URL resource = this.getClass().getClassLoader().getResource(sqlClassPath);
+        LOGGER.info("=======resource url=========" + resource);
         InputStream is = this.getClass().getClassLoader().getResourceAsStream(sqlClassPath);
         String sql = String.join(System.getProperty("line.separator"), IOUtils.readLines(is, StandardCharsets.UTF_8.name()));
         if (StringUtils.isBlank(sql)) {

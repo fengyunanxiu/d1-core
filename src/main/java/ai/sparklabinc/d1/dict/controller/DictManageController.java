@@ -7,6 +7,7 @@ import ai.sparklabinc.d1.dict.service.DictService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ import java.util.List;
  * @description :
  */
 @RestController
-@RequestMapping("/dict/manage")
+@RequestMapping("/d1/dict/manage")
 public class DictManageController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DictManageController.class);
@@ -30,35 +31,37 @@ public class DictManageController {
     @Autowired
     private DictService dictService;
 
-    @GetMapping("/")
+    @GetMapping("")
     @ResponseBody
     public Collection<DictQueryVO> query(@RequestParam(required = false) String domain,
                                          @RequestParam(required = false) String item,
                                          @RequestParam(required = false) String value,
-                                         Pageable pageable) throws Exception {
+                                         @RequestParam(value = "page", defaultValue = "0") int page,
+                                         @RequestParam(value = "size", defaultValue = "10") int size) throws Exception {
 
         DictDTO dictDTO = new DictDTO();
         dictDTO.setDomain(domain);
         dictDTO.setItem(item);
         dictDTO.setValue(value);
+        PageRequest pageable = PageRequest.of(page, size);
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
         return this.dictService.query(dictDTO, offset, pageSize);
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     @ResponseBody
     public List<DictDO> add(@RequestBody List<DictDO> dictDOList) throws Exception {
         return this.dictService.batchInsert(dictDOList);
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("")
     @ResponseBody
     public void delete(@RequestBody List<String> idList) throws Exception {
         this.dictService.batchDelete(idList);
     }
 
-    @PutMapping("/")
+    @PutMapping("")
     @ResponseBody
     public void update(@RequestBody List<DictDO> dictDOList) throws Exception {
         this.dictService.batchUpdate(dictDOList);
