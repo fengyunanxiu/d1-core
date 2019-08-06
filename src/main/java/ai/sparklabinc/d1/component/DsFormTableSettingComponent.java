@@ -87,7 +87,7 @@ public class DsFormTableSettingComponent {
 
             String fieldName = dsFormTableSettingDO.getDbFieldName();
             switch (formFieldQueryTypeEnum){
-                case DATE:
+                case SINGLE_DATE:
                 case SINGLE_CHOICE_LIST:
                 case RADIOBOX_CHOICE:{
                     accurateEqualsStringQueryParameterMap.put(fieldName, queryParameterValueArray[0]);
