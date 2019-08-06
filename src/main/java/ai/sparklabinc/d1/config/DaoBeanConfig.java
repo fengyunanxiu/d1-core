@@ -1,6 +1,7 @@
 package ai.sparklabinc.d1.config;
 
 import ai.sparklabinc.d1.dao.*;
+import ai.sparklabinc.d1.dict.dao.DictRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -55,7 +56,6 @@ public class DaoBeanConfig {
         return dataDaoFactory.getDaoBean(DsKeyBasicConfigDao.class, basicDbConfig.getType());
     }
 
-
     @Bean("DsQueryDao")
     public DsQueryDao getDsQueryDao(){
         return dataDaoFactory.getDaoBean(DsQueryDao.class, basicDbConfig.getType());
@@ -66,6 +66,10 @@ public class DaoBeanConfig {
         return dataDaoFactory.getDaoBean(DataExportTaskDao.class, basicDbConfig.getType());
     }
 
+    @Bean("DictRepository")
+    public DictRepository getDictRepository() {
+        return this.dataDaoFactory.getDaoBean(DictRepository.class, this.basicDbConfig.getType());
+    }
 
 
 }

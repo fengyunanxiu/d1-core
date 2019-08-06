@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StringUtils {
 	private StringUtils() {
@@ -18,6 +20,9 @@ public class StringUtils {
 
 	// 匹配日期yyyy-MM-dd
 	private static final String DATE_REGEX_PATTERN = "^([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})-(((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-8])))$";
+
+	// 获取下划线后的值
+	private static final Pattern UNDER_TO_CAMEL_PATTERN = Pattern.compile("_+([0-9a-zA-Z])");
 
 	public static boolean isNotNullNorEmpty(String source) {
 		if (source == null)
@@ -82,6 +87,17 @@ public class StringUtils {
 		}
 
 		return dest.toString().toLowerCase();
+	}
+
+	public static String underlineToCamel(String src) {
+		// 转换驼峰
+		Matcher matcher = UNDER_TO_CAMEL_PATTERN.matcher(src);
+		StringBuffer sb = new StringBuffer();
+		while (matcher.find()) {
+			matcher.appendReplacement(sb, matcher.group(1).toUpperCase());
+		}
+		matcher.appendTail(sb);
+		return sb.toString();
 	}
 
 	public static String object2String(Object object) {

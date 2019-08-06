@@ -1,5 +1,6 @@
 package ai.sparklabinc.d1.exception;
 
+import ai.sparklabinc.d1.exception.custom.DuplicateResourceException;
 import ai.sparklabinc.d1.exception.custom.IllegalParameterException;
 import ai.sparklabinc.d1.exception.custom.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,8 @@ public class ServiceException extends Exception {
 	public enum ServiceErrorCode implements ErrorCode {
 
 		ILLEGAL_PARAMETER_CODE("10170", HttpStatus.BAD_REQUEST),
-		NOT_FOUND("10150", HttpStatus.NOT_FOUND);
+		NOT_FOUND("10150", HttpStatus.NOT_FOUND),
+		DUPLICATE_RESOURCE("10180", HttpStatus.BAD_REQUEST);
 
 
 		private String code;
@@ -70,6 +72,20 @@ public class ServiceException extends Exception {
 		@Override
 		public ErrorCode toErrorCode(Exception exception) {
 			return ServiceErrorCode.ILLEGAL_PARAMETER_CODE;
+		}
+	}
+
+	@Component
+	static class DuplicateResourceExceptionToErrorCode implements ExceptionToErrorCode {
+
+		@Override
+		public boolean canHandle(Exception exception) {
+			return exception instanceof DuplicateResourceException;
+		}
+
+		@Override
+		public ErrorCode toErrorCode(Exception exception) {
+			return ServiceErrorCode.DUPLICATE_RESOURCE;
 		}
 	}
 
