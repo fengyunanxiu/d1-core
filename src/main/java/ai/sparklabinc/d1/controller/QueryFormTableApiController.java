@@ -102,23 +102,71 @@ public class QueryFormTableApiController {
      * @return
      * @throws Exception
      */
+
+
+//    @GetMapping("/query")
+//    @ResponseBody
+//    public Object generalQuery(@RequestParam(name = "d1_params", required = true) String d1Params) throws Exception {
+//
+//        if(StringUtils.isNullOrEmpty(d1Params)){
+//            throw new IllegalParameterException("parameter is empty");
+//        }
+//        JSONObject d1ParamsObj = JSON.parseObject(d1Params);
+//
+//        String moreWhereClause = ParameterHandlerUtils.extractMoreClause(d1ParamsObj);
+//        String dataFacetKey = d1ParamsObj.getString("data_facet_key");
+//        Map<String, String[]> simpleParameters = ParameterHandlerUtils.extractParameterMap(d1ParamsObj);
+//        Pageable pageable = ParameterHandlerUtils.extractPageable(d1ParamsObj);
+//
+//        return queryFormTableService.generalQuery(dataFacetKey, simpleParameters, pageable,moreWhereClause,false);
+//    }
+
+
+
+    /**
+     * 获取指定数据源的table设置
+     *
+     * @param dataSourceKey
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/query")
     @ResponseBody
-    public Object generalQuery(@RequestParam(name = "d1_params", required = true) String d1Params) throws Exception {
-
-        if(StringUtils.isNullOrEmpty(d1Params)){
-            throw new IllegalParameterException("parameter is empty");
+    public Object generalQuery(@RequestParam(name = "data_source_key", required = true) String dataSourceKey,
+                               HttpServletRequest request) throws Exception {
+        if (StringUtils.isNullOrEmpty(dataSourceKey)) {
+            throw new ResourceNotFoundException("Empty data source key " + dataSourceKey);
         }
-        JSONObject d1ParamsObj = JSON.parseObject(d1Params);
+        Map<String, String[]> params = request.getParameterMap();
 
-        String moreWhereClause = ParameterHandlerUtils.extractMoreClause(d1ParamsObj);
-        String dataFacetKey = d1ParamsObj.getString("data_facet_key");
-        Map<String, String[]> simpleParameters = ParameterHandlerUtils.extractParameterMap(d1ParamsObj);
-        Pageable pageable = ParameterHandlerUtils.extractPageable(d1ParamsObj);
-
-        return queryFormTableService.generalQuery(dataFacetKey, simpleParameters, pageable,moreWhereClause,false);
+        Pageable pageable = ParameterHandlerUtils.extractPageable(params);
+        String moreWhereClause = ParameterHandlerUtils.extractMoreClause(params);
+        Map<String, String[]> simpleParameters = ApiUtils.removeReservedParameters(params);
+        return queryFormTableService.generalQuery(dataSourceKey, simpleParameters, pageable,moreWhereClause,false);
     }
 
+
+
+    /**
+     * 获取指定数据源的table设置
+     *
+     * @param dataSourceKey
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/query-and-datasource")
+    @ResponseBody
+    public Object generalQueryAndDataSource(@RequestParam(name = "data_source_key", required = true) String dataSourceKey,
+                                            HttpServletRequest request) throws Exception {
+        if (StringUtils.isNullOrEmpty(dataSourceKey)) {
+            throw new ResourceNotFoundException("Empty data source key " + dataSourceKey);
+        }
+        Map<String, String[]> params = request.getParameterMap();
+        Pageable pageable = ParameterHandlerUtils.extractPageable(params);
+        String moreWhereClause = ParameterHandlerUtils.extractMoreClause(params);
+        Map<String, String[]> simpleParameters = ApiUtils.removeReservedParameters(params);
+        return queryFormTableService.generalQuery(dataSourceKey, simpleParameters, pageable,moreWhereClause,true);
+    }
 
     /**
      * 执行查询
