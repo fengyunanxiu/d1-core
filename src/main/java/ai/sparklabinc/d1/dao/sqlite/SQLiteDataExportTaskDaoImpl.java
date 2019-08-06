@@ -1,16 +1,13 @@
-package ai.sparklabinc.d1.dao.mysql;
+package ai.sparklabinc.d1.dao.sqlite;
 
 import ai.sparklabinc.d1.dao.DataDaoType;
 import ai.sparklabinc.d1.dao.DataExportTaskDao;
-import ai.sparklabinc.d1.datasource.Constants;
-import ai.sparklabinc.d1.datasource.DataSourceFactory;
 import ai.sparklabinc.d1.entity.DataExportTaskDO;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
@@ -27,9 +24,9 @@ import java.sql.SQLException;
  * @description:
  * @version: V1.0
  */
-@Repository("MysqlDataExportTaskDaoImpl")
-public class MysqlDataExportTaskDaoImpl implements DataExportTaskDao {
-    private final static Logger LOGGER = LoggerFactory.getLogger(MysqlDataExportTaskDaoImpl.class);
+@Repository("SQLiteDataExportTaskDaoImpl")
+public class SQLiteDataExportTaskDaoImpl implements DataExportTaskDao {
+    private final static Logger LOGGER = LoggerFactory.getLogger(SQLiteDataExportTaskDaoImpl.class);
 
     @Resource(name="D1BasicDataSoure")
     private DataSource d1BasicDataSoure;

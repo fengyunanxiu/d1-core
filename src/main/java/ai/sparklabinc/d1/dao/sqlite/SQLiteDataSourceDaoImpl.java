@@ -1,4 +1,4 @@
-package ai.sparklabinc.d1.dao.mysql;
+package ai.sparklabinc.d1.dao.sqlite;
 
 import ai.sparklabinc.d1.dao.DataDaoType;
 import ai.sparklabinc.d1.dao.DataSourceDao;
@@ -25,9 +25,9 @@ import java.util.List;
  * @description:
  * @version: V1.0
  */
-@Repository("MysqlDataSourceDaoImpl")
-public class MysqlDataSourceDaoImpl implements DataSourceDao {
-    private final static Logger LOGGER=LoggerFactory.getLogger(MysqlDataSourceDaoImpl.class);
+@Repository("SQLiteDataSourceDaoImpl")
+public class SQLiteDataSourceDaoImpl implements DataSourceDao {
+    private final static Logger LOGGER=LoggerFactory.getLogger(SQLiteDataSourceDaoImpl.class);
 
     @Autowired
     private DataSourceFactory dataSourceFactory;

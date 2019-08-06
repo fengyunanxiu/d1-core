@@ -114,7 +114,7 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
     public AssemblyResultDTO generalQuery(String dataSourceKey, Map<String, String[]> simpleParameters, Pageable pageable, String moreWhereClause, boolean returnDatasource) throws Exception {
         List<DsFormTableSettingDO> dsFormTableSettingDOList = getAllDsFormTableSettingByDsKey(dataSourceKey);
         if (dsFormTableSettingDOList == null || dsFormTableSettingDOList.isEmpty()) {
-            throw new ResourceNotFoundException(String.format("DataSourceKey not found:%s", dataSourceKey));
+            throw new ResourceNotFoundException(String.format("DataSourceKey setting not found:%s", dataSourceKey));
         }
 
         DsKeyBasicConfigDO dsKeyBasicConfigDO = this.dsKeyBasicConfigDao.getDsKeyBasicConfigByDsKey(dataSourceKey);
@@ -178,7 +178,7 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
     public SQLGenerResultDTO generalSQL(String dataSourceKey, Map<String, String[]> requestParams) throws Exception {
         List<DsFormTableSettingDO> dsFormTableSettingDOList = getAllDsFormTableSettingByDsKey(dataSourceKey);
         if (dsFormTableSettingDOList == null || dsFormTableSettingDOList.isEmpty()) {
-            throw new ResourceNotFoundException(String.format("DataSourceKey not found:%s", dataSourceKey));
+            throw new ResourceNotFoundException(String.format("DataSourceKey setting not found:%s", dataSourceKey));
         }
 
         DsKeyBasicConfigDO dsKeyBasicConfigDO = this.dsKeyBasicConfigDao.getDsKeyBasicConfigByDsKey(dataSourceKey);

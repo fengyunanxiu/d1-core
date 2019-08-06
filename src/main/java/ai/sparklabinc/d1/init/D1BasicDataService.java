@@ -210,8 +210,7 @@ public class D1BasicDataService {
             }
         }else if(basicDbConfig.getType().equalsIgnoreCase(Constants.DATABASE_TYPE_MYSQL)
                 ||basicDbConfig.getType().equalsIgnoreCase(Constants.DATABASE_TYPE_POSTGRESQL)
-                ||basicDbConfig.getType().equalsIgnoreCase(Constants.DATABASE_TYPE_SQLSERVER)
-                ) {
+                ||basicDbConfig.getType().equalsIgnoreCase(Constants.DATABASE_TYPE_SQLSERVER)) {
             String hostStr = split[2];
             hostStr = hostStr.substring(2, hostStr.length());
             if (StringUtils.isNotBlank(hostStr)) {

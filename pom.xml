@@ -17,7 +17,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
-        <start-class>ai.sparklabinc.D1CoreApplication</start-class>
+        <start-class>ai.sparklabinc.d1.D1CoreApplication</start-class>
         <springfox.version>2.7.0</springfox.version>
         <poi.version>3.9</poi.version>
     </properties>
@@ -181,7 +181,11 @@
             <version>3.8.1</version>
         </dependency>
 
-
+        <dependency>
+            <groupId>Maven.commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.3.2</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.cloud</groupId>

@@ -4,6 +4,7 @@ import ai.sparklabinc.d1.config.BasicDbConfig;
 import ai.sparklabinc.d1.datasource.Constants;
 import ai.sparklabinc.d1.exception.ServiceException;
 import ai.sparklabinc.d1.util.FileReaderUtil;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.slf4j.Logger;
@@ -12,6 +13,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -35,9 +39,11 @@ public class D1BasicTableService {
         if (basicDbConfig == null || StringUtils.isBlank(basicDbConfig.getType())) {
             throw new ServiceException("db type cant not be null");
         }
-        String classPath = ResourceUtils.getURL("classpath:").getPath();
-        String sqlPath = classPath + File.separator + "sql" + File.separator + basicDbConfig.getType().toUpperCase() + ".sql";
-        String sql = FileReaderUtil.readFile(sqlPath);
+
+
+        String sqlClassPath =  File.separator + "sql" + File.separator + basicDbConfig.getType().toUpperCase() + ".sql";
+        InputStream is = this.getClass().getClassLoader().getResourceAsStream(sqlClassPath);
+        String sql = String.join("\n", IOUtils.readLines(is, StandardCharsets.UTF_8.name()));
         if (StringUtils.isBlank(sql)) {
             throw new ServiceException("create table sql string can not be null");
         }

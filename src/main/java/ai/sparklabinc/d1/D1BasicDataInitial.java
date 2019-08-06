@@ -38,6 +38,12 @@ public class D1BasicDataInitial implements ApplicationListener<ContextRefreshedE
         if(contextRefreshedEvent.getApplicationContext().getParent() == null){
             //需要执行的代码
             try {
+
+           /*     if(basicDbConfig.getType()){
+                    System.out.println("basicDbConfig is null");
+                }*/
+
+
                this.createD1BasicDataSoure(basicDbConfig);
             } catch (Exception e) {
                 LOGGER.error("D1 Basic Data Initial is falied!");
@@ -54,6 +60,7 @@ public class D1BasicDataInitial implements ApplicationListener<ContextRefreshedE
          d1BasicTableService.createBasicTable(dataSource,basicDbConfig);
          return dataSource;
      }
+
 
 
 }

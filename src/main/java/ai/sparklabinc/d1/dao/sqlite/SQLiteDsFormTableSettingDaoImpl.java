@@ -1,8 +1,7 @@
-package ai.sparklabinc.d1.dao.mysql;
+package ai.sparklabinc.d1.dao.sqlite;
 
 import ai.sparklabinc.d1.dao.DataDaoType;
 import ai.sparklabinc.d1.dao.DsFormTableSettingDao;
-import ai.sparklabinc.d1.datasource.Constants;
 import ai.sparklabinc.d1.datasource.DataSourceFactory;
 import ai.sparklabinc.d1.entity.DsFormTableSettingDO;
 import ai.sparklabinc.d1.util.DateUtils;
@@ -29,10 +28,10 @@ import java.util.Map;
  * @date : 2019-07-03 07:46
  * @description :
  */
-@Repository("MysqlDsFormTableSettingDaoImpl")
-public class MysqlDsFormTableSettingDaoImpl implements DsFormTableSettingDao {
+@Repository("SQLiteDsFormTableSettingDaoImpl")
+public class SQLiteDsFormTableSettingDaoImpl implements DsFormTableSettingDao {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MysqlDsFormTableSettingDaoImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SQLiteDsFormTableSettingDaoImpl.class);
     @Autowired
     private DataSourceFactory dataSourceFactory;
 
