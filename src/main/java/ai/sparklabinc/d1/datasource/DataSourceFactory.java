@@ -36,22 +36,13 @@ public class DataSourceFactory {
     public volatile ConcurrentHashMap<Long, Session> sshSessionMap = new ConcurrentHashMap<>();
     public volatile ConcurrentHashMap<Long, DataSource> dataSourceMap = new ConcurrentHashMap<>();
 
-    @Value("${sqlite.url}")
-    private String sqliteURL;
-
     @Resource(name = "DbBasicConfigDao")
     private DbBasicConfigDao dbBasicConfigDao;
 
-    @Resource(name="DbSecurityConfigDao")
+    @Resource(name = "DbSecurityConfigDao")
     private DbSecurityConfigDao dbSecurityConfigDao;
 
     public DataSource builder(String dbType, Long dsId) throws IOException, SQLException {
-        if (dbType.equalsIgnoreCase(Constants.DATABASE_TYPE_SQLITE)) {
-            ConnectionPoolService sqlitePoolService = new SqlitePoolServiceImpl();
-            Properties properties = new Properties();
-            properties.setProperty("sqliteURL", this.sqliteURL);
-            return sqlitePoolService.createDatasource(properties);
-        } else {
             /***************************************************************
              *step1 先判断是否创建了DataSource，没有则获取是sqlite中的数据源配置信息
              ***************************************************************
@@ -67,73 +58,72 @@ public class DataSourceFactory {
             String sshKeyFile = "";
             String sshPassPhrase = "";
 
-            String dbHost = "";
-            int dbPort = 3306;
-            String dbUserName = "";
-            String dbPassword = "";
-            String url = "";
-            if (dataSourceMap.get(dsId) == null) {
-                DbBasicConfigDO dbBasicConfigDO = dbBasicConfigDao.findById(dsId);
-                DbSecurityConfigDO dbSecurityConfigDO = dbSecurityConfigDao.findById(dsId);
+        String dbHost = "";
+        int dbPort = 3306;
+        String dbUserName = "";
+        String dbPassword = "";
+        String url = "";
+        if (dataSourceMap.get(dsId) == null) {
+            DbBasicConfigDO dbBasicConfigDO = dbBasicConfigDao.findById(dsId);
+            DbSecurityConfigDO dbSecurityConfigDO = dbSecurityConfigDao.findById(dsId);
 
-                if (dbSecurityConfigDO != null) {
-                    useSshTunnel = dbSecurityConfigDO.getUseSshTunnel();
-                    if (dbSecurityConfigDO.getSshLocalPort() != null && dbSecurityConfigDO.getSshLocalPort() > 0) {
-                        localPort = dbSecurityConfigDO.getSshLocalPort();
-                    }
-                    sshUser = dbSecurityConfigDO.getSshProxyUser();
-                    sshPassword = dbSecurityConfigDO.getSshProxyPassword();
-                    sshHost = dbSecurityConfigDO.getSshProxyHost();
-                    sshPort = dbSecurityConfigDO.getSshProxyPort();
-                    if(StringUtils.isNotNullNorEmpty(dbSecurityConfigDO.getSshAuthType())){
-                        sshAuthType = dbSecurityConfigDO.getSshAuthType();
-                    }
-                    sshKeyFile = dbSecurityConfigDO.getSshKeyFile();
-                    sshPassPhrase = dbSecurityConfigDO.getSshPassPhrase();
-
+            if (dbSecurityConfigDO != null) {
+                useSshTunnel = dbSecurityConfigDO.getUseSshTunnel();
+                if (dbSecurityConfigDO.getSshLocalPort() != null && dbSecurityConfigDO.getSshLocalPort() > 0) {
+                    localPort = dbSecurityConfigDO.getSshLocalPort();
                 }
-
-                if (dbBasicConfigDO == null) {
-                    return null;
+                sshUser = dbSecurityConfigDO.getSshProxyUser();
+                sshPassword = dbSecurityConfigDO.getSshProxyPassword();
+                sshHost = dbSecurityConfigDO.getSshProxyHost();
+                sshPort = dbSecurityConfigDO.getSshProxyPort();
+                if (StringUtils.isNotNullNorEmpty(dbSecurityConfigDO.getSshAuthType())) {
+                    sshAuthType = dbSecurityConfigDO.getSshAuthType();
                 }
-
-                dbHost = dbBasicConfigDO.getDbHost();
-                dbPort = dbBasicConfigDO.getDbPort();
-                dbUserName = dbBasicConfigDO.getDbUser();
-                dbPassword = dbBasicConfigDO.getDbPassword();
+                sshKeyFile = dbSecurityConfigDO.getSshKeyFile();
+                sshPassPhrase = dbSecurityConfigDO.getSshPassPhrase();
 
             }
 
-
-            /***************************************************************
-             *step2 先判断是否配置了ssh的连接和是否存在已建立的ssh连接，否则去查数据源的ssh配置信息，建立ssh
-             * 并放到内存中
-             ***************************************************************
-             */
-            if (useSshTunnel && sshSessionMap.get(dsId) == null) {
-                if (createSshSession(dsId, localPort, sshUser,
-                        sshPassword, sshHost, sshPort,
-                        dbHost, dbPort, sshKeyFile,
-                        sshAuthType, sshPassPhrase)) {
-                    //创建失败
-                    return null;
-                }
-
+            if (dbBasicConfigDO == null) {
+                return null;
             }
 
-            /***************************************************************
-             *step3 先判断是否创建了DataSource，有就拿到现有的数据源，没有就建立
-             * 并放到内存中
-             ***************************************************************
-             */
-            if (dataSourceMap.get(dsId) == null) {
-                return createDataSource(dsId, useSshTunnel, localPort, dbHost, dbPort, dbUserName, dbPassword, url);
-            } else {
-                return dataSourceMap.get(dsId);
-            }
+            dbHost = dbBasicConfigDO.getDbHost();
+            dbPort = dbBasicConfigDO.getDbPort();
+            dbUserName = dbBasicConfigDO.getDbUser();
+            dbPassword = dbBasicConfigDO.getDbPassword();
+
         }
-    }
 
+
+        /***************************************************************
+         *step2 先判断是否配置了ssh的连接和是否存在已建立的ssh连接，否则去查数据源的ssh配置信息，建立ssh
+         * 并放到内存中
+         ***************************************************************
+         */
+        if (useSshTunnel && sshSessionMap.get(dsId) == null) {
+            if (createSshSession(dsId, localPort, sshUser,
+                    sshPassword, sshHost, sshPort,
+                    dbHost, dbPort, sshKeyFile,
+                    sshAuthType, sshPassPhrase)) {
+                //创建失败
+                return null;
+            }
+
+        }
+
+        /***************************************************************
+         *step3 先判断是否创建了DataSource，有就拿到现有的数据源，没有就建立
+         * 并放到内存中
+         ***************************************************************
+         */
+        if (dataSourceMap.get(dsId) == null) {
+            return createDataSource(dsId, useSshTunnel, localPort, dbHost, dbPort, dbUserName, dbPassword, url);
+        } else {
+            return dataSourceMap.get(dsId);
+        }
+
+    }
 
 
     private boolean createSshSession(Long dsId, int localPort, String sshUser,
@@ -189,6 +179,7 @@ public class DataSourceFactory {
 
     /**
      * 创建数据源
+     *
      * @param dsId
      * @param useSshTunnel
      * @param localPort
@@ -202,14 +193,14 @@ public class DataSourceFactory {
      * @throws IOException
      */
     private DataSource createDataSource(Long dsId, boolean useSshTunnel, int localPort, String dbHost, int dbPort, String dbUserName, String dbPassword, String url) throws SQLException, IOException {
-        DataSource datasource=null;
-        String driverName="";
+        DataSource datasource = null;
+        String driverName = "";
         DbBasicConfigDO dbBasicConfigDO = dbBasicConfigDao.findById(dsId);
         DbSecurityConfigDO dbSecurityConfigDTO = dbSecurityConfigDao.findById(dsId);
-        if(dbBasicConfigDO==null||StringUtils.isNullOrEmpty(dbBasicConfigDO.getDbType())){
+        if (dbBasicConfigDO == null || StringUtils.isNullOrEmpty(dbBasicConfigDO.getDbType())) {
             throw new SQLException("database type can not be null");
         }
-        switch (dbBasicConfigDO.getDbType()){
+        switch (dbBasicConfigDO.getDbType()) {
             case Constants.DATABASE_TYPE_MYSQL:
                 //url
                 datasource = CreateMysqlDataSource(dsId, useSshTunnel, localPort, dbHost, dbPort, dbUserName, dbPassword, dbBasicConfigDO, dbSecurityConfigDTO);
@@ -230,11 +221,11 @@ public class DataSourceFactory {
         if (useSshTunnel) {
             url = "jdbc:mysql://localhost:" + localPort + (org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getDbUrl()) ? "" : (dbBasicConfigDO.getDbUrl()));
         } else {
-            url = "jdbc:mysql://" + dbHost + ":" + dbPort + (org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getDbUrl())? "" : (dbBasicConfigDO.getDbUrl()));
+            url = "jdbc:mysql://" + dbHost + ":" + dbPort + (org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getDbUrl()) ? "" : (dbBasicConfigDO.getDbUrl()));
         }
-        if(dbSecurityConfigDTO.getUseSsl()!= null && dbSecurityConfigDTO.getUseSsl() ){
+        if (dbSecurityConfigDTO.getUseSsl() != null && dbSecurityConfigDTO.getUseSsl()) {
             url += "?&useSSL=true";
-        }else{
+        } else {
             url += "?&useSSL=false";
         }
         //驱动
@@ -250,28 +241,27 @@ public class DataSourceFactory {
     }
 
 
-
     private DataSource createPostGresqlDataSource(Long dsId, boolean useSshTunnel, int localPort, String dbHost, int dbPort, String dbUserName, String dbPassword, DbBasicConfigDO dbBasicConfigDO, DbSecurityConfigDO dbSecurityConfigDTO) throws SQLException {
         String url;
         String driverName;
         DataSource datasource;
         String otherParams = dbBasicConfigDO.getOtherParams();
-        if(StringUtils.isNullOrEmpty(otherParams)){
+        if (StringUtils.isNullOrEmpty(otherParams)) {
             throw new SQLException("database can not be null");
         }
         Map otherParamsMap = JSON.parseObject(otherParams, Map.class);
 
-        String database = otherParamsMap.get("database")+"";
-        if(org.apache.commons.lang3.StringUtils.isBlank(database)){
+        String database = otherParamsMap.get("database") + "";
+        if (org.apache.commons.lang3.StringUtils.isBlank(database)) {
             throw new SQLException("database can not be null");
         }
         if (useSshTunnel) {
-            url = "jdbc:postgresql://localhost:" + localPort +"/"+database+ (org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getDbUrl())? "" : (dbBasicConfigDO.getDbUrl()));
+            url = "jdbc:postgresql://localhost:" + localPort + "/" + database + (org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getDbUrl()) ? "" : (dbBasicConfigDO.getDbUrl()));
         } else {
-            url = "jdbc:postgresql://"+dbHost+":" + dbPort +"/"+database+ (org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getDbUrl())? "" : ( dbBasicConfigDO.getDbUrl()));
+            url = "jdbc:postgresql://" + dbHost + ":" + dbPort + "/" + database + (org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getDbUrl()) ? "" : (dbBasicConfigDO.getDbUrl()));
         }
 
-        if(dbSecurityConfigDTO.getUseSsl()!= null && dbSecurityConfigDTO.getUseSsl() ){
+        if (dbSecurityConfigDTO.getUseSsl() != null && dbSecurityConfigDTO.getUseSsl()) {
             url += "&sslmode=require";
         }
         //驱动
@@ -285,11 +275,6 @@ public class DataSourceFactory {
         dataSourceMap.put(dsId, datasource);
         return datasource;
     }
-
-
-
-
-
 
 
 }
