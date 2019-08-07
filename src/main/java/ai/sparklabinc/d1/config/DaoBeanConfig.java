@@ -1,6 +1,7 @@
 package ai.sparklabinc.d1.config;
 
 import ai.sparklabinc.d1.dao.*;
+import ai.sparklabinc.d1.defaults.dao.DefaultsConfigurationRepository;
 import ai.sparklabinc.d1.dict.dao.DictRepository;
 import ai.sparklabinc.d1.dict.dao.FormDictConfigurationRepository;
 import org.apache.commons.lang3.StringUtils;
@@ -110,6 +111,14 @@ public class DaoBeanConfig {
             basicDbConfig.setType("sqlite");
         }
         return dataDaoFactory.getDaoBean(FormDictConfigurationRepository.class, basicDbConfig.getType());
+    }
+
+    @Bean("DefaultsConfigurationRepository")
+    public DefaultsConfigurationRepository defaultsConfigurationRepository(){
+        if(StringUtils.isBlank(basicDbConfig.getType())){
+            basicDbConfig.setType("sqlite");
+        }
+        return dataDaoFactory.getDaoBean(DefaultsConfigurationRepository.class, basicDbConfig.getType());
     }
 
 
