@@ -21,7 +21,7 @@ public class DictQueryVO {
 
     private String item;
 
-    private List<DictDO> dictDOList;
+    private List<DictDO> dictList;
 
 
     public String getDomain() {
@@ -40,11 +40,11 @@ public class DictQueryVO {
         this.item = item;
     }
 
-    public List<DictDO> getDictDOList() {
-        return dictDOList;
+    public List<DictDO> getDictList() {
+        return dictList;
     }
 
-    public void setDictDOList(List<DictDO> dictDOList) {
-        this.dictDOList = dictDOList;
+    public void setDictList(List<DictDO> dictList) {
+        this.dictList = dictList;
     }
 }

@@ -39,9 +39,9 @@ public class DictServiceImpl implements DictService {
      */
     @Override
     public List<DictDO> batchInsert(List<DictDO> dictDOList) throws Exception {
-        List<DictDO> byDomainAndItem = this.dictRepository.findByDomainAndItem(dictDOList);
+        List<DictDO> byDomainAndItem = this.dictRepository.findByDomainAndItemAndValue(dictDOList);
         if (byDomainAndItem != null && !byDomainAndItem.isEmpty()) {
-            String existMsg = byDomainAndItem.stream().map((item) -> String.format("domain:%s, item:%s", item.getDomain(), item.getItem())).collect(Collectors.joining(";"));
+            String existMsg = byDomainAndItem.stream().map((item) -> String.format("domain:%s, item:%s, value:%s", item.getDomain(), item.getItem(), item.getValue())).collect(Collectors.joining(";"));
             throw new DuplicateResourceException("Find Duplicate Domain And Item , " + existMsg);
         }
         return this.dictRepository.batchInsert(dictDOList);
@@ -127,12 +127,12 @@ public class DictServiceImpl implements DictService {
             String resultMapKey = resultDomain + resultItem;
             DictQueryVO dictQueryVO = resultMap.computeIfAbsent(resultMapKey, (k) -> {
                 DictQueryVO tmpDictQueryVO = new DictQueryVO();
-                tmpDictQueryVO.setDictDOList(new ArrayList<>());
+                tmpDictQueryVO.setDictList(new ArrayList<>());
                 tmpDictQueryVO.setDomain(resultDomain);
                 tmpDictQueryVO.setItem(resultItem);
                 return tmpDictQueryVO;
             });
-            List<DictDO> dictDOList = dictQueryVO.getDictDOList();
+            List<DictDO> dictDOList = dictQueryVO.getDictList();
             dictDOList.add(dictDO);
         }
         return resultMap.values();

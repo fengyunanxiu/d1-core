@@ -4,6 +4,8 @@ import ai.sparklabinc.d1.dict.dto.DictDTO;
 import ai.sparklabinc.d1.dict.dto.DictQueryVO;
 import ai.sparklabinc.d1.dict.entity.DictDO;
 import ai.sparklabinc.d1.dict.service.DictService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/d1/dict/manage")
+@Api("dict manage controller")
 public class DictManageController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DictManageController.class);
@@ -33,6 +36,7 @@ public class DictManageController {
 
     @GetMapping("")
     @ResponseBody
+    @ApiOperation("query")
     public Collection<DictQueryVO> query(@RequestParam(required = false) String domain,
                                          @RequestParam(required = false) String item,
                                          @RequestParam(required = false) String value,
@@ -51,18 +55,21 @@ public class DictManageController {
 
     @PostMapping("")
     @ResponseBody
+    @ApiOperation("add")
     public List<DictDO> add(@RequestBody List<DictDO> dictDOList) throws Exception {
         return this.dictService.batchInsert(dictDOList);
     }
 
     @DeleteMapping("")
     @ResponseBody
+    @ApiOperation("delete")
     public void delete(@RequestBody List<String> idList) throws Exception {
         this.dictService.batchDelete(idList);
     }
 
     @PutMapping("")
     @ResponseBody
+    @ApiOperation("update")
     public void update(@RequestBody List<DictDO> dictDOList) throws Exception {
         this.dictService.batchUpdate(dictDOList);
     }

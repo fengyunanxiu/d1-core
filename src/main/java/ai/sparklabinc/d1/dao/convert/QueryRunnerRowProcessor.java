@@ -1,8 +1,11 @@
 package ai.sparklabinc.d1.dao.convert;
 
+import ai.sparklabinc.d1.util.DateUtils;
 import ai.sparklabinc.d1.util.StringUtils;
 import org.apache.commons.dbutils.BasicRowProcessor;
 import org.apache.commons.dbutils.RowProcessor;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,13 +13,11 @@ import javax.websocket.RemoteEndpoint;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,6 +56,8 @@ public class QueryRunnerRowProcessor implements RowProcessor {
                     String methodName = declaredMethod.getName();
                     Object resultValue = resultValueMap.get(methodName);
                     if (resultValue != null) {
+                        Class<?> parameterType = declaredMethod.getParameterTypes()[0];
+                        resultValue = convertType(resultValue, parameterType);
                         declaredMethod.invoke(t, resultValue);
                     }
                 }
@@ -84,6 +87,8 @@ public class QueryRunnerRowProcessor implements RowProcessor {
                     String methodName = declaredMethod.getName();
                     Object resultValue = resultValueMap.get(methodName);
                     if (resultValue != null) {
+                        Class<?> parameterType = declaredMethod.getParameterTypes()[0];
+                        resultValue = convertType(resultValue, parameterType);
                         declaredMethod.invoke(t, resultValue);
                     }
                 }
@@ -93,6 +98,38 @@ public class QueryRunnerRowProcessor implements RowProcessor {
             }
         }
         return result;
+    }
+
+    private Object convertType(Object resultValue, Class<?> parameterType) {
+        if (parameterType == String.class) {
+            resultValue = resultValue.toString();
+        }
+        if (parameterType == Long.class) {
+            resultValue = Long.valueOf(resultValue.toString());
+        }
+        if (parameterType == Integer.class) {
+            resultValue = Integer.valueOf(resultValue.toString());
+        }
+        if (parameterType == Float.class) {
+            resultValue = Float.valueOf(resultValue.toString());
+        }
+        if (parameterType == Double.class) {
+            resultValue = Double.valueOf(resultValue.toString());
+        }
+        if (parameterType == Date.class) {
+            if (resultValue instanceof Date) {
+            } else {
+                try {
+                    resultValue = DateUtils.ofLongDate(resultValue.toString());
+                } catch (Exception e) {
+                    resultValue = DateUtils.ofShortDate(resultValue.toString());
+                }
+            }
+        }
+        if (parameterType == BigDecimal.class) {
+            resultValue = new BigDecimal(resultValue.toString());
+        }
+        return resultValue;
     }
 
     @Override

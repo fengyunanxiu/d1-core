@@ -5,6 +5,7 @@ import ai.sparklabinc.d1.dict.dao.DictRepository;
 import ai.sparklabinc.d1.dict.entity.DictDO;
 import ai.sparklabinc.d1.exception.ServiceException;
 import ai.sparklabinc.d1.util.StringUtils;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.tomcat.jdbc.pool.DataSource;
@@ -53,14 +54,14 @@ public class DictRepositoryImpl implements DictRepository {
                 String key = entry.getKey();
                 String value = entry.getValue();
                 sqlBuilder.append(" and " + key + " like ? ");
-                paramList.add(" %" + value + "% ");
+                paramList.add("%" + value + "%");
             }
         }
         // 分页信息
         sqlBuilder.append(" limit ?, ? ");
         paramList.add(offset);
         paramList.add(pageSize);
-
+        LOGGER.info("query sql: {}", sqlBuilder.toString());
         QueryRunner qr = new QueryRunner(this.d1BasicDataSoure);
         return qr.query(sqlBuilder.toString(), new BeanListHandler<>(DictDO.class, new QueryRunnerRowProcessor()), paramList.toArray(new Object[0]));
     }
@@ -83,7 +84,7 @@ public class DictRepositoryImpl implements DictRepository {
         for (DictDO dictDO : dictDOList) {
             if (dictDO == null
                     || StringUtils.isNullOrEmpty(dictDO.getDomain())
-                    || StringUtils.isNotNullNorEmpty(dictDO.getItem())
+                    || StringUtils.isNullOrEmpty(dictDO.getItem())
                     || StringUtils.isNullOrEmpty(dictDO.getValue())
                     || StringUtils.isNullOrEmpty(dictDO.getSequence())
                     || StringUtils.isNullOrEmpty(dictDO.getEnable())) {
@@ -102,7 +103,7 @@ public class DictRepositoryImpl implements DictRepository {
             paramList.add(param);
         }
         QueryRunner qr = new QueryRunner(this.d1BasicDataSoure);
-
+        LOGGER.info("batch insert sql: {}", sql);
         return qr.insertBatch(sql, new BeanListHandler<>(DictDO.class, new QueryRunnerRowProcessor()), paramList.toArray(new Object[0][0]));
     }
 
@@ -124,7 +125,7 @@ public class DictRepositoryImpl implements DictRepository {
             if (dictDO == null
                     || StringUtils.isNullOrEmpty(dictDO.getId())
                     || StringUtils.isNullOrEmpty(dictDO.getDomain())
-                    || StringUtils.isNotNullNorEmpty(dictDO.getItem())
+                    || StringUtils.isNullOrEmpty(dictDO.getItem())
                     || StringUtils.isNullOrEmpty(dictDO.getValue())
                     || StringUtils.isNullOrEmpty(dictDO.getSequence())
                     || StringUtils.isNullOrEmpty(dictDO.getEnable())) {
@@ -143,6 +144,7 @@ public class DictRepositoryImpl implements DictRepository {
             paramList.add(param);
         }
         QueryRunner qr = new QueryRunner(this.d1BasicDataSoure);
+        LOGGER.info("bath update sql{}", sql);
         qr.batch(sql, paramList.toArray(new Object[0][0]));
     }
 
@@ -159,10 +161,12 @@ public class DictRepositoryImpl implements DictRepository {
         }
         StringBuilder sqlBuilder = new StringBuilder("delete from " + DictDO.TABLE_NAME + " where id in (");
         for (String id : idList) {
-            sqlBuilder.append(id).append(",");
+            sqlBuilder.append("?,");
         }
         sqlBuilder.deleteCharAt(sqlBuilder.length() - 1);
+        sqlBuilder.append(")");
         QueryRunner qr = new QueryRunner(this.d1BasicDataSoure);
+        LOGGER.info("batch delete sql: {}", sqlBuilder.toString());
         qr.update(sqlBuilder.toString(), idList.toArray(new Object[0]));
     }
 
@@ -173,7 +177,7 @@ public class DictRepositoryImpl implements DictRepository {
      * @throws SQLException
      */
     @Override
-    public List<DictDO> findByDomainAndItem(List<DictDO> dictDOList) throws SQLException {
+    public List<DictDO> findByDomainAndItemAndValue(List<DictDO> dictDOList) throws SQLException {
         if (dictDOList == null || dictDOList.isEmpty()) {
             return null;
         }
@@ -184,13 +188,15 @@ public class DictRepositoryImpl implements DictRepository {
             DictDO dictDO = dictDOList.get(i);
             sqlParamList.add(dictDO.getDomain());
             sqlParamList.add(dictDO.getItem());
+            sqlParamList.add(dictDO.getValue());
             if (i == 0) {
-                sqlBuilder.append(" where (domain = ? and item = ?) ");
+                sqlBuilder.append(" where (domain = ? and item = ? and value = ?) ");
             }else {
-                sqlBuilder.append(" or (domain = ? and item = ?) ");
+                sqlBuilder.append(" or (domain = ? and item = ? and value = ?) ");
             }
         }
-        QueryRunner qr = new QueryRunner();
+        QueryRunner qr = new QueryRunner(this.d1BasicDataSoure);
+        LOGGER.info("find by domain and item sql: {}", sqlBuilder.toString());
         return qr.query(sqlBuilder.toString(), new BeanListHandler<>(DictDO.class, new QueryRunnerRowProcessor()), sqlParamList.toArray(new Object[0]));
     }
 

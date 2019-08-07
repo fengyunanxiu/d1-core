@@ -158,3 +158,16 @@ select t1.id,
 from db_basic_config t1
          left outer join db_security_config t2
                          on t1.id = t2.id;
+
+###
+
+create table if not exists d1_core.dict (
+    id varchar(64) primary key ,
+    domain varchar(64) not null ,
+    item varchar(64) not null ,
+    value varchar(100) not null ,
+    label varchar(100),
+    sequence int,
+    enable boolean,
+    parent_id varchar(64)
+) charset=utf8 collate utf8_croatian_ci;
