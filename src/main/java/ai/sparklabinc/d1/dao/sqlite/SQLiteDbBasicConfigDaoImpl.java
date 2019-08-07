@@ -27,8 +27,8 @@ import java.util.Map;
  */
 @Repository(value = "SQLiteDbBasicConfigDaoImpl")
 public class SQLiteDbBasicConfigDaoImpl implements DbBasicConfigDao {
-    @Resource(name="D1BasicDataSoure")
-    private DataSource d1BasicDataSoure;
+    @Resource(name="D1BasicDataSource")
+    private DataSource d1BasicDataSource;
 
     @Override
     public DataDaoType getDataDaoType() {
@@ -38,7 +38,7 @@ public class SQLiteDbBasicConfigDaoImpl implements DbBasicConfigDao {
     @Override
     public DbBasicConfigDO findById(Long id) throws SQLException, IOException {
 
-        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
 
         String querySql = "select * from db_basic_config where id = ? ";
 
@@ -88,7 +88,7 @@ public class SQLiteDbBasicConfigDaoImpl implements DbBasicConfigDao {
 
             String sql = "insert into db_basic_config( gmt_create, gmt_modified, db_type, db_name, db_host, db_port, db_user, db_password,db_url,other_params)" +
                     "values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            DataSource dataSource = d1BasicDataSoure;
+            DataSource dataSource = d1BasicDataSource;
             conn = dataSource.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
             String now = DateUtils.ofLongStr(new java.util.Date());
@@ -123,7 +123,7 @@ public class SQLiteDbBasicConfigDaoImpl implements DbBasicConfigDao {
         int update=0;
         try {
             String sql = "delete from db_basic_config where id = ?";
-            DataSource dataSource = d1BasicDataSoure;
+            DataSource dataSource = d1BasicDataSource;
             conn = dataSource.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
             //绑定参数
@@ -139,7 +139,7 @@ public class SQLiteDbBasicConfigDaoImpl implements DbBasicConfigDao {
 
     @Override
     public List<DbInforamtionDTO> selectDataSources(Long dsId) throws IOException, SQLException {
-        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String querySql = "select id,db_name as label,1 as level,'' as type from db_basic_config where 1=1 ";
         List<DbInforamtionDTO> dbInforamtionDTOList=null;
         if(dsId!=null){
@@ -154,7 +154,7 @@ public class SQLiteDbBasicConfigDaoImpl implements DbBasicConfigDao {
 
     @Override
     public List<Map<String, Object>> selectDataSourceProperty(Long dsId) throws IOException, SQLException {
-        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String querySql = "select * from ds_full_config_view where id = ?";
         List<Map<String, Object>> result = queryRunner.query(querySql, new MapListHandler(),dsId);
         return  result;
@@ -163,7 +163,7 @@ public class SQLiteDbBasicConfigDaoImpl implements DbBasicConfigDao {
 
     @Override
     public Integer editDataSourceProperty(DbBasicConfigDO dbBasicConfigDO) throws IOException, SQLException {
-        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql="update db_basic_config set  gmt_modified = ?," +
                 "   db_type = ?," +
                 "   db_name = ?," +

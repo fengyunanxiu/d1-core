@@ -30,8 +30,8 @@ public class MysqlDsBasicDictionaryDaoImpl implements DsBasicDictionaryDao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MysqlDsBasicDictionaryDaoImpl.class);
 
-    @Resource(name="D1BasicDataSoure")
-    private DataSource d1BasicDataSoure;
+    @Resource(name="D1BasicDataSource")
+    private DataSource d1BasicDataSource;
 
     @Override
     public DataDaoType getDataDaoType() {
@@ -42,7 +42,7 @@ public class MysqlDsBasicDictionaryDaoImpl implements DsBasicDictionaryDao {
     @Override
     public List<DsBasicDictionaryDO> findListByDomainName(String domainName) throws SQLException, IOException {
 
-        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String querySql = "select * from ds_basic_dictionary where domain_name = ?  order by gmt_modified desc ";
         LOGGER.info("querySql:{}",querySql);
 

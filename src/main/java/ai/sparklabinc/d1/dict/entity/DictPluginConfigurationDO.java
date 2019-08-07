@@ -12,80 +12,80 @@ import org.slf4j.LoggerFactory;
  */
 public class DictPluginConfigurationDO {
 
-    public static String TABLE_NAME = "dict_plugin_configuration";
+    public static String TABLE_NAME = "db_dict_plugin_configuration";
 
-    public static String F_ENABLE = "enable";
+    public static String F_ENABLE = "f_enable";
 
-    private Long id;
+    private Long fId;
 
-    private String domain;
+    private String fDomain;
 
-    private String item;
+    private String fItem;
 
-    private Boolean enable;
+    private Boolean fEnable;
 
-    private String type;
+    private String fType;
 
     /**
      * JSON形式
      */
-    private String param;
+    private String fParam;
 
-    private String cron;
+    private String fCron;
 
-    public Long getId() {
-        return id;
+    public Long getFId() {
+        return fId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setFId(Long fId) {
+        this.fId = fId;
     }
 
-    public String getDomain() {
-        return domain;
+    public String getFDomain() {
+        return fDomain;
     }
 
-    public void setDomain(String domain) {
-        this.domain = domain;
+    public void setFDomain(String fDomain) {
+        this.fDomain = fDomain;
     }
 
-    public String getItem() {
-        return item;
+    public String getFItem() {
+        return fItem;
     }
 
-    public void setItem(String item) {
-        this.item = item;
+    public void setFItem(String fItem) {
+        this.fItem = fItem;
     }
 
-    public Boolean getEnable() {
-        return enable;
+    public Boolean getFEnable() {
+        return fEnable;
     }
 
-    public void setEnable(Boolean enable) {
-        this.enable = enable;
+    public void setFEnable(Boolean fEnable) {
+        this.fEnable = fEnable;
     }
 
-    public String getType() {
-        return type;
+    public String getFType() {
+        return fType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setFType(String fType) {
+        this.fType = fType;
     }
 
-    public String getParam() {
-        return param;
+    public String getFParam() {
+        return fParam;
     }
 
-    public void setParam(String param) {
-        this.param = param;
+    public void setFParam(String fParam) {
+        this.fParam = fParam;
     }
 
-    public String getCron() {
-        return cron;
+    public String getFCron() {
+        return fCron;
     }
 
-    public void setCron(String cron) {
-        this.cron = cron;
+    public void setFCron(String fCron) {
+        this.fCron = fCron;
     }
 }

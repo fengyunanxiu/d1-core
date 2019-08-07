@@ -33,11 +33,10 @@ public class DictRepositoryImpl implements DictRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DictRepositoryImpl.class);
 
-    @Resource(name = "D1BasicDataSoure")
-    private DataSource d1BasicDataSoure;
+    @Resource(name = "D1BasicDataSource")
+    private DataSource d1BasicDataSource;
 
     /**
-     *
      * @param params
      * @param offset
      * @param pageSize
@@ -62,12 +61,11 @@ public class DictRepositoryImpl implements DictRepository {
         paramList.add(offset);
         paramList.add(pageSize);
         LOGGER.info("query sql: {}", sqlBuilder.toString());
-        QueryRunner qr = new QueryRunner(this.d1BasicDataSoure);
+        QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         return qr.query(sqlBuilder.toString(), new BeanListHandler<>(DictDO.class, new QueryRunnerRowProcessor()), paramList.toArray(new Object[0]));
     }
 
     /**
-     *
      * @param dictDOList
      * @return
      * @throws ServiceException
@@ -76,40 +74,39 @@ public class DictRepositoryImpl implements DictRepository {
     @Override
     public List<DictDO> batchInsert(List<DictDO> dictDOList) throws ServiceException, SQLException {
         if (dictDOList == null || dictDOList.isEmpty()) {
-            throw  new ServiceException("dict do list is null");
+            throw new ServiceException("dict list is null");
         }
         List<Object[]> paramList = new ArrayList<>();
-        String sql = "insert into " + DictDO.TABLE_NAME +
-                " (id, domain, item, value, label, sequence, enable, parent_id) values (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = String.format(" insert into %s (%s, %s, %s, %s, %s, %s, %s, %s) values (?, ?, ?, ?, ?, ?, ?, ?)",
+                DictDO.TABLE_NAME, DictDO.F_ID, DictDO.F_DOMAIN, DictDO.F_ITEM, DictDO.F_VALUE, DictDO.F_LABEL, DictDO.F_SEQUENCE, DictDO.F_ENABLE, DictDO.F_PARENT_ID);
         for (DictDO dictDO : dictDOList) {
             if (dictDO == null
-                    || StringUtils.isNullOrEmpty(dictDO.getDomain())
-                    || StringUtils.isNullOrEmpty(dictDO.getItem())
-                    || StringUtils.isNullOrEmpty(dictDO.getValue())
-                    || StringUtils.isNullOrEmpty(dictDO.getSequence())
-                    || StringUtils.isNullOrEmpty(dictDO.getEnable())) {
+                    || StringUtils.isNullOrEmpty(dictDO.getFieldDomain())
+                    || StringUtils.isNullOrEmpty(dictDO.getFieldItem())
+                    || StringUtils.isNullOrEmpty(dictDO.getFieldValue())
+                    || StringUtils.isNullOrEmpty(dictDO.getFieldSequence())
+                    || StringUtils.isNullOrEmpty(dictDO.getFieldEnable())) {
                 throw new ServiceException("domain, item, value, sequence, enable不能为空");
             }
             Object[] param = new Object[]{
                     UUID.randomUUID().toString(),
-                    dictDO.getDomain(),
-                    dictDO.getItem(),
-                    dictDO.getValue(),
-                    dictDO.getLabel(),
-                    dictDO.getSequence(),
-                    dictDO.getEnable(),
-                    dictDO.getParentId()
+                    dictDO.getFieldDomain(),
+                    dictDO.getFieldItem(),
+                    dictDO.getFieldValue(),
+                    dictDO.getFieldLabel(),
+                    dictDO.getFieldSequence(),
+                    dictDO.getFieldEnable(),
+                    dictDO.getFieldParentId()
             };
             paramList.add(param);
         }
-        QueryRunner qr = new QueryRunner(this.d1BasicDataSoure);
+        QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         LOGGER.info("batch insert sql: {}", sql);
         return qr.insertBatch(sql, new BeanListHandler<>(DictDO.class, new QueryRunnerRowProcessor()), paramList.toArray(new Object[0][0]));
     }
 
 
     /**
-     *
      * @param dictDOList
      * @throws ServiceException
      * @throws SQLException
@@ -117,39 +114,38 @@ public class DictRepositoryImpl implements DictRepository {
     @Override
     public void batchUpdate(List<DictDO> dictDOList) throws ServiceException, SQLException {
         if (dictDOList == null || dictDOList.isEmpty()) {
-            throw  new ServiceException("dict do list is null");
+            throw new ServiceException("dict list is null");
         }
-        String sql = "update " + DictDO.TABLE_NAME + " set domain = ?, item = ?, value = ?, label = ?, sequence = ?, enable = ?, parent_id = ? where id = ?";
+        String sql = "update " + DictDO.TABLE_NAME + " set field_domain = ?, field_item = ?, field_value = ?, field_label = ?, field_sequence = ?, field_enable = ?, field_parent_id = ? where field_id = ?";
         List<Object[]> paramList = new ArrayList<>();
         for (DictDO dictDO : dictDOList) {
             if (dictDO == null
-                    || StringUtils.isNullOrEmpty(dictDO.getId())
-                    || StringUtils.isNullOrEmpty(dictDO.getDomain())
-                    || StringUtils.isNullOrEmpty(dictDO.getItem())
-                    || StringUtils.isNullOrEmpty(dictDO.getValue())
-                    || StringUtils.isNullOrEmpty(dictDO.getSequence())
-                    || StringUtils.isNullOrEmpty(dictDO.getEnable())) {
-                throw new ServiceException("id, domain, item, value, sequence, enable不能为空");
+                    || StringUtils.isNullOrEmpty(dictDO.getFieldId())
+                    || StringUtils.isNullOrEmpty(dictDO.getFieldDomain())
+                    || StringUtils.isNullOrEmpty(dictDO.getFieldItem())
+                    || StringUtils.isNullOrEmpty(dictDO.getFieldValue())
+                    || StringUtils.isNullOrEmpty(dictDO.getFieldSequence())
+                    || StringUtils.isNullOrEmpty(dictDO.getFieldEnable())) {
+                throw new ServiceException("field_id, field_domain, field_item, field_value, field_sequence, field_enable不能为空");
             }
             Object[] param = new Object[]{
-                    dictDO.getDomain(),
-                    dictDO.getItem(),
-                    dictDO.getValue(),
-                    dictDO.getLabel(),
-                    dictDO.getSequence(),
-                    dictDO.getEnable(),
-                    dictDO.getParentId(),
-                    dictDO.getId()
+                    dictDO.getFieldDomain(),
+                    dictDO.getFieldItem(),
+                    dictDO.getFieldValue(),
+                    dictDO.getFieldLabel(),
+                    dictDO.getFieldSequence(),
+                    dictDO.getFieldEnable(),
+                    dictDO.getFieldParentId(),
+                    dictDO.getFieldId()
             };
             paramList.add(param);
         }
-        QueryRunner qr = new QueryRunner(this.d1BasicDataSoure);
+        QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         LOGGER.info("bath update sql{}", sql);
         qr.batch(sql, paramList.toArray(new Object[0][0]));
     }
 
     /**
-     *
      * @param idList
      * @throws ServiceException
      * @throws SQLException
@@ -157,21 +153,20 @@ public class DictRepositoryImpl implements DictRepository {
     @Override
     public void batchDelete(List<String> idList) throws ServiceException, SQLException {
         if (idList == null || idList.isEmpty()) {
-            throw  new ServiceException("id is null");
+            throw new ServiceException("id is null");
         }
-        StringBuilder sqlBuilder = new StringBuilder("delete from " + DictDO.TABLE_NAME + " where id in (");
+        StringBuilder sqlBuilder = new StringBuilder("delete from " + DictDO.TABLE_NAME + " where field_id in (");
         for (String id : idList) {
             sqlBuilder.append("?,");
         }
         sqlBuilder.deleteCharAt(sqlBuilder.length() - 1);
         sqlBuilder.append(")");
-        QueryRunner qr = new QueryRunner(this.d1BasicDataSoure);
+        QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         LOGGER.info("batch delete sql: {}", sqlBuilder.toString());
         qr.update(sqlBuilder.toString(), idList.toArray(new Object[0]));
     }
 
     /**
-     * 
      * @param dictDOList
      * @return
      * @throws SQLException
@@ -181,23 +176,33 @@ public class DictRepositoryImpl implements DictRepository {
         if (dictDOList == null || dictDOList.isEmpty()) {
             return null;
         }
-        List<String[]> domainItemList = dictDOList.stream().map((item) -> new String[]{item.getDomain(), item.getItem()}).collect(Collectors.toList());
-        StringBuilder sqlBuilder = new StringBuilder("select * from " + DictDO.TABLE_NAME );
+        List<String[]> domainItemList = dictDOList.stream().map((item) -> new String[]{item.getFieldDomain(), item.getFieldItem()}).collect(Collectors.toList());
+        StringBuilder sqlBuilder = new StringBuilder("select * from " + DictDO.TABLE_NAME);
         List<String> sqlParamList = new ArrayList<>();
         for (int i = 0; i < dictDOList.size(); i++) {
             DictDO dictDO = dictDOList.get(i);
-            sqlParamList.add(dictDO.getDomain());
-            sqlParamList.add(dictDO.getItem());
-            sqlParamList.add(dictDO.getValue());
+            sqlParamList.add(dictDO.getFieldDomain());
+            sqlParamList.add(dictDO.getFieldItem());
+            sqlParamList.add(dictDO.getFieldValue());
             if (i == 0) {
-                sqlBuilder.append(" where (domain = ? and item = ? and value = ?) ");
-            }else {
-                sqlBuilder.append(" or (domain = ? and item = ? and value = ?) ");
+                sqlBuilder.append(" where (field_domain = ? and field_item = ? and field_value = ?) ");
+            } else {
+                sqlBuilder.append(" or (field_domain = ? and field_item = ? and field_value = ?) ");
             }
         }
-        QueryRunner qr = new QueryRunner(this.d1BasicDataSoure);
-        LOGGER.info("find by domain and item sql: {}", sqlBuilder.toString());
+        QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
+        LOGGER.info("find by field_domain and field_item sql: {}", sqlBuilder.toString());
         return qr.query(sqlBuilder.toString(), new BeanListHandler<>(DictDO.class, new QueryRunnerRowProcessor()), sqlParamList.toArray(new Object[0]));
+    }
+
+    @Override
+    public List<DictDO> findByDomainAndItem(String domain, String item) throws SQLException {
+        if (StringUtils.isNullOrEmpty(domain) || StringUtils.isNullOrEmpty(item)) {
+            return null;
+        }
+        String sql = " select * from " + DictDO.TABLE_NAME + " where field_domain = ? and field_item = ?";
+        QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
+        return qr.query(sql, new BeanListHandler<>(DictDO.class, new QueryRunnerRowProcessor()), domain, item);
     }
 
 }

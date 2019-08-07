@@ -30,7 +30,7 @@ public class D1BasicDataService {
     @Autowired
     private D1BasicDataPoolService d1BasicDataPoolService;
 
-    public DataSource createD1BasicDataSoure(BasicDbConfig basicDbConfig) throws Exception {
+    public DataSource createD1BasicDataSource(BasicDbConfig basicDbConfig) throws Exception {
 
         //数据库类型
         String dbType = basicDbConfig.getType();

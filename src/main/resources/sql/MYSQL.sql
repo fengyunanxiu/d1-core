@@ -161,13 +161,23 @@ from db_basic_config t1
 
 ###
 
-create table if not exists dict (
-    id varchar(64) primary key ,
-    domain varchar(64) not null ,
-    item varchar(64) not null ,
-    value varchar(100) not null ,
-    label varchar(100),
-    sequence int,
-    enable boolean,
-    parent_id varchar(64)
+create table if not exists db_dict (
+    field_id varchar(64) primary key ,
+    field_domain varchar(64) not null ,
+    field_item varchar(64) not null ,
+    field_value varchar(100) not null ,
+    field_label varchar(100),
+    field_sequence int,
+    field_enable boolean,
+    field_parent_id varchar(64)
+) charset=utf8 collate utf8_croatian_ci;
+
+###
+
+create table if not exists db_form_dict_configuration(
+    field_id varchar(64) primary key,
+    field_form_df_key varchar(100) not null,
+    field_form_field_key varchar(100) not null,
+    field_domain varchar(64) not null,
+    field_item varchar(64) not null
 ) charset=utf8 collate utf8_croatian_ci;

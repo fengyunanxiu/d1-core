@@ -25,8 +25,8 @@ public class DictPluginConfigurationRepositoryImpl implements DictPluginConfigur
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DictPluginConfigurationRepositoryImpl.class);
 
-    @Resource(name="D1BasicDataSoure")
-    private DataSource d1BasicDataSoure;
+    @Resource(name="D1BasicDataSource")
+    private DataSource d1BasicDataSource;
 
     /**
      * 获取所有的可执行插件
@@ -35,10 +35,9 @@ public class DictPluginConfigurationRepositoryImpl implements DictPluginConfigur
     public List<DictPluginConfigurationDO> findAllEnable() throws SQLException {
         String sql = String.format("select * from %s where %s = True", DictPluginConfigurationDO.TABLE_NAME,
                 DictPluginConfigurationDO.F_ENABLE);
-        QueryRunner qr = new QueryRunner(this.d1BasicDataSoure);
+        QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         return qr.query(sql, new BeanListHandler<DictPluginConfigurationDO>(DictPluginConfigurationDO.class));
     }
-
 
 
 }
