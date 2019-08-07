@@ -7,6 +7,7 @@ import ai.sparklabinc.d1.dict.entity.FormDictConfigurationDO;
 import ai.sparklabinc.d1.dict.service.FormDictConfigurationService;
 import ai.sparklabinc.d1.dict.vo.FormDictConfigurationVO;
 import ai.sparklabinc.d1.exception.ServiceException;
+import ai.sparklabinc.d1.exception.custom.IllegalParameterException;
 import ai.sparklabinc.d1.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,6 +72,16 @@ public class FormDictConfigurationServiceImpl implements FormDictConfigurationSe
         if (formDictConfigurationDO == null) {
             return;
         }
+        String fieldFormDfKey = formDictConfigurationDO.getFieldFormDfKey();
+        String fieldFormFieldKey = formDictConfigurationDO.getFieldFormFieldKey();
+        String fieldDomain = formDictConfigurationDO.getFieldDomain();
+        String fieldItem = formDictConfigurationDO.getFieldItem();
+        if (StringUtils.isNullOrEmpty(fieldFormDfKey)
+                || StringUtils.isNullOrEmpty(fieldFormFieldKey)
+                || StringUtils.isNullOrEmpty(fieldDomain)
+                || StringUtils.isNullOrEmpty(fieldItem)) {
+            throw new IllegalParameterException("field_form_df_key, field_form_field_key, field_domain, field_item不能为空");
+        }
         String id = formDictConfigurationDO.getFieldId();
         if (id != null) {
             FormDictConfigurationDO existFormDictConfigurationDO = this.formDictConfigurationRepository.queryById(id);
@@ -78,6 +89,11 @@ public class FormDictConfigurationServiceImpl implements FormDictConfigurationSe
                 this.formDictConfigurationRepository.update(formDictConfigurationDO);
                 return;
             }
+        }
+        // 插入数据，需要判断是否有重复数据
+        List<FormDictConfigurationDO> duplicateList = this.formDictConfigurationRepository.queryByFrom(fieldFormDfKey, fieldFormFieldKey);
+        if (duplicateList != null && !duplicateList.isEmpty()) {
+            throw new IllegalParameterException(String.format("find duplicate on filed_form_df_key = %s, field_form_field_key = %s", fieldFormDfKey, fieldFormFieldKey));
         }
         this.formDictConfigurationRepository.add(formDictConfigurationDO);
     }

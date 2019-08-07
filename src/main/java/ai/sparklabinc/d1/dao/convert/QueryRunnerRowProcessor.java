@@ -4,22 +4,15 @@ import ai.sparklabinc.d1.util.DateUtils;
 import ai.sparklabinc.d1.util.StringUtils;
 import org.apache.commons.dbutils.BasicRowProcessor;
 import org.apache.commons.dbutils.RowProcessor;
-import org.apache.poi.ss.usermodel.DateUtil;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.websocket.RemoteEndpoint;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author : zxiuwu
@@ -42,31 +35,29 @@ public class QueryRunnerRowProcessor implements RowProcessor {
     @Override
     public <T> T toBean(ResultSet rs, Class<? extends T> type) throws SQLException {
         ResultSetMetaData metaData = rs.getMetaData();
-        if (rs.next()) {
-            Map<String, Object> resultValueMap = new HashMap<>();
-            for (int i = 1; i <= metaData.getColumnCount(); i++) {
-                String fieldName = metaData.getColumnLabel(i).toLowerCase();
-                String camelFileName = StringUtils.underlineToCamel("set_"+fieldName);
-                resultValueMap.put(camelFileName, rs.getObject(i));
-            }
-            try {
-                T t = type.newInstance();
-                Method[] declaredMethods = type.getDeclaredMethods();
-                for (Method declaredMethod : declaredMethods) {
-                    String methodName = declaredMethod.getName();
-                    Object resultValue = resultValueMap.get(methodName);
-                    if (resultValue != null) {
-                        Class<?> parameterType = declaredMethod.getParameterTypes()[0];
-                        resultValue = convertType(resultValue, parameterType);
-                        declaredMethod.invoke(t, resultValue);
-                    }
-                }
-                return t;
-            } catch (Exception e) {
-                LOGGER.error("", e);
-            }
+        Map<String, Object> resultValueMap = new HashMap<>();
+        for (int i = 1; i <= metaData.getColumnCount(); i++) {
+            String fieldName = metaData.getColumnLabel(i).toLowerCase();
+            String camelFileName = StringUtils.underlineToCamel("set_"+fieldName);
+            resultValueMap.put(camelFileName, rs.getObject(i));
         }
-        return null;
+        try {
+            T t = type.newInstance();
+            Method[] declaredMethods = type.getDeclaredMethods();
+            for (Method declaredMethod : declaredMethods) {
+                String methodName = declaredMethod.getName();
+                Object resultValue = resultValueMap.get(methodName);
+                if (resultValue != null) {
+                    Class<?> parameterType = declaredMethod.getParameterTypes()[0];
+                    resultValue = convertType(resultValue, parameterType);
+                    declaredMethod.invoke(t, resultValue);
+                }
+            }
+            return t;
+        } catch (Exception e) {
+            LOGGER.error("", e);
+            throw new SQLException(e);
+        }
     }
 
     @Override
@@ -95,12 +86,13 @@ public class QueryRunnerRowProcessor implements RowProcessor {
                 result.add(t);
             } catch (Exception e) {
                 LOGGER.error("", e);
+                throw new SQLException(e);
             }
         }
         return result;
     }
 
-    private Object convertType(Object resultValue, Class<?> parameterType) {
+    private <T> Object convertType(Object resultValue, Class<?> parameterType) {
         if (parameterType == String.class) {
             resultValue = resultValue.toString();
         }
@@ -128,6 +120,9 @@ public class QueryRunnerRowProcessor implements RowProcessor {
         }
         if (parameterType == BigDecimal.class) {
             resultValue = new BigDecimal(resultValue.toString());
+        }
+        if (parameterType.isEnum()) {
+            resultValue = Enum.valueOf((Class<Enum>)parameterType, resultValue.toString());
         }
         return resultValue;
     }
