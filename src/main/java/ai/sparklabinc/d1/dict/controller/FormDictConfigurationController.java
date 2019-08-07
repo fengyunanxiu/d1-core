@@ -29,8 +29,8 @@ public class FormDictConfigurationController {
     @GetMapping("")
     @ResponseBody
     @ApiOperation("query by df key and field key")
-    public FormDictConfigurationVO queryByDfKeyAndFieldKey(@RequestParam("df_key") String dfKey,
-                                                           @RequestParam("field_key") String fieldKey) throws Exception {
+    public FormDictConfigurationVO queryByDfKeyAndFieldKey(@RequestParam("field_form_df_key") String dfKey,
+                                                           @RequestParam("field_form_field_key") String fieldKey) throws Exception {
         return this.formDictConfigurationService.queryByForm(dfKey, fieldKey);
     }
 

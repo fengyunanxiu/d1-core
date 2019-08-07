@@ -15,46 +15,46 @@ import java.util.List;
  */
 public class FormDictConfigurationVO {
 
-    private String fFormDfKey;
+    private String fieldFormDfKey;
 
-    private String fFormFieldKey;
+    private String fieldFormFieldKey;
 
-    private String fDomain;
+    private String fieldDomain;
 
-    private String fItem;
+    private String fieldItem;
 
     private List<DictDO> dictList;
 
-    public String getFFormDfKey() {
-        return fFormDfKey;
+    public String getFieldFormDfKey() {
+        return fieldFormDfKey;
     }
 
-    public void setFFormDfKey(String fFormDfKey) {
-        this.fFormDfKey = fFormDfKey;
+    public void setFieldFormDfKey(String fieldFormDfKey) {
+        this.fieldFormDfKey = fieldFormDfKey;
     }
 
-    public String getFFormFieldKey() {
-        return fFormFieldKey;
+    public String getFieldFormFieldKey() {
+        return fieldFormFieldKey;
     }
 
-    public void setFFormFieldKey(String fFormFieldKey) {
-        this.fFormFieldKey = fFormFieldKey;
+    public void setFieldFormFieldKey(String fieldFormFieldKey) {
+        this.fieldFormFieldKey = fieldFormFieldKey;
     }
 
-    public String getFDomain() {
-        return fDomain;
+    public String getFieldDomain() {
+        return fieldDomain;
     }
 
-    public void setFDomain(String fDomain) {
-        this.fDomain = fDomain;
+    public void setFieldDomain(String fieldDomain) {
+        this.fieldDomain = fieldDomain;
     }
 
-    public String getFItem() {
-        return fItem;
+    public String getFieldItem() {
+        return fieldItem;
     }
 
-    public void setFItem(String fItem) {
-        this.fItem = fItem;
+    public void setFieldItem(String fieldItem) {
+        this.fieldItem = fieldItem;
     }
 
     public List<DictDO> getDictList() {

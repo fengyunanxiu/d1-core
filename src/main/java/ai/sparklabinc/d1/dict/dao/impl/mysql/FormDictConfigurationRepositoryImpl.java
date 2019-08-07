@@ -35,7 +35,7 @@ public class FormDictConfigurationRepositoryImpl implements FormDictConfiguratio
 
     @Override
     public List<FormDictConfigurationDO> queryByFrom(String formDfKey, String formFieldKey) throws SQLException {
-        String sql = " select * from db_form_dict_configuration where f_form_df_key = ? and f_form_field_key = ? ";
+        String sql = " select * from db_form_dict_configuration where field_form_df_key = ? and field_form_field_key = ? ";
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         return qr.query(sql, new BeanListHandler<>(FormDictConfigurationDO.class, new QueryRunnerRowProcessor()),
                 formDfKey, formFieldKey);
@@ -43,43 +43,43 @@ public class FormDictConfigurationRepositoryImpl implements FormDictConfiguratio
 
     @Override
     public FormDictConfigurationDO queryById(String id) throws SQLException {
-        String sql = "select * from db_form_dict_configuration where f_id = ?";
+        String sql = "select * from db_form_dict_configuration where field_id = ?";
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         return  qr.query(sql, new BeanHandler<>(FormDictConfigurationDO.class, new QueryRunnerRowProcessor()), id);
     }
 
     @Override
     public FormDictConfigurationDO add(FormDictConfigurationDO formDictConfigurationDO) throws Exception {
-        String formDfKey = formDictConfigurationDO.getFFormDfKey();
-        String formFieldKey = formDictConfigurationDO.getFFormFieldKey();
-        String domain = formDictConfigurationDO.getFDomain();
-        String item = formDictConfigurationDO.getFItem();
+        String formDfKey = formDictConfigurationDO.getFieldFormDfKey();
+        String formFieldKey = formDictConfigurationDO.getFieldFormFieldKey();
+        String domain = formDictConfigurationDO.getFieldDomain();
+        String item = formDictConfigurationDO.getFieldItem();
         if (StringUtils.isNullOrEmpty(formDfKey)
                 || StringUtils.isNullOrEmpty(formFieldKey)
                 || StringUtils.isNullOrEmpty(domain)
                 || StringUtils.isNullOrEmpty(item)) {
-            throw new ServiceException("f_form_df_key, f_form_field_key, f_domain, f_item 不能为空");
+            throw new ServiceException("field_form_df_key, field_form_field_key, field_domain, field_item 不能为空");
         }
-        String sql = "insert into db_form_dict_configuration(f_id, f_form_df_key, f_form_field_key, f_domain, f_item) values(?, ?, ?, ?)";
+        String sql = "insert into db_form_dict_configuration(field_id, field_form_df_key, field_form_field_key, field_domain, field_item) values(?, ?, ?, ?, ?)";
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         return qr.insert(sql, new BeanHandler<>(FormDictConfigurationDO.class, new QueryRunnerRowProcessor()), UUID.randomUUID().toString(), formDfKey, formFieldKey, domain, item);
     }
 
     @Override
     public void update(FormDictConfigurationDO formDictConfigurationDO) throws Exception {
-        String id = formDictConfigurationDO.getFId();
-        String formDfKey = formDictConfigurationDO.getFFormDfKey();
-        String formFieldKey = formDictConfigurationDO.getFFormFieldKey();
-        String domain = formDictConfigurationDO.getFDomain();
-        String item = formDictConfigurationDO.getFItem();
+        String id = formDictConfigurationDO.getFieldId();
+        String formDfKey = formDictConfigurationDO.getFieldFormDfKey();
+        String formFieldKey = formDictConfigurationDO.getFieldFormFieldKey();
+        String domain = formDictConfigurationDO.getFieldDomain();
+        String item = formDictConfigurationDO.getFieldItem();
         if (StringUtils.isNullOrEmpty(id)
                 ||StringUtils.isNullOrEmpty(formDfKey)
                 || StringUtils.isNullOrEmpty(formFieldKey)
                 || StringUtils.isNullOrEmpty(domain)
                 || StringUtils.isNullOrEmpty(item)) {
-            throw new ServiceException("f_id, f_form_df_key, f_form_field_key, f_domain, f_item 不能为空");
+            throw new ServiceException("field_id, field_form_df_key, field_form_field_key, field_domain, field_item 不能为空");
         }
-        String sql = " update db_form_dict_configuration set f_form_df_key = ?, f_form_field_key = ?, f_domain = ?, f_item = ? where f_id = ?";
+        String sql = " update db_form_dict_configuration set field_form_df_key = ?, field_form_field_key = ?, field_domain = ?, field_item = ? where field_id = ?";
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         qr.update(sql, formDfKey, formFieldKey, domain, item, id);
     }

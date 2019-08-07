@@ -46,8 +46,8 @@ public class FormDictConfigurationServiceImpl implements FormDictConfigurationSe
         }
         // 一个form facet key，form field key原则上只能有一个domain和item
         FormDictConfigurationDO formDictConfigurationDO = formDictConfigurationList.get(0);
-        String domain = formDictConfigurationDO.getFDomain();
-        String item = formDictConfigurationDO.getFItem();
+        String domain = formDictConfigurationDO.getFieldDomain();
+        String item = formDictConfigurationDO.getFieldItem();
         if (StringUtils.isNullOrEmpty(domain) || StringUtils.isNullOrEmpty(item)) {
            return null;
         }
@@ -58,10 +58,10 @@ public class FormDictConfigurationServiceImpl implements FormDictConfigurationSe
         // 构造前端数据结构
         FormDictConfigurationVO formDictConfigurationVO = new FormDictConfigurationVO();
         formDictConfigurationVO.setDictList(dictDOList);
-        formDictConfigurationVO.setFDomain(domain);
-        formDictConfigurationVO.setFItem(item);
-        formDictConfigurationVO.setFFormDfKey(formDfKey);
-        formDictConfigurationVO.setFFormFieldKey(formFieldKey);
+        formDictConfigurationVO.setFieldDomain(domain);
+        formDictConfigurationVO.setFieldItem(item);
+        formDictConfigurationVO.setFieldFormDfKey(formDfKey);
+        formDictConfigurationVO.setFieldFormFieldKey(formFieldKey);
         return formDictConfigurationVO;
     }
 
@@ -71,7 +71,7 @@ public class FormDictConfigurationServiceImpl implements FormDictConfigurationSe
         if (formDictConfigurationDO == null) {
             return;
         }
-        String id = formDictConfigurationDO.getFId();
+        String id = formDictConfigurationDO.getFieldId();
         if (id != null) {
             FormDictConfigurationDO existFormDictConfigurationDO = this.formDictConfigurationRepository.queryById(id);
             if (existFormDictConfigurationDO != null) {
