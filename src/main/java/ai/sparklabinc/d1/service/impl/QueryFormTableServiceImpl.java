@@ -1,16 +1,16 @@
 package ai.sparklabinc.d1.service.impl;
 
-import ai.sparklabinc.d1.component.DsFormTableSettingComponent;
+import ai.sparklabinc.d1.component.DfFormTableSettingComponent;
 import ai.sparklabinc.d1.constant.DsConstants;
 import ai.sparklabinc.d1.dao.DbBasicConfigDao;
-import ai.sparklabinc.d1.dao.DsFormTableSettingDao;
-import ai.sparklabinc.d1.dao.DsKeyBasicConfigDao;
+import ai.sparklabinc.d1.dao.DfFormTableSettingDao;
+import ai.sparklabinc.d1.dao.DfKeyBasicConfigDao;
 import ai.sparklabinc.d1.dao.DsQueryDao;
 import ai.sparklabinc.d1.datasource.DataSourceFactory;
 import ai.sparklabinc.d1.dto.*;
 import ai.sparklabinc.d1.entity.DbBasicConfigDO;
-import ai.sparklabinc.d1.entity.DsFormTableSettingDO;
-import ai.sparklabinc.d1.entity.DsKeyBasicConfigDO;
+import ai.sparklabinc.d1.entity.DfFormTableSettingDO;
+import ai.sparklabinc.d1.entity.DfKeyBasicConfigDO;
 import ai.sparklabinc.d1.exception.ServiceException;
 import ai.sparklabinc.d1.exception.custom.ResourceNotFoundException;
 import ai.sparklabinc.d1.generator.SQLGeneratorFactory;
@@ -20,9 +20,9 @@ import ai.sparklabinc.d1.util.ApiUtils;
 import ai.sparklabinc.d1.util.D1SQLUtils;
 import ai.sparklabinc.d1.util.SqlConditions;
 import ai.sparklabinc.d1.util.StringUtils;
-import ai.sparklabinc.d1.vo.DsKeyQueryFormSettingVO;
-import ai.sparklabinc.d1.vo.DsKeyQueryTableSettingVO;
-import ai.sparklabinc.d1.vo.DsKeyQueryVO;
+import ai.sparklabinc.d1.vo.DfKeyQueryFormSettingVO;
+import ai.sparklabinc.d1.vo.DfKeyQueryTableSettingVO;
+import ai.sparklabinc.d1.vo.DfKeyQueryVO;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,17 +48,17 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryFormTableServiceImpl.class);
 
 
-    @Resource(name = "DsFormTableSettingDao")
-    private DsFormTableSettingDao dsFormTableSettingDao;
+    @Resource(name = "DfFormTableSettingDao")
+    private DfFormTableSettingDao dfFormTableSettingDao;
 
     @Autowired
     private DsBasicDictionaryService dsBasicDictionaryService;
 
     @Autowired
-    private DsFormTableSettingComponent dsFormTableSettingComponent;
+    private DfFormTableSettingComponent dfFormTableSettingComponent;
 
-    @Resource(name = "DsKeyBasicConfigDao")
-    private DsKeyBasicConfigDao dsKeyBasicConfigDao;
+    @Resource(name = "DfKeyBasicConfigDao")
+    private DfKeyBasicConfigDao dfKeyBasicConfigDao;
 
     @Autowired
     private DataSourceFactory dataSourceFactory;
@@ -73,79 +73,79 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
     private SQLGeneratorFactory sqlGeneratorFactory;
 
     @Override
-    public List<DsKeyQueryTableSettingVO> getDsKeyQueryTableSetting(String dataSourceKey) throws Exception {
-        List<DsFormTableSettingDO> dsFormTableSettingDOList = getAllDsFormTableSettingByDsKey(dataSourceKey);
-        if(dsFormTableSettingDOList == null || dsFormTableSettingDOList.isEmpty()){
-           throw new ResourceNotFoundException("Cannot find TABLE resource from data source key :" + dataSourceKey);
+    public List<DfKeyQueryTableSettingVO> getDfKeyQueryTableSetting(String dataFacetKey) throws Exception {
+        List<DfFormTableSettingDO> dfFormTableSettingDOList = getAllDfFormTableSettingByDfKey(dataFacetKey);
+        if(dfFormTableSettingDOList == null || dfFormTableSettingDOList.isEmpty()){
+           throw new ResourceNotFoundException("Cannot find TABLE resource from data facet key :" + dataFacetKey);
         }
-        return realGetDsKeyQueryTableSetting(dsFormTableSettingDOList);
+        return realGetDfKeyQueryTableSetting(dfFormTableSettingDOList);
     }
 
     @Override
-    public  List<DsKeyQueryFormSettingVO> getDsKeyQueryFormSetting(String dataSourceKey) throws Exception {
-        List<DsFormTableSettingDO> dsFormTableSettingDOList = getAllDsFormTableSettingByDsKey(dataSourceKey);
-        if(dsFormTableSettingDOList == null || dsFormTableSettingDOList.isEmpty()){
+    public  List<DfKeyQueryFormSettingVO> getDfKeyQueryFormSetting(String dataFacetKey) throws Exception {
+        List<DfFormTableSettingDO> dfFormTableSettingDOList = getAllDfFormTableSettingByDfKey(dataFacetKey);
+        if(dfFormTableSettingDOList == null || dfFormTableSettingDOList.isEmpty()){
             return null;
         }
-        return realGetDsKeyQueryFormSetting(dsFormTableSettingDOList);
+        return realGetDfKeyQueryFormSetting(dfFormTableSettingDOList);
     }
 
     @Override
-    public DsKeyQueryVO getDsKeyQuerySetting(String dataSourceKey) throws Exception {
-        List<DsFormTableSettingDO> dsFormTableSettingDOList = getAllDsFormTableSettingByDsKey(dataSourceKey);
-        if(dsFormTableSettingDOList == null || dsFormTableSettingDOList.isEmpty()){
-            throw new ResourceNotFoundException(String.format("DataSourceKey not found:%s ", dataSourceKey));
+    public DfKeyQueryVO getDfKeyQuerySetting(String dataFacetKey) throws Exception {
+        List<DfFormTableSettingDO> dfFormTableSettingDOList = getAllDfFormTableSettingByDfKey(dataFacetKey);
+        if(dfFormTableSettingDOList == null || dfFormTableSettingDOList.isEmpty()){
+            throw new ResourceNotFoundException(String.format(" not found:%s ", dataFacetKey));
         }
 
-        List<DsKeyQueryFormSettingVO> dsKeyQueryFormSettingVOList = realGetDsKeyQueryFormSetting(dsFormTableSettingDOList);
-        if(dsKeyQueryFormSettingVOList == null || dsKeyQueryFormSettingVOList.isEmpty()){
-            throw new ResourceNotFoundException(String.format("DataSourceKey not found:%s ", dataSourceKey));
+        List<DfKeyQueryFormSettingVO> dfKeyQueryFormSettingVOList = realGetDfKeyQueryFormSetting(dfFormTableSettingDOList);
+        if(dfKeyQueryFormSettingVOList == null || dfKeyQueryFormSettingVOList.isEmpty()){
+            throw new ResourceNotFoundException(String.format(" not found:%s ", dataFacetKey));
         }
 
-        List<DsKeyQueryTableSettingVO> dsKeyQueryTableSettingVOList = realGetDsKeyQueryTableSetting(dsFormTableSettingDOList);
-        if(dsKeyQueryTableSettingVOList == null || dsKeyQueryTableSettingVOList.isEmpty()){
-            throw new ResourceNotFoundException(String.format("DataSourceKey not found:%s ", dataSourceKey));
+        List<DfKeyQueryTableSettingVO> dfKeyQueryTableSettingVOList = realGetDfKeyQueryTableSetting(dfFormTableSettingDOList);
+        if(dfKeyQueryTableSettingVOList == null || dfKeyQueryTableSettingVOList.isEmpty()){
+            throw new ResourceNotFoundException(String.format(" not found:%s ", dataFacetKey));
         }
-        return new DsKeyQueryVO(dsKeyQueryFormSettingVOList,dsKeyQueryTableSettingVOList);
+        return new DfKeyQueryVO(dfKeyQueryFormSettingVOList, dfKeyQueryTableSettingVOList);
 
     }
 
     @Override
-    public AssemblyResultDTO generalQuery(String dataSourceKey, Map<String, String[]> simpleParameters, Pageable pageable, String moreWhereClause, boolean returnDatasource) throws Exception {
-        List<DsFormTableSettingDO> dsFormTableSettingDOList = getAllDsFormTableSettingByDsKey(dataSourceKey);
-        if (dsFormTableSettingDOList == null || dsFormTableSettingDOList.isEmpty()) {
-            throw new ResourceNotFoundException(String.format("DataSourceKey setting not found:%s", dataSourceKey));
+    public AssemblyResultDTO generalQuery(String dataFacetKey, Map<String, String[]> simpleParameters, Pageable pageable, String moreWhereClause, boolean returnDatasource) throws Exception {
+        List<DfFormTableSettingDO> dfFormTableSettingDOList = getAllDfFormTableSettingByDfKey(dataFacetKey);
+        if (dfFormTableSettingDOList == null || dfFormTableSettingDOList.isEmpty()) {
+            throw new ResourceNotFoundException(String.format(" setting not found:%s", dataFacetKey));
         }
 
-        DsKeyBasicConfigDO dsKeyBasicConfigDO = this.dsKeyBasicConfigDao.getDsKeyBasicConfigByDsKey(dataSourceKey);
-        if(dsKeyBasicConfigDO == null){
-            throw new ResourceNotFoundException(String.format("DataSourceKey not found:%s", dataSourceKey));
+        DfKeyBasicConfigDO dfKeyBasicConfigDO = this.dfKeyBasicConfigDao.getDfKeyBasicConfigByDfKey(dataFacetKey);
+        if(dfKeyBasicConfigDO == null){
+            throw new ResourceNotFoundException(String.format(" not found:%s", dataFacetKey));
         }
 
         QueryParameterGroupDTO queryParameterGroup = null;
         try {
-            queryParameterGroup = this.dsFormTableSettingComponent.transformQueryParameterMap(dataSourceKey,
-                    simpleParameters, dsFormTableSettingDOList);
+            queryParameterGroup = this.dfFormTableSettingComponent.transformQueryParameterMap(dataFacetKey,
+                    simpleParameters, dfFormTableSettingDOList);
         } catch (Exception e) {
-            LOGGER.error("[{}] Failed to transfrom query parameter map", dataSourceKey, e);
-            throw new ServiceException(dataSourceKey + " Failed to transfrom query parameter map");
+            LOGGER.error("[{}] Failed to transfrom query parameter map", dataFacetKey, e);
+            throw new ServiceException(dataFacetKey + " Failed to transfrom query parameter map");
         }
 
-        String tableName = dsKeyBasicConfigDO.getTableName();
-        String schemaName = dsKeyBasicConfigDO.getSchemaName();
+        String tableName = dfKeyBasicConfigDO.getTableName();
+        String schemaName = dfKeyBasicConfigDO.getSchemaName();
         if(StringUtils.isNotNullNorEmpty(schemaName)) {
             tableName = schemaName + "." + tableName;
         }
 
         AssemblyResultDTO assemblyResultDTO = new AssemblyResultDTO();
         if(returnDatasource){
-            Long dbId = dsKeyBasicConfigDO.getFkDbId();
+            Long dbId = dfKeyBasicConfigDO.getFkDbId();
             DbBasicConfigDO dbBasicConfigDO = this.dbBasicConfigDao.findById(dbId);
             DataSource dataSource = dataSourceFactory.builder(dbBasicConfigDO.getDbType(), dbBasicConfigDO.getId());
             assemblyResultDTO.setDataSource(dataSource);
         }
 
-        SqlConditions sqlConditions = generateSqlConditions(queryParameterGroup,dsFormTableSettingDOList);
+        SqlConditions sqlConditions = generateSqlConditions(queryParameterGroup, dfFormTableSettingDOList);
         List<Object> paramList = sqlConditions.getParameters();
         String wholeWhereClause = (StringUtils.isNotNullNorEmpty(sqlConditions.getWhereClause()) ? " AND " : "") + sqlConditions.getWhereClause() + (moreWhereClause == null ? "" : moreWhereClause);
 
@@ -156,37 +156,37 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
 
         assemblyResultDTO.setCountSql(countSql);
         assemblyResultDTO.setQuerySql(querySql);
-        assemblyResultDTO.setDsFormTableSettingDOS(dsFormTableSettingDOList);
+        assemblyResultDTO.setDfFormTableSettingDOS(dfFormTableSettingDOList);
         assemblyResultDTO.setParamList(paramList);
         return assemblyResultDTO;
     }
 
     @Override
-    public PageResultDTO executeQuery(String dataSourceKey, Map<String, String[]> simpleParameters, Pageable pageable, String moreWhereClause) throws Exception {
-        DsKeyBasicConfigDO dsKeyBasicConfigDO = dsKeyBasicConfigDao.getDsKeyBasicConfigByDsKey(dataSourceKey);
-        if(dsKeyBasicConfigDO==null){
-            throw new ResourceNotFoundException("data source key is not found!");
+    public PageResultDTO executeQuery(String dataFacetKey, Map<String, String[]> simpleParameters, Pageable pageable, String moreWhereClause) throws Exception {
+        DfKeyBasicConfigDO dfKeyBasicConfigDO = dfKeyBasicConfigDao.getDfKeyBasicConfigByDfKey(dataFacetKey);
+        if(dfKeyBasicConfigDO ==null){
+            throw new ResourceNotFoundException("data facet key is not found!");
         }
         //获取生成sql文件
-        AssemblyResultDTO assemblyResultDTO = generalQuery(dataSourceKey, simpleParameters, pageable, moreWhereClause,false);
-        PageResultDTO pageResultDTO = dsQueryDao.excuteQuery(assemblyResultDTO, dsKeyBasicConfigDO.getFkDbId());
+        AssemblyResultDTO assemblyResultDTO = generalQuery(dataFacetKey, simpleParameters, pageable, moreWhereClause,false);
+        PageResultDTO pageResultDTO = dsQueryDao.excuteQuery(assemblyResultDTO, dfKeyBasicConfigDO.getFkDbId());
         return pageResultDTO;
     }
 
     @Override
-    public SQLGenerResultDTO generalSQL(String dataSourceKey, Map<String, String[]> requestParams) throws Exception {
-        List<DsFormTableSettingDO> dsFormTableSettingDOList = getAllDsFormTableSettingByDsKey(dataSourceKey);
-        if (dsFormTableSettingDOList == null || dsFormTableSettingDOList.isEmpty()) {
-            throw new ResourceNotFoundException(String.format("DataSourceKey setting not found:%s", dataSourceKey));
+    public SQLGenerResultDTO generalSQL(String dataFacetKey, Map<String, String[]> requestParams) throws Exception {
+        List<DfFormTableSettingDO> dfFormTableSettingDOList = getAllDfFormTableSettingByDfKey(dataFacetKey);
+        if (dfFormTableSettingDOList == null || dfFormTableSettingDOList.isEmpty()) {
+            throw new ResourceNotFoundException(String.format(" setting not found:%s", dataFacetKey));
         }
 
-        DsKeyBasicConfigDO dsKeyBasicConfigDO = this.dsKeyBasicConfigDao.getDsKeyBasicConfigByDsKey(dataSourceKey);
-        if(dsKeyBasicConfigDO == null){
-            throw new ResourceNotFoundException(String.format("DataSourceKey not found:%s", dataSourceKey));
+        DfKeyBasicConfigDO dfKeyBasicConfigDO = this.dfKeyBasicConfigDao.getDfKeyBasicConfigByDfKey(dataFacetKey);
+        if(dfKeyBasicConfigDO == null){
+            throw new ResourceNotFoundException(String.format(" not found:%s", dataFacetKey));
         }
-        String tableName = dsKeyBasicConfigDO.getTableName();
-        String schemaName = dsKeyBasicConfigDO.getSchemaName();
-        DbBasicConfigDO dbBasicConfigDO = dbBasicConfigDao.findById(dsKeyBasicConfigDO.getFkDbId());
+        String tableName = dfKeyBasicConfigDO.getTableName();
+        String schemaName = dfKeyBasicConfigDO.getSchemaName();
+        DbBasicConfigDO dbBasicConfigDO = dbBasicConfigDao.findById(dfKeyBasicConfigDO.getFkDbId());
         if(dbBasicConfigDO==null|| org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getDbType())){
             throw new ServiceException("db config is not found or db type is null");
         }
@@ -194,8 +194,8 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
         QueryParameterGroupDTO queryParameterGroup = null;
         try {
             Map<String, String[]> simpleParameters = ApiUtils.removeReservedParameters(requestParams);
-            queryParameterGroup = this.dsFormTableSettingComponent.transformQueryParameterMap("",
-                    simpleParameters, dsFormTableSettingDOList);
+            queryParameterGroup = this.dfFormTableSettingComponent.transformQueryParameterMap("",
+                    simpleParameters, dfFormTableSettingDOList);
         } catch (Exception e) {
             LOGGER.error("[{}] Failed to transfrom query parameter map", e);
             throw new ServiceException(" Failed to transfrom query parameter map");
@@ -203,7 +203,7 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
 
 
         SQLGenerResultDTO sqlGenerResultDTO = sqlGeneratorFactory.builder(dbBasicConfigDO.getDbType())
-                .buildSQL(null, schemaName, tableName, requestParams, queryParameterGroup, dsFormTableSettingDOList);
+                .buildSQL(null, schemaName, tableName, requestParams, queryParameterGroup, dfFormTableSettingDOList);
         sqlGenerResultDTO.setSqlType(dbBasicConfigDO.getDbType());
         return sqlGenerResultDTO;
     }
@@ -254,7 +254,7 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
     }
 
 
-    private SqlConditions generateSqlConditions(QueryParameterGroupDTO queryParameterGroup, List<DsFormTableSettingDO> dsFormTableSettingDOList) throws Exception {
+    private SqlConditions generateSqlConditions(QueryParameterGroupDTO queryParameterGroup, List<DfFormTableSettingDO> dfFormTableSettingDOList) throws Exception {
         SqlConditions sqlConditions = new SqlConditions();
         if (queryParameterGroup != null) {
             try {
@@ -266,22 +266,22 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
                 Map<String, String[]> accurateNumberRange = queryParameterGroup.getAccurateNumberRange();
 
                 if(fuzzyLike != null && !fuzzyLike.isEmpty()){
-                    D1SQLUtils.buildFuzzyLikeQueryParameterString(fuzzyLike, sqlConditions,dsFormTableSettingDOList);
+                    D1SQLUtils.buildFuzzyLikeQueryParameterString(fuzzyLike, sqlConditions, dfFormTableSettingDOList);
                 }
                 if(accurateEqualsString != null && !accurateEqualsString.isEmpty()){
-                    D1SQLUtils.buildAccurateEqualsStringQueryParameterString(accurateEqualsString, sqlConditions,dsFormTableSettingDOList);
+                    D1SQLUtils.buildAccurateEqualsStringQueryParameterString(accurateEqualsString, sqlConditions, dfFormTableSettingDOList);
                 }
                 if(accurateInString != null && !accurateInString.isEmpty()){
-                    D1SQLUtils.buildAccurateInStringQueryParameterString(accurateInString, sqlConditions,dsFormTableSettingDOList);
+                    D1SQLUtils.buildAccurateInStringQueryParameterString(accurateInString, sqlConditions, dfFormTableSettingDOList);
                 }
                 if(accurateDateRange != null && !accurateDateRange.isEmpty()){
-                    D1SQLUtils.buildAccurateDateRangeQueryParameterString(accurateDateRange, sqlConditions,dsFormTableSettingDOList);
+                    D1SQLUtils.buildAccurateDateRangeQueryParameterString(accurateDateRange, sqlConditions, dfFormTableSettingDOList);
                 }
                 if(accurateDateTimeRange != null && !accurateDateTimeRange.isEmpty()){
-                    D1SQLUtils.buildAccurateDateTimeRangeQueryParameterString(accurateDateTimeRange, sqlConditions,dsFormTableSettingDOList);
+                    D1SQLUtils.buildAccurateDateTimeRangeQueryParameterString(accurateDateTimeRange, sqlConditions, dfFormTableSettingDOList);
                 }
                 if(accurateNumberRange != null && !accurateNumberRange.isEmpty()){
-                    D1SQLUtils.buildAccurateNumberRangeQueryParameterString(accurateNumberRange, sqlConditions,dsFormTableSettingDOList);
+                    D1SQLUtils.buildAccurateNumberRangeQueryParameterString(accurateNumberRange, sqlConditions, dfFormTableSettingDOList);
                 }
             } catch (Exception e) {
                 LOGGER.error("Failed to build sql", e);
@@ -291,34 +291,34 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
         return sqlConditions;
     }
 
-    private List<DsKeyQueryFormSettingVO> realGetDsKeyQueryFormSetting(List<DsFormTableSettingDO> dsFormTableSettingDOList) throws SQLException, IOException {
-        List<DsKeyQueryFormSettingVO> rootDsKeyQueryFormSettingVOList = new LinkedList<>();
-        DsKeyQueryFormSettingVO dsKeyQueryFormSettingVO = null;
-        for (DsFormTableSettingDO dsFormTableSettingDO : dsFormTableSettingDOList) {
-            if(dsFormTableSettingDO.getFormFieldVisible()){
-                dsKeyQueryFormSettingVO = new DsKeyQueryFormSettingVO();
-                dsKeyQueryFormSettingVO.setDbFieldName(dsFormTableSettingDO.getDbFieldName());
-                dsKeyQueryFormSettingVO.setViewFieldLabel(dsFormTableSettingDO.getViewFieldLabel());
-                dsKeyQueryFormSettingVO.setFormFieldSequence(dsFormTableSettingDO.getFormFieldSequence());
+    private List<DfKeyQueryFormSettingVO> realGetDfKeyQueryFormSetting(List<DfFormTableSettingDO> dfFormTableSettingDOList) throws SQLException, IOException {
+        List<DfKeyQueryFormSettingVO> rootDfKeyQueryFormSettingVOList = new LinkedList<>();
+        DfKeyQueryFormSettingVO dfKeyQueryFormSettingVO = null;
+        for (DfFormTableSettingDO dfFormTableSettingDO : dfFormTableSettingDOList) {
+            if(dfFormTableSettingDO.getFormFieldVisible()){
+                dfKeyQueryFormSettingVO = new DfKeyQueryFormSettingVO();
+                dfKeyQueryFormSettingVO.setDbFieldName(dfFormTableSettingDO.getDbFieldName());
+                dfKeyQueryFormSettingVO.setViewFieldLabel(dfFormTableSettingDO.getViewFieldLabel());
+                dfKeyQueryFormSettingVO.setFormFieldSequence(dfFormTableSettingDO.getFormFieldSequence());
 
-                String formQueryType = dsFormTableSettingDO.getFormFieldQueryType();
+                String formQueryType = dfFormTableSettingDO.getFormFieldQueryType();
                 if(DsConstants.FormFieldQueryTypeEnum.getChoiceList().contains(formQueryType)){
                     // 查找optionList,以及默认值
-                    String domainName = dsFormTableSettingDO.getFormFieldDicDomainName();
+                    String domainName = dfFormTableSettingDO.getFormFieldDicDomainName();
                     OptionListAndDefaultValDTO optionListAndDefaultValDTO = this.dsBasicDictionaryService.getOptionListAndDefaultValDTOByDomainName(domainName);
                     if(optionListAndDefaultValDTO != null){
-                        dsKeyQueryFormSettingVO.setFieldValue(optionListAndDefaultValDTO.getDefaultVal());
-                        dsKeyQueryFormSettingVO.setFieldOptionalValueList(optionListAndDefaultValDTO.getOptionDTOList());
+                        dfKeyQueryFormSettingVO.setFieldValue(optionListAndDefaultValDTO.getDefaultVal());
+                        dfKeyQueryFormSettingVO.setFieldOptionalValueList(optionListAndDefaultValDTO.getOptionDTOList());
                     }
                 }
-                dsKeyQueryFormSettingVO.setFormFieldQueryType(formQueryType);
-                rootDsKeyQueryFormSettingVOList.add(dsKeyQueryFormSettingVO);
+                dfKeyQueryFormSettingVO.setFormFieldQueryType(formQueryType);
+                rootDfKeyQueryFormSettingVOList.add(dfKeyQueryFormSettingVO);
             }
         }
         // Order Form Fields
-        rootDsKeyQueryFormSettingVOList.sort(new Comparator<DsKeyQueryFormSettingVO>() {
+        rootDfKeyQueryFormSettingVOList.sort(new Comparator<DfKeyQueryFormSettingVO>() {
             @Override
-            public int compare(DsKeyQueryFormSettingVO o1, DsKeyQueryFormSettingVO o2) {
+            public int compare(DfKeyQueryFormSettingVO o1, DfKeyQueryFormSettingVO o2) {
                 if (o1.getFormFieldSequence() < o2.getFormFieldSequence()) {
                     return -1;
                 } else if (o1.getFormFieldSequence() > o2.getFormFieldSequence()) {
@@ -328,53 +328,53 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
                 }
             }
         });
-        return rootDsKeyQueryFormSettingVOList;
+        return rootDfKeyQueryFormSettingVOList;
     }
 
-    private List<DsKeyQueryTableSettingVO> realGetDsKeyQueryTableSetting(List<DsFormTableSettingDO> dsFormTableSettingDOList) {
+    private List<DfKeyQueryTableSettingVO> realGetDfKeyQueryTableSetting(List<DfFormTableSettingDO> dfFormTableSettingDOList) {
         // step 1 ,分解数据为一二级表头（跟前端配合）
-        List<DsKeyQueryTableSettingVO> rootDsKeyQueryTableSettingVOList = new LinkedList<>();
-        Map<String, List<DsKeyQueryTableSettingVO>> groupTableFieldVOMap = new HashMap<>();
-        for (DsFormTableSettingDO dsFormTableSettingDO : dsFormTableSettingDOList) {
-            if(dsFormTableSettingDO.getTableFieldVisible()){
-                DsKeyQueryTableSettingVO dsKeyQueryTableSettingVO = new DsKeyQueryTableSettingVO();
-                String tableParentLable = dsFormTableSettingDO.getTableParentLabel();
+        List<DfKeyQueryTableSettingVO> rootDfKeyQueryTableSettingVOList = new LinkedList<>();
+        Map<String, List<DfKeyQueryTableSettingVO>> groupTableFieldVOMap = new HashMap<>();
+        for (DfFormTableSettingDO dfFormTableSettingDO : dfFormTableSettingDOList) {
+            if(dfFormTableSettingDO.getTableFieldVisible()){
+                DfKeyQueryTableSettingVO dfKeyQueryTableSettingVO = new DfKeyQueryTableSettingVO();
+                String tableParentLable = dfFormTableSettingDO.getTableParentLabel();
 
-                dsKeyQueryTableSettingVO.setDbFieldName(dsFormTableSettingDO.getDbFieldName());
-                dsKeyQueryTableSettingVO.setTableFieldColumnWidth(dsFormTableSettingDO.getTableFieldColumnWidth());
-                dsKeyQueryTableSettingVO.setViewFieldLabel(dsFormTableSettingDO.getViewFieldLabel());
-                dsKeyQueryTableSettingVO.setTableFieldOrderBy(dsFormTableSettingDO.getTableFieldOrderBy());
-                dsKeyQueryTableSettingVO.setTableFieldSequence(dsFormTableSettingDO.getTableFieldSequence());
+                dfKeyQueryTableSettingVO.setDbFieldName(dfFormTableSettingDO.getDbFieldName());
+                dfKeyQueryTableSettingVO.setTableFieldColumnWidth(dfFormTableSettingDO.getTableFieldColumnWidth());
+                dfKeyQueryTableSettingVO.setViewFieldLabel(dfFormTableSettingDO.getViewFieldLabel());
+                dfKeyQueryTableSettingVO.setTableFieldOrderBy(dfFormTableSettingDO.getTableFieldOrderBy());
+                dfKeyQueryTableSettingVO.setTableFieldSequence(dfFormTableSettingDO.getTableFieldSequence());
 
                 if(tableParentLable != null){
-                    List<DsKeyQueryTableSettingVO> dsKeyQueryTableSettingVOS = groupTableFieldVOMap.get(tableParentLable);
-                    if(dsKeyQueryTableSettingVOS == null){
-                        dsKeyQueryTableSettingVOS = new LinkedList<>();
-                        groupTableFieldVOMap.put(tableParentLable, dsKeyQueryTableSettingVOS);
+                    List<DfKeyQueryTableSettingVO> dfKeyQueryTableSettingVOS = groupTableFieldVOMap.get(tableParentLable);
+                    if(dfKeyQueryTableSettingVOS == null){
+                        dfKeyQueryTableSettingVOS = new LinkedList<>();
+                        groupTableFieldVOMap.put(tableParentLable, dfKeyQueryTableSettingVOS);
 
-                        DsKeyQueryTableSettingVO rootDsKeyQueryTableSettingVO = new DsKeyQueryTableSettingVO();
-                        BeanUtils.copyProperties(dsFormTableSettingDO,rootDsKeyQueryTableSettingVO);
-                        rootDsKeyQueryTableSettingVO.setViewFieldLabel(tableParentLable);
-                        rootDsKeyQueryTableSettingVO.setDbFieldName(tableParentLable);
+                        DfKeyQueryTableSettingVO rootDfKeyQueryTableSettingVO = new DfKeyQueryTableSettingVO();
+                        BeanUtils.copyProperties(dfFormTableSettingDO, rootDfKeyQueryTableSettingVO);
+                        rootDfKeyQueryTableSettingVO.setViewFieldLabel(tableParentLable);
+                        rootDfKeyQueryTableSettingVO.setDbFieldName(tableParentLable);
                         // 遍历出来的第一个添加到root里边
-                        rootDsKeyQueryTableSettingVOList.add(rootDsKeyQueryTableSettingVO);
+                        rootDfKeyQueryTableSettingVOList.add(rootDfKeyQueryTableSettingVO);
                     }
-                    dsKeyQueryTableSettingVOS.add(dsKeyQueryTableSettingVO);
+                    dfKeyQueryTableSettingVOS.add(dfKeyQueryTableSettingVO);
                 }else{
-                    rootDsKeyQueryTableSettingVOList.add(dsKeyQueryTableSettingVO);
+                    rootDfKeyQueryTableSettingVOList.add(dfKeyQueryTableSettingVO);
                 }
             }
         }
 
         //step2 对二级进行排序
-        for (DsKeyQueryTableSettingVO tableFieldAO : rootDsKeyQueryTableSettingVOList) {
+        for (DfKeyQueryTableSettingVO tableFieldAO : rootDfKeyQueryTableSettingVOList) {
             // 对二级表头的一些字段做了特殊处理，它的排序用的第一个子的
             if (tableFieldAO.getDbFieldName().equals(tableFieldAO.getViewFieldLabel()) && groupTableFieldVOMap.containsKey(tableFieldAO.getDbFieldName())) {
                 tableFieldAO.setChildren(groupTableFieldVOMap.get(tableFieldAO.getDbFieldName()));
                 if (tableFieldAO.getChildren() != null && tableFieldAO.getChildren().size() != 0) {
-                    tableFieldAO.getChildren().sort(new Comparator<DsKeyQueryTableSettingVO>() {
+                    tableFieldAO.getChildren().sort(new Comparator<DfKeyQueryTableSettingVO>() {
                         @Override
-                        public int compare(DsKeyQueryTableSettingVO o1, DsKeyQueryTableSettingVO o2) {
+                        public int compare(DfKeyQueryTableSettingVO o1, DfKeyQueryTableSettingVO o2) {
                             if (o1.getTableFieldSequence() < o2.getTableFieldSequence()) {
                                 return -1;
                             } else if (o1.getTableFieldSequence() > o2.getTableFieldSequence()) {
@@ -389,9 +389,9 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
         }
 
         // step3 对外层进行排序
-        rootDsKeyQueryTableSettingVOList.sort(new Comparator<DsKeyQueryTableSettingVO>() {
+        rootDfKeyQueryTableSettingVOList.sort(new Comparator<DfKeyQueryTableSettingVO>() {
             @Override
-            public int compare(DsKeyQueryTableSettingVO o1, DsKeyQueryTableSettingVO o2) {
+            public int compare(DfKeyQueryTableSettingVO o1, DfKeyQueryTableSettingVO o2) {
                 if (o1.getTableFieldSequence() < o2.getTableFieldSequence()) {
                     return -1;
                 } else if (o1.getTableFieldSequence() > o2.getTableFieldSequence()) {
@@ -401,11 +401,11 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
                 }
             }
         });
-        return rootDsKeyQueryTableSettingVOList;
+        return rootDfKeyQueryTableSettingVOList;
     }
 
 
-    private List<DsFormTableSettingDO> getAllDsFormTableSettingByDsKey(String dataSourceKey) throws SQLException, IOException {
-        return this.dsFormTableSettingDao.getAllDsFormTableSettingByDsKey(dataSourceKey);
+    private List<DfFormTableSettingDO> getAllDfFormTableSettingByDfKey(String dataFacetKey) throws SQLException, IOException {
+        return this.dfFormTableSettingDao.getAllDfFormTableSettingByDfKey(dataFacetKey);
     }
 }

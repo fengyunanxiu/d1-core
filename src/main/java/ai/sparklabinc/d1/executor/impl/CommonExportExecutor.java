@@ -1,6 +1,6 @@
 package ai.sparklabinc.d1.executor.impl;
 
-import ai.sparklabinc.d1.entity.DsFormTableSettingDO;
+import ai.sparklabinc.d1.entity.DfFormTableSettingDO;
 import ai.sparklabinc.d1.executor.ExportExecutor;
 import ai.sparklabinc.d1.poi.CommonExcelWriter;
 import ai.sparklabinc.d1.poi.RowUnit;
@@ -32,7 +32,7 @@ public class CommonExportExecutor implements ExportExecutor {
 
 
     @Override
-    public File exportExcel(DataSource dataSource, String querySql, List<Object> paramList, List<DsFormTableSettingDO> queryTableSettings, Path path) {
+    public File exportExcel(DataSource dataSource, String querySql, List<Object> paramList, List<DfFormTableSettingDO> queryTableSettings, Path path) {
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -43,23 +43,23 @@ public class CommonExportExecutor implements ExportExecutor {
              * 按照顺序
              */
             List<String> fieldKeyList = queryTableSettings.stream()
-                    .sorted(Comparator.comparing(DsFormTableSettingDO::getExportFieldSequence))
-                    .map(DsFormTableSettingDO::getDbFieldName).collect(Collectors.toList());
+                    .sorted(Comparator.comparing(DfFormTableSettingDO::getExportFieldSequence))
+                    .map(DfFormTableSettingDO::getDbFieldName).collect(Collectors.toList());
             //表头
             List<String> fieldAliasLabelList = queryTableSettings.stream()
-                    .sorted(Comparator.comparing(DsFormTableSettingDO::getExportFieldSequence))
-                    .map(DsFormTableSettingDO::getViewFieldLabel).collect(Collectors.toList());
+                    .sorted(Comparator.comparing(DfFormTableSettingDO::getExportFieldSequence))
+                    .map(DfFormTableSettingDO::getViewFieldLabel).collect(Collectors.toList());
 
             //设置默认宽度
-            for (DsFormTableSettingDO e:queryTableSettings) {
+            for (DfFormTableSettingDO e:queryTableSettings) {
                 if(e.getExportFieldWidth()==null||e.getExportFieldWidth()<=0){
                     e.setExportFieldWidth(15);
                 }
             }
             //表格列宽度
             List<Integer> fieldAliasLabelWidth = queryTableSettings.stream()
-                    .sorted(Comparator.comparing(DsFormTableSettingDO::getExportFieldSequence))
-                    .map(DsFormTableSettingDO::getExportFieldWidth).collect(Collectors.toList());
+                    .sorted(Comparator.comparing(DfFormTableSettingDO::getExportFieldSequence))
+                    .map(DfFormTableSettingDO::getExportFieldWidth).collect(Collectors.toList());
 
             String filePath = path.toString();
             file = new File(filePath);
@@ -133,7 +133,7 @@ public class CommonExportExecutor implements ExportExecutor {
     }
 
 
-    private void write2Excel(List<Map<String, String>> cacheRowMapList, List<DsFormTableSettingDO> queryTableSettings,
+    private void write2Excel(List<Map<String, String>> cacheRowMapList, List<DfFormTableSettingDO> queryTableSettings,
                              File file, List<String> fieldAliasLabelList, List<Integer> fieldAliasLabelWidth) {
         if (queryTableSettings != null && cacheRowMapList != null && !cacheRowMapList.isEmpty()) {
 

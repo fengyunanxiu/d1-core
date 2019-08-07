@@ -1,8 +1,8 @@
 package ai.sparklabinc.d1.dto;
 
-public class DsKeyBasicConfigDTO {
+public class DfKeyBasicConfigDTO {
 
-    private String dsKey;
+    private String dfKey;
 
     private Long fkDbId;
 
@@ -13,12 +13,12 @@ public class DsKeyBasicConfigDTO {
     private String description;
 
 
-    public String getDsKey() {
-        return dsKey;
+    public String getDfKey() {
+        return dfKey;
     }
 
-    public void setDsKey(String dsKey) {
-        this.dsKey = dsKey;
+    public void setDfKey(String dfKey) {
+        this.dfKey = dfKey;
     }
 
     public Long getFkDbId() {

@@ -1,8 +1,8 @@
 package ai.sparklabinc.d1.controller;
 
 import ai.sparklabinc.d1.dto.DbFullConfigDTO;
-import ai.sparklabinc.d1.dto.DsKeyBasicConfigDTO;
-import ai.sparklabinc.d1.entity.DsFormTableSettingDO;
+import ai.sparklabinc.d1.dto.DfKeyBasicConfigDTO;
+import ai.sparklabinc.d1.entity.DfFormTableSettingDO;
 import ai.sparklabinc.d1.exception.custom.IllegalParameterException;
 import ai.sparklabinc.d1.service.DataSourceService;
 import io.swagger.annotations.Api;
@@ -74,9 +74,9 @@ public class DataSourceController {
     /**
      *
      * @param dsId
-     * @param dsKeyFilter 0查询所有的table、view；
-     *                    1查询配置了data source key的table view
-     *                    2查询没有配置data source key的table view
+     * @param dfKeyFilter 0查询所有的table、view；
+     *                    1查询配置了data facet key的table view
+     *                    2查询没有配置data facet key的table view
      * @return
      * @throws IOException
      * @throws SQLException
@@ -85,8 +85,8 @@ public class DataSourceController {
     @ResponseBody
     @GetMapping("/select")
     public Object selectDataSources(@RequestParam(required = false) Long dsId,
-                                    @RequestParam(defaultValue = "0") Integer dsKeyFilter)throws IOException, SQLException {
-       return dataSourceService.selectDataSources(dsId,dsKeyFilter);
+                                    @RequestParam(defaultValue = "0") Integer dfKeyFilter)throws IOException, SQLException {
+       return dataSourceService.selectDataSources(dsId,dfKeyFilter);
     }
 
     @ResponseBody
@@ -104,68 +104,68 @@ public class DataSourceController {
 
 
     @ResponseBody
-    @PostMapping("/add-dskey")
-    public Object addDataSourceKey(@RequestBody DsKeyBasicConfigDTO dsKeyBasicConfigDTO) throws Exception{
-        if(StringUtils.isBlank(dsKeyBasicConfigDTO.getDsKey())){
-            throw new IllegalParameterException("dsKey can not be null!");
+    @PostMapping("/add-dfkey")
+    public Object add(@RequestBody DfKeyBasicConfigDTO dfKeyBasicConfigDTO) throws Exception{
+        if(StringUtils.isBlank(dfKeyBasicConfigDTO.getDfKey())){
+            throw new IllegalParameterException("dfKey can not be null!");
         }
 
-        return dataSourceService.addDataSourceKey(dsKeyBasicConfigDTO);
+        return dataSourceService.addDataFacetKey(dfKeyBasicConfigDTO);
     }
 
     @ResponseBody
-    @DeleteMapping("/delete-dskey")
-    public Object deleteDataSourceKey(String dsKey) throws IOException, SQLException{
-        return dataSourceService.deleteDataSourceKey(dsKey);
-    }
-
-
-    @ResponseBody
-    @GetMapping ("/select-ds-form-table-setting")
-    public Object selectAllDsFormTableSettingByDsKey(String dsKey) throws Exception{
-        return dataSourceService.selectAllDsFormTableSettingByDsKey(dsKey);
+    @DeleteMapping("/delete-dfkey")
+    public Object deleteDataFacetKey(String dfKey) throws IOException, SQLException{
+        return dataSourceService.deleteDataFacetKey(dfKey);
     }
 
 
     @ResponseBody
-    @PostMapping("/save-ds-form-table-setting")
-    public boolean saveDsFormTableSetting(@RequestBody List<DsFormTableSettingDO> dsFormTableSettingDOS) throws Exception {
-        if(CollectionUtils.isEmpty(dsFormTableSettingDOS)){
+    @GetMapping ("/select-df-form-table-setting")
+    public Object selectAllDfFormTableSettingByDfKey(String dfKey) throws Exception{
+        return dataSourceService.selectAllDfFormTableSettingByDfKey(dfKey);
+    }
+
+
+    @ResponseBody
+    @PostMapping("/save-df-form-table-setting")
+    public boolean saveDfFormTableSetting(@RequestBody List<DfFormTableSettingDO> dfFormTableSettingDOS) throws Exception {
+        if(CollectionUtils.isEmpty(dfFormTableSettingDOS)){
             throw new IllegalParameterException("form infomation can not be null!");
         }
-        List<DsFormTableSettingDO> dsFormTableSettingDOSForUpdate = dsFormTableSettingDOS.stream()
+        List<DfFormTableSettingDO> dfFormTableSettingDOSForUpdate = dfFormTableSettingDOS.stream()
                 .filter(e -> e.getId() != null && e.getId() > 0)
                 .collect(Collectors.toList());
 
-        List<DsFormTableSettingDO> dsFormTableSettingDOSForAdd= dsFormTableSettingDOS.stream()
+        List<DfFormTableSettingDO> dfFormTableSettingDOSForAdd = dfFormTableSettingDOS.stream()
                 .filter((e) -> e.getId() == null || e.getId() <= 0)
                 .collect(Collectors.toList());
 
-        return dataSourceService.saveDsFormTableSetting(dsFormTableSettingDOSForUpdate,dsFormTableSettingDOSForAdd);
+        return dataSourceService.saveDfFormTableSetting(dfFormTableSettingDOSForUpdate, dfFormTableSettingDOSForAdd);
     }
 
 
     @ResponseBody
-    @PostMapping("/refresh-ds-form-table-setting")
-    public Object refreshDsFormTableSetting(String dsKey) throws Exception {
-        if(StringUtils.isBlank(dsKey)){
-            throw new IllegalParameterException("dsKey can not be null!");
+    @PostMapping("/refresh-df-form-table-setting")
+    public Object refreshDfFormTableSetting(String dfKey) throws Exception {
+        if(StringUtils.isBlank(dfKey)){
+            throw new IllegalParameterException("dfKey can not be null!");
         }
-        return dataSourceService.refreshDsFormTableSetting(dsKey);
+        return dataSourceService.refreshDfFormTableSetting(dfKey);
     }
 
 
     @ResponseBody
-    @PostMapping("/update-dskey")
-    public Object updateDataSourceKey(String dsKey, String newDsKey, String description) throws IOException, SQLException{
-        return dataSourceService.updateDataSourceKey(dsKey,newDsKey,description);
+    @PostMapping("/update-dfkey")
+    public Object updateDataFacetKey(String dfKey, String newDfKey, String description) throws IOException, SQLException{
+        return dataSourceService.updateDataFacetKey(dfKey,newDfKey,description);
     }
 
 
     @ResponseBody
-    @GetMapping("/basic-dskey-info")
-    public Object getDsKeyBasicInfo(String dsKey) throws Exception{
-        return dataSourceService.getDsKeyBasicInfo(dsKey);
+    @GetMapping("/basic-dfkey-info")
+    public Object getDfKeyBasicInfo(String dfKey) throws Exception{
+        return dataSourceService.getDfKeyBasicInfo(dfKey);
     }
 
 

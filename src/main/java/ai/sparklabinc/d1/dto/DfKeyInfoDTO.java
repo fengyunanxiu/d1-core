@@ -7,7 +7,7 @@ package ai.sparklabinc.d1.dto;
  * @description:
  * @version: V1.0
  */
-public class DsKeyInfoDTO {
+public class DfKeyInfoDTO {
     private Long id;
     private Long fkDbId;
     private String schemaName;

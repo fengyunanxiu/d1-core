@@ -1,11 +1,11 @@
 package ai.sparklabinc.d1.entity;
 
-public class DsKeyBasicConfigDO {
+public class DfKeyBasicConfigDO {
 
 
     private Long id;
 
-    private String dsKey;
+    private String dfKey;
 
     private Long fkDbId;
 
@@ -27,12 +27,12 @@ public class DsKeyBasicConfigDO {
         this.id = id;
     }
 
-    public String getDsKey() {
-        return dsKey;
+    public String getDfKey() {
+        return dfKey;
     }
 
-    public void setDsKey(String dsKey) {
-        this.dsKey = dsKey;
+    public void setDfKey(String dfKey) {
+        this.dfKey = dfKey;
     }
 
     public Long getFkDbId() {

@@ -79,12 +79,12 @@ create table if not exists ds_dic_auto_config
 
 ###
 
-create table if not exists  ds_form_table_setting
+create table if not exists  df_form_table_setting
 (
     id                                integer primary key AUTOINCREMENT,
     gmt_create                        varchar(30),
     gmt_modified                      varchar(30),
-    ds_key                            varchar(100),
+    df_key                            varchar(100),
     db_field_name                     varchar(100),
     db_field_type                     varchar(100),
     view_field_label                  varchar(100),
@@ -114,10 +114,10 @@ create table if not exists  ds_form_table_setting
 
 ###
 
-create table if not exists  ds_key_basic_config
+create table if not exists  df_key_basic_config
 (
     id           integer primary key AUTOINCREMENT,
-    ds_key       varchar(100) unique,
+    df_key       varchar(100) unique,
     fk_db_id     bigint,
     schema_name  varchar(100),
     table_name   varchar(100),

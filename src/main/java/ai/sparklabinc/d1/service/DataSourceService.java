@@ -3,9 +3,9 @@ package ai.sparklabinc.d1.service;
 import ai.sparklabinc.d1.dto.DbBasicConfigDTO;
 import ai.sparklabinc.d1.dto.DbInforamtionDTO;
 import ai.sparklabinc.d1.dto.DbSecurityConfigDTO;
-import ai.sparklabinc.d1.dto.DsKeyBasicConfigDTO;
-import ai.sparklabinc.d1.entity.DsFormTableSettingDO;
-import ai.sparklabinc.d1.entity.DsKeyBasicConfigDO;
+import ai.sparklabinc.d1.dto.DfKeyBasicConfigDTO;
+import ai.sparklabinc.d1.entity.DfFormTableSettingDO;
+import ai.sparklabinc.d1.entity.DfKeyBasicConfigDO;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -26,25 +26,25 @@ public interface DataSourceService {
 
     boolean deleteDataSources(Long dsId) throws IOException, SQLException;
 
-    List<DbInforamtionDTO> selectDataSources(Long dsId, Integer dsKeyFilter) throws IOException, SQLException;
+    List<DbInforamtionDTO> selectDataSources(Long dsId, Integer dfKeyFilter) throws IOException, SQLException;
 
     List<Map<String, Object>>  selectDataSourceProperty(Long dsId) throws IOException, SQLException;
 
     boolean editDataSourceProperty(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws IOException, SQLException;
 
-    DbInforamtionDTO addDataSourceKey(DsKeyBasicConfigDTO dsKeyBasicConfigDTO) throws Exception;
+    DbInforamtionDTO addDataFacetKey(DfKeyBasicConfigDTO dfKeyBasicConfigDTO) throws Exception;
 
-    List<Map<String,Object>> selectAllDsFormTableSettingByDsKey(String dsKey) throws Exception;
+    List<Map<String,Object>> selectAllDfFormTableSettingByDfKey(String dfKey) throws Exception;
 
-    boolean updateDataSourceKey(String dsKey, String newDsKey, String description) throws IOException, SQLException;
+    boolean updateDataFacetKey(String dfKey, String newDfKey, String description) throws IOException, SQLException;
 
-    boolean deleteDataSourceKey(String dsKey) throws IOException, SQLException;
+    boolean deleteDataFacetKey(String dfKey) throws IOException, SQLException;
 
     boolean dataSourceTestConnection(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws Exception;
 
-    Boolean saveDsFormTableSetting(List<DsFormTableSettingDO> dsFormTableSettingDOSForUpdate, List<DsFormTableSettingDO> dsFormTableSettingDOSForAdd) throws Exception;
+    Boolean saveDfFormTableSetting(List<DfFormTableSettingDO> dfFormTableSettingDOSForUpdate, List<DfFormTableSettingDO> dfFormTableSettingDOSForAdd) throws Exception;
 
-    List<Map<String,Object>> refreshDsFormTableSetting(String dsKey) throws Exception;
+    List<Map<String,Object>> refreshDfFormTableSetting(String dfKey) throws Exception;
 
-    DsKeyBasicConfigDO getDsKeyBasicInfo(String dsKey) throws Exception;
+    DfKeyBasicConfigDO getDfKeyBasicInfo(String dfKey) throws Exception;
 }

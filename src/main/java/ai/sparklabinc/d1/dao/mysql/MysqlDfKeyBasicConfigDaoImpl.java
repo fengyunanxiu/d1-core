@@ -1,12 +1,11 @@
-package ai.sparklabinc.d1.dao.oracle;
+package ai.sparklabinc.d1.dao.mysql;
 
 import ai.sparklabinc.d1.dao.DataDaoType;
-import ai.sparklabinc.d1.dao.DsKeyBasicConfigDao;
-import ai.sparklabinc.d1.datasource.Constants;
+import ai.sparklabinc.d1.dao.DfKeyBasicConfigDao;
 import ai.sparklabinc.d1.datasource.DataSourceFactory;
 import ai.sparklabinc.d1.dto.DbInforamtionDTO;
-import ai.sparklabinc.d1.dto.DsKeyInfoDTO;
-import ai.sparklabinc.d1.entity.DsKeyBasicConfigDO;
+import ai.sparklabinc.d1.dto.DfKeyInfoDTO;
+import ai.sparklabinc.d1.entity.DfKeyBasicConfigDO;
 import ai.sparklabinc.d1.util.DateUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
@@ -27,10 +26,10 @@ import java.util.List;
  * @date : 2019-07-03 20:49
  * @description :
  */
-@Repository("OracleDsKeyBasicConfigDaoImpl")
-public class OracleDsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
+@Repository("MysqlDfKeyBasicConfigDaoImpl")
+public class MysqlDfKeyBasicConfigDaoImpl implements DfKeyBasicConfigDao {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OracleDsKeyBasicConfigDaoImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MysqlDfKeyBasicConfigDaoImpl.class);
 
     @Autowired
     private DataSourceFactory dataSourceFactory;
@@ -38,56 +37,58 @@ public class OracleDsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
     @Resource(name="D1BasicDataSource")
     private DataSource d1BasicDataSource;
 
-
     @Override
     public DataDaoType getDataDaoType() {
-        return DataDaoType.ORACLE;
+        return DataDaoType.MYSQL;
     }
 
+
+
+
     @Override
-    public DsKeyBasicConfigDO getDsKeyBasicConfigByDsKey(String dataSourceKey) throws SQLException, IOException {
+    public DfKeyBasicConfigDO getDfKeyBasicConfigByDfKey(String dataFacetKey) throws SQLException, IOException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
-        String querySql = "select * from ds_key_basic_config where ds_key = ? ";
+        String querySql = "select * from df_key_basic_config where df_key = ? ";
         LOGGER.info("querySql:{}", querySql);
 
-        DsKeyBasicConfigDO dsKeyBasicConfigDO = queryRunner.query(querySql, new ResultSetHandler<DsKeyBasicConfigDO>() {
+        DfKeyBasicConfigDO dfKeyBasicConfigDO = queryRunner.query(querySql, new ResultSetHandler<DfKeyBasicConfigDO>() {
             @Override
-            public DsKeyBasicConfigDO handle(ResultSet resultSet) throws SQLException {
-                DsKeyBasicConfigDO resultDsKeyBasicConfigDO = null;
+            public DfKeyBasicConfigDO handle(ResultSet resultSet) throws SQLException {
+                DfKeyBasicConfigDO resultDfKeyBasicConfigDO = null;
                 while (resultSet.next()) {
                     Long id = resultSet.getLong("id");
                     String gmtCreateStr =  resultSet.getString("gmt_create");
                     String gmtModifiedStr = resultSet.getString("gmt_modified");
-                    String dsKey = resultSet.getString("ds_key");
+                    String dfKey = resultSet.getString("df_key");
                     Long fkDbId = resultSet.getLong("fk_db_id");
                     String schema = resultSet.getString("schema_name");
                     String tableName = resultSet.getString("table_name");
                     String description = resultSet.getString("description");
 
-                    resultDsKeyBasicConfigDO = new DsKeyBasicConfigDO();
-                    resultDsKeyBasicConfigDO.setId(id);
-                    resultDsKeyBasicConfigDO.setGmtCreate(gmtCreateStr);
-                    resultDsKeyBasicConfigDO.setGmtModified(gmtModifiedStr);
-                    resultDsKeyBasicConfigDO.setDsKey(dsKey);
-                    resultDsKeyBasicConfigDO.setFkDbId(fkDbId);
-                    resultDsKeyBasicConfigDO.setSchemaName(schema);
-                    resultDsKeyBasicConfigDO.setTableName(tableName);
-                    resultDsKeyBasicConfigDO.setDescription(description);
+                    resultDfKeyBasicConfigDO = new DfKeyBasicConfigDO();
+                    resultDfKeyBasicConfigDO.setId(id);
+                    resultDfKeyBasicConfigDO.setGmtCreate(gmtCreateStr);
+                    resultDfKeyBasicConfigDO.setGmtModified(gmtModifiedStr);
+                    resultDfKeyBasicConfigDO.setDfKey(dfKey);
+                    resultDfKeyBasicConfigDO.setFkDbId(fkDbId);
+                    resultDfKeyBasicConfigDO.setSchemaName(schema);
+                    resultDfKeyBasicConfigDO.setTableName(tableName);
+                    resultDfKeyBasicConfigDO.setDescription(description);
                 }
-                return resultDsKeyBasicConfigDO;
+                return resultDfKeyBasicConfigDO;
             }
-        }, dataSourceKey);
+        }, dataFacetKey);
 
-        return dsKeyBasicConfigDO;
+        return dfKeyBasicConfigDO;
     }
 
     @Override
-    public List<DbInforamtionDTO> getDataSourceKey(Long dsId, String schema, String tableName) throws IOException, SQLException {
+    public List<DbInforamtionDTO> getDataFacetKey(Long dsId, String schema, String tableName) throws IOException, SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql ="select  id," +
-                "       ds_key as label," +
+                "       df_key as label," +
                 "       4 as level" +
-                " from ds_key_basic_config" +
+                " from df_key_basic_config" +
                 " where fk_db_id=? " +
                 " and schema_name=? " +
                 " and table_name=?";
@@ -97,34 +98,34 @@ public class OracleDsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
 
 
     @Override
-    public List<DsKeyInfoDTO> getAllDataSourceKey() throws IOException, SQLException {
+    public List<DfKeyInfoDTO> getAllDataFacetKey() throws IOException, SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql ="select  id," +
                 "       fk_db_id as fkDbId," +
                 "       schema_name as schemaName ," +
                 "       table_name as tableName," +
-                "       ds_key as label," +
+                "       df_key as label," +
                 "       4 as level" +
-                " from ds_key_basic_config" +
+                " from df_key_basic_config" +
                 " where fk_db_id is not null " +
                 " and schema_name is not null " +
                 " and table_name is not null";
-        List<DsKeyInfoDTO> result = queryRunner.query(sql, new BeanListHandler<>(DsKeyInfoDTO.class));
+        List<DfKeyInfoDTO> result = queryRunner.query(sql, new BeanListHandler<>(DfKeyInfoDTO.class));
         return  result;
     }
 
     @Override
-    public Integer addDataSourceKey(DsKeyBasicConfigDO dsKeyBasicConfigDO) throws IOException, SQLException {
+    public Integer addDataFacetKey(DfKeyBasicConfigDO dfKeyBasicConfigDO) throws IOException, SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
-        String sql ="insert into ds_key_basic_config( ds_key, fk_db_id, schema_name, table_name, " +
+        String sql ="insert into df_key_basic_config( df_key, fk_db_id, schema_name, table_name, " +
                 " description, gmt_create, gmt_modified)" +
                 " values ( ?, ?, ?, ?, ?, ?, ?) ";
         String now = DateUtils.ofLongStr(new java.util.Date());
-        Object[] objectParams={dsKeyBasicConfigDO.getDsKey(),
-                dsKeyBasicConfigDO.getFkDbId(),
-                dsKeyBasicConfigDO.getSchemaName(),
-                dsKeyBasicConfigDO.getTableName(),
-                dsKeyBasicConfigDO.getDescription(),
+        Object[] objectParams={dfKeyBasicConfigDO.getDfKey(),
+                dfKeyBasicConfigDO.getFkDbId(),
+                dfKeyBasicConfigDO.getSchemaName(),
+                dfKeyBasicConfigDO.getTableName(),
+                dfKeyBasicConfigDO.getDescription(),
                 now,now};
         int result = queryRunner.update(sql, objectParams);
         return  result;
@@ -132,30 +133,30 @@ public class OracleDsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
 
 
     @Override
-    public Integer updateDataSourceKey(String dsKey,String newDsKey,String description) throws IOException, SQLException {
+    public Integer updateDataFacetKey(String dfKey,String newDfKey,String description) throws IOException, SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
-        String sql =" update ds_key_basic_config set ds_key = ?,description = ?,gmt_modified = ?" +
-                " where ds_key = ? ";
+        String sql =" update df_key_basic_config set df_key = ?,description = ?,gmt_modified = ?" +
+                    " where df_key = ? ";
         String now = DateUtils.ofLongStr(new java.util.Date());
-        Object[] objectParams={newDsKey,description,now,dsKey};
+        Object[] objectParams={newDfKey,description,now,dfKey};
         int result = queryRunner.update(sql, objectParams);
         return  result;
     }
 
     @Override
-    public Integer deleteDataSourceKey(String dsKey) throws SQLException, IOException {
+    public Integer deleteDataFacetKey(String dfKey) throws SQLException, IOException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
-        String sql="delete from ds_key_basic_config where ds_key = ? ";
-        int result=queryRunner.update(sql,dsKey);
+        String sql="delete from df_key_basic_config where df_key = ? ";
+        int result=queryRunner.update(sql,dfKey);
         return result;
     }
 
     @Override
-    public Long addDataSourceKeyAndReturnId(DsKeyBasicConfigDO dsKeyBasicConfigDO) throws Exception {
+    public Long addDataFacetKeyAndReturnId(DfKeyBasicConfigDO dfKeyBasicConfigDO) throws Exception {
         Connection conn=null;
         Long id = 0L;
         try {
-            String sql = "insert into ds_key_basic_config( ds_key, fk_db_id, schema_name, table_name, " +
+            String sql = "insert into df_key_basic_config( df_key, fk_db_id, schema_name, table_name, " +
                     " description, gmt_create, gmt_modified)" +
                     " values ( ?, ?, ?, ?, ?, ?, ?) ";
             DataSource dataSource = d1BasicDataSource;
@@ -163,11 +164,11 @@ public class OracleDsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
             PreparedStatement preparedStatement = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
             String now = DateUtils.ofLongStr(new java.util.Date());
             //绑定参数
-            bindParameters(preparedStatement, dsKeyBasicConfigDO.getDsKey(),
-                    dsKeyBasicConfigDO.getFkDbId(),
-                    dsKeyBasicConfigDO.getSchemaName(),
-                    dsKeyBasicConfigDO.getTableName(),
-                    dsKeyBasicConfigDO.getDescription(),
+            bindParameters(preparedStatement, dfKeyBasicConfigDO.getDfKey(),
+                    dfKeyBasicConfigDO.getFkDbId(),
+                    dfKeyBasicConfigDO.getSchemaName(),
+                    dfKeyBasicConfigDO.getTableName(),
+                    dfKeyBasicConfigDO.getDescription(),
                     now,now);
             preparedStatement.execute();
             ResultSet rs = preparedStatement.getGeneratedKeys();

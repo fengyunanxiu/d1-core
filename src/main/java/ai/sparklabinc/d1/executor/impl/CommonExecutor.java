@@ -1,6 +1,6 @@
 package ai.sparklabinc.d1.executor.impl;
 
-import ai.sparklabinc.d1.entity.DsFormTableSettingDO;
+import ai.sparklabinc.d1.entity.DfFormTableSettingDO;
 import ai.sparklabinc.d1.exception.custom.PropertyNotFoundException;
 import ai.sparklabinc.d1.executor.Executor;
 import ai.sparklabinc.d1.executor.ExportExecutor;
@@ -35,7 +35,7 @@ public class CommonExecutor implements Executor {
     }
 
     @Override
-    public File exportExcel(String querySql, List<Object> paramList, List<DsFormTableSettingDO> queryTableSettings, Path path) throws PropertyNotFoundException {
+    public File exportExcel(String querySql, List<Object> paramList, List<DfFormTableSettingDO> queryTableSettings, Path path) throws PropertyNotFoundException {
         if (exportExecutor != null) {
             // 查询sql
             return this.exportExecutor.exportExcel(dataSource, querySql,paramList, queryTableSettings, path);

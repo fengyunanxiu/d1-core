@@ -25,12 +25,12 @@ public class DaoBeanConfig {
     private DataDaoFactory dataDaoFactory;
 
 
-    @Bean("DsFormTableSettingDao")
-    public DsFormTableSettingDao getDsFormTableSettingDao(){
+    @Bean("DfFormTableSettingDao")
+    public DfFormTableSettingDao getDfFormTableSettingDao(){
         if(StringUtils.isBlank(basicDbConfig.getType())){
             basicDbConfig.setType("sqlite");
         }
-        return dataDaoFactory.getDaoBean(DsFormTableSettingDao.class, basicDbConfig.getType());
+        return dataDaoFactory.getDaoBean(DfFormTableSettingDao.class, basicDbConfig.getType());
     }
 
     @Bean("DataSourceDao")
@@ -70,12 +70,12 @@ public class DaoBeanConfig {
     }
 
 
-    @Bean("DsKeyBasicConfigDao")
-    public DsKeyBasicConfigDao getDsKeyBasicConfigDao(){
+    @Bean("DfKeyBasicConfigDao")
+    public DfKeyBasicConfigDao getDfKeyBasicConfigDao(){
         if(StringUtils.isBlank(basicDbConfig.getType())){
             basicDbConfig.setType("sqlite");
         }
-        return dataDaoFactory.getDaoBean(DsKeyBasicConfigDao.class, basicDbConfig.getType());
+        return dataDaoFactory.getDaoBean(DfKeyBasicConfigDao.class, basicDbConfig.getType());
     }
 
 

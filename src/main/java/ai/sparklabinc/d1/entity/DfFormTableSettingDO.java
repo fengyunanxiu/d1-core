@@ -1,6 +1,6 @@
 package ai.sparklabinc.d1.entity;
 
-public class DsFormTableSettingDO {
+public class DfFormTableSettingDO {
 
     private Long id;
 
@@ -8,7 +8,7 @@ public class DsFormTableSettingDO {
 
     private String gmtModified;
 
-    private String dsKey;
+    private String dfKey;
 
 
     private String dbFieldName;
@@ -94,12 +94,12 @@ public class DsFormTableSettingDO {
         this.gmtModified = gmtModified;
     }
 
-    public String getDsKey() {
-        return dsKey;
+    public String getDfKey() {
+        return dfKey;
     }
 
-    public void setDsKey(String dsKey) {
-        this.dsKey = dsKey;
+    public void setDfKey(String dfKey) {
+        this.dfKey = dfKey;
     }
 
     public String getDbFieldName() {
