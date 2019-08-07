@@ -48,6 +48,13 @@ public class DefaultsConfigurationRepositoryImpl implements DefaultsConfiguratio
     }
 
     @Override
+    public List<DefaultsConfigurationDO> queryAll() throws SQLException {
+        String sql = "select * from " + DefaultsConfigurationDO.TABLE_NAME;
+        QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
+        return qr.query(sql, new BeanListHandler<>(DefaultsConfigurationDO.class, new QueryRunnerRowProcessor()));
+    }
+
+    @Override
     public DefaultsConfigurationDO insert(DefaultsConfigurationDO defaultsConfigurationDO) throws Exception {
         String fieldFormDfKey = defaultsConfigurationDO.getFieldFormDfKey();
         String fieldFormFieldKey = defaultsConfigurationDO.getFieldFormFieldKey();

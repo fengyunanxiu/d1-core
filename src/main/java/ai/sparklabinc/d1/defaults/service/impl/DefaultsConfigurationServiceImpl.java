@@ -1,6 +1,7 @@
 package ai.sparklabinc.d1.defaults.service.impl;
 
 import ai.sparklabinc.d1.defaults.dao.DefaultsConfigurationRepository;
+import ai.sparklabinc.d1.defaults.entity.DefaultConfigurationType;
 import ai.sparklabinc.d1.defaults.entity.DefaultsConfigurationDO;
 import ai.sparklabinc.d1.defaults.service.DefaultsConfigurationService;
 import ai.sparklabinc.d1.exception.ServiceException;
@@ -56,20 +57,26 @@ public class DefaultsConfigurationServiceImpl implements DefaultsConfigurationSe
             throw new IllegalParameterException("field_form_df_key and field_form_field_key不能为空");
         }
         String fieldId = defaultsConfigurationDO.getFieldId();
+        DefaultsConfigurationDO existDefaultConfiguration = null;
         if (fieldId != null) {
-            DefaultsConfigurationDO existDefaultConfiguration = this.defaultsConfigurationRepository.queryById(fieldId);
-            if (existDefaultConfiguration != null) {
-                this.defaultsConfigurationRepository.update(defaultsConfigurationDO);
-                return;
+            existDefaultConfiguration = this.defaultsConfigurationRepository.queryById(fieldId);
+        }
+        if (existDefaultConfiguration != null) {
+            this.defaultsConfigurationRepository.update(defaultsConfigurationDO);
+        } else {
+            // 写入新的数据，需要判断是否有重复数据
+            List<DefaultsConfigurationDO> duplicateDefaultConfigurationList =
+                    this.defaultsConfigurationRepository.queryByDfKeyAndFieldKey(fieldFormDfKey, fieldFormFieldKey);
+            if (duplicateDefaultConfigurationList != null && !duplicateDefaultConfigurationList.isEmpty()) {
+                throw new DuplicateResourceException(String.format("find duplicate field_form_df_key =%s and field_form_field_key = %s", fieldFormDfKey, fieldFormFieldKey));
             }
+            this.defaultsConfigurationRepository.insert(defaultsConfigurationDO);
         }
-        // 写入新的数据，需要判断是否有重复数据
-        List<DefaultsConfigurationDO> duplicateDefaultConfigurationList =
-                this.defaultsConfigurationRepository.queryByDfKeyAndFieldKey(fieldFormDfKey, fieldFormFieldKey);
-        if (duplicateDefaultConfigurationList != null && !duplicateDefaultConfigurationList.isEmpty()) {
-            throw new DuplicateResourceException(String.format("find duplicate field_form_df_key =%s and field_form_field_key = %s", fieldFormDfKey, fieldFormFieldKey));
+        // 手动指定值的数据，需要将值更新到form table中。
+        DefaultConfigurationType fieldType = defaultsConfigurationDO.getFieldType();
+        if (DefaultConfigurationType.MANUAL.equals(fieldType)) {
+
         }
-        this.defaultsConfigurationRepository.insert(defaultsConfigurationDO);
     }
 
 }

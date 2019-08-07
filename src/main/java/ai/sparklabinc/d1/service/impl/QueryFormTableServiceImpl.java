@@ -173,7 +173,6 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
         return pageResultDTO;
     }
 
-
     @Override
     public SQLGenerResultDTO generalSQL(String dataSourceKey, Map<String, String[]> requestParams) throws Exception {
         List<DsFormTableSettingDO> dsFormTableSettingDOList = getAllDsFormTableSettingByDsKey(dataSourceKey);
@@ -208,9 +207,6 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
         sqlGenerResultDTO.setSqlType(dbBasicConfigDO.getDbType());
         return sqlGenerResultDTO;
     }
-
-
-
 
     private String generateQuerySql(String tableName, String wholeWhereClause, Pageable pageable) {
         StringBuilder querySqlStringBuilder = new StringBuilder();

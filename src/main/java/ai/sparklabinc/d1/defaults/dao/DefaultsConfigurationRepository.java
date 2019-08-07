@@ -17,6 +17,8 @@ public interface DefaultsConfigurationRepository{
 
     DefaultsConfigurationDO queryById(String id) throws SQLException;
 
+    List<DefaultsConfigurationDO> queryAll() throws SQLException;
+
     DefaultsConfigurationDO insert(DefaultsConfigurationDO defaultsConfigurationDO) throws Exception;
 
     void update(DefaultsConfigurationDO defaultsConfigurationDO) throws Exception;
