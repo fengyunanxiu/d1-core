@@ -161,7 +161,7 @@ from db_basic_config t1
 
 ###
 
-create table if not exists d1_core.dict (
+create table if not exists dict (
     id varchar(64) primary key ,
     domain varchar(64) not null ,
     item varchar(64) not null ,
