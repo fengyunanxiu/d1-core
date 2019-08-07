@@ -98,14 +98,14 @@ end
 ###
 
 
-IF NOT EXISTS (select * from dbo.sysobjects where xtype='U' and Name = 'ds_form_table_setting')
+IF NOT EXISTS (select * from dbo.sysobjects where xtype='U' and Name = 'df_form_table_setting')
 BEGIN
-create table ds_form_table_setting
+create table df_form_table_setting
 (
     id                                bigint primary key identity ,
     gmt_create                        varchar(30),
     gmt_modified                      varchar(30),
-    ds_key                            varchar(100),
+    df_key                            varchar(100),
     db_field_name                     varchar(100),
     db_field_type                     varchar(100),
     view_field_label                  varchar(100),
@@ -138,12 +138,12 @@ end ;
 ###
 
 
-IF NOT EXISTS (select * from dbo.sysobjects where xtype='U' and Name = 'ds_key_basic_config')
+IF NOT EXISTS (select * from dbo.sysobjects where xtype='U' and Name = 'df_key_basic_config')
 BEGIN
-create table ds_key_basic_config
+create table df_key_basic_config
 (
     id     bigint  primary key identity,
-    ds_key       varchar(100) unique,
+    df_key       varchar(100) unique,
     fk_db_id     bigint,
     schema_name  varchar(100),
     table_name   varchar(100),

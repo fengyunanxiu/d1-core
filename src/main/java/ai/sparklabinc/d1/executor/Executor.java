@@ -1,6 +1,6 @@
 package ai.sparklabinc.d1.executor;
 
-import ai.sparklabinc.d1.entity.DsFormTableSettingDO;
+import ai.sparklabinc.d1.entity.DfFormTableSettingDO;
 import ai.sparklabinc.d1.exception.custom.PropertyNotFoundException;
 
 import java.io.File;
@@ -16,5 +16,5 @@ import java.util.List;
  */
 public interface Executor {
 
-    File exportExcel(String querySql, List<Object> paramList, List<DsFormTableSettingDO> queryTableSettings, Path path) throws PropertyNotFoundException;
+    File exportExcel(String querySql, List<Object> paramList, List<DfFormTableSettingDO> queryTableSettings, Path path) throws PropertyNotFoundException;
 }

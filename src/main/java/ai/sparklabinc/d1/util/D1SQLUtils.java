@@ -1,6 +1,6 @@
 package ai.sparklabinc.d1.util;
 
-import ai.sparklabinc.d1.entity.DsFormTableSettingDO;
+import ai.sparklabinc.d1.entity.DfFormTableSettingDO;
 import ai.sparklabinc.d1.exception.custom.IllegalParameterException;
 
 import java.util.List;
@@ -16,15 +16,15 @@ public class D1SQLUtils {
     private D1SQLUtils() {
     }
 
-    public static void buildFuzzyLikeQueryParameterString(Map<String, String> fuzzyLike, SqlConditions sqlConditions, List<DsFormTableSettingDO> dsFormTableSettingDOS) throws IllegalParameterException {
+    public static void buildFuzzyLikeQueryParameterString(Map<String, String> fuzzyLike, SqlConditions sqlConditions, List<DfFormTableSettingDO> dfFormTableSettingDOS) throws IllegalParameterException {
 
         for (Map.Entry<String, String> paramterEntry : fuzzyLike.entrySet()) {
             String parameter = paramterEntry.getKey();
             String parameterVal = paramterEntry.getValue();
             if(StringUtils.isNotNullNorEmpty(parameterVal)){
-                List<String> collect = dsFormTableSettingDOS.stream()
+                List<String> collect = dfFormTableSettingDOS.stream()
                         .filter(e -> e.getDbFieldName().equalsIgnoreCase(parameter))
-                        .map(DsFormTableSettingDO::getDbFieldType)
+                        .map(DfFormTableSettingDO::getDbFieldType)
                         .collect(Collectors.toList());
                 if(collect.isEmpty()){
                    throw new IllegalParameterException("parameter name is not exist in from table setting");
@@ -35,14 +35,14 @@ public class D1SQLUtils {
 
     }
 
-    public static void buildAccurateEqualsStringQueryParameterString(Map<String, String> accurateEqualsString, SqlConditions sqlConditions, List<DsFormTableSettingDO> dsFormTableSettingDOS) throws IllegalParameterException {
+    public static void buildAccurateEqualsStringQueryParameterString(Map<String, String> accurateEqualsString, SqlConditions sqlConditions, List<DfFormTableSettingDO> dfFormTableSettingDOS) throws IllegalParameterException {
         for (Map.Entry<String, String> paramterEntry : accurateEqualsString.entrySet()) {
             String parameter = paramterEntry.getKey();
             String parameterVal = paramterEntry.getValue();
             if(StringUtils.isNotNullNorEmpty(parameterVal)) {
-                List<String> collect = dsFormTableSettingDOS.stream()
+                List<String> collect = dfFormTableSettingDOS.stream()
                         .filter(e -> e.getDbFieldName().equalsIgnoreCase(parameter))
-                        .map(DsFormTableSettingDO::getDbFieldType)
+                        .map(DfFormTableSettingDO::getDbFieldType)
                         .collect(Collectors.toList());
                 if (collect.isEmpty()) {
                     throw new IllegalParameterException("parameter name is not exist in from table setting");
@@ -53,15 +53,15 @@ public class D1SQLUtils {
     }
 
 
-    public static void buildAccurateInStringQueryParameterString(Map<String, String[]> accurateInString, SqlConditions sqlConditions, List<DsFormTableSettingDO> dsFormTableSettingDOS) throws IllegalParameterException {
+    public static void buildAccurateInStringQueryParameterString(Map<String, String[]> accurateInString, SqlConditions sqlConditions, List<DfFormTableSettingDO> dfFormTableSettingDOS) throws IllegalParameterException {
         for (Map.Entry<String, String[]> parameterEntry : accurateInString.entrySet()) {
             String parameter = parameterEntry.getKey();
             String[] parameterValArr = parameterEntry.getValue();
 
             if(parameterValArr != null && parameterValArr.length >0) {
-                List<String> collect = dsFormTableSettingDOS.stream()
+                List<String> collect = dfFormTableSettingDOS.stream()
                         .filter(e -> e.getDbFieldName().equalsIgnoreCase(parameter))
-                        .map(DsFormTableSettingDO::getDbFieldType)
+                        .map(DfFormTableSettingDO::getDbFieldType)
                         .collect(Collectors.toList());
                 if (collect.isEmpty()) {
                     throw new IllegalParameterException("parameter name is not exist in from table setting");
@@ -73,7 +73,7 @@ public class D1SQLUtils {
 
 
 
-    public static void buildAccurateDateRangeQueryParameterString(Map<String, String[]> accurateDateRange, SqlConditions sqlConditions, List<DsFormTableSettingDO> dsFormTableSettingDOS) throws IllegalParameterException {
+    public static void buildAccurateDateRangeQueryParameterString(Map<String, String[]> accurateDateRange, SqlConditions sqlConditions, List<DfFormTableSettingDO> dfFormTableSettingDOS) throws IllegalParameterException {
         for (Map.Entry<String, String[]> parameterEntry : accurateDateRange.entrySet()) {
             String parameter = parameterEntry.getKey();
             String[] parameterValArr = parameterEntry.getValue();
@@ -88,9 +88,9 @@ public class D1SQLUtils {
                 if(parameterVal1 != null){
                     parameterVal1 = parameterVal1 + " 23:59:59";
                 }
-                List<String> collect = dsFormTableSettingDOS.stream()
+                List<String> collect = dfFormTableSettingDOS.stream()
                         .filter(e -> e.getDbFieldName().equalsIgnoreCase(parameter))
-                        .map(DsFormTableSettingDO::getDbFieldType)
+                        .map(DfFormTableSettingDO::getDbFieldType)
                         .collect(Collectors.toList());
                 if (collect.isEmpty()) {
                     throw new IllegalParameterException("parameter name is not exist in from table setting");
@@ -101,15 +101,15 @@ public class D1SQLUtils {
     }
 
 
-    public static void buildAccurateDateTimeRangeQueryParameterString(Map<String, String[]> accurateDateTimeRange, SqlConditions sqlConditions, List<DsFormTableSettingDO> dsFormTableSettingDOS) throws IllegalParameterException {
+    public static void buildAccurateDateTimeRangeQueryParameterString(Map<String, String[]> accurateDateTimeRange, SqlConditions sqlConditions, List<DfFormTableSettingDO> dfFormTableSettingDOS) throws IllegalParameterException {
         for (Map.Entry<String, String[]> parameterEntry : accurateDateTimeRange.entrySet()) {
             String parameter = parameterEntry.getKey();
             String[] parameterValArr = parameterEntry.getValue();
             // 前面设定了只要有值肯定是两个值
             if(parameterValArr.length == 2){
-                List<String> collect = dsFormTableSettingDOS.stream()
+                List<String> collect = dfFormTableSettingDOS.stream()
                         .filter(e -> e.getDbFieldName().equalsIgnoreCase(parameter))
-                        .map(DsFormTableSettingDO::getDbFieldType)
+                        .map(DfFormTableSettingDO::getDbFieldType)
                         .collect(Collectors.toList());
                 if (collect.isEmpty()) {
                     throw new IllegalParameterException("parameter name is not exist in from table setting");
@@ -119,15 +119,15 @@ public class D1SQLUtils {
         }
     }
 
-    public static void buildAccurateNumberRangeQueryParameterString(Map<String, String[]> accurateNumberRange, SqlConditions sqlConditions, List<DsFormTableSettingDO> dsFormTableSettingDOS) throws IllegalParameterException {
+    public static void buildAccurateNumberRangeQueryParameterString(Map<String, String[]> accurateNumberRange, SqlConditions sqlConditions, List<DfFormTableSettingDO> dfFormTableSettingDOS) throws IllegalParameterException {
         for (Map.Entry<String, String[]> parameterEntry : accurateNumberRange.entrySet()) {
             String parameter = parameterEntry.getKey();
             String[] parameterValArr = parameterEntry.getValue();
             // 前面设定了只要有值肯定是两个值
             if(parameterValArr.length == 2){
-                List<String> collect = dsFormTableSettingDOS.stream()
+                List<String> collect = dfFormTableSettingDOS.stream()
                         .filter(e -> e.getDbFieldName().equalsIgnoreCase(parameter))
-                        .map(DsFormTableSettingDO::getDbFieldType)
+                        .map(DfFormTableSettingDO::getDbFieldType)
                         .collect(Collectors.toList());
                 if (collect.isEmpty()) {
                     throw new IllegalParameterException("parameter name is not exist in from table setting");

@@ -2,7 +2,7 @@ package ai.sparklabinc.d1.generator.impl;
 
 import ai.sparklabinc.d1.dto.QueryParameterGroupDTO;
 import ai.sparklabinc.d1.dto.SQLGenerResultDTO;
-import ai.sparklabinc.d1.entity.DsFormTableSettingDO;
+import ai.sparklabinc.d1.entity.DfFormTableSettingDO;
 import ai.sparklabinc.d1.exception.ServiceException;
 import ai.sparklabinc.d1.generator.SQLGenerator;
 import ai.sparklabinc.d1.util.D1SQLUtils;
@@ -32,7 +32,7 @@ public class MySQLGenerator implements SQLGenerator {
 
 
     @Override
-    public SQLGenerResultDTO buildSQL(String database, String schema, String table, Map<String, String[]> requestParams, QueryParameterGroupDTO queryParameterGroup, List<DsFormTableSettingDO> dsFormTableSettingDOS) throws Exception {
+    public SQLGenerResultDTO buildSQL(String database, String schema, String table, Map<String, String[]> requestParams, QueryParameterGroupDTO queryParameterGroup, List<DfFormTableSettingDO> dfFormTableSettingDOS) throws Exception {
         //参数处理
         Pageable pageable = ParameterHandlerUtils.extractPageable(requestParams);
         String moreWhereClause = ParameterHandlerUtils.extractMoreClause(requestParams);
@@ -40,7 +40,7 @@ public class MySQLGenerator implements SQLGenerator {
         String tableName=schema+"."+table;
         SQLGenerResultDTO sqlGenerResultDTO = new SQLGenerResultDTO();
 
-        SqlConditions sqlConditions = generateSqlConditions(queryParameterGroup,dsFormTableSettingDOS);
+        SqlConditions sqlConditions = generateSqlConditions(queryParameterGroup, dfFormTableSettingDOS);
         List<Object> paramsValueList = sqlConditions.getParameters();
         List<String> paramTypes = sqlConditions.getParamTypes();
         String wholeWhereClause = (StringUtils.isNotNullNorEmpty(sqlConditions.getWhereClause()) ? " AND " : "") + sqlConditions.getWhereClause() + (moreWhereClause == null ? "" : moreWhereClause);
@@ -67,7 +67,7 @@ public class MySQLGenerator implements SQLGenerator {
     }
 
 
-    private SqlConditions generateSqlConditions(QueryParameterGroupDTO queryParameterGroup, List<DsFormTableSettingDO> dsFormTableSettingDOS) throws Exception {
+    private SqlConditions generateSqlConditions(QueryParameterGroupDTO queryParameterGroup, List<DfFormTableSettingDO> dfFormTableSettingDOS) throws Exception {
         SqlConditions sqlConditions = new SqlConditions();
         if (queryParameterGroup != null) {
             try {
@@ -79,22 +79,22 @@ public class MySQLGenerator implements SQLGenerator {
                 Map<String, String[]> accurateNumberRange = queryParameterGroup.getAccurateNumberRange();
 
                 if(fuzzyLike != null && !fuzzyLike.isEmpty()){
-                    D1SQLUtils.buildFuzzyLikeQueryParameterString(fuzzyLike, sqlConditions,dsFormTableSettingDOS);
+                    D1SQLUtils.buildFuzzyLikeQueryParameterString(fuzzyLike, sqlConditions, dfFormTableSettingDOS);
                 }
                 if(accurateEqualsString != null && !accurateEqualsString.isEmpty()){
-                    D1SQLUtils.buildAccurateEqualsStringQueryParameterString(accurateEqualsString, sqlConditions,dsFormTableSettingDOS);
+                    D1SQLUtils.buildAccurateEqualsStringQueryParameterString(accurateEqualsString, sqlConditions, dfFormTableSettingDOS);
                 }
                 if(accurateInString != null && !accurateInString.isEmpty()){
-                    D1SQLUtils.buildAccurateInStringQueryParameterString(accurateInString, sqlConditions,dsFormTableSettingDOS);
+                    D1SQLUtils.buildAccurateInStringQueryParameterString(accurateInString, sqlConditions, dfFormTableSettingDOS);
                 }
                 if(accurateDateRange != null && !accurateDateRange.isEmpty()){
-                    D1SQLUtils.buildAccurateDateRangeQueryParameterString(accurateDateRange, sqlConditions,dsFormTableSettingDOS);
+                    D1SQLUtils.buildAccurateDateRangeQueryParameterString(accurateDateRange, sqlConditions, dfFormTableSettingDOS);
                 }
                 if(accurateDateTimeRange != null && !accurateDateTimeRange.isEmpty()){
-                    D1SQLUtils.buildAccurateDateTimeRangeQueryParameterString(accurateDateTimeRange, sqlConditions,dsFormTableSettingDOS);
+                    D1SQLUtils.buildAccurateDateTimeRangeQueryParameterString(accurateDateTimeRange, sqlConditions, dfFormTableSettingDOS);
                 }
                 if(accurateNumberRange != null && !accurateNumberRange.isEmpty()){
-                    D1SQLUtils.buildAccurateNumberRangeQueryParameterString(accurateNumberRange, sqlConditions,dsFormTableSettingDOS);
+                    D1SQLUtils.buildAccurateNumberRangeQueryParameterString(accurateNumberRange, sqlConditions, dfFormTableSettingDOS);
                 }
             } catch (Exception e) {
                 LOGGER.error("Failed to build sql", e);

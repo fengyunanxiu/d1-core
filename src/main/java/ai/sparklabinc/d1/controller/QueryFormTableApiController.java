@@ -28,28 +28,28 @@ public class QueryFormTableApiController {
     @GetMapping("/form-table-setting")
     @ResponseBody
     public Object queryDataSourceClassicQueryPageSetting(
-            @RequestParam(name = "data_source_key", required = true) String dataSourceKey, HttpServletRequest request,
+            @RequestParam(name = "data_facet_key", required = true) String dataFacetKey, HttpServletRequest request,
             HttpServletResponse response) throws Exception {
-        if (StringUtils.isNullOrEmpty(dataSourceKey)) {
-            throw new IllegalParameterException("Empty data source key " + dataSourceKey);
+        if (StringUtils.isNullOrEmpty(dataFacetKey)) {
+            throw new IllegalParameterException("Empty data facet key " + dataFacetKey);
         }
-        Object result = this.queryFormTableService.getDsKeyQuerySetting(dataSourceKey);
+        Object result = this.queryFormTableService.getDfKeyQuerySetting(dataFacetKey);
         if (result == null) {
-             throw new ResourceNotFoundException("Cannot find resource from data source key " + dataSourceKey);
+             throw new ResourceNotFoundException("Cannot find resource from data facet key " + dataFacetKey);
         }
         return result;
     }
 
     @GetMapping("/form-setting")
     @ResponseBody
-    public Object queryFormSetting(@RequestParam(name = "data_source_key", required = true) String dataSourceKey,
+    public Object queryFormSetting(@RequestParam(name = "data_facet_key", required = true) String dataFacetKey,
                                    HttpServletRequest request, HttpServletResponse response) throws Exception {
-        if (StringUtils.isNullOrEmpty(dataSourceKey)) {
-            throw new IllegalParameterException("Empty data source key " + dataSourceKey);
+        if (StringUtils.isNullOrEmpty(dataFacetKey)) {
+            throw new IllegalParameterException("Empty data facet key " + dataFacetKey);
         }
-        Object result = this.queryFormTableService.getDsKeyQueryFormSetting(dataSourceKey);
+        Object result = this.queryFormTableService.getDfKeyQueryFormSetting(dataFacetKey);
         if (result == null) {
-            throw new ResourceNotFoundException("Cannot find resource from data source key " + dataSourceKey);
+            throw new ResourceNotFoundException("Cannot find resource from data facet key " + dataFacetKey);
         }
         return result;
     }
@@ -57,20 +57,20 @@ public class QueryFormTableApiController {
     /**
      * 获取指定数据源的table设置
      *
-     * @param dataSourceKey
+     * @param dataFacetKey
      * @return
      * @throws Exception
      */
     @GetMapping("/table-setting")
     @ResponseBody
-    public Object queryTableSetting(@RequestParam(name = "data_source_key", required = true) String dataSourceKey,
+    public Object queryTableSetting(@RequestParam(name = "data_facet_key", required = true) String dataFacetKey,
                                     HttpServletRequest request, HttpServletResponse response) throws Exception {
-        if (StringUtils.isNullOrEmpty(dataSourceKey)) {
-            throw new IllegalParameterException("Empty data source key " + dataSourceKey);
+        if (StringUtils.isNullOrEmpty(dataFacetKey)) {
+            throw new IllegalParameterException("Empty data facet key " + dataFacetKey);
         }
-        Object result = this.queryFormTableService.getDsKeyQueryTableSetting(dataSourceKey);
+        Object result = this.queryFormTableService.getDfKeyQueryTableSetting(dataFacetKey);
         if (result == null) {
-            throw new ResourceNotFoundException("Cannot find resource from data source key " + dataSourceKey);
+            throw new ResourceNotFoundException("Cannot find resource from data facet key " + dataFacetKey);
         }
         return result;
     }
@@ -85,7 +85,7 @@ public class QueryFormTableApiController {
      *       "id": [2,3],
      *       "field":["yield"]
      *     },
-     *     "ds_key": "",
+     *     "df_key": "",
      *     "more_where_clauses": "",
      *     "page_size": "",
      *     "page": "",
@@ -120,23 +120,23 @@ public class QueryFormTableApiController {
     /**
      * 获取指定数据源的table设置
      *
-     * @param dataSourceKey
+     * @param dataFacetKey
      * @return
      * @throws Exception
      */
     @GetMapping("/query")
     @ResponseBody
-    public Object generalQuery(@RequestParam(name = "data_source_key", required = true) String dataSourceKey,
+    public Object generalQuery(@RequestParam(name = "data_facet_key", required = true) String dataFacetKey,
                                HttpServletRequest request) throws Exception {
-        if (StringUtils.isNullOrEmpty(dataSourceKey)) {
-            throw new ResourceNotFoundException("Empty data source key " + dataSourceKey);
+        if (StringUtils.isNullOrEmpty(dataFacetKey)) {
+            throw new ResourceNotFoundException("Empty data facet key " + dataFacetKey);
         }
         Map<String, String[]> params = request.getParameterMap();
 
         Pageable pageable = ParameterHandlerUtils.extractPageable(params);
         String moreWhereClause = ParameterHandlerUtils.extractMoreClause(params);
         Map<String, String[]> simpleParameters = ApiUtils.removeReservedParameters(params);
-        return queryFormTableService.generalQuery(dataSourceKey, simpleParameters, pageable,moreWhereClause,false);
+        return queryFormTableService.generalQuery(dataFacetKey, simpleParameters, pageable,moreWhereClause,false);
     }
 
 
@@ -144,63 +144,63 @@ public class QueryFormTableApiController {
     /**
      * 获取指定数据源的table设置
      *
-     * @param dataSourceKey
+     * @param dataFacetKey
      * @return
      * @throws Exception
      */
     @GetMapping("/query-and-datasource")
     @ResponseBody
-    public Object generalQueryAndDataSource(@RequestParam(name = "data_source_key", required = true) String dataSourceKey,
+    public Object generalQueryAndDataSource(@RequestParam(name = "data_facet_key", required = true) String dataFacetKey,
                                             HttpServletRequest request) throws Exception {
-        if (StringUtils.isNullOrEmpty(dataSourceKey)) {
-            throw new ResourceNotFoundException("Empty data source key " + dataSourceKey);
+        if (StringUtils.isNullOrEmpty(dataFacetKey)) {
+            throw new ResourceNotFoundException("Empty data facet key " + dataFacetKey);
         }
         Map<String, String[]> params = request.getParameterMap();
         Pageable pageable = ParameterHandlerUtils.extractPageable(params);
         String moreWhereClause = ParameterHandlerUtils.extractMoreClause(params);
         Map<String, String[]> simpleParameters = ApiUtils.removeReservedParameters(params);
-        return queryFormTableService.generalQuery(dataSourceKey, simpleParameters, pageable,moreWhereClause,true);
+        return queryFormTableService.generalQuery(dataFacetKey, simpleParameters, pageable,moreWhereClause,true);
     }
 
     /**
      * 执行查询
-     * @param dataSourceKey
+     * @param dataFacetKey
      * @param request
      * @return
      * @throws Exception
      */
     @GetMapping("/execute-query")
     @ResponseBody
-    public Object executeQuery(@RequestParam(name = "data_source_key", required = true) String dataSourceKey,
+    public Object executeQuery(@RequestParam(name = "data_facet_key", required = true) String dataFacetKey,
                                HttpServletRequest request) throws Exception {
-        if (StringUtils.isNullOrEmpty(dataSourceKey)) {
-            throw new ResourceNotFoundException("Empty data source key " + dataSourceKey);
+        if (StringUtils.isNullOrEmpty(dataFacetKey)) {
+            throw new ResourceNotFoundException("Empty data facet key " + dataFacetKey);
         }
         Map<String, String[]> params = request.getParameterMap();
 
         Pageable pageable = ParameterHandlerUtils.extractPageable(params);
         String moreWhereClause = ParameterHandlerUtils.extractMoreClause(params);
         Map<String, String[]> simpleParameters = ApiUtils.removeReservedParameters(params);
-        return  queryFormTableService.executeQuery(dataSourceKey, simpleParameters, pageable,moreWhereClause);
+        return  queryFormTableService.executeQuery(dataFacetKey, simpleParameters, pageable,moreWhereClause);
     }
 
 
     /**
      * 获取指定数据源的table设置(新)
      *
-     * @param dataSourceKey
+     * @param dataFacetKey
      * @return
      * @throws Exception
      */
     @GetMapping("/general-sql")
     @ResponseBody
-    public Object generalSQL(@RequestParam(name = "data_source_key", required = true) String dataSourceKey,
+    public Object generalSQL(@RequestParam(name = "data_facet_key", required = true) String dataFacetKey,
                                HttpServletRequest request) throws Exception {
-        if (StringUtils.isNullOrEmpty(dataSourceKey)) {
-            throw new ResourceNotFoundException("Empty data source key " + dataSourceKey);
+        if (StringUtils.isNullOrEmpty(dataFacetKey)) {
+            throw new ResourceNotFoundException("Empty data facet key " + dataFacetKey);
         }
         Map<String, String[]> requestParams = ApiUtils.restructureParameter(request.getParameterMap());
-        return queryFormTableService.generalSQL(dataSourceKey,requestParams);
+        return queryFormTableService.generalSQL(dataFacetKey,requestParams);
     }
 
 }

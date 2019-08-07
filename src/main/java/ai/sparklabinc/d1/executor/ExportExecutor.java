@@ -1,6 +1,6 @@
 package ai.sparklabinc.d1.executor;
 
-import ai.sparklabinc.d1.entity.DsFormTableSettingDO;
+import ai.sparklabinc.d1.entity.DfFormTableSettingDO;
 
 import javax.sql.DataSource;
 import java.io.File;
@@ -16,5 +16,5 @@ import java.util.List;
  */
 public interface ExportExecutor {
 
-    File exportExcel(DataSource dataSource, String querySql, List<Object> paramList, List<DsFormTableSettingDO> queryTableSettings, Path path);
+    File exportExcel(DataSource dataSource, String querySql, List<Object> paramList, List<DfFormTableSettingDO> queryTableSettings, Path path);
 }
