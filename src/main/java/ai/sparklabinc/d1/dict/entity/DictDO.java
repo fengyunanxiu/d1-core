@@ -13,94 +13,95 @@ import org.slf4j.LoggerFactory;
  */
 public class DictDO {
 
-    public static final String TABLE_NAME = "dict";
+    public static final String TABLE_NAME = "db_dict";
 
-    public static final String F_DOMAIN = "domain";
-    public static final String F_ITEM = "item";
-    public static final String F_VALUE = "value";
-    public static final String F_LABEL = "label";
-    public static final String F_SEQUENCE = "sequence";
-    public static final String F_ENABLE = "enable";
-    public static final String F_PARENT_ID = "parent_id";
+    public static final String F_ID = "f_id";
+    public static final String F_DOMAIN = "f_domain";
+    public static final String F_ITEM = "f_item";
+    public static final String F_VALUE = "f_value";
+    public static final String F_LABEL = "f_label";
+    public static final String F_SEQUENCE = "f_sequence";
+    public static final String F_ENABLE = "f_enable";
+    public static final String F_PARENT_ID = "f_parent_id";
 
-    private String id;
+    private String fId;
 
-    private String domain;
+    private String fDomain;
 
-    private String item;
+    private String fItem;
 
-    private String value;
+    private String fValue;
 
-    private String label;
+    private String fLabel;
 
-    private String sequence;
+    private String fSequence;
 
-    private String enable;
+    private String fEnable;
 
     @Column("parent_id")
-    private String parentId;
+    private String fParentId;
 
-    public String getId() {
-        return id;
+    public String getFId() {
+        return fId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setFId(String fId) {
+        this.fId = fId;
     }
 
-    public String getDomain() {
-        return domain;
+    public String getFDomain() {
+        return fDomain;
     }
 
-    public void setDomain(String domain) {
-        this.domain = domain;
+    public void setFDomain(String fDomain) {
+        this.fDomain = fDomain;
     }
 
-    public String getItem() {
-        return item;
+    public String getFItem() {
+        return fItem;
     }
 
-    public void setItem(String item) {
-        this.item = item;
+    public void setFItem(String fItem) {
+        this.fItem = fItem;
     }
 
-    public String getValue() {
-        return value;
+    public String getFValue() {
+        return fValue;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setFValue(String fValue) {
+        this.fValue = fValue;
     }
 
-    public String getLabel() {
-        return label;
+    public String getFLabel() {
+        return fLabel;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
+    public void setFLabel(String fLabel) {
+        this.fLabel = fLabel;
     }
 
-    public String getSequence() {
-        return sequence;
+    public String getFSequence() {
+        return fSequence;
     }
 
-    public void setSequence(String sequence) {
-        this.sequence = sequence;
+    public void setFSequence(String fSequence) {
+        this.fSequence = fSequence;
     }
 
-    public String getEnable() {
-        return enable;
+    public String getFEnable() {
+        return fEnable;
     }
 
-    public void setEnable(String enable) {
-        this.enable = enable;
+    public void setFEnable(String fEnable) {
+        this.fEnable = fEnable;
     }
 
-    public String getParentId() {
-        return parentId;
+    public String getFParentId() {
+        return fParentId;
     }
 
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
+    public void setFParentId(String fParentId) {
+        this.fParentId = fParentId;
     }
 }

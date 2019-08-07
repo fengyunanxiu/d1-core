@@ -1,4 +1,4 @@
-package ai.sparklabinc.d1.dict.dto;
+package ai.sparklabinc.d1.dict.vo;
 
 import ai.sparklabinc.d1.dict.entity.DictDO;
 import org.slf4j.Logger;
@@ -15,29 +15,27 @@ import java.util.List;
  */
 public class DictQueryVO {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DictQueryVO.class);
+    private String fDomain;
 
-    private String domain;
-
-    private String item;
+    private String fItem;
 
     private List<DictDO> dictList;
 
 
-    public String getDomain() {
-        return domain;
+    public String getFDomain() {
+        return fDomain;
     }
 
-    public void setDomain(String domain) {
-        this.domain = domain;
+    public void setFDomain(String fDomain) {
+        this.fDomain = fDomain;
     }
 
-    public String getItem() {
-        return item;
+    public String getFItem() {
+        return fItem;
     }
 
-    public void setItem(String item) {
-        this.item = item;
+    public void setFItem(String fItem) {
+        this.fItem = fItem;
     }
 
     public List<DictDO> getDictList() {

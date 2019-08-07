@@ -161,13 +161,13 @@ from db_basic_config t1
 
 ###
 
-create table if not exists d1_core.dict (
-    id varchar(64) primary key ,
-    domain varchar(64) not null ,
-    item varchar(64) not null ,
-    value varchar(100) not null ,
-    label varchar(100),
-    sequence int,
-    enable boolean,
-    parent_id varchar(64)
+create table if not exists db_dict (
+    f_id varchar(64) primary key ,
+    f_domain varchar(64) not null ,
+    f_item varchar(64) not null ,
+    f_value varchar(100) not null ,
+    f_label varchar(100),
+    f_sequence int,
+    f_enable boolean,
+    f_parent_id varchar(64)
 ) charset=utf8 collate utf8_croatian_ci;

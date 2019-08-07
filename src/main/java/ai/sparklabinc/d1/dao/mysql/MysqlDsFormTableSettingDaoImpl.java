@@ -36,8 +36,8 @@ public class MysqlDsFormTableSettingDaoImpl implements DsFormTableSettingDao {
     @Autowired
     private DataSourceFactory dataSourceFactory;
 
-    @Resource(name="D1BasicDataSoure")
-    private DataSource d1BasicDataSoure;
+    @Resource(name="D1BasicDataSource")
+    private DataSource d1BasicDataSource;
 
     @Override
     public DataDaoType getDataDaoType() {
@@ -46,7 +46,7 @@ public class MysqlDsFormTableSettingDaoImpl implements DsFormTableSettingDao {
 
     @Override
     public List<DsFormTableSettingDO> getAllDsFormTableSettingByDsKey(String dataSourceKey) throws SQLException, IOException {
-        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String querySql = "select * from ds_form_table_setting where ds_key = ? ";
         LOGGER.info("querySql:{}", querySql);
         List<DsFormTableSettingDO>  dsFormTableSettingDOList = queryRunner.query(querySql, new ResultSetHandler<List<DsFormTableSettingDO>>() {
@@ -128,7 +128,7 @@ public class MysqlDsFormTableSettingDaoImpl implements DsFormTableSettingDao {
 
     @Override
     public Integer add(DsFormTableSettingDO dsFormTableSettingDO) throws IOException, SQLException {
-        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql ="insert into ds_form_table_setting(gmt_create, gmt_modified, ds_key, db_field_name, db_field_type," +
                 " view_field_label, db_field_comment, form_field_visible, form_field_sequence, form_field_query_type," +
                 " form_field_is_exactly, form_field_child_field_name, form_field_dic_domain_name, form_field_use_dic, form_field_def_val_stratege," +
@@ -182,7 +182,7 @@ public class MysqlDsFormTableSettingDaoImpl implements DsFormTableSettingDao {
 
     @Override
     public List<Map<String, Object>> selectAllDsFormTableSettingByDsKey(String dataSourceKey) throws SQLException, IOException {
-        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String querySql = "select * from ds_form_table_setting where ds_key = ? ";
         LOGGER.info("querySql:{}", querySql);
         List<Map<String, Object>> result = queryRunner.query(querySql, new MapListHandler(),dataSourceKey);
@@ -192,7 +192,7 @@ public class MysqlDsFormTableSettingDaoImpl implements DsFormTableSettingDao {
 
     @Override
     public Integer updateDataSourceKey(String dataSourceKey,String newDataSourceKey) throws SQLException, IOException {
-        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String querySql = " update ds_form_table_setting set gmt_modified = ?, ds_key = ? " +
                           " where ds_key = ?";
         LOGGER.info("querySql:{}", querySql);
@@ -203,7 +203,7 @@ public class MysqlDsFormTableSettingDaoImpl implements DsFormTableSettingDao {
 
     @Override
     public Integer deleteDataSourceKey(String dsKey) throws SQLException, IOException {
-        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql="delete from ds_form_table_setting where ds_key = ?";
         int update = queryRunner.update(sql, dsKey);
         return update;
@@ -212,7 +212,7 @@ public class MysqlDsFormTableSettingDaoImpl implements DsFormTableSettingDao {
 
     @Override
     public List<DsFormTableSettingDO> getAllDsFormTableSettingByDsKeyForExport(String dataSourceKey) throws SQLException, IOException {
-        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String querySql = "" +
                 "select id as  id," +
                 "  gmt_create as  gmtCreate," +
@@ -253,7 +253,7 @@ public class MysqlDsFormTableSettingDaoImpl implements DsFormTableSettingDao {
     @Override
     public Integer updateDsFormTableSetting(DsFormTableSettingDO dsFormTableSettingDO) throws SQLException, IOException {
         int result=0;
-        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String updateSql = "update ds_form_table_setting " +
                 "set gmt_modified = ?," +
                 "   ds_key = ?," +

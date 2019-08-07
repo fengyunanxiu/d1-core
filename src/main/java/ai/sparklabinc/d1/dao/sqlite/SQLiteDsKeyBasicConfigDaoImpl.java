@@ -34,8 +34,8 @@ public class SQLiteDsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
     @Autowired
     private DataSourceFactory dataSourceFactory;
 
-    @Resource(name="D1BasicDataSoure")
-    private DataSource d1BasicDataSoure;
+    @Resource(name="D1BasicDataSource")
+    private DataSource d1BasicDataSource;
 
     @Override
     public DataDaoType getDataDaoType() {
@@ -47,7 +47,7 @@ public class SQLiteDsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
 
     @Override
     public DsKeyBasicConfigDO getDsKeyBasicConfigByDsKey(String dataSourceKey) throws SQLException, IOException {
-        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String querySql = "select * from ds_key_basic_config where ds_key = ? ";
         LOGGER.info("querySql:{}", querySql);
 
@@ -84,7 +84,7 @@ public class SQLiteDsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
 
     @Override
     public List<DbInforamtionDTO> getDataSourceKey(Long dsId, String schema, String tableName) throws IOException, SQLException {
-        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql ="select  id," +
                 "       ds_key as label," +
                 "       4 as level" +
@@ -99,7 +99,7 @@ public class SQLiteDsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
 
     @Override
     public List<DsKeyInfoDTO> getAllDataSourceKey() throws IOException, SQLException {
-        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql ="select  id," +
                 "       fk_db_id as fkDbId," +
                 "       schema_name as schemaName ," +
@@ -116,7 +116,7 @@ public class SQLiteDsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
 
     @Override
     public Integer addDataSourceKey(DsKeyBasicConfigDO dsKeyBasicConfigDO) throws IOException, SQLException {
-        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql ="insert into ds_key_basic_config( ds_key, fk_db_id, schema_name, table_name, " +
                 " description, gmt_create, gmt_modified)" +
                 " values ( ?, ?, ?, ?, ?, ?, ?) ";
@@ -134,7 +134,7 @@ public class SQLiteDsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
 
     @Override
     public Integer updateDataSourceKey(String dsKey,String newDsKey,String description) throws IOException, SQLException {
-        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql =" update ds_key_basic_config set ds_key = ?,description = ?,gmt_modified = ?" +
                     " where ds_key = ? ";
         String now = DateUtils.ofLongStr(new java.util.Date());
@@ -145,7 +145,7 @@ public class SQLiteDsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
 
     @Override
     public Integer deleteDataSourceKey(String dsKey) throws SQLException, IOException {
-        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql="delete from ds_key_basic_config where ds_key = ? ";
         int result=queryRunner.update(sql,dsKey);
         return result;
@@ -159,7 +159,7 @@ public class SQLiteDsKeyBasicConfigDaoImpl implements DsKeyBasicConfigDao {
             String sql = "insert into ds_key_basic_config( ds_key, fk_db_id, schema_name, table_name, " +
                     " description, gmt_create, gmt_modified)" +
                     " values ( ?, ?, ?, ?, ?, ?, ?) ";
-            DataSource dataSource = d1BasicDataSoure;
+            DataSource dataSource = d1BasicDataSource;
             conn = dataSource.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
             String now = DateUtils.ofLongStr(new java.util.Date());

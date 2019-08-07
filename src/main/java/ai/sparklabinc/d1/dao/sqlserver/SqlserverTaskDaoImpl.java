@@ -33,8 +33,8 @@ public class SqlserverTaskDaoImpl implements DataExportTaskDao {
     @Autowired
     private DataSourceFactory dataSourceFactory;
 
-    @Resource(name="D1BasicDataSoure")
-    private DataSource d1BasicDataSoure;
+    @Resource(name="D1BasicDataSource")
+    private DataSource d1BasicDataSource;
 
     @Override
     public DataDaoType getDataDaoType() {
@@ -43,7 +43,7 @@ public class SqlserverTaskDaoImpl implements DataExportTaskDao {
 
     @Override
     public DataExportTaskDO addDataExportTask(DataExportTaskDO dataExportTaskDO) throws Exception {
-        DataSource dataSource = d1BasicDataSoure;
+        DataSource dataSource = d1BasicDataSource;
         Connection connection = null;
         Long id = 0L;
         try {
@@ -82,7 +82,7 @@ public class SqlserverTaskDaoImpl implements DataExportTaskDao {
 
     @Override
     public DataExportTaskDO findById(Long id) throws IOException, SQLException {
-        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql = "select id," +
                 "   start_at as startAt," +
                 "   end_at as endAt," +
@@ -99,7 +99,7 @@ public class SqlserverTaskDaoImpl implements DataExportTaskDao {
 
     @Override
     public DataExportTaskDO updateDataExportTask(DataExportTaskDO dataExportTaskDO) throws IOException, SQLException {
-        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql = "update data_export_task set start_at=?," +
                 "  end_at=?," +
                 "  failed_at=?, " +

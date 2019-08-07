@@ -1,7 +1,7 @@
 package ai.sparklabinc.d1.dict.service;
 
 import ai.sparklabinc.d1.dict.dto.DictDTO;
-import ai.sparklabinc.d1.dict.dto.DictQueryVO;
+import ai.sparklabinc.d1.dict.vo.DictQueryVO;
 import ai.sparklabinc.d1.dict.entity.DictDO;
 import ai.sparklabinc.d1.exception.ServiceException;
 

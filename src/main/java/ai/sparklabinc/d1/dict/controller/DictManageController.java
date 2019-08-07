@@ -1,7 +1,7 @@
 package ai.sparklabinc.d1.dict.controller;
 
 import ai.sparklabinc.d1.dict.dto.DictDTO;
-import ai.sparklabinc.d1.dict.dto.DictQueryVO;
+import ai.sparklabinc.d1.dict.vo.DictQueryVO;
 import ai.sparklabinc.d1.dict.entity.DictDO;
 import ai.sparklabinc.d1.dict.service.DictService;
 import io.swagger.annotations.Api;
@@ -10,11 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -44,9 +42,9 @@ public class DictManageController {
                                          @RequestParam(value = "size", defaultValue = "10") int size) throws Exception {
 
         DictDTO dictDTO = new DictDTO();
-        dictDTO.setDomain(domain);
-        dictDTO.setItem(item);
-        dictDTO.setValue(value);
+        dictDTO.setFDomain(domain);
+        dictDTO.setFItem(item);
+        dictDTO.setFValue(value);
         PageRequest pageable = PageRequest.of(page, size);
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
@@ -73,5 +71,7 @@ public class DictManageController {
     public void update(@RequestBody List<DictDO> dictDOList) throws Exception {
         this.dictService.batchUpdate(dictDOList);
     }
+
+
 
 }

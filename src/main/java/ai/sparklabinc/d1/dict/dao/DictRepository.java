@@ -24,4 +24,6 @@ public interface DictRepository {
     void batchDelete(List<String> idList) throws ServiceException, SQLException;
 
     List<DictDO> findByDomainAndItemAndValue(List<DictDO> dictDOList) throws SQLException;
+
+    List<DictDO> findByDomainAndItem(String domain, String item) throws SQLException;
 }

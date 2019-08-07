@@ -42,17 +42,17 @@ public class D1BasicDataInitial implements ApplicationListener<ContextRefreshedE
         if(contextRefreshedEvent.getApplicationContext().getParent() == null){
             //建表初始化语句
             try {
-               this.createD1BasicDataSoure(basicDbConfig);
+               this.createD1BasicDataSource(basicDbConfig);
             } catch (Exception e) {
-                LOGGER.error("D1 Basic Data Initial is falied!");
+                LOGGER.error("D1 Basic Data Initial is failed!");
                 LOGGER.error("",e);
             }
         }
     }
 
 
-     @Bean("D1BasicDataSoure")
-     public DataSource createD1BasicDataSoure(BasicDbConfig basicDbConfig) throws Exception {
+     @Bean("D1BasicDataSource")
+     public DataSource createD1BasicDataSource(BasicDbConfig basicDbConfig) throws Exception {
         if(StringUtils.isBlank(basicDbConfig.getUrl())||StringUtils.isBlank(basicDbConfig.getType())){
             basicDbConfig.setUseSsl(false);
             basicDbConfig.setUseSshTunnel(false);
@@ -65,10 +65,9 @@ public class D1BasicDataInitial implements ApplicationListener<ContextRefreshedE
             }
             basicDbConfig.setUrl("jdbc:sqlite:d1-data/D1.db");
         }
-         DataSource dataSource = d1BasicDataService.createD1BasicDataSoure(basicDbConfig);
+         DataSource dataSource = d1BasicDataService.createD1BasicDataSource(basicDbConfig);
          //创建初始表
          d1BasicTableService.createBasicTable(dataSource,basicDbConfig);
-
          return dataSource;
      }
 

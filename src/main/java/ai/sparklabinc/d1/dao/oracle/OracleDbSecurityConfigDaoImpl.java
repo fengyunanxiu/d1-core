@@ -28,8 +28,8 @@ public class OracleDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
     @Autowired
     private DataSourceFactory dataSourceFactory;
 
-    @Resource(name="D1BasicDataSoure")
-    private DataSource d1BasicDataSoure;
+    @Resource(name="D1BasicDataSource")
+    private DataSource d1BasicDataSource;
 
 
     @Override
@@ -39,7 +39,7 @@ public class OracleDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
 
     @Override
     public DbSecurityConfigDO findById(Long id) throws SQLException, IOException {
-        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
 
         String querySql = "select * from db_security_config where id = ? ";
 
@@ -109,7 +109,7 @@ public class OracleDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
                     " values (?, ?, ?, ?, ?, ?," +
                     "         ?, ?, ?, ?, ?," +
                     "         ?, ?, ?, ?, ?)";
-            DataSource dataSource = d1BasicDataSoure;
+            DataSource dataSource = d1BasicDataSource;
             conn = dataSource.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
             String now = DateUtils.ofLongStr(new java.util.Date());
@@ -146,7 +146,7 @@ public class OracleDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
         int update = 0;
         try {
             String sql = "delete from db_security_config where id = ?";
-            DataSource dataSource = d1BasicDataSoure;
+            DataSource dataSource = d1BasicDataSource;
             conn = dataSource.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
             //绑定参数
@@ -162,7 +162,7 @@ public class OracleDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
 
     @Override
     public Integer editDataSourceProperty(DbSecurityConfigDO dbSecurityConfigDO) throws IOException, SQLException {
-        QueryRunner queryRunner = new QueryRunner(d1BasicDataSoure);
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql = "update db_security_config set  gmt_modified  = ?," +
                 "use_ssl = ?," +
                 "use_ssh_tunnel = ?," +
