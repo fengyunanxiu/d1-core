@@ -5,14 +5,9 @@ import ai.sparklabinc.d1.exception.custom.ResourceNotFoundException;
 import ai.sparklabinc.d1.service.QueryFormTableService;
 import ai.sparklabinc.d1.util.ApiUtils;
 import ai.sparklabinc.d1.util.ParameterHandlerUtils;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.mysql.jdbc.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;

@@ -93,6 +93,9 @@ public class D1BasicDataService {
         }
 
         switch (dbType.toUpperCase()) {
+            case Constants.DATABASE_TYPE_SQLITE:
+                driverName="org.sqlite.JDBC";
+                break;
             case Constants.DATABASE_TYPE_MYSQL:
                 //驱动
                 driverName = "com.mysql.jdbc.Driver";
@@ -107,7 +110,7 @@ public class D1BasicDataService {
                 driverName = "oracle.jdbc.driver.OracleDriver";
                 break;
             default:
-                driverName = "com.mysql.jdbc.Driver";
+                driverName = "org.sqlite.JDBC";
         }
 
         //mysql database connectivity
@@ -115,8 +118,8 @@ public class D1BasicDataService {
 
         Properties properties = new Properties();
         properties.setProperty("Url", url);
-        properties.setProperty("User", dbUserName);
-        properties.setProperty("Password", dbPassword);
+        properties.setProperty("User", StringUtils.isBlank(dbUserName)?"":dbUserName);
+        properties.setProperty("Password", StringUtils.isBlank(dbPassword)?"":dbPassword);
         properties.setProperty("Driver",driverName);
 
         DataSource datasource = d1BasicDataPoolService.createDatasource(properties);

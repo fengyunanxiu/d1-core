@@ -2,6 +2,7 @@ package ai.sparklabinc.d1.config;
 
 import ai.sparklabinc.d1.dao.*;
 import ai.sparklabinc.d1.dict.dao.DictRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -24,52 +25,84 @@ public class DaoBeanConfig {
 
     @Bean("DsFormTableSettingDao")
     public DsFormTableSettingDao getDsFormTableSettingDao(){
+        if(StringUtils.isBlank(basicDbConfig.getType())){
+            basicDbConfig.setType("sqlite");
+        }
         return dataDaoFactory.getDaoBean(DsFormTableSettingDao.class, basicDbConfig.getType());
     }
 
     @Bean("DataSourceDao")
     public DataSourceDao getDataSourceDao(){
+        if(StringUtils.isBlank(basicDbConfig.getType())){
+            basicDbConfig.setType("sqlite");
+        }
         return dataDaoFactory.getDaoBean(DataSourceDao.class, basicDbConfig.getType());
     }
 
 
     @Bean("DbBasicConfigDao")
     public DbBasicConfigDao getDbBasicConfigDao(){
+        if(StringUtils.isBlank(basicDbConfig.getType())){
+            basicDbConfig.setType("sqlite");
+        }
         return dataDaoFactory.getDaoBean(DbBasicConfigDao.class, basicDbConfig.getType());
     }
 
 
     @Bean("DbSecurityConfigDao")
+   
     public DbSecurityConfigDao getDbSecurityConfigDao(){
+        if(StringUtils.isBlank(basicDbConfig.getType())){
+            basicDbConfig.setType("sqlite");
+        }
         return dataDaoFactory.getDaoBean(DbSecurityConfigDao.class, basicDbConfig.getType());
     }
 
 
     @Bean("DsBasicDictionaryDao")
     public DsBasicDictionaryDao getDsBasicDictionaryDao(){
+        if(StringUtils.isBlank(basicDbConfig.getType())){
+            basicDbConfig.setType("sqlite");
+        }
         return dataDaoFactory.getDaoBean(DsBasicDictionaryDao.class, basicDbConfig.getType());
     }
 
 
     @Bean("DsKeyBasicConfigDao")
     public DsKeyBasicConfigDao getDsKeyBasicConfigDao(){
+        if(StringUtils.isBlank(basicDbConfig.getType())){
+            basicDbConfig.setType("sqlite");
+        }
         return dataDaoFactory.getDaoBean(DsKeyBasicConfigDao.class, basicDbConfig.getType());
     }
 
+
     @Bean("DsQueryDao")
     public DsQueryDao getDsQueryDao(){
+        if(StringUtils.isBlank(basicDbConfig.getType())){
+            basicDbConfig.setType("sqlite");
+        }
         return dataDaoFactory.getDaoBean(DsQueryDao.class, basicDbConfig.getType());
     }
 
     @Bean("DataExportTaskDao")
     public DataExportTaskDao getDataExportTaskDao(){
+        if(StringUtils.isBlank(basicDbConfig.getType())){
+            basicDbConfig.setType("sqlite");
+        }
         return dataDaoFactory.getDaoBean(DataExportTaskDao.class, basicDbConfig.getType());
     }
 
+
     @Bean("DictRepository")
-    public DictRepository getDictRepository() {
-        return this.dataDaoFactory.getDaoBean(DictRepository.class, this.basicDbConfig.getType());
+    public DictRepository getDataDictRepository(){
+        if(StringUtils.isBlank(basicDbConfig.getType())){
+            basicDbConfig.setType("sqlite");
+        }
+        return dataDaoFactory.getDaoBean(DictRepository.class, basicDbConfig.getType());
     }
+
+
 
 
 }
