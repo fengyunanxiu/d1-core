@@ -35,16 +35,16 @@ public class DictManageController {
     @GetMapping("")
     @ResponseBody
     @ApiOperation("query")
-    public Collection<DictQueryVO> query(@RequestParam(required = false) String domain,
-                                         @RequestParam(required = false) String item,
-                                         @RequestParam(required = false) String value,
+    public Collection<DictQueryVO> query(@RequestParam(required = false, value = "field_domain") String domain,
+                                         @RequestParam(required = false, value = "field_item") String item,
+                                         @RequestParam(required = false, value = "field_value") String value,
                                          @RequestParam(value = "page", defaultValue = "0") int page,
                                          @RequestParam(value = "size", defaultValue = "10") int size) throws Exception {
 
         DictDTO dictDTO = new DictDTO();
-        dictDTO.setFDomain(domain);
-        dictDTO.setFItem(item);
-        dictDTO.setFValue(value);
+        dictDTO.setFieldDomain(domain);
+        dictDTO.setFieldItem(item);
+        dictDTO.setFieldValue(value);
         PageRequest pageable = PageRequest.of(page, size);
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();

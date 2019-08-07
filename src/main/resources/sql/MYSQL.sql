@@ -162,12 +162,22 @@ from db_basic_config t1
 ###
 
 create table if not exists db_dict (
-    f_id varchar(64) primary key ,
-    f_domain varchar(64) not null ,
-    f_item varchar(64) not null ,
-    f_value varchar(100) not null ,
-    f_label varchar(100),
-    f_sequence int,
-    f_enable boolean,
-    f_parent_id varchar(64)
+    field_id varchar(64) primary key ,
+    field_domain varchar(64) not null ,
+    field_item varchar(64) not null ,
+    field_value varchar(100) not null ,
+    field_label varchar(100),
+    field_sequence int,
+    field_enable boolean,
+    field_parent_id varchar(64)
+) charset=utf8 collate utf8_croatian_ci;
+
+###
+
+create table if not exists db_form_dict_configuration(
+    field_id varchar(64) primary key,
+    field_form_df_key varchar(100) not null,
+    field_form_field_key varchar(100) not null,
+    field_domain varchar(64) not null,
+    field_item varchar(64) not null
 ) charset=utf8 collate utf8_croatian_ci;

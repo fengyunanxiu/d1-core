@@ -42,7 +42,7 @@ public class DictServiceImpl implements DictService {
     public List<DictDO> batchInsert(List<DictDO> dictDOList) throws Exception {
         List<DictDO> byDomainAndItem = this.dictRepository.findByDomainAndItemAndValue(dictDOList);
         if (byDomainAndItem != null && !byDomainAndItem.isEmpty()) {
-            String existMsg = byDomainAndItem.stream().map((item) -> String.format("domain:%s, item:%s, value:%s", item.getFDomain(), item.getFItem(), item.getFValue())).collect(Collectors.joining(";"));
+            String existMsg = byDomainAndItem.stream().map((item) -> String.format("domain:%s, item:%s, value:%s", item.getFieldDomain(), item.getFieldItem(), item.getFieldValue())).collect(Collectors.joining(";"));
             throw new DuplicateResourceException("Find Duplicate Domain And Item , " + existMsg);
         }
         return this.dictRepository.batchInsert(dictDOList);
@@ -65,6 +65,11 @@ public class DictServiceImpl implements DictService {
      */
     @Override
     public void batchUpdate(List<DictDO> dictDOList) throws Exception {
+        List<DictDO> existDictList = this.dictRepository.findByDomainAndItemAndValue(dictDOList);
+        if (existDictList != null && !existDictList.isEmpty()) {
+            String existMsg = existDictList.stream().map((item) -> String.format("domain:%s, item:%s, value:%s", item.getFieldDomain(), item.getFieldItem(), item.getFieldValue())).collect(Collectors.joining(";"));
+            throw new DuplicateResourceException("Find Duplicate Domain And Item , " + existMsg);
+        }
         this.dictRepository.batchUpdate(dictDOList);
     }
 
@@ -76,13 +81,13 @@ public class DictServiceImpl implements DictService {
         if (pageSize == null) {
             pageSize = 0;
         }
-        String domain = dictDTO.getFDomain();
-        String item = dictDTO.getFItem();
-        String value = dictDTO.getFValue();
-        String label = dictDTO.getFLabel();
-        String sequence = dictDTO.getFSequence();
-        String enable = dictDTO.getFEnable();
-        String parentId = dictDTO.getFParentId();
+        String domain = dictDTO.getFieldDomain();
+        String item = dictDTO.getFieldItem();
+        String value = dictDTO.getFieldValue();
+        String label = dictDTO.getFieldLabel();
+        String sequence = dictDTO.getFieldSequence();
+        String enable = dictDTO.getFieldEnable();
+        String parentId = dictDTO.getFieldParentId();
         Map<String, String> paramMap = new HashMap<>();
         CollectionUtils.putIfKVNotNull(paramMap, DictDO.F_DOMAIN, domain);
         CollectionUtils.putIfKVNotNull(paramMap, DictDO.F_ITEM, item);
@@ -123,14 +128,14 @@ public class DictServiceImpl implements DictService {
         }
         Map<String, DictQueryVO> resultMap = new HashMap<>();
         for (DictDO dictDO : queryResult) {
-            String resultDomain = dictDO.getFDomain();
-            String resultItem = dictDO.getFItem();
+            String resultDomain = dictDO.getFieldDomain();
+            String resultItem = dictDO.getFieldItem();
             String resultMapKey = resultDomain + resultItem;
             DictQueryVO dictQueryVO = resultMap.computeIfAbsent(resultMapKey, (k) -> {
                 DictQueryVO tmpDictQueryVO = new DictQueryVO();
                 tmpDictQueryVO.setDictList(new ArrayList<>());
-                tmpDictQueryVO.setFDomain(resultDomain);
-                tmpDictQueryVO.setFItem(resultItem);
+                tmpDictQueryVO.setFieldDomain(resultDomain);
+                tmpDictQueryVO.setFieldItem(resultItem);
                 return tmpDictQueryVO;
             });
             List<DictDO> dictDOList = dictQueryVO.getDictList();

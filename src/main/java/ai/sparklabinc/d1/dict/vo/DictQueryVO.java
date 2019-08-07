@@ -15,27 +15,26 @@ import java.util.List;
  */
 public class DictQueryVO {
 
-    private String fDomain;
+    private String fieldDomain;
 
-    private String fItem;
+    private String fieldItem;
 
     private List<DictDO> dictList;
 
-
-    public String getFDomain() {
-        return fDomain;
+    public String getFieldDomain() {
+        return fieldDomain;
     }
 
-    public void setFDomain(String fDomain) {
-        this.fDomain = fDomain;
+    public void setFieldDomain(String fieldDomain) {
+        this.fieldDomain = fieldDomain;
     }
 
-    public String getFItem() {
-        return fItem;
+    public String getFieldItem() {
+        return fieldItem;
     }
 
-    public void setFItem(String fItem) {
-        this.fItem = fItem;
+    public void setFieldItem(String fieldItem) {
+        this.fieldItem = fieldItem;
     }
 
     public List<DictDO> getDictList() {

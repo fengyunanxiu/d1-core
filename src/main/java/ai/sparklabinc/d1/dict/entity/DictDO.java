@@ -15,93 +15,93 @@ public class DictDO {
 
     public static final String TABLE_NAME = "db_dict";
 
-    public static final String F_ID = "f_id";
-    public static final String F_DOMAIN = "f_domain";
-    public static final String F_ITEM = "f_item";
-    public static final String F_VALUE = "f_value";
-    public static final String F_LABEL = "f_label";
-    public static final String F_SEQUENCE = "f_sequence";
-    public static final String F_ENABLE = "f_enable";
-    public static final String F_PARENT_ID = "f_parent_id";
+    public static final String F_ID = "field_id";
+    public static final String F_DOMAIN = "field_domain";
+    public static final String F_ITEM = "field_item";
+    public static final String F_VALUE = "field_value";
+    public static final String F_LABEL = "field_label";
+    public static final String F_SEQUENCE = "field_sequence";
+    public static final String F_ENABLE = "field_enable";
+    public static final String F_PARENT_ID = "field_parent_id";
 
-    private String fId;
+    private String fieldId;
 
-    private String fDomain;
+    private String fieldDomain;
 
-    private String fItem;
+    private String fieldItem;
 
-    private String fValue;
+    private String fieldValue;
 
-    private String fLabel;
+    private String fieldLabel;
 
-    private String fSequence;
+    private String fieldSequence;
 
-    private String fEnable;
+    private String fieldEnable;
 
     @Column("parent_id")
-    private String fParentId;
+    private String fieldParentId;
 
-    public String getFId() {
-        return fId;
+    public String getFieldId() {
+        return fieldId;
     }
 
-    public void setFId(String fId) {
-        this.fId = fId;
+    public void setFieldId(String fieldId) {
+        this.fieldId = fieldId;
     }
 
-    public String getFDomain() {
-        return fDomain;
+    public String getFieldDomain() {
+        return fieldDomain;
     }
 
-    public void setFDomain(String fDomain) {
-        this.fDomain = fDomain;
+    public void setFieldDomain(String fieldDomain) {
+        this.fieldDomain = fieldDomain;
     }
 
-    public String getFItem() {
-        return fItem;
+    public String getFieldItem() {
+        return fieldItem;
     }
 
-    public void setFItem(String fItem) {
-        this.fItem = fItem;
+    public void setFieldItem(String fieldItem) {
+        this.fieldItem = fieldItem;
     }
 
-    public String getFValue() {
-        return fValue;
+    public String getFieldValue() {
+        return fieldValue;
     }
 
-    public void setFValue(String fValue) {
-        this.fValue = fValue;
+    public void setFieldValue(String fieldValue) {
+        this.fieldValue = fieldValue;
     }
 
-    public String getFLabel() {
-        return fLabel;
+    public String getFieldLabel() {
+        return fieldLabel;
     }
 
-    public void setFLabel(String fLabel) {
-        this.fLabel = fLabel;
+    public void setFieldLabel(String fieldLabel) {
+        this.fieldLabel = fieldLabel;
     }
 
-    public String getFSequence() {
-        return fSequence;
+    public String getFieldSequence() {
+        return fieldSequence;
     }
 
-    public void setFSequence(String fSequence) {
-        this.fSequence = fSequence;
+    public void setFieldSequence(String fieldSequence) {
+        this.fieldSequence = fieldSequence;
     }
 
-    public String getFEnable() {
-        return fEnable;
+    public String getFieldEnable() {
+        return fieldEnable;
     }
 
-    public void setFEnable(String fEnable) {
-        this.fEnable = fEnable;
+    public void setFieldEnable(String fieldEnable) {
+        this.fieldEnable = fieldEnable;
     }
 
-    public String getFParentId() {
-        return fParentId;
+    public String getFieldParentId() {
+        return fieldParentId;
     }
 
-    public void setFParentId(String fParentId) {
-        this.fParentId = fParentId;
+    public void setFieldParentId(String fieldParentId) {
+        this.fieldParentId = fieldParentId;
     }
 }
