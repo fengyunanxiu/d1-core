@@ -158,6 +158,7 @@ create table df_form_table_setting
     form_field_is_exactly             int,
     form_field_child_field_name       varchar(100),
     form_field_dic_domain_name        varchar(100),
+    form_field_dict_item              varchar(100),
     form_field_use_dic                int,
     form_field_def_val_stratege   varchar(100),
     table_field_visible               int,

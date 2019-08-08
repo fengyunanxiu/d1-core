@@ -2,6 +2,36 @@ package ai.sparklabinc.d1.entity;
 
 public class DfFormTableSettingDO {
 
+    public static final String TABLE_NAME = "df_form_table_setting";
+    public static final String F_ID = "id";
+    public static final String F_GMT_CREATE = "gmt_create";
+    public static final String F_GMT_MODIFIED = "gmt_modified";
+    public static final String F_DF_KEY = "df_key";
+    public static final String F_DB_FIELD_NAME = "db_field_name";
+    public static final String F_DB_FIELD_TYPE = "db_field_type";
+    public static final String F_VIEW_FIELD_LABEL = "view_field_label";
+    public static final String F_DB_FIELD_COMMENT = "db_field_comment";
+    public static final String F_FORM_FIELD_VISIBLE = "form_field_visible";
+    public static final String F_FORM_FIELD_SEQUENCE = "form_field_sequence";
+    public static final String F_FORM_FIELD_QUERY_TYPE = "form_field_query_type";
+    public static final String F_FORM_FIELD_CHILD_FIELD_NAME = "form_field_child_field_name";
+    public static final String F_FORM_FIELD_DICT_DOMAIN_NAME = "form_field_dic_domain_name";
+    public static final String F_FORM_FIELD_DICT_ITEM = "form_field_dict_item";
+    public static final String F_FORM_FIELD_USE_DICT = "form_field_use_dic";
+    public static final String F_FORM_FIELD_DEF_VAL_STRATEGY = "form_field_def_val_stratege";
+    public static final String F_TABLE_FIELD_VISIBLE = "table_field_visible";
+    public static final String F_TABLE_FIELD_ORDER_BY = "table_field_order_by";
+    public static final String F_TABLE_PARENT_LABEL = "table_parent_label";
+    public static final String F_TABLE_FIELD_QUERY_REQUIRED = "table_field_query_required";
+    public static final String F_TABLE_FIELD_SEQUENCE = "table_field_sequence";
+    public static final String F_TABLE_FIELD_COLUMN_WIDTH = "table_field_column_width";
+    public static final String F_EXPORT_FIELD_VISIBLE = "export_field_visible";
+    public static final String F_EXPORT_FIELD_SEQUENCE = "export_field_sequence";
+    public static final String F_EXPORT_FIELD_WIDTH = "export_field_width";
+    public static final String F_FORM_FIELD_USE_DEFAULT_VAL = "form_field_use_default_val";
+    public static final String F_FORM_FIELD_DEFAULT_VAL = "form_field_default_val";
+    public static final String F_FORM_FIELD_DEFAULT_VAL_SQL = "form_field_default_val_sql";
+
     private Long id;
 
     private String gmtCreate;
@@ -10,20 +40,15 @@ public class DfFormTableSettingDO {
 
     private String dfKey;
 
-
     private String dbFieldName;
-
 
     private String dbFieldType;
 
-
     private String viewFieldLabel;
-
 
     private String dbFieldComment;
 
     private Boolean formFieldVisible;
-
 
     private Integer formFieldSequence;
 
@@ -31,16 +56,15 @@ public class DfFormTableSettingDO {
 
     private Boolean formFieldIsExactly;
 
-
     private String formFieldChildFieldName;
 
-
     private String formFieldDicDomainName;
+
+    private String formFieldDictItem;
 
     private Boolean formFieldUseDic;
 
     private String formFieldDefValStratege;
-
 
     private Boolean tableFieldVisible;
 
@@ -68,7 +92,6 @@ public class DfFormTableSettingDO {
     private String formFieldDefaultValSql;
 
     private Boolean columnIsExist;
-
 
     public Long getId() {
         return id;
@@ -166,12 +189,28 @@ public class DfFormTableSettingDO {
         this.formFieldIsExactly = formFieldIsExactly;
     }
 
+    public String getFormFieldChildFieldName() {
+        return formFieldChildFieldName;
+    }
+
+    public void setFormFieldChildFieldName(String formFieldChildFieldName) {
+        this.formFieldChildFieldName = formFieldChildFieldName;
+    }
+
     public String getFormFieldDicDomainName() {
         return formFieldDicDomainName;
     }
 
     public void setFormFieldDicDomainName(String formFieldDicDomainName) {
         this.formFieldDicDomainName = formFieldDicDomainName;
+    }
+
+    public String getFormFieldDictItem() {
+        return formFieldDictItem;
+    }
+
+    public void setFormFieldDictItem(String formFieldDictItem) {
+        this.formFieldDictItem = formFieldDictItem;
     }
 
     public Boolean getFormFieldUseDic() {
@@ -182,6 +221,13 @@ public class DfFormTableSettingDO {
         this.formFieldUseDic = formFieldUseDic;
     }
 
+    public String getFormFieldDefValStratege() {
+        return formFieldDefValStratege;
+    }
+
+    public void setFormFieldDefValStratege(String formFieldDefValStratege) {
+        this.formFieldDefValStratege = formFieldDefValStratege;
+    }
 
     public Boolean getTableFieldVisible() {
         return tableFieldVisible;
@@ -197,6 +243,14 @@ public class DfFormTableSettingDO {
 
     public void setTableFieldOrderBy(String tableFieldOrderBy) {
         this.tableFieldOrderBy = tableFieldOrderBy;
+    }
+
+    public String getTableParentLabel() {
+        return tableParentLabel;
+    }
+
+    public void setTableParentLabel(String tableParentLabel) {
+        this.tableParentLabel = tableParentLabel;
     }
 
     public Boolean getTableFieldQueryRequired() {
@@ -247,15 +301,6 @@ public class DfFormTableSettingDO {
         this.exportFieldWidth = exportFieldWidth;
     }
 
-
-    public String getTableParentLabel() {
-        return tableParentLabel;
-    }
-
-    public void setTableParentLabel(String tableParentLabel) {
-        this.tableParentLabel = tableParentLabel;
-    }
-
     public Boolean getFormFieldUseDefaultVal() {
         return formFieldUseDefaultVal;
     }
@@ -264,36 +309,20 @@ public class DfFormTableSettingDO {
         this.formFieldUseDefaultVal = formFieldUseDefaultVal;
     }
 
-    public String getFormFieldDefaultValSql() {
-        return formFieldDefaultValSql;
-    }
-
-    public void setFormFieldDefaultValSql(String formFieldDefaultValSql) {
-        this.formFieldDefaultValSql = formFieldDefaultValSql;
-    }
-
-    public String getFormFieldChildFieldName() {
-        return formFieldChildFieldName;
-    }
-
-    public void setFormFieldChildFieldName(String formFieldChildFieldName) {
-        this.formFieldChildFieldName = formFieldChildFieldName;
-    }
-
-    public String getFormFieldDefValStratege() {
-        return formFieldDefValStratege;
-    }
-
-    public void setFormFieldDefValStratege(String formFieldDefValStratege) {
-        this.formFieldDefValStratege = formFieldDefValStratege;
-    }
-
     public String getFormFieldDefaultVal() {
         return formFieldDefaultVal;
     }
 
     public void setFormFieldDefaultVal(String formFieldDefaultVal) {
         this.formFieldDefaultVal = formFieldDefaultVal;
+    }
+
+    public String getFormFieldDefaultValSql() {
+        return formFieldDefaultValSql;
+    }
+
+    public void setFormFieldDefaultValSql(String formFieldDefaultValSql) {
+        this.formFieldDefaultValSql = formFieldDefaultValSql;
     }
 
     public Boolean getColumnIsExist() {

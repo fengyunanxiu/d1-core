@@ -8,7 +8,9 @@ import ai.sparklabinc.d1.dict.service.FormDictConfigurationService;
 import ai.sparklabinc.d1.dict.vo.FormDictConfigurationVO;
 import ai.sparklabinc.d1.exception.ServiceException;
 import ai.sparklabinc.d1.exception.custom.IllegalParameterException;
+import ai.sparklabinc.d1.service.DataFacetKeyService;
 import ai.sparklabinc.d1.util.StringUtils;
+import com.netflix.discovery.converters.Auto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.sql.SQLException;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -35,6 +38,9 @@ public class FormDictConfigurationServiceImpl implements FormDictConfigurationSe
 
     @Resource(name = "FormDictConfigurationRepository")
     private FormDictConfigurationRepository formDictConfigurationRepository;
+
+    @Autowired
+    private DataFacetKeyService dataFacetKeyService;
 
     @Override
     public FormDictConfigurationVO queryByForm(String formDfKey, String formFieldKey) throws Exception {
@@ -56,6 +62,7 @@ public class FormDictConfigurationServiceImpl implements FormDictConfigurationSe
         if (dictDOList == null || dictDOList.isEmpty()) {
             return null;
         }
+        dictDOList.sort(Comparator.comparing(DictDO::getFieldSequence));
         // 构造前端数据结构
         FormDictConfigurationVO formDictConfigurationVO = new FormDictConfigurationVO();
         formDictConfigurationVO.setDictList(dictDOList);
@@ -83,19 +90,22 @@ public class FormDictConfigurationServiceImpl implements FormDictConfigurationSe
             throw new IllegalParameterException("field_form_df_key, field_form_field_key, field_domain, field_item不能为空");
         }
         String id = formDictConfigurationDO.getFieldId();
+        FormDictConfigurationDO existFormDictConfigurationDO = null;
         if (id != null) {
-            FormDictConfigurationDO existFormDictConfigurationDO = this.formDictConfigurationRepository.queryById(id);
-            if (existFormDictConfigurationDO != null) {
-                this.formDictConfigurationRepository.update(formDictConfigurationDO);
-                return;
+            existFormDictConfigurationDO = this.formDictConfigurationRepository.queryById(id);
+        }
+        if (existFormDictConfigurationDO != null) {
+            this.formDictConfigurationRepository.update(formDictConfigurationDO);
+        } else {
+            // 插入数据，需要判断是否有重复数据
+            List<FormDictConfigurationDO> duplicateList = this.formDictConfigurationRepository.queryByFrom(fieldFormDfKey, fieldFormFieldKey);
+            if (duplicateList != null && !duplicateList.isEmpty()) {
+                throw new IllegalParameterException(String.format("find duplicate on filed_form_df_key = %s, field_form_field_key = %s", fieldFormDfKey, fieldFormFieldKey));
             }
+            this.formDictConfigurationRepository.add(formDictConfigurationDO);
         }
-        // 插入数据，需要判断是否有重复数据
-        List<FormDictConfigurationDO> duplicateList = this.formDictConfigurationRepository.queryByFrom(fieldFormDfKey, fieldFormFieldKey);
-        if (duplicateList != null && !duplicateList.isEmpty()) {
-            throw new IllegalParameterException(String.format("find duplicate on filed_form_df_key = %s, field_form_field_key = %s", fieldFormDfKey, fieldFormFieldKey));
-        }
-        this.formDictConfigurationRepository.add(formDictConfigurationDO);
+        // 将domain和item更新到form table setting中
+        this.dataFacetKeyService.updateDomainAndItemByDfKeyAndFieldName(fieldFormDfKey, fieldFormFieldKey, fieldDomain, fieldItem);
     }
 
 }

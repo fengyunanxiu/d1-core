@@ -3,10 +3,10 @@ package ai.sparklabinc.d1.dict.service;
 import ai.sparklabinc.d1.dict.dto.DictDTO;
 import ai.sparklabinc.d1.dict.vo.DictQueryVO;
 import ai.sparklabinc.d1.dict.entity.DictDO;
+import ai.sparklabinc.d1.dto.PageResultDTO;
 import ai.sparklabinc.d1.exception.ServiceException;
 
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -24,5 +24,5 @@ public interface DictService {
 
     void batchUpdate(List<DictDO> dictDOList) throws Exception;
 
-    Collection<DictQueryVO> query(DictDTO dictDTO, Long offset, Integer pageSize) throws Exception;
+    PageResultDTO<DictQueryVO> query(DictDTO dictDTO, Long offset, Integer pageSize) throws Exception;
 }

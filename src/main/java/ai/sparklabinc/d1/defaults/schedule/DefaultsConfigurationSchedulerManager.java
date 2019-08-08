@@ -38,8 +38,6 @@ public class DefaultsConfigurationSchedulerManager {
             return;
         }
 
-
-
         for (DefaultsConfigurationDO defaultsConfigurationDO : all) {
 
         }

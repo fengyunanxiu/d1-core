@@ -17,6 +17,10 @@ import java.util.Map;
 public interface DictRepository {
     List<DictDO> query(Map<String, String> params, long offset, int pageSize) throws SQLException;
 
+    List<Map<String, String>> queryDistinctDomainItemLimit(Map<String, String> params, long offset, int pageSize) throws SQLException;
+
+    long countByDomainAndItem(Map<String, String> params) throws SQLException;
+
     List<DictDO> batchInsert(List<DictDO> dictDOList) throws ServiceException, SQLException;
 
     void batchUpdate(List<DictDO> dictDOList) throws ServiceException, SQLException;
@@ -26,4 +30,6 @@ public interface DictRepository {
     List<DictDO> findByDomainAndItemAndValue(List<DictDO> dictDOList) throws SQLException;
 
     List<DictDO> findByDomainAndItem(String domain, String item) throws SQLException;
+
+    List<DictDO> queryLimitByDomainAndItem(Map<String, String> params, long offset, int pageSize) throws SQLException;
 }

@@ -2,6 +2,7 @@ package ai.sparklabinc.d1.dao.impl.postgres;
 
 import ai.sparklabinc.d1.dao.DataDaoType;
 import ai.sparklabinc.d1.dao.DfFormTableSettingDao;
+import ai.sparklabinc.d1.dao.impl.AbstractDfFormTableSettingDao;
 import ai.sparklabinc.d1.datasource.DataSourceFactory;
 import ai.sparklabinc.d1.entity.DfFormTableSettingDO;
 import ai.sparklabinc.d1.util.DateUtils;
@@ -29,7 +30,7 @@ import java.util.Map;
  * @description :
  */
 @Repository("PostgresqlDfFormTableSettingDaoImpl")
-public class PostgresqlDfFormTableSettingDaoImpl implements DfFormTableSettingDao {
+public class PostgresqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingDao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostgresqlDfFormTableSettingDaoImpl.class);
     @Autowired
@@ -37,6 +38,11 @@ public class PostgresqlDfFormTableSettingDaoImpl implements DfFormTableSettingDa
 
     @Resource(name="D1BasicDataSource")
     private DataSource d1BasicDataSource;
+
+    @Override
+    public DataSource d1BasicDataSource() {
+        return this.d1BasicDataSource;
+    }
 
     @Override
     public DataDaoType getDataDaoType() {
