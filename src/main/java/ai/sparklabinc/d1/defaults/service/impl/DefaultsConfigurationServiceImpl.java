@@ -7,9 +7,11 @@ import ai.sparklabinc.d1.defaults.service.DefaultsConfigurationService;
 import ai.sparklabinc.d1.exception.ServiceException;
 import ai.sparklabinc.d1.exception.custom.DuplicateResourceException;
 import ai.sparklabinc.d1.exception.custom.IllegalParameterException;
+import ai.sparklabinc.d1.service.DataFacetKeyService;
 import ai.sparklabinc.d1.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -30,6 +32,9 @@ public class DefaultsConfigurationServiceImpl implements DefaultsConfigurationSe
 
     @Resource(name = "DefaultsConfigurationRepository")
     private DefaultsConfigurationRepository defaultsConfigurationRepository;
+
+    @Autowired
+    private DataFacetKeyService dataFacetKeyService;
 
     @Override
     public DefaultsConfigurationDO queryByDfKeyAndFieldKey(String dfKey, String fieldKey) throws Exception {
@@ -75,7 +80,8 @@ public class DefaultsConfigurationServiceImpl implements DefaultsConfigurationSe
         // 手动指定值的数据，需要将值更新到form table中。
         DefaultConfigurationType fieldType = defaultsConfigurationDO.getFieldType();
         if (DefaultConfigurationType.MANUAL.equals(fieldType)) {
-
+            String fieldManualConf = defaultsConfigurationDO.getFieldManualConf();
+            this.dataFacetKeyService.updateDefaultValueByDfKeyAndFieldKey(fieldFormDfKey, fieldFormFieldKey, fieldManualConf);
         }
     }
 

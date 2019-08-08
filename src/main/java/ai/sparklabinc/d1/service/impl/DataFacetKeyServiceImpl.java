@@ -169,5 +169,15 @@ public class DataFacetKeyServiceImpl implements DataFacetKeyService {
         return this.dfKeyBasicConfigDao.getDfKeyBasicConfigByDfKey(dfKey);
     }
 
-
+    /**
+     * 写入默认值
+     * @param dfKey
+     * @param fieldKey
+     * @param jsonValue
+     * @throws Exception
+     */
+    @Override
+    public void updateDefaultValueByDfKeyAndFieldKey(String dfKey, String fieldKey, String jsonValue) throws Exception {
+        this.dfFormTableSettingDao.updateDefaultValueByDfKeyAndFieldName(dfKey, fieldKey, jsonValue);
+    }
 }
