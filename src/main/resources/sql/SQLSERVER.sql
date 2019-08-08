@@ -53,6 +53,7 @@ create table db_security_config
     ssh_auth_type               varchar(200),
     ssh_proxy_password          varchar(200),
     ssh_key_file                varchar(512),
+    ssh_key_content             nvarchar(max),
     ssh_pass_phrase             varchar(200)
 );
 end ;
@@ -183,6 +184,7 @@ select t1.id,
        t2.ssh_auth_type,
        t2.ssh_proxy_password,
        t2.ssh_key_file,
+       t2.ssh_key_content,
        t2.ssh_pass_phrase
 from db_basic_config t1
          left outer join db_security_config t2

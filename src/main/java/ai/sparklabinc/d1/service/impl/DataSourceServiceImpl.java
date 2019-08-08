@@ -10,8 +10,11 @@ import ai.sparklabinc.d1.dto.*;
 import ai.sparklabinc.d1.entity.DbBasicConfigDO;
 import ai.sparklabinc.d1.entity.DbSecurityConfigDO;
 import ai.sparklabinc.d1.service.DataSourceService;
+import ai.sparklabinc.d1.util.FileReaderUtil;
+import ai.sparklabinc.d1.util.FileUtils;
 import com.alibaba.fastjson.JSON;
 import com.jcraft.jsch.Session;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -110,6 +114,11 @@ public class DataSourceServiceImpl implements DataSourceService {
         if (dsId > 0L) {
             DbSecurityConfigDO dbSecurityConfigDO = new DbSecurityConfigDO();
             BeanUtils.copyProperties(dbSecurityConfigDTO, dbSecurityConfigDO);
+            if (StringUtils.isNotBlank(dbSecurityConfigDO.getSshKeyFile())) {
+                String sshKeyContent = FileReaderUtil.readFile(dbSecurityConfigDO.getSshKeyFile());
+                dbSecurityConfigDO.setSshKeyContent(sshKeyContent);
+            }
+
             dbSecurityConfigDO.setId(dsId);
             int row = dbSecurityConfigDao.add(dbSecurityConfigDO);
             if (row > 0) {
@@ -303,6 +312,16 @@ public class DataSourceServiceImpl implements DataSourceService {
         DbSecurityConfigDO dbSecurityConfigDO = new DbSecurityConfigDO();
         BeanUtils.copyProperties(dbSecurityConfigDTO, dbSecurityConfigDO);
         dbSecurityConfigDO.setId(dbBasicConfigDTO.getId());
+        if (StringUtils.isNotBlank(dbSecurityConfigDO.getSshKeyFile())
+                && Constants.SshAuthType.KEY_PAIR.toString().equalsIgnoreCase(dbSecurityConfigDO.getSshAuthType())) {
+            String sshKeyFile = dbSecurityConfigDO.getSshKeyFile();
+            File file = new File(sshKeyFile);
+            //文件存在则更新key文件内容
+            if(file.exists()){
+                String sshKeyContent = FileReaderUtil.readFile(sshKeyFile);
+                dbSecurityConfigDO.setSshKeyContent(sshKeyContent);
+            }
+        }
         Integer dbSecurityUpdate = dbSecurityConfigDao.editDataSourceProperty(dbSecurityConfigDO);
 
         if (dbBasicUpdate > 0 && dbSecurityUpdate > 0) {
@@ -331,7 +350,6 @@ public class DataSourceServiceImpl implements DataSourceService {
     public boolean dataSourceTestConnection(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws Exception {
         return connectionService.createConnection(dbBasicConfigDTO, dbSecurityConfigDTO);
     }
-
 
 
 }

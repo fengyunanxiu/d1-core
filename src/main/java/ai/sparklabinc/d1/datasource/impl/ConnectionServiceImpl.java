@@ -1,23 +1,32 @@
 package ai.sparklabinc.d1.datasource.impl;
 
 import ai.sparklabinc.d1.constant.DsConstants;
+import ai.sparklabinc.d1.dao.DbSecurityConfigDao;
 import ai.sparklabinc.d1.datasource.ConnectionService;
 import ai.sparklabinc.d1.datasource.Constants;
 import ai.sparklabinc.d1.dto.DbBasicConfigDTO;
 import ai.sparklabinc.d1.dto.DbSecurityConfigDTO;
+import ai.sparklabinc.d1.entity.DbSecurityConfigDO;
 import ai.sparklabinc.d1.exception.custom.IllegalParameterException;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.rmi.ServerException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @function:
@@ -29,6 +38,9 @@ import java.util.Map;
 @Service
 public class ConnectionServiceImpl implements ConnectionService {
     private final static Logger LOGGER = LoggerFactory.getLogger(ConnectionServiceImpl.class);
+
+    @Resource(name="DbSecurityConfigDao")
+    private DbSecurityConfigDao dbSecurityConfigDao;
 
     @Override
     public boolean createConnection(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws Exception {
@@ -83,7 +95,8 @@ public class ConnectionServiceImpl implements ConnectionService {
                     if (StringUtils.isBlank(sshKeyFile)) {
                         throw new IllegalParameterException("ssh key file can not be null");
                     }
-                    jsch.addIdentity(sshKeyFile, sshPassPhrase);
+                    String sshKeyFilePath= generateSshKeyFile(dbBasicConfigDTO.getId(), sshKeyFile, sshKeyFile);
+                    jsch.addIdentity(sshKeyFilePath, sshPassPhrase);
                 } else {
                     session.setPassword(sshPassword);
                 }
@@ -159,6 +172,43 @@ public class ConnectionServiceImpl implements ConnectionService {
             }
         }
         return connectResult;
+    }
+
+    @Override
+    public String generateSshKeyFile(Long dsId, String sshKeyFile, String keyText) throws Exception {
+
+        File file = new File(sshKeyFile);
+        //key文件存在则返回
+        if(file.exists()){
+           return file.getAbsolutePath();
+        }
+
+        if(StringUtils.isBlank(keyText)){
+            throw new ServerException("ssh key content can not be null");
+        }
+        //否则根据文件内容创建文件
+        String keyFilePath="";
+        String projectPath = System.getProperty("user.dir");
+        String savePath=projectPath+File.separator+"UploadFile";
+        FileWriter fileWriter=null;
+        try{
+            keyFilePath=savePath+File.separator+UUID.randomUUID()+"_rsa";
+            fileWriter=new FileWriter(keyFilePath);
+            fileWriter.write(keyText);
+        }finally {
+            if(fileWriter!=null){
+                fileWriter.flush();
+                fileWriter.close();
+            }
+        }
+        //保存最新的key文件
+        if(dsId!=null&&dsId>0){
+            DbSecurityConfigDO dbSecurityConfigDO = dbSecurityConfigDao.findById(dsId);
+            dbSecurityConfigDO.setSshKeyFile(keyFilePath);
+            dbSecurityConfigDao.editDataSourceProperty(dbSecurityConfigDO);
+
+        }
+        return keyFilePath;
     }
 
     /**
