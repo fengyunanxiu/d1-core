@@ -69,8 +69,8 @@ public class DaoBeanConfig {
     }
 
 
-    @Bean("DsKeyBasicConfigDao")
-    public DsKeyBasicConfigDao getDsKeyBasicConfigDao(){
+    @Bean("DfKeyBasicConfigDao")
+    public DsKeyBasicConfigDao getDfKeyBasicConfigDao(){
         if(StringUtils.isBlank(basicDbConfig.getType())){
             basicDbConfig.setType("sqlite");
         }

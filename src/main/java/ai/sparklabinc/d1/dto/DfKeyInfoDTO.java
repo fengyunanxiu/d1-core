@@ -1,24 +1,26 @@
 package ai.sparklabinc.d1.dto;
 
-public class DsKeyBasicConfigDTO {
-
-    private String dsKey;
-
+/**
+ * @function:
+ * @author: DAM
+ * @date: 2019/7/4 15:57
+ * @description:
+ * @version: V1.0
+ */
+public class DfKeyInfoDTO {
+    private Long id;
     private Long fkDbId;
-
     private String schemaName;
-
     private String tableName;
+    private String label;
+    private Integer level;
 
-    private String description;
-
-
-    public String getDsKey() {
-        return dsKey;
+    public Long getId() {
+        return id;
     }
 
-    public void setDsKey(String dsKey) {
-        this.dsKey = dsKey;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getFkDbId() {
@@ -45,12 +47,19 @@ public class DsKeyBasicConfigDTO {
         this.tableName = tableName;
     }
 
-    public String getDescription() {
-        return description;
+    public Integer getLevel() {
+        return level;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setLevel(Integer level) {
+        this.level = level;
     }
 
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
 }

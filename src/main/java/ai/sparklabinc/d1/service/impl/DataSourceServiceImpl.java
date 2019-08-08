@@ -9,7 +9,6 @@ import ai.sparklabinc.d1.datasource.DataSourceFactory;
 import ai.sparklabinc.d1.dto.*;
 import ai.sparklabinc.d1.entity.DbBasicConfigDO;
 import ai.sparklabinc.d1.entity.DbSecurityConfigDO;
-import ai.sparklabinc.d1.entity.DsFormTableSettingDO;
 import ai.sparklabinc.d1.entity.DsKeyBasicConfigDO;
 import ai.sparklabinc.d1.exception.custom.IllegalParameterException;
 import ai.sparklabinc.d1.exception.custom.ResourceNotFoundException;
@@ -52,7 +51,7 @@ public class DataSourceServiceImpl implements DataSourceService {
     private DbSecurityConfigDao dbSecurityConfigDao;
 
     @Resource(name = "DataSourceDao")
-    private DataSourceDao mysqlDataSourceDao;
+    private DataSourceDao dataSourceDao;
 
     @Resource(name = "DsKeyBasicConfigDao")
     private DsKeyBasicConfigDao dsKeyBasicConfigDao;
@@ -63,8 +62,6 @@ public class DataSourceServiceImpl implements DataSourceService {
     @Autowired
     private ConnectionService connectionService;
 
-    @Autowired
-    private MysqlDataSourceComponent mysqlDataSourceComponent;
 
 
     @Override
@@ -168,7 +165,7 @@ public class DataSourceServiceImpl implements DataSourceService {
                  * step3 拿到所有的数据库名称
                  * *******************************************************************
                  */
-                List<DbInforamtionDTO> schemas = mysqlDataSourceDao.selectAllSchema(dsId);
+                List<DbInforamtionDTO> schemas = dataSourceDao.selectAllSchema(dsId);
                 if (CollectionUtils.isEmpty(schemas)) {
                     return result;
                 }
@@ -178,7 +175,7 @@ public class DataSourceServiceImpl implements DataSourceService {
                  * *******************************************************************
                  */
                 //所有schema所有的表和视图
-                List<TableAndViewInfoDTO> tableAndViewInfoDTOS = mysqlDataSourceDao.selectAllTableAndView(dsId);
+                List<TableAndViewInfoDTO> tableAndViewInfoDTOS = dataSourceDao.selectAllTableAndView(dsId);
                 //获取所有的data source key
                 List<DsKeyInfoDTO> allDataSourceKey = dsKeyBasicConfigDao.getAllDataSourceKey();
 
@@ -336,132 +333,12 @@ public class DataSourceServiceImpl implements DataSourceService {
     }
 
 
-    @Override
-    public DbInforamtionDTO addDataSourceKey(DsKeyBasicConfigDTO dsKeyBasicConfigDTO) throws Exception {
-        DsKeyBasicConfigDO dsKeyBasicConfigByDsKey = dsKeyBasicConfigDao.getDsKeyBasicConfigByDsKey(dsKeyBasicConfigDTO.getDsKey());
-        //新加的ds key 是否已经存在
-        if (dsKeyBasicConfigByDsKey != null) {
-            throw new IllegalParameterException("data source key already exists!");
-        }
-        DbBasicConfigDO dbBasicConfigDO = dbBasicConfigDao.findById(dsKeyBasicConfigDTO.getFkDbId());
-        switch (dbBasicConfigDO.getDbType()) {
-            case Constants.DATABASE_TYPE_MYSQL:
-                return mysqlDataSourceComponent.addDataSourceKeyProcess(dsKeyBasicConfigDTO);
-            case Constants.DATABASE_TYPE_POSTGRESQL:
-                return null;
-            default:
-                return mysqlDataSourceComponent.addDataSourceKeyProcess(dsKeyBasicConfigDTO);
-        }
-    }
-
-
-    @Override
-    public List<Map<String, Object>> selectAllDsFormTableSettingByDsKey(String dsKey) throws Exception {
-        List<Map<String, Object>> allDsFormTableSettingByDsKey = dsFormTableSettingDao.selectAllDsFormTableSettingByDsKey(dsKey);
-        DsKeyBasicConfigDO dsKeyBasicConfigDO = dsKeyBasicConfigDao.getDsKeyBasicConfigByDsKey(dsKey);
-        if (dsKeyBasicConfigDO == null) {
-            throw new ResourceNotFoundException("ds config is not found!");
-        }
-        //获取data source key真实的table字段
-        List<TableColumnsDetailDTO> tableColumnsDetailDTOList = mysqlDataSourceDao.selectTableColumnsDetail(dsKeyBasicConfigDO.getFkDbId(),
-                dsKeyBasicConfigDO.getSchemaName(),
-                dsKeyBasicConfigDO.getTableName());
-
-        List<String> colunmNames = tableColumnsDetailDTOList.stream()
-                .map(TableColumnsDetailDTO::getColumnName)
-                .collect(Collectors.toList());
-        if (CollectionUtils.isEmpty(colunmNames)) {
-            throw new ResourceNotFoundException("table is not exist");
-        }
-
-        allDsFormTableSettingByDsKey.forEach(e -> {
-            if (!colunmNames.contains(e.get("db_field_name"))) {
-                e.put("column_is_exist", 0);
-            } else {
-                e.put("column_is_exist", 1);
-            }
-        });
-        return allDsFormTableSettingByDsKey;
-    }
-
-
-    @Override
-    public boolean updateDataSourceKey(String dsKey, String newDsKey, String description) throws IOException, SQLException {
-        boolean updateResult = false;
-        int updateRows = dsKeyBasicConfigDao.updateDataSourceKey(dsKey, newDsKey, description);
-        if (updateRows > 0) {
-            updateRows = dsFormTableSettingDao.updateDataSourceKey(dsKey, newDsKey);
-            if (updateRows > 0) {
-                updateResult = true;
-            }
-        }
-        return updateResult;
-    }
-
-    @Override
-    public boolean deleteDataSourceKey(String dsKey) throws IOException, SQLException {
-        boolean updateResult = false;
-        int updateRows = dsKeyBasicConfigDao.deleteDataSourceKey(dsKey);
-        if (updateRows > 0) {
-            updateRows = dsFormTableSettingDao.deleteDataSourceKey(dsKey);
-            if (updateRows > 0) {
-                updateResult = true;
-            }
-        }
-        return updateResult;
-    }
 
     @Override
     public boolean dataSourceTestConnection(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws Exception {
         return connectionService.createConnection(dbBasicConfigDTO, dbSecurityConfigDTO);
     }
 
-    @Override
-    public Boolean saveDsFormTableSetting(List<DsFormTableSettingDO> dsFormTableSettingDOSForUpdate, List<DsFormTableSettingDO> dsFormTableSettingDOSForAdd) throws Exception{
-        //更新操作
-        if(!CollectionUtils.isEmpty(dsFormTableSettingDOSForUpdate)){
-            for(DsFormTableSettingDO dsFormTableSettingDO:dsFormTableSettingDOSForUpdate){
-                Integer updateResult = dsFormTableSettingDao.updateDsFormTableSetting(dsFormTableSettingDO);
-                if(updateResult<=0){
-                    return false;
-                }
-            }
-        }
-        //添加操作
-        if(!CollectionUtils.isEmpty(dsFormTableSettingDOSForAdd)){
-            for(DsFormTableSettingDO dsFormTableSettingDO:dsFormTableSettingDOSForAdd){
-                Integer add = dsFormTableSettingDao.add(dsFormTableSettingDO);
-                if(add<=0){
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    @Override
-    public List<Map<String, Object>> refreshDsFormTableSetting(String dsKey) throws Exception {
-        DsKeyBasicConfigDO dsKeyBasicConfigDO = dsKeyBasicConfigDao.getDsKeyBasicConfigByDsKey(dsKey);
-        if (dsKeyBasicConfigDO == null) {
-            throw new ResourceNotFoundException("data source key config is not found!");
-        }
-        DbBasicConfigDO dbBasicConfigDO = dbBasicConfigDao.findById(dsKeyBasicConfigDO.getFkDbId());
-        switch (dbBasicConfigDO.getDbType()) {
-            case Constants.DATABASE_TYPE_MYSQL:
-                return mysqlDataSourceComponent.refreshDsFormTableSettingProcess(dsKey, dsKeyBasicConfigDO);
-            case Constants.DATABASE_TYPE_POSTGRESQL:
-                return null;
-            default:
-                return mysqlDataSourceComponent.refreshDsFormTableSettingProcess(dsKey, dsKeyBasicConfigDO);
-        }
-    }
-
-
-    @Override
-    public DsKeyBasicConfigDO getDsKeyBasicInfo(String dsKey) throws Exception {
-        return this.dsKeyBasicConfigDao.getDsKeyBasicConfigByDsKey(dsKey);
-    }
 
 
 }
