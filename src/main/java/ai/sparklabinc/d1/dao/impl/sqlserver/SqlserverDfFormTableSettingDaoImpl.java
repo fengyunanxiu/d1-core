@@ -2,6 +2,7 @@ package ai.sparklabinc.d1.dao.impl.sqlserver;
 
 import ai.sparklabinc.d1.dao.DataDaoType;
 import ai.sparklabinc.d1.dao.DfFormTableSettingDao;
+import ai.sparklabinc.d1.dao.impl.AbstractDfFormTableSettingDao;
 import ai.sparklabinc.d1.datasource.DataSourceFactory;
 import ai.sparklabinc.d1.entity.DfFormTableSettingDO;
 import ai.sparklabinc.d1.util.DateUtils;
@@ -29,7 +30,7 @@ import java.util.Map;
  * @description :
  */
 @Repository("SqlserverDfFormTableSettingDaoImpl")
-public class SqlserverDfFormTableSettingDaoImpl implements DfFormTableSettingDao {
+public class SqlserverDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingDao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SqlserverDfFormTableSettingDaoImpl.class);
     @Autowired
@@ -37,6 +38,11 @@ public class SqlserverDfFormTableSettingDaoImpl implements DfFormTableSettingDao
 
     @Resource(name="D1BasicDataSource")
     private DataSource d1BasicDataSource;
+
+    @Override
+    public DataSource d1BasicDataSource() {
+        return this.d1BasicDataSource;
+    }
 
     @Override
     public DataDaoType getDataDaoType() {
@@ -322,6 +328,7 @@ public class SqlserverDfFormTableSettingDaoImpl implements DfFormTableSettingDao
         result = queryRunner.update(updateSql, objectParams);
         return result;
     }
+
 
 
 }

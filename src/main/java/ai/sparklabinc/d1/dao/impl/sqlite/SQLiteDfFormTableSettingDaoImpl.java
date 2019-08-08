@@ -2,6 +2,7 @@ package ai.sparklabinc.d1.dao.impl.sqlite;
 
 import ai.sparklabinc.d1.dao.DataDaoType;
 import ai.sparklabinc.d1.dao.DfFormTableSettingDao;
+import ai.sparklabinc.d1.dao.impl.AbstractDfFormTableSettingDao;
 import ai.sparklabinc.d1.datasource.DataSourceFactory;
 import ai.sparklabinc.d1.entity.DfFormTableSettingDO;
 import ai.sparklabinc.d1.util.DateUtils;
@@ -29,14 +30,17 @@ import java.util.Map;
  * @description :
  */
 @Repository("SQLiteDfFormTableSettingDaoImpl")
-public class SQLiteDfFormTableSettingDaoImpl implements DfFormTableSettingDao {
+public class SQLiteDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingDao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SQLiteDfFormTableSettingDaoImpl.class);
-    @Autowired
-    private DataSourceFactory dataSourceFactory;
 
     @Resource(name="D1BasicDataSource")
     private DataSource d1BasicDataSource;
+
+    @Override
+    public DataSource d1BasicDataSource() {
+        return this.d1BasicDataSource;
+    }
 
     @Override
     public DataDaoType getDataDaoType() {
@@ -321,8 +325,6 @@ public class SQLiteDfFormTableSettingDaoImpl implements DfFormTableSettingDao {
         result = queryRunner.update(updateSql, objectParams);
         return result;
     }
-
-
 
 
 
