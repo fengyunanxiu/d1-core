@@ -9,10 +9,6 @@ import ai.sparklabinc.d1.datasource.DataSourceFactory;
 import ai.sparklabinc.d1.dto.*;
 import ai.sparklabinc.d1.entity.DbBasicConfigDO;
 import ai.sparklabinc.d1.entity.DbSecurityConfigDO;
-import ai.sparklabinc.d1.entity.DfFormTableSettingDO;
-import ai.sparklabinc.d1.entity.DfKeyBasicConfigDO;
-import ai.sparklabinc.d1.exception.custom.IllegalParameterException;
-import ai.sparklabinc.d1.exception.custom.ResourceNotFoundException;
 import ai.sparklabinc.d1.service.DataSourceService;
 import com.alibaba.fastjson.JSON;
 import com.jcraft.jsch.Session;
@@ -52,7 +48,7 @@ public class DataSourceServiceImpl implements DataSourceService {
     private DbSecurityConfigDao dbSecurityConfigDao;
 
     @Resource(name = "DataSourceDao")
-    private DataSourceDao mysqlDataSourceDao;
+    private DataSourceDao dataSourceDao;
 
     @Resource(name = "DfKeyBasicConfigDao")
     private DfKeyBasicConfigDao dfKeyBasicConfigDao;
@@ -165,7 +161,7 @@ public class DataSourceServiceImpl implements DataSourceService {
                  * step3 拿到所有的数据库名称
                  * *******************************************************************
                  */
-                List<DbInforamtionDTO> schemas = mysqlDataSourceDao.selectAllSchema(dsId);
+                List<DbInforamtionDTO> schemas = dataSourceDao.selectAllSchema(dsId);
                 if (CollectionUtils.isEmpty(schemas)) {
                     return result;
                 }
@@ -175,7 +171,7 @@ public class DataSourceServiceImpl implements DataSourceService {
                  * *******************************************************************
                  */
                 //所有schema所有的表和视图
-                List<TableAndViewInfoDTO> tableAndViewInfoDTOS = mysqlDataSourceDao.selectAllTableAndView(dsId);
+                List<TableAndViewInfoDTO> tableAndViewInfoDTOS = dataSourceDao.selectAllTableAndView(dsId);
                 //获取所有的data facet key
                 List<DfKeyInfoDTO> allDataFacetKey = dfKeyBasicConfigDao.getAllDataFacetKey();
 
@@ -330,129 +326,12 @@ public class DataSourceServiceImpl implements DataSourceService {
         return updateResult;
     }
 
-    @Override
-    public DbInforamtionDTO addDataFacetKey(DfKeyBasicConfigDTO dfKeyBasicConfigDTO) throws Exception {
-        DfKeyBasicConfigDO dfKeyBasicConfigByDfKey = dfKeyBasicConfigDao.getDfKeyBasicConfigByDfKey(dfKeyBasicConfigDTO.getDfKey());
-        //新加的df key 是否已经存在
-        if (dfKeyBasicConfigByDfKey != null) {
-            throw new IllegalParameterException("data facet key already exists!");
-        }
-        DbBasicConfigDO dbBasicConfigDO = dbBasicConfigDao.findById(dfKeyBasicConfigDTO.getFkDbId());
-        switch (dbBasicConfigDO.getDbType()) {
-            case Constants.DATABASE_TYPE_MYSQL:
-                return mysqlDataSourceComponent.addDataFacetKeyProcess(dfKeyBasicConfigDTO);
-            case Constants.DATABASE_TYPE_POSTGRESQL:
-                return null;
-            default:
-                return mysqlDataSourceComponent.addDataFacetKeyProcess(dfKeyBasicConfigDTO);
-        }
-    }
-
-    @Override
-    public List<Map<String, Object>> selectAllDfFormTableSettingByDfKey(String dfKey) throws Exception {
-        List<Map<String, Object>> allDfFormTableSettingByDfKey = dfFormTableSettingDao.selectAllDfFormTableSettingByDfKey(dfKey);
-        DfKeyBasicConfigDO dfKeyBasicConfigDO = dfKeyBasicConfigDao.getDfKeyBasicConfigByDfKey(dfKey);
-        if (dfKeyBasicConfigDO == null) {
-            throw new ResourceNotFoundException("ds config is not found!");
-        }
-        //获取data facet key真实的table字段
-        List<TableColumnsDetailDTO> tableColumnsDetailDTOList = mysqlDataSourceDao.selectTableColumnsDetail(dfKeyBasicConfigDO.getFkDbId(),
-                dfKeyBasicConfigDO.getSchemaName(),
-                dfKeyBasicConfigDO.getTableName());
-
-        List<String> colunmNames = tableColumnsDetailDTOList.stream()
-                .map(TableColumnsDetailDTO::getColumnName)
-                .collect(Collectors.toList());
-        if (CollectionUtils.isEmpty(colunmNames)) {
-            throw new ResourceNotFoundException("table is not exist");
-        }
-
-        allDfFormTableSettingByDfKey.forEach(e -> {
-            if (!colunmNames.contains(e.get("db_field_name"))) {
-                e.put("column_is_exist", 0);
-            } else {
-                e.put("column_is_exist", 1);
-            }
-        });
-        return allDfFormTableSettingByDfKey;
-    }
-
-    @Override
-    public boolean updateDataFacetKey(String dfKey, String newDfKey, String description) throws IOException, SQLException {
-        boolean updateResult = false;
-        int updateRows = dfKeyBasicConfigDao.updateDataFacetKey(dfKey, newDfKey, description);
-        if (updateRows > 0) {
-            updateRows = dfFormTableSettingDao.updateDataFacetKey(dfKey, newDfKey);
-            if (updateRows > 0) {
-                updateResult = true;
-            }
-        }
-        return updateResult;
-    }
-
-    @Override
-    public boolean deleteDataFacetKey(String dfKey) throws IOException, SQLException {
-        boolean updateResult = false;
-        int updateRows = dfKeyBasicConfigDao.deleteDataFacetKey(dfKey);
-        if (updateRows > 0) {
-            updateRows = dfFormTableSettingDao.deleteDataFacetKey(dfKey);
-            if (updateRows > 0) {
-                updateResult = true;
-            }
-        }
-        return updateResult;
-    }
 
     @Override
     public boolean dataSourceTestConnection(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws Exception {
         return connectionService.createConnection(dbBasicConfigDTO, dbSecurityConfigDTO);
     }
 
-    @Override
-    public Boolean saveDfFormTableSetting(List<DfFormTableSettingDO> dfFormTableSettingDOSForUpdate, List<DfFormTableSettingDO> dfFormTableSettingDOSForAdd) throws Exception{
-        //更新操作
-        if(!CollectionUtils.isEmpty(dfFormTableSettingDOSForUpdate)){
-            for(DfFormTableSettingDO dfFormTableSettingDO : dfFormTableSettingDOSForUpdate){
-                Integer updateResult = dfFormTableSettingDao.updateDfFormTableSetting(dfFormTableSettingDO);
-                if(updateResult<=0){
-                    return false;
-                }
-            }
-        }
-        //添加操作
-        if(!CollectionUtils.isEmpty(dfFormTableSettingDOSForAdd)){
-            for(DfFormTableSettingDO dfFormTableSettingDO : dfFormTableSettingDOSForAdd){
-                Integer add = dfFormTableSettingDao.add(dfFormTableSettingDO);
-                if(add<=0){
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    @Override
-    public List<Map<String, Object>> refreshDfFormTableSetting(String dfKey) throws Exception {
-        DfKeyBasicConfigDO dfKeyBasicConfigDO = dfKeyBasicConfigDao.getDfKeyBasicConfigByDfKey(dfKey);
-        if (dfKeyBasicConfigDO == null) {
-            throw new ResourceNotFoundException("data facet key config is not found!");
-        }
-        DbBasicConfigDO dbBasicConfigDO = dbBasicConfigDao.findById(dfKeyBasicConfigDO.getFkDbId());
-        switch (dbBasicConfigDO.getDbType()) {
-            case Constants.DATABASE_TYPE_MYSQL:
-                return mysqlDataSourceComponent.refreshDfFormTableSettingProcess(dfKey, dfKeyBasicConfigDO);
-            case Constants.DATABASE_TYPE_POSTGRESQL:
-                return null;
-            default:
-                return mysqlDataSourceComponent.refreshDfFormTableSettingProcess(dfKey, dfKeyBasicConfigDO);
-        }
-    }
-
-    @Override
-    public DfKeyBasicConfigDO getDfKeyBasicInfo(String dfKey) throws Exception {
-        return this.dfKeyBasicConfigDao.getDfKeyBasicConfigByDfKey(dfKey);
-    }
 
 
 }

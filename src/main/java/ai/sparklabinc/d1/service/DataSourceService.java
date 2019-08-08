@@ -32,19 +32,7 @@ public interface DataSourceService {
 
     boolean editDataSourceProperty(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws IOException, SQLException;
 
-    DbInforamtionDTO addDataFacetKey(DfKeyBasicConfigDTO dfKeyBasicConfigDTO) throws Exception;
-
-    List<Map<String,Object>> selectAllDfFormTableSettingByDfKey(String dfKey) throws Exception;
-
-    boolean updateDataFacetKey(String dfKey, String newDfKey, String description) throws IOException, SQLException;
-
-    boolean deleteDataFacetKey(String dfKey) throws IOException, SQLException;
 
     boolean dataSourceTestConnection(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws Exception;
-
-    Boolean saveDfFormTableSetting(List<DfFormTableSettingDO> dfFormTableSettingDOSForUpdate, List<DfFormTableSettingDO> dfFormTableSettingDOSForAdd) throws Exception;
-
-    List<Map<String,Object>> refreshDfFormTableSetting(String dfKey) throws Exception;
-
-    DfKeyBasicConfigDO getDfKeyBasicInfo(String dfKey) throws Exception;
+;
 }

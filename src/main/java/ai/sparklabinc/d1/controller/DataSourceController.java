@@ -103,74 +103,8 @@ public class DataSourceController {
 
 
 
-    @ResponseBody
-    @PostMapping("/add-dfkey")
-    public Object add(@RequestBody DfKeyBasicConfigDTO dfKeyBasicConfigDTO) throws Exception{
-        if(StringUtils.isBlank(dfKeyBasicConfigDTO.getDfKey())){
-            throw new IllegalParameterException("dfKey can not be null!");
-        }
 
-        return dataSourceService.addDataFacetKey(dfKeyBasicConfigDTO);
-    }
-
-    @ResponseBody
-    @DeleteMapping("/delete-dfkey")
-    public Object deleteDataFacetKey(String dfKey) throws IOException, SQLException{
-        return dataSourceService.deleteDataFacetKey(dfKey);
-    }
-
-
-    @ResponseBody
-    @GetMapping ("/select-df-form-table-setting")
-    public Object selectAllDfFormTableSettingByDfKey(String dfKey) throws Exception{
-        return dataSourceService.selectAllDfFormTableSettingByDfKey(dfKey);
-    }
-
-
-    @ResponseBody
-    @PostMapping("/save-df-form-table-setting")
-    public boolean saveDfFormTableSetting(@RequestBody List<DfFormTableSettingDO> dfFormTableSettingDOS) throws Exception {
-        if(CollectionUtils.isEmpty(dfFormTableSettingDOS)){
-            throw new IllegalParameterException("form infomation can not be null!");
-        }
-        List<DfFormTableSettingDO> dfFormTableSettingDOSForUpdate = dfFormTableSettingDOS.stream()
-                .filter(e -> e.getId() != null && e.getId() > 0)
-                .collect(Collectors.toList());
-
-        List<DfFormTableSettingDO> dfFormTableSettingDOSForAdd = dfFormTableSettingDOS.stream()
-                .filter((e) -> e.getId() == null || e.getId() <= 0)
-                .collect(Collectors.toList());
-
-        return dataSourceService.saveDfFormTableSetting(dfFormTableSettingDOSForUpdate, dfFormTableSettingDOSForAdd);
-    }
-
-
-    @ResponseBody
-    @PostMapping("/refresh-df-form-table-setting")
-    public Object refreshDfFormTableSetting(String dfKey) throws Exception {
-        if(StringUtils.isBlank(dfKey)){
-            throw new IllegalParameterException("dfKey can not be null!");
-        }
-        return dataSourceService.refreshDfFormTableSetting(dfKey);
-    }
-
-
-    @ResponseBody
-    @PostMapping("/update-dfkey")
-    public Object updateDataFacetKey(String dfKey, String newDfKey, String description) throws IOException, SQLException{
-        return dataSourceService.updateDataFacetKey(dfKey,newDfKey,description);
-    }
-
-
-    @ResponseBody
-    @GetMapping("/basic-dfkey-info")
-    public Object getDfKeyBasicInfo(String dfKey) throws Exception{
-        return dataSourceService.getDfKeyBasicInfo(dfKey);
-    }
-
-
-
-    public String uploadFile(MultipartFile file, HttpServletRequest request) throws IOException {
+    private String uploadFile(MultipartFile file, HttpServletRequest request) throws IOException {
         String fileName = file.getOriginalFilename();
         String projectPath = System.getProperty("user.dir");
         String savePath=projectPath+File.separator+"UploadFile";
