@@ -54,10 +54,10 @@ public class DataExportController {
     @ApiOperation(value = "Async export Inventory Turnover task report")
     @GetMapping("/async-export")
     @ResponseBody
-    public Object asyncExportInventoryTurnoverTaskReport(@RequestParam(name = "data_source_key", required = true) String dataSourceKey,
+    public Object asyncExportInventoryTurnoverTaskReport(@RequestParam(name = "data_facet_key", required = true) String dataFacetKey,
                                                          HttpServletRequest request) throws Exception {
-        if (StringUtils.isNullOrEmpty(dataSourceKey)) {
-            throw new ResourceNotFoundException("Empty data source key " + dataSourceKey);
+        if (StringUtils.isNullOrEmpty(dataFacetKey)) {
+            throw new ResourceNotFoundException("Empty data facet key " + dataFacetKey);
         }
         //参数配置
         Map<String, String[]> params = request.getParameterMap();
@@ -68,7 +68,7 @@ public class DataExportController {
         DataExportTaskDO dataExportTask = new DataExportTaskDO();
         String now = DateUtils.ofLongStr(new Date());
         dataExportTask.setStartAt(now);
-        dataExportTask.setFileName(dataSourceKey);
+        dataExportTask.setFileName(dataFacetKey);
         long start = System.currentTimeMillis();
         LOGGER.info("async export 开始调用data export record");
         final DataExportTaskDO toWaitSaveExportTask = dataExportTaskDao.addDataExportTask(dataExportTask);
@@ -80,7 +80,7 @@ public class DataExportController {
             public void run() {
                 try {
                     //生成导出文件
-                    File exportFile = dataExportService.export(dataSourceKey, simpleParameters, pageable, moreWhereClause, dataExportTask);
+                    File exportFile = dataExportService.export(dataFacetKey, simpleParameters, pageable, moreWhereClause, dataExportTask);
 
                     toWaitSaveExportTask.setFileName(exportFile.getName());
                     toWaitSaveExportTask.setFilePath(exportFile.getAbsolutePath());
@@ -165,11 +165,11 @@ public class DataExportController {
     }
 
 
-    @ApiOperation(value = "getAllDsFormTableSettingByDsKeyForExport")
+    @ApiOperation(value = "getAllDfFormTableSettingByDfKeyForExport")
     @GetMapping("/form-table-setting")
     @ResponseBody
-    public Object getAllDsFormTableSettingByDsKeyForExport(@RequestParam(required = true,name = "data_source_key") String dataSourceKey) throws Exception {
-        return dataExportService.getAllDsFormTableSettingByDsKeyForExport(dataSourceKey);
+    public Object getAllDfFormTableSettingByDfKeyForExport(@RequestParam(required = true,name = "data_facet_key") String dataFacetKey) throws Exception {
+        return dataExportService.getAllDfFormTableSettingByDfKeyForExport(dataFacetKey);
     }
 
 

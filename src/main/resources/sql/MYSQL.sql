@@ -79,12 +79,12 @@ create table if not exists ds_dic_auto_config
 
 ###
 
-create table if not exists  ds_form_table_setting
+create table if not exists  df_form_table_setting
 (
     id                                bigint primary key auto_increment,
     gmt_create                        varchar(30),
     gmt_modified                      varchar(30),
-    ds_key                            varchar(100),
+    df_key                            varchar(100),
     db_field_name                     varchar(100),
     db_field_type                     varchar(100),
     view_field_label                  varchar(100),
@@ -114,10 +114,10 @@ create table if not exists  ds_form_table_setting
 
 ###
 
-create table if not exists  ds_key_basic_config
+create table if not exists  df_key_basic_config
 (
     id           bigint primary key auto_increment,
-    ds_key       varchar(100) unique,
+    df_key       varchar(100) unique,
     fk_db_id     bigint,
     schema_name  varchar(100),
     table_name   varchar(100),
@@ -180,4 +180,15 @@ create table if not exists db_form_dict_configuration(
     field_form_field_key varchar(100) not null,
     field_domain varchar(64) not null,
     field_item varchar(64) not null
+) charset=utf8 collate utf8_croatian_ci;
+
+###
+
+create table if not exists db_defaults_configuration(
+    field_id varchar(64) primary key,
+    field_form_df_key varchar(100) not null,
+    field_form_field_key varchar(100) not null,
+    field_type varchar(64) ,
+    field_plugin_conf longtext ,
+    field_manual_conf longtext
 ) charset=utf8 collate utf8_croatian_ci;

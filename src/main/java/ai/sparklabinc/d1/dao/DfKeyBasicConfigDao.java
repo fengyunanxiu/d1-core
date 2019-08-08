@@ -2,9 +2,7 @@ package ai.sparklabinc.d1.dao;
 
 import ai.sparklabinc.d1.dto.DbInforamtionDTO;
 import ai.sparklabinc.d1.dto.DfKeyInfoDTO;
-import ai.sparklabinc.d1.dto.DsKeyInfoDTO;
 import ai.sparklabinc.d1.entity.DfKeyBasicConfigDO;
-import ai.sparklabinc.d1.entity.DsKeyBasicConfigDO;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -15,10 +13,10 @@ import java.util.List;
  * @date : 2019-07-03 20:49
  * @description :
  */
-public interface DsKeyBasicConfigDao {
+public interface DfKeyBasicConfigDao {
     DataDaoType getDataDaoType();
 
-    DfKeyBasicConfigDO getDsKeyBasicConfigByDsKey(String dataSourceKey) throws SQLException, IOException;
+    DfKeyBasicConfigDO getDfKeyBasicConfigByDfKey(String dataFacetKey) throws SQLException, IOException;
 
     List<DbInforamtionDTO> getDataFacetKey(Long dsId, String schema, String tableName) throws IOException, SQLException;
 

@@ -1,6 +1,7 @@
 package ai.sparklabinc.d1.config;
 
 import ai.sparklabinc.d1.dao.*;
+import ai.sparklabinc.d1.defaults.dao.DefaultsConfigurationRepository;
 import ai.sparklabinc.d1.dict.dao.DictRepository;
 import ai.sparklabinc.d1.dict.dao.FormDictConfigurationRepository;
 import org.apache.commons.lang3.StringUtils;
@@ -24,12 +25,12 @@ public class DaoBeanConfig {
     private DataDaoFactory dataDaoFactory;
 
 
-    @Bean("DsFormTableSettingDao")
-    public DsFormTableSettingDao getDsFormTableSettingDao(){
+    @Bean("DfFormTableSettingDao")
+    public DfFormTableSettingDao getDfFormTableSettingDao(){
         if(StringUtils.isBlank(basicDbConfig.getType())){
             basicDbConfig.setType("sqlite");
         }
-        return dataDaoFactory.getDaoBean(DsFormTableSettingDao.class, basicDbConfig.getType());
+        return dataDaoFactory.getDaoBean(DfFormTableSettingDao.class, basicDbConfig.getType());
     }
 
     @Bean("DataSourceDao")
@@ -70,11 +71,11 @@ public class DaoBeanConfig {
 
 
     @Bean("DfKeyBasicConfigDao")
-    public DsKeyBasicConfigDao getDfKeyBasicConfigDao(){
+    public DfKeyBasicConfigDao getDfKeyBasicConfigDao(){
         if(StringUtils.isBlank(basicDbConfig.getType())){
             basicDbConfig.setType("sqlite");
         }
-        return dataDaoFactory.getDaoBean(DsKeyBasicConfigDao.class, basicDbConfig.getType());
+        return dataDaoFactory.getDaoBean(DfKeyBasicConfigDao.class, basicDbConfig.getType());
     }
 
 
@@ -110,6 +111,14 @@ public class DaoBeanConfig {
             basicDbConfig.setType("sqlite");
         }
         return dataDaoFactory.getDaoBean(FormDictConfigurationRepository.class, basicDbConfig.getType());
+    }
+
+    @Bean("DefaultsConfigurationRepository")
+    public DefaultsConfigurationRepository defaultsConfigurationRepository(){
+        if(StringUtils.isBlank(basicDbConfig.getType())){
+            basicDbConfig.setType("sqlite");
+        }
+        return dataDaoFactory.getDaoBean(DefaultsConfigurationRepository.class, basicDbConfig.getType());
     }
 
 

@@ -1,7 +1,7 @@
 package ai.sparklabinc.d1.service;
 
 import ai.sparklabinc.d1.entity.DataExportTaskDO;
-import ai.sparklabinc.d1.entity.DsFormTableSettingDO;
+import ai.sparklabinc.d1.entity.DfFormTableSettingDO;
 import org.springframework.data.domain.Pageable;
 
 import java.io.File;
@@ -17,9 +17,9 @@ import java.util.Map;
  */
 public interface DataExportService {
 
-    File export(String dataSourceKey, Map<String, String[]> simpleParameters,
+    File export(String dataFacetKey, Map<String, String[]> simpleParameters,
                 Pageable pageable, String moreWhereClause,
                 DataExportTaskDO dataExportTaskDO) throws Exception;
 
-    List<DsFormTableSettingDO> getAllDsFormTableSettingByDsKeyForExport(String dataSourceKey) throws Exception;
+    List<DfFormTableSettingDO> getAllDfFormTableSettingByDfKeyForExport(String dataFacetKey) throws Exception;
 }

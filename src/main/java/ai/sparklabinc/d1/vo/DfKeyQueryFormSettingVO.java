@@ -9,7 +9,7 @@ import java.util.List;
  * @date : 2019-07-02 21:55
  * @description :
  */
-public class DsKeyQueryFormSettingVO {
+public class DfKeyQueryFormSettingVO {
 
     private String viewFieldLabel;
 

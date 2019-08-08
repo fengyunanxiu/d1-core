@@ -1,11 +1,11 @@
 package ai.sparklabinc.d1.service.impl;
 
-import ai.sparklabinc.d1.dao.DsFormTableSettingDao;
-import ai.sparklabinc.d1.dao.DsKeyBasicConfigDao;
+import ai.sparklabinc.d1.dao.DfKeyBasicConfigDao;
+import ai.sparklabinc.d1.dao.DfFormTableSettingDao;
 import ai.sparklabinc.d1.dto.AssemblyResultDTO;
 import ai.sparklabinc.d1.entity.DataExportTaskDO;
-import ai.sparklabinc.d1.entity.DsFormTableSettingDO;
-import ai.sparklabinc.d1.entity.DsKeyBasicConfigDO;
+import ai.sparklabinc.d1.entity.DfFormTableSettingDO;
+import ai.sparklabinc.d1.entity.DfKeyBasicConfigDO;
 import ai.sparklabinc.d1.exception.custom.ResourceNotFoundException;
 import ai.sparklabinc.d1.executor.Executor;
 import ai.sparklabinc.d1.executor.impl.CommonExecutor;
@@ -44,31 +44,31 @@ public class DataExportServiceImpl implements DataExportService {
     @Autowired
     private QueryFormTableService queryFormTableService;
 
-    @Resource(name = "DsFormTableSettingDao")
-    private DsFormTableSettingDao dsFormTableSettingDao;
+    @Resource(name = "DfFormTableSettingDao")
+    private DfFormTableSettingDao dfFormTableSettingDao;
 
-    @Resource(name = "DsKeyBasicConfigDao")
-    private DsKeyBasicConfigDao dsKeyBasicConfigDao;
+    @Resource(name = "DfKeyBasicConfigDao")
+    private DfKeyBasicConfigDao dfKeyBasicConfigDao;
 
     @Value("${file.temp.path}")
     private String fileTempPath;
 
     @Override
-    public File export(String dataSourceKey, Map<String, String[]> simpleParameters,
+    public File export(String dataFacetKey, Map<String, String[]> simpleParameters,
                        Pageable pageable, String moreWhereClause,
                        DataExportTaskDO dataExportTaskDO) throws Exception {
-        DsKeyBasicConfigDO dsKeyBasicConfigDO = dsKeyBasicConfigDao.getDsKeyBasicConfigByDsKey(dataSourceKey);
-        if(dsKeyBasicConfigDO==null){
-            throw new ResourceNotFoundException("data source key is not found!");
+        DfKeyBasicConfigDO dfKeyBasicConfigDO = dfKeyBasicConfigDao.getDfKeyBasicConfigByDfKey(dataFacetKey);
+        if(dfKeyBasicConfigDO ==null){
+            throw new ResourceNotFoundException("data facet key is not found!");
         }
 
         long now=System.currentTimeMillis();
         String fileName=dataExportTaskDO.getFileName()+"-"+now+".xlsx";
         String fullFilePathOfExportFile = FileUtils.contact(this.fileTempPath,fileName);
         //获取生成sql文件
-        AssemblyResultDTO assemblyResultDTO = queryFormTableService.generalQuery(dataSourceKey, simpleParameters, pageable, moreWhereClause,true);
+        AssemblyResultDTO assemblyResultDTO = queryFormTableService.generalQuery(dataFacetKey, simpleParameters, pageable, moreWhereClause,true);
 
-        List<DsFormTableSettingDO> queryTableSettings = dsFormTableSettingDao.getAllDsFormTableSettingByDsKeyForExport(dataSourceKey);
+        List<DfFormTableSettingDO> queryTableSettings = dfFormTableSettingDao.getAllDfFormTableSettingByDfKeyForExport(dataFacetKey);
 
         String querySql=assemblyResultDTO.getQuerySql();
         List<Object> paramList = assemblyResultDTO.getParamList();
@@ -83,7 +83,7 @@ public class DataExportServiceImpl implements DataExportService {
 
 
     @Override
-    public List<DsFormTableSettingDO> getAllDsFormTableSettingByDsKeyForExport(String dataSourceKey) throws Exception {
-        return dsFormTableSettingDao.getAllDsFormTableSettingByDsKeyForExport(dataSourceKey);
+    public List<DfFormTableSettingDO> getAllDfFormTableSettingByDfKeyForExport(String dataFacetKey) throws Exception {
+        return dfFormTableSettingDao.getAllDfFormTableSettingByDfKeyForExport(dataFacetKey);
     }
 }

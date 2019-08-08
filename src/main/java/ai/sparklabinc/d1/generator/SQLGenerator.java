@@ -2,7 +2,7 @@ package ai.sparklabinc.d1.generator;
 
 import ai.sparklabinc.d1.dto.QueryParameterGroupDTO;
 import ai.sparklabinc.d1.dto.SQLGenerResultDTO;
-import ai.sparklabinc.d1.entity.DsFormTableSettingDO;
+import ai.sparklabinc.d1.entity.DfFormTableSettingDO;
 
 import java.util.List;
 import java.util.Map;
@@ -17,5 +17,5 @@ import java.util.Map;
 public interface SQLGenerator {
     SQLGenerResultDTO buildSQL(String database, String schema, String table,
                                Map<String, String[]> requestParams,
-                               QueryParameterGroupDTO queryParameterGroup, List<DsFormTableSettingDO> dsFormTableSettingDOS) throws Exception;
+                               QueryParameterGroupDTO queryParameterGroup, List<DfFormTableSettingDO> dfFormTableSettingDOS) throws Exception;
 }

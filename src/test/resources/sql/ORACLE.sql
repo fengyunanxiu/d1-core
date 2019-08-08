@@ -138,15 +138,15 @@ declare
 total int:=0;
 sqlStr varchar2(10000);
 begin
-select count(*) into total  from tab where tname='DS_FORM_TABLE_SETTING' ;
+select count(*) into total  from tab where tname='DF_FORM_TABLE_SETTING' ;
 if total<1 then
 	sqlStr:='
-create table ds_form_table_setting
+create table df_form_table_setting
 (
     id                                number primary key ,
     gmt_create                        varchar(30),
     gmt_modified                      varchar(30),
-    ds_key                            varchar(100),
+    df_key                            varchar(100),
     db_field_name                     varchar(100),
     db_field_type                     varchar(100),
     view_field_label                  varchar(100),
@@ -185,12 +185,12 @@ declare
 total int:=0;
 sqlStr varchar2(10000);
 begin
-select count(*) into total  from tab where tname='DS_KEY_BASIC_CONFIG' ;
+select count(*) into total  from tab where tname='DF_KEY_BASIC_CONFIG' ;
 if total<1 then
-	sqlStr:='create table ds_key_basic_config
+	sqlStr:='create table df_key_basic_config
 (
     id     number  primary key,
-    ds_key       varchar(100) unique,
+    df_key       varchar(100) unique,
     fk_db_id      number,
     schema_name  varchar(100),
     table_name   varchar(100),

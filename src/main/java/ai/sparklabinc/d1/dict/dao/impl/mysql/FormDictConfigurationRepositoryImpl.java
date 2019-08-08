@@ -73,15 +73,13 @@ public class FormDictConfigurationRepositoryImpl implements FormDictConfiguratio
         String domain = formDictConfigurationDO.getFieldDomain();
         String item = formDictConfigurationDO.getFieldItem();
         if (StringUtils.isNullOrEmpty(id)
-                ||StringUtils.isNullOrEmpty(formDfKey)
-                || StringUtils.isNullOrEmpty(formFieldKey)
                 || StringUtils.isNullOrEmpty(domain)
                 || StringUtils.isNullOrEmpty(item)) {
             throw new ServiceException("field_id, field_form_df_key, field_form_field_key, field_domain, field_item 不能为空");
         }
-        String sql = " update db_form_dict_configuration set field_form_df_key = ?, field_form_field_key = ?, field_domain = ?, field_item = ? where field_id = ?";
+        String sql = " update db_form_dict_configuration set field_domain = ?, field_item = ? where field_id = ?";
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
-        qr.update(sql, formDfKey, formFieldKey, domain, item, id);
+        qr.update(sql, domain, item, id);
     }
 
 }

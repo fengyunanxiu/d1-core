@@ -12,6 +12,7 @@ public class DfKeyBasicConfigDTO {
 
     private String description;
 
+
     public String getDfKey() {
         return dfKey;
     }

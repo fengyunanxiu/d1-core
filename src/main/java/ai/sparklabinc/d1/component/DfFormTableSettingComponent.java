@@ -2,7 +2,7 @@ package ai.sparklabinc.d1.component;
 
 import ai.sparklabinc.d1.constant.DsConstants;
 import ai.sparklabinc.d1.dto.QueryParameterGroupDTO;
-import ai.sparklabinc.d1.entity.DsFormTableSettingDO;
+import ai.sparklabinc.d1.entity.DfFormTableSettingDO;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -16,10 +16,10 @@ import java.util.Optional;
  * @description :
  */
 @Component
-public class DsFormTableSettingComponent {
+public class DfFormTableSettingComponent {
 
 
-    public QueryParameterGroupDTO transformQueryParameterMap(String dataSourceKey, Map<String, String[]> queryParameterMap, List<DsFormTableSettingDO> dsFormTableSettingDOList) {
+    public QueryParameterGroupDTO transformQueryParameterMap(String dataFacetKey, Map<String, String[]> queryParameterMap, List<DfFormTableSettingDO> dfFormTableSettingDOList) {
         QueryParameterGroupDTO queryParameterGroup = new QueryParameterGroupDTO();
 
         // 模糊查询参数Map
@@ -62,19 +62,19 @@ public class DsFormTableSettingComponent {
             String frontFieldName = entry.getKey();
             String[] queryParameterValueArray = entry.getValue();
 
-            Optional<DsFormTableSettingDO> optionalDsFormTableSettingDO  = dsFormTableSettingDOList.stream()
+            Optional<DfFormTableSettingDO> optionalDfFormTableSettingDO  = dfFormTableSettingDOList.stream()
                     .filter(item ->  item.getDbFieldName() != null && (frontFieldName.equals(item.getDbFieldName()) || (frontFieldName).equals(item.getDbFieldName() + DsConstants.RangeFieldSuffixEnum.SUFFIX_START.getVal())
                        || (frontFieldName).equals(item.getDbFieldName() + DsConstants.RangeFieldSuffixEnum.SUFFIX_END.getVal()))).findFirst();
-            DsFormTableSettingDO dsFormTableSettingDO = null;
-            if(optionalDsFormTableSettingDO.isPresent()){
-                dsFormTableSettingDO = optionalDsFormTableSettingDO.get();
+            DfFormTableSettingDO dfFormTableSettingDO = null;
+            if(optionalDfFormTableSettingDO.isPresent()){
+                dfFormTableSettingDO = optionalDfFormTableSettingDO.get();
             }
 
-            String formFieldQueryType = dsFormTableSettingDO.getFormFieldQueryType();
+            String formFieldQueryType = dfFormTableSettingDO.getFormFieldQueryType();
             DsConstants.FormFieldQueryTypeEnum formFieldQueryTypeEnum = DsConstants.FormFieldQueryTypeEnum.getFormFieldQueryTypeEnumByVal(formFieldQueryType);
 
             //没在query_setting中配置，但出现在查询参数里边（可能是错误，需要注意）
-            if(dsFormTableSettingDO == null || formFieldQueryTypeEnum == null){
+            if(dfFormTableSettingDO == null || formFieldQueryTypeEnum == null){
                 if (queryParameterValueArray.length > 1) {
                     accurateInStringQueryParameterMap.put(frontFieldName, queryParameterValueArray);
                 } else {
@@ -85,7 +85,7 @@ public class DsFormTableSettingComponent {
             }
 
 
-            String fieldName = dsFormTableSettingDO.getDbFieldName();
+            String fieldName = dfFormTableSettingDO.getDbFieldName();
             switch (formFieldQueryTypeEnum){
                 case SINGLE_DATE:
                 case SINGLE_CHOICE_LIST:
@@ -105,7 +105,7 @@ public class DsFormTableSettingComponent {
 
 
                 case TEXT:{
-                    Boolean formFieldIsExactly = dsFormTableSettingDO.getFormFieldIsExactly();
+                    Boolean formFieldIsExactly = dfFormTableSettingDO.getFormFieldIsExactly();
                     if(formFieldIsExactly){
                         accurateEqualsStringQueryParameterMap.put(fieldName, queryParameterValueArray[0]);
                     }else{

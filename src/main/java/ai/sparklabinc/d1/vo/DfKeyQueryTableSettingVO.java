@@ -7,7 +7,7 @@ import java.util.List;
  * @date : 2019-07-02 21:54
  * @description :
  */
-public class DsKeyQueryTableSettingVO {
+public class DfKeyQueryTableSettingVO {
 
 
     private String viewFieldLabel;
@@ -19,7 +19,7 @@ public class DsKeyQueryTableSettingVO {
     private Integer tableFieldColumnWidth;
 
 
-    private List<DsKeyQueryTableSettingVO> children;
+    private List<DfKeyQueryTableSettingVO> children;
 
     /**
      * 枚举值，默认为NONE, DESC,ASC
@@ -66,11 +66,11 @@ public class DsKeyQueryTableSettingVO {
         this.tableFieldOrderBy = tableFieldOrderBy;
     }
 
-    public List<DsKeyQueryTableSettingVO> getChildren() {
+    public List<DfKeyQueryTableSettingVO> getChildren() {
         return children;
     }
 
-    public void setChildren(List<DsKeyQueryTableSettingVO> children) {
+    public void setChildren(List<DfKeyQueryTableSettingVO> children) {
         this.children = children;
     }
 

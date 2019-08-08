@@ -1,6 +1,6 @@
 package ai.sparklabinc.d1.dto;
 
-import ai.sparklabinc.d1.entity.DsFormTableSettingDO;
+import ai.sparklabinc.d1.entity.DfFormTableSettingDO;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -11,7 +11,7 @@ public class AssemblyResultDTO {
 	
 	private String querySql;
 	
-	private List<DsFormTableSettingDO> dsFormTableSettingDOS;
+	private List<DfFormTableSettingDO> dfFormTableSettingDOS;
 
 	private List<Object> paramList;
 
@@ -33,12 +33,12 @@ public class AssemblyResultDTO {
 		this.querySql = querySql;
 	}
 
-	public List<DsFormTableSettingDO> getDsFormTableSettingDOS() {
-		return dsFormTableSettingDOS;
+	public List<DfFormTableSettingDO> getDfFormTableSettingDOS() {
+		return dfFormTableSettingDOS;
 	}
 
-	public void setDsFormTableSettingDOS(List<DsFormTableSettingDO> dsFormTableSettingDOS) {
-		this.dsFormTableSettingDOS = dsFormTableSettingDOS;
+	public void setDfFormTableSettingDOS(List<DfFormTableSettingDO> dfFormTableSettingDOS) {
+		this.dfFormTableSettingDOS = dfFormTableSettingDOS;
 	}
 
 	public List<Object> getParamList() {

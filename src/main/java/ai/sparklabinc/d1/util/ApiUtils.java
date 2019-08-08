@@ -17,7 +17,7 @@ public class ApiUtils {
 	 * "token"作为access token参数
 	 */
 	public static final List<String> RESERVED_QUERY_PARAMETER_NAME_LIST = new ArrayList<String>(
-			Arrays.asList("page", "size", "sort", "token","apiKey","sign","t", "api_key", "timestamp", "nonce_str", "data_source_key","moreWhereClauses","more_where_clauses"));
+			Arrays.asList("page", "size", "sort", "token","apiKey","sign","t", "api_key", "timestamp", "nonce_str", "data_facet_key","moreWhereClauses","more_where_clauses"));
 
 
 	/**
