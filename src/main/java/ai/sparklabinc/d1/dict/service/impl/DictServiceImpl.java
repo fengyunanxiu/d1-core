@@ -5,6 +5,7 @@ import ai.sparklabinc.d1.dict.dto.DictDTO;
 import ai.sparklabinc.d1.dict.service.DictService;
 import ai.sparklabinc.d1.dict.vo.DictQueryVO;
 import ai.sparklabinc.d1.dict.entity.DictDO;
+import ai.sparklabinc.d1.dto.PageResultDTO;
 import ai.sparklabinc.d1.exception.ServiceException;
 import ai.sparklabinc.d1.exception.custom.DuplicateResourceException;
 import ai.sparklabinc.d1.util.CollectionUtils;
@@ -74,7 +75,7 @@ public class DictServiceImpl implements DictService {
     }
 
     @Override
-    public Collection<DictQueryVO> query(DictDTO dictDTO, Long offset, Integer pageSize) throws Exception {
+    public PageResultDTO<DictQueryVO> query(DictDTO dictDTO, Long offset, Integer pageSize) throws Exception {
         if (offset == null) {
             offset = 0L;
         }
@@ -96,6 +97,9 @@ public class DictServiceImpl implements DictService {
         CollectionUtils.putIfKVNotNull(paramMap, DictDO.F_SEQUENCE, sequence);
         CollectionUtils.putIfKVNotNull(paramMap, DictDO.F_ENABLE, enable);
         CollectionUtils.putIfKVNotNull(paramMap, DictDO.F_PARENT_ID, parentId);
+
+        // 查询总量
+        long count = this.dictRepository.count(paramMap);
         List<DictDO> queryResult = this.dictRepository.query(paramMap, offset, pageSize);
         // 构造前端格式
         /*[
@@ -126,7 +130,7 @@ public class DictServiceImpl implements DictService {
         if (queryResult == null) {
             return null;
         }
-        Map<String, DictQueryVO> resultMap = new HashMap<>();
+        Map<String, DictQueryVO> resultMap = new LinkedHashMap<>();
         for (DictDO dictDO : queryResult) {
             String resultDomain = dictDO.getFieldDomain();
             String resultItem = dictDO.getFieldItem();
@@ -141,7 +145,8 @@ public class DictServiceImpl implements DictService {
             List<DictDO> dictDOList = dictQueryVO.getDictList();
             dictDOList.add(dictDO);
         }
-        return resultMap.values();
+        return new PageResultDTO<DictQueryVO>(new ArrayList<>(resultMap.values()), count);
+
     }
 
 }

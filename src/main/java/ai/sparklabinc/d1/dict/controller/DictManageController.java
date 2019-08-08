@@ -4,6 +4,7 @@ import ai.sparklabinc.d1.dict.dto.DictDTO;
 import ai.sparklabinc.d1.dict.vo.DictQueryVO;
 import ai.sparklabinc.d1.dict.entity.DictDO;
 import ai.sparklabinc.d1.dict.service.DictService;
+import ai.sparklabinc.d1.dto.PageResultDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -35,11 +35,12 @@ public class DictManageController {
     @GetMapping("")
     @ResponseBody
     @ApiOperation("query")
-    public Collection<DictQueryVO> query(@RequestParam(required = false, value = "field_domain") String domain,
-                                         @RequestParam(required = false, value = "field_item") String item,
-                                         @RequestParam(required = false, value = "field_value") String value,
-                                         @RequestParam(value = "page", defaultValue = "0") int page,
-                                         @RequestParam(value = "size", defaultValue = "10") int size) throws Exception {
+    public PageResultDTO<DictQueryVO> query(@RequestParam(required = false, value = "field_domain") String domain,
+                                            @RequestParam(required = false, value = "field_item") String item,
+                                            @RequestParam(required = false, value = "field_value") String value,
+                                            @RequestParam(value = "page", defaultValue = "0") int page,
+                                            @RequestParam(value = "size", defaultValue = "10") int size) throws Exception {
+
 
         DictDTO dictDTO = new DictDTO();
         dictDTO.setFieldDomain(domain);

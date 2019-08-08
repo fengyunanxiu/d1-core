@@ -10,12 +10,12 @@ import java.util.Map;
  * @param:
  * @return:
  */
-public class PageResultDTO {
+public class PageResultDTO<T> {
 
     private Long total;
-    private List<Map<String, Object>> content;
+    private List<T> content;
 
-    public PageResultDTO(List<Map<String, Object>> content, Long total) {
+    public PageResultDTO(List<T> content, Long total) {
         this.total = total;
         this.content = content;
     }
@@ -31,11 +31,11 @@ public class PageResultDTO {
         this.total = total;
     }
 
-    public List<Map<String, Object>> getContent() {
+    public List<T> getContent() {
         return content;
     }
 
-    public void setContent(List<Map<String, Object>> content) {
+    public void setContent(List<T> content) {
         this.content = content;
     }
 

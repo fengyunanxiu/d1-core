@@ -7,13 +7,16 @@ import ai.sparklabinc.d1.exception.ServiceException;
 import ai.sparklabinc.d1.util.StringUtils;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.dbutils.handlers.MapHandler;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +59,8 @@ public class DictRepositoryImpl implements DictRepository {
                 paramList.add("%" + value + "%");
             }
         }
+        // 排序语句
+        sqlBuilder.append(" order by field_domain, field_item, field_sequence ");
         // 分页信息
         sqlBuilder.append(" limit ?, ? ");
         paramList.add(offset);
@@ -64,6 +69,32 @@ public class DictRepositoryImpl implements DictRepository {
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         return qr.query(sqlBuilder.toString(), new BeanListHandler<>(DictDO.class, new QueryRunnerRowProcessor()), paramList.toArray(new Object[0]));
     }
+
+    @Override
+    public long count(Map<String, String> params) throws SQLException {
+        StringBuilder sqlBuilder = new StringBuilder("select count(*) as c from " + DictDO.TABLE_NAME + " where 1 = 1");
+        List<Object> paramList = new ArrayList<>();
+        if (params != null && !params.isEmpty()) {
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                sqlBuilder.append(" and " + key + " like ? ");
+                paramList.add("%" + value + "%");
+            }
+        }
+        QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
+        return qr.query(sqlBuilder.toString(), new ResultSetHandler<Long>() {
+            @Override
+            public Long handle(ResultSet rs) throws SQLException {
+                long count = 0L;
+                if (rs.next()) {
+                    count = rs.getLong("c");
+                }
+                return count;
+            }
+        }, paramList.toArray(new Object[0]));
+    }
+
 
     /**
      * @param dictDOList
@@ -190,6 +221,8 @@ public class DictRepositoryImpl implements DictRepository {
                 sqlBuilder.append(" or (field_domain = ? and field_item = ? and field_value = ?) ");
             }
         }
+        // 排序
+        sqlBuilder.append(" order by field_domain, field_item, field_sequence ");
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         LOGGER.info("find by field_domain and field_item sql: {}", sqlBuilder.toString());
         return qr.query(sqlBuilder.toString(), new BeanListHandler<>(DictDO.class, new QueryRunnerRowProcessor()), sqlParamList.toArray(new Object[0]));
@@ -200,7 +233,7 @@ public class DictRepositoryImpl implements DictRepository {
         if (StringUtils.isNullOrEmpty(domain) || StringUtils.isNullOrEmpty(item)) {
             return null;
         }
-        String sql = " select * from " + DictDO.TABLE_NAME + " where field_domain = ? and field_item = ?";
+        String sql = " select * from " + DictDO.TABLE_NAME + " where field_domain = ? and field_item = ? order by field_domain, field_item, field_sequence ";
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         return qr.query(sql, new BeanListHandler<>(DictDO.class, new QueryRunnerRowProcessor()), domain, item);
     }

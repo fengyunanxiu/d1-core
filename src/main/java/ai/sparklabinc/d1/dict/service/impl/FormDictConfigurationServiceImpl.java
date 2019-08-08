@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.sql.SQLException;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -56,6 +57,7 @@ public class FormDictConfigurationServiceImpl implements FormDictConfigurationSe
         if (dictDOList == null || dictDOList.isEmpty()) {
             return null;
         }
+        dictDOList.sort(Comparator.comparing(DictDO::getFieldSequence));
         // 构造前端数据结构
         FormDictConfigurationVO formDictConfigurationVO = new FormDictConfigurationVO();
         formDictConfigurationVO.setDictList(dictDOList);

@@ -17,6 +17,8 @@ import java.util.Map;
 public interface DictRepository {
     List<DictDO> query(Map<String, String> params, long offset, int pageSize) throws SQLException;
 
+    long count(Map<String, String> params) throws SQLException;
+
     List<DictDO> batchInsert(List<DictDO> dictDOList) throws ServiceException, SQLException;
 
     void batchUpdate(List<DictDO> dictDOList) throws ServiceException, SQLException;
