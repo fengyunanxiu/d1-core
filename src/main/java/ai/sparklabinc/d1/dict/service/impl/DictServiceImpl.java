@@ -98,9 +98,11 @@ public class DictServiceImpl implements DictService {
         CollectionUtils.putIfKVNotNull(paramMap, DictDO.F_ENABLE, enable);
         CollectionUtils.putIfKVNotNull(paramMap, DictDO.F_PARENT_ID, parentId);
 
-        // 查询总量
-        long count = this.dictRepository.count(paramMap);
-        List<DictDO> queryResult = this.dictRepository.query(paramMap, offset, pageSize);
+        // 查询不重复的domain和item总数
+        long count = this.dictRepository.countByDomainAndItem(paramMap);
+
+        // 先分页查询出需要的domain和item
+        List<DictDO> queryResult = this.dictRepository.queryLimitByDomainAndItem(paramMap, offset, pageSize);
         // 构造前端格式
         /*[
                 {
