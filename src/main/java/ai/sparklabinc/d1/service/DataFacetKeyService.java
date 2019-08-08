@@ -33,4 +33,6 @@ public interface DataFacetKeyService {
     DfKeyBasicConfigDO getDfKeyBasicInfo(String dfKey) throws Exception;
 
     void updateDefaultValueByDfKeyAndFieldKey(String dfKey, String fieldKey, String jsonValue) throws Exception;
+
+    void updateDomainAndItemByDfKeyAndFieldName(String dfKey, String fieldName, String domain, String item) throws Exception;
 }

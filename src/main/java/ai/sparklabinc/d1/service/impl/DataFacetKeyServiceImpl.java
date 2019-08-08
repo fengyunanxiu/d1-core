@@ -180,4 +180,17 @@ public class DataFacetKeyServiceImpl implements DataFacetKeyService {
     public void updateDefaultValueByDfKeyAndFieldKey(String dfKey, String fieldKey, String jsonValue) throws Exception {
         this.dfFormTableSettingDao.updateDefaultValueByDfKeyAndFieldName(dfKey, fieldKey, jsonValue);
     }
+
+    /**
+     * 写入字典domain和item
+     * @param dfKey
+     * @param fieldName
+     * @param domain
+     * @param item
+     * @throws Exception
+     */
+    @Override
+    public void updateDomainAndItemByDfKeyAndFieldName(String dfKey, String fieldName, String domain, String item) throws Exception {
+        this.dfFormTableSettingDao.updateDomainAndItemByDfKeyAndFieldName(dfKey, fieldName, domain, item);
+    }
 }
