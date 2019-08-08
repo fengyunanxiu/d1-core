@@ -145,6 +145,8 @@ public class DictServiceImpl implements DictService {
                 return tmpDictQueryVO;
             });
             List<DictDO> dictDOList = dictQueryVO.getDictList();
+            dictDO.setFieldDomain(null);
+            dictDO.setFieldItem(null);
             dictDOList.add(dictDO);
         }
         return new PageResultDTO<DictQueryVO>(new ArrayList<>(resultMap.values()), count);
