@@ -39,7 +39,7 @@ public class DataSourceController {
     @ResponseBody
     @GetMapping("/connection")
     public Object Connection2DataSource(@RequestParam(required = true) Long dsId) throws IOException, SQLException {
-       return  dataSourceService.Connection2DataSource(dsId);
+        return  dataSourceService.Connection2DataSource(dsId);
     }
 
     @ResponseBody

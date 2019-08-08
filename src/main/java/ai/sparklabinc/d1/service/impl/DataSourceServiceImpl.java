@@ -235,7 +235,6 @@ public class DataSourceServiceImpl implements DataSourceService {
         return result;
     }
 
-
     private void getDfKeyOfTableAndView(Long dsId, Integer dfKeyFilter, DbInforamtionDTO schema, List<DbInforamtionDTO> tableAndViews, List<DfKeyInfoDTO> allDataFacetKey) throws IOException, SQLException {
         Iterator<DbInforamtionDTO> tableAndViewsIterator = tableAndViews.iterator();
         while (tableAndViewsIterator.hasNext()) {
@@ -276,7 +275,6 @@ public class DataSourceServiceImpl implements DataSourceService {
             }
         }
     }
-
 
     @Override
     public List<Map<String, Object>> selectDataSourceProperty(Long dsId) throws IOException, SQLException {
@@ -332,7 +330,6 @@ public class DataSourceServiceImpl implements DataSourceService {
         return updateResult;
     }
 
-
     @Override
     public DbInforamtionDTO addDataFacetKey(DfKeyBasicConfigDTO dfKeyBasicConfigDTO) throws Exception {
         DfKeyBasicConfigDO dfKeyBasicConfigByDfKey = dfKeyBasicConfigDao.getDfKeyBasicConfigByDfKey(dfKeyBasicConfigDTO.getDfKey());
@@ -350,7 +347,6 @@ public class DataSourceServiceImpl implements DataSourceService {
                 return mysqlDataSourceComponent.addDataFacetKeyProcess(dfKeyBasicConfigDTO);
         }
     }
-
 
     @Override
     public List<Map<String, Object>> selectAllDfFormTableSettingByDfKey(String dfKey) throws Exception {
@@ -380,7 +376,6 @@ public class DataSourceServiceImpl implements DataSourceService {
         });
         return allDfFormTableSettingByDfKey;
     }
-
 
     @Override
     public boolean updateDataFacetKey(String dfKey, String newDfKey, String description) throws IOException, SQLException {
@@ -453,7 +448,6 @@ public class DataSourceServiceImpl implements DataSourceService {
                 return mysqlDataSourceComponent.refreshDfFormTableSettingProcess(dfKey, dfKeyBasicConfigDO);
         }
     }
-
 
     @Override
     public DfKeyBasicConfigDO getDfKeyBasicInfo(String dfKey) throws Exception {
