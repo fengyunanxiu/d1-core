@@ -31,6 +31,8 @@ public class DbSecurityConfigDO {
 
     private String sshKeyFile;
 
+    private String sshKeyContent;
+
     private String sshPassPhrase;
 
 
@@ -153,6 +155,14 @@ public class DbSecurityConfigDO {
 
     public void setSshKeyFile(String sshKeyFile) {
         this.sshKeyFile = sshKeyFile;
+    }
+
+    public String getSshKeyContent() {
+        return sshKeyContent;
+    }
+
+    public void setSshKeyContent(String sshKeyContent) {
+        this.sshKeyContent = sshKeyContent;
     }
 
     public String getSshPassPhrase() {

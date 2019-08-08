@@ -16,4 +16,6 @@ import java.sql.SQLException;
 public interface ConnectionService {
 
     boolean createConnection(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws IOException, SQLException, Exception;
+
+    String generateSshKeyFile(Long dsId, String sshKeyFile, String keyText) throws IOException, SQLException, Exception;
 }

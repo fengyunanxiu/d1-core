@@ -2,6 +2,7 @@ package ai.sparklabinc.d1.datasource;
 
 import ai.sparklabinc.d1.dao.DbBasicConfigDao;
 import ai.sparklabinc.d1.dao.DbSecurityConfigDao;
+import ai.sparklabinc.d1.datasource.impl.ConnectionServiceImpl;
 import ai.sparklabinc.d1.datasource.impl.MysqlPoolServiceImpl;
 import ai.sparklabinc.d1.datasource.impl.PostGresqlPoolServiceImpl;
 import ai.sparklabinc.d1.datasource.impl.SqlitePoolServiceImpl;
@@ -13,6 +14,7 @@ import com.alibaba.fastjson.JSON;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import org.apache.tomcat.jdbc.pool.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -42,21 +44,25 @@ public class DataSourceFactory {
     @Resource(name = "DbSecurityConfigDao")
     private DbSecurityConfigDao dbSecurityConfigDao;
 
+    @Autowired
+    private ConnectionService connectionService;
+
     public DataSource builder(String dbType, Long dsId) throws IOException, SQLException {
-            /***************************************************************
-             *step1 先判断是否创建了DataSource，没有则获取是sqlite中的数据源配置信息
-             ***************************************************************
-             */
-            //获取本地开放的端口
-            boolean useSshTunnel = false;
-            int localPort = findRandomOpenPort();
-            String sshUser = "";
-            String sshPassword = "";
-            String sshHost = "";
-            int sshPort = 22;
-            String sshAuthType = Constants.SshAuthType.PASSWORD.toString();
-            String sshKeyFile = "";
-            String sshPassPhrase = "";
+        /***************************************************************
+         *step1 先判断是否创建了DataSource，没有则获取是sqlite中的数据源配置信息
+         ***************************************************************
+         */
+        //获取本地开放的端口
+        boolean useSshTunnel = false;
+        int localPort = findRandomOpenPort();
+        String sshUser = "";
+        String sshPassword = "";
+        String sshHost = "";
+        int sshPort = 22;
+        String sshAuthType = Constants.SshAuthType.PASSWORD.toString();
+        String sshKeyFile = "";
+        String sshKeyContent = "";
+        String sshPassPhrase = "";
 
         String dbHost = "";
         int dbPort = 3306;
@@ -80,6 +86,7 @@ public class DataSourceFactory {
                     sshAuthType = dbSecurityConfigDO.getSshAuthType();
                 }
                 sshKeyFile = dbSecurityConfigDO.getSshKeyFile();
+                sshKeyContent = dbSecurityConfigDO.getSshKeyContent();
                 sshPassPhrase = dbSecurityConfigDO.getSshPassPhrase();
 
             }
@@ -104,7 +111,7 @@ public class DataSourceFactory {
         if (useSshTunnel && sshSessionMap.get(dsId) == null) {
             if (createSshSession(dsId, localPort, sshUser,
                     sshPassword, sshHost, sshPort,
-                    dbHost, dbPort, sshKeyFile,
+                    dbHost, dbPort, sshKeyFile, sshKeyContent,
                     sshAuthType, sshPassPhrase)) {
                 //创建失败
                 return null;
@@ -128,7 +135,7 @@ public class DataSourceFactory {
 
     private boolean createSshSession(Long dsId, int localPort, String sshUser,
                                      String sshPassword, String sshHost, int sshPort,
-                                     String dbHost, int dbPort, String sshKeyFile,
+                                     String dbHost, int dbPort, String sshKeyFile, String sshKeyContent,
                                      String sshAuthType, String sshPassPhrase) throws IOException {
         Session session;
         try {
@@ -141,7 +148,8 @@ public class DataSourceFactory {
                 if (org.apache.commons.lang3.StringUtils.isBlank(sshKeyFile)) {
                     throw new IllegalParameterException("ssh key file can not be null");
                 }
-                jsch.addIdentity(sshKeyFile, sshPassPhrase);
+                String sshKeyFilePath = connectionService.generateSshKeyFile(dsId, sshKeyFile, sshKeyContent);
+                jsch.addIdentity(sshKeyFilePath, sshPassPhrase);
             } else {
                 session.setPassword(sshPassword);
             }

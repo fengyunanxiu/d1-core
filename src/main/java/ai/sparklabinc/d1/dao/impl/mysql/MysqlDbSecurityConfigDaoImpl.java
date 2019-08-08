@@ -63,6 +63,7 @@ public class MysqlDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
                     String sshAuthType = resultSet.getString("ssh_auth_type");
                     String sshProxyPassword = resultSet.getString("ssh_proxy_password");
                     String sshKeyFile = resultSet.getString("ssh_key_file");
+                    String sshKeyContent= resultSet.getString("ssh_key_content");
                     String sshPassPhrase = resultSet.getString("ssh_pass_phrase");
                     //封装数据
                     dbSecurityConfigDO.setId(id);
@@ -80,6 +81,7 @@ public class MysqlDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
                     dbSecurityConfigDO.setSshAuthType(sshAuthType);
                     dbSecurityConfigDO.setSshProxyPassword(sshProxyPassword);
                     dbSecurityConfigDO.setSshKeyFile(sshKeyFile);
+                    dbSecurityConfigDO.setSshKeyContent(sshKeyContent);
                     dbSecurityConfigDO.setSshPassPhrase(sshPassPhrase);
                     return dbSecurityConfigDO;
                 }
@@ -105,9 +107,10 @@ public class MysqlDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
                     " ssh_auth_type, " +
                     "ssh_proxy_password," +
                     "ssh_key_file," +
+                    "ssh_key_content," +
                     "ssh_pass_phrase)" +
                     " values (?, ?, ?, ?, ?, ?," +
-                    "         ?, ?, ?, ?, ?," +
+                    "         ?, ?, ?, ?, ?, ?," +
                     "         ?, ?, ?, ?, ?)";
             DataSource dataSource = d1BasicDataSource;
             conn = dataSource.getConnection();
@@ -129,6 +132,7 @@ public class MysqlDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
                     dbSecurityConfigDO.getSshAuthType(),
                     dbSecurityConfigDO.getSshProxyPassword(),
                     dbSecurityConfigDO.getSshKeyFile(),
+                    dbSecurityConfigDO.getSshKeyContent(),
                     dbSecurityConfigDO.getSshPassPhrase()
             );
             update = preparedStatement.executeUpdate();
@@ -176,6 +180,7 @@ public class MysqlDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
                 "ssh_auth_type = ?," +
                 "ssh_proxy_password = ?," +
                 "ssh_key_file = ?," +
+                "ssh_key_content = ?," +
                 "ssh_pass_phrase = ?" +
                 " where id = ?";
         String now = DateUtils.ofLongStr(new java.util.Date());
@@ -192,6 +197,7 @@ public class MysqlDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
                 dbSecurityConfigDO.getSshAuthType(),
                 dbSecurityConfigDO.getSshProxyPassword(),
                 dbSecurityConfigDO.getSshKeyFile(),
+                dbSecurityConfigDO.getSshKeyContent(),
                 dbSecurityConfigDO.getSshPassPhrase(),
                 dbSecurityConfigDO.getId()
         };

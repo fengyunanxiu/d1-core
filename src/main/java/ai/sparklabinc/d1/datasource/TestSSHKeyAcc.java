@@ -1,15 +1,22 @@
 package ai.sparklabinc.d1.datasource;
 
+import ai.sparklabinc.d1.util.FileReaderUtil;
+import ai.sparklabinc.d1.util.FileUtils;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
+import org.apache.commons.io.IOUtils;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Properties;
+import java.util.UUID;
 
 /**
  * @function: ssh证书
@@ -43,7 +50,12 @@ public class TestSSHKeyAcc {
             Properties config = new Properties();
             config.put("StrictHostKeyChecking", "no");
             JSch jsch = new JSch();
-            jsch.addIdentity(keyFile, passphrase);
+
+            String  keyText= FileReaderUtil.readFile(keyFile);
+            String keyFilePath="";
+
+            keyFilePath = generateSshKeyFile(keyText);
+            jsch.addIdentity(keyFilePath, passphrase);
 
             session = jsch.getSession(user, host, port);
             session.setConfig(config);
@@ -75,6 +87,24 @@ public class TestSSHKeyAcc {
             e.printStackTrace();
             System.out.println(e);
         }
+    }
+
+    private static String generateSshKeyFile(String keyText) throws IOException {
+        String keyFilePath="";
+        String projectPath = System.getProperty("user.dir");
+        String savePath=projectPath+File.separator+"UploadFile";
+        FileWriter fileWriter=null;
+        try{
+            keyFilePath=savePath+File.separator+UUID.randomUUID()+"_rsa";
+            fileWriter=new FileWriter(keyFilePath);
+            fileWriter.write(keyText);
+        }finally {
+            if(fileWriter!=null){
+                fileWriter.flush();
+                fileWriter.close();
+            }
+        }
+        return keyFilePath;
     }
 
 } 
