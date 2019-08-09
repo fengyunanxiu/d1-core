@@ -308,8 +308,10 @@ public class DictRepositoryImpl implements DictRepository {
         // 先查询有哪些domain和item
         List<Map<String, String>> domainItemMapList = this.queryDistinctDomainItemLimit(params, offset, pageSize);
         // 在这些domain和item的基础上在根据条件查询
-        StringBuilder sqlBuilder = new StringBuilder("select " + DictDO.F_ID + "," + DictDO.F_VALUE + "," +
-                DictDO.F_SEQUENCE + "," + DictDO.F_ENABLE + "," + DictDO.F_LABEL + "," + DictDO.F_PARENT_ID + " from " + DictDO.TABLE_NAME + " where 1= 1");
+//        StringBuilder sqlBuilder = new StringBuilder("select " + DictDO.F_ID + "," + DictDO.F_VALUE + "," +
+//                DictDO.F_SEQUENCE + "," + DictDO.F_ENABLE + "," + DictDO.F_LABEL + "," + DictDO.F_PARENT_ID + " from " + DictDO.TABLE_NAME + " where 1= 1");
+
+        StringBuilder sqlBuilder = new StringBuilder("select * from " + DictDO.TABLE_NAME + " where 1= 1");
         // 拼接条件
         List<Object> paramList = new ArrayList<>();
         if (params != null && !params.isEmpty()) {

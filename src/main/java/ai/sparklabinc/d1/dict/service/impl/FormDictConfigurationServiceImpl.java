@@ -65,6 +65,7 @@ public class FormDictConfigurationServiceImpl implements FormDictConfigurationSe
         dictDOList.sort(Comparator.comparing(DictDO::getFieldSequence));
         // 构造前端数据结构
         FormDictConfigurationVO formDictConfigurationVO = new FormDictConfigurationVO();
+        formDictConfigurationVO.setFieldId(formDictConfigurationDO.getFieldId());
         formDictConfigurationVO.setDictList(dictDOList);
         formDictConfigurationVO.setFieldDomain(domain);
         formDictConfigurationVO.setFieldItem(item);
