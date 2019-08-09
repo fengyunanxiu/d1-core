@@ -1,6 +1,8 @@
 package ai.sparklabinc.d1.component;
 
-import ai.sparklabinc.d1.dao.*;
+import ai.sparklabinc.d1.dao.DataSourceDao;
+import ai.sparklabinc.d1.dao.DbBasicConfigDao;
+import ai.sparklabinc.d1.dao.DfKeyBasicConfigDao;
 import ai.sparklabinc.d1.dto.DbInforamtionDTO;
 import ai.sparklabinc.d1.dto.DfKeyInfoDTO;
 import ai.sparklabinc.d1.dto.TableAndViewInfoDTO;
@@ -8,8 +10,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.sql.SQLException;
