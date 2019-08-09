@@ -1,5 +1,6 @@
 package ai.sparklabinc.d1.controller;
 
+import ai.sparklabinc.d1.component.CacheComponent;
 import ai.sparklabinc.d1.dto.DbFullConfigDTO;
 import ai.sparklabinc.d1.dto.DfKeyBasicConfigDTO;
 import ai.sparklabinc.d1.entity.DfFormTableSettingDO;
@@ -35,6 +36,9 @@ import java.util.stream.Collectors;
 public class DataSourceController {
     @Autowired
     private DataSourceService dataSourceService;
+
+    @Autowired
+    private CacheComponent cacheComponent;
 
     @ResponseBody
     @GetMapping("/connection")
@@ -87,6 +91,15 @@ public class DataSourceController {
     public Object selectDataSources(@RequestParam(required = false) Long dsId,
                                     @RequestParam(defaultValue = "0") Integer dfKeyFilter)throws IOException, SQLException {
        return dataSourceService.selectDataSources(dsId,dfKeyFilter);
+    }
+
+    @ResponseBody
+    @GetMapping("/refresh-datasource")
+    public Object srefreshDataSources(@RequestParam(required = false) Long dsId,
+                                    @RequestParam(defaultValue = "0") Integer dfKeyFilter)throws IOException, SQLException {
+        //清除缓存
+        cacheComponent.clearDataSourceTreeAllCache(dsId);
+        return dataSourceService.selectDataSources(dsId,dfKeyFilter);
     }
 
     @ResponseBody

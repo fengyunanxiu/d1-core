@@ -52,7 +52,6 @@ public class DaoBeanConfig {
 
 
     @Bean("DbSecurityConfigDao")
-   
     public DbSecurityConfigDao getDbSecurityConfigDao(){
         if(StringUtils.isBlank(basicDbConfig.getType())){
             basicDbConfig.setType("sqlite");

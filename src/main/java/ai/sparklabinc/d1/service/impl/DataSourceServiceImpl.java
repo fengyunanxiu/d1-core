@@ -1,5 +1,6 @@
 package ai.sparklabinc.d1.service.impl;
 
+import ai.sparklabinc.d1.component.CacheComponent;
 import ai.sparklabinc.d1.component.MysqlDataSourceComponent;
 import ai.sparklabinc.d1.constant.DsConstants;
 import ai.sparklabinc.d1.dao.*;
@@ -18,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -45,26 +47,21 @@ public class DataSourceServiceImpl implements DataSourceService {
     @Autowired
     private DataSourceFactory dataSourceFactory;
 
+    @Autowired
+    private CacheComponent cacheComponent;
+
     @Resource(name = "DbBasicConfigDao")
     private DbBasicConfigDao dbBasicConfigDao;
 
     @Resource(name = "DbSecurityConfigDao")
     private DbSecurityConfigDao dbSecurityConfigDao;
 
-    @Resource(name = "DataSourceDao")
-    private DataSourceDao dataSourceDao;
-
     @Resource(name = "DfKeyBasicConfigDao")
     private DfKeyBasicConfigDao dfKeyBasicConfigDao;
-
-    @Resource(name = "DfFormTableSettingDao")
-    private DfFormTableSettingDao dfFormTableSettingDao;
 
     @Autowired
     private ConnectionService connectionService;
 
-    @Autowired
-    private MysqlDataSourceComponent mysqlDataSourceComponent;
 
 
     @Override
@@ -150,7 +147,7 @@ public class DataSourceServiceImpl implements DataSourceService {
          * step1 拿到前端需要展示的第一层信息
          * *******************************************************************
          */
-        List<DbInforamtionDTO> result = dbBasicConfigDao.selectDataSources(dsId);
+        List<DbInforamtionDTO> result = cacheComponent.selectDataSources(dsId);
         if (CollectionUtils.isEmpty(result)) {
             return null;
         }
@@ -170,7 +167,7 @@ public class DataSourceServiceImpl implements DataSourceService {
                  * step3 拿到所有的数据库名称
                  * *******************************************************************
                  */
-                List<DbInforamtionDTO> schemas = dataSourceDao.selectAllSchema(dsId);
+                List<DbInforamtionDTO> schemas = cacheComponent.selectAllSchema(dsId);
                 if (CollectionUtils.isEmpty(schemas)) {
                     return result;
                 }
@@ -180,9 +177,9 @@ public class DataSourceServiceImpl implements DataSourceService {
                  * *******************************************************************
                  */
                 //所有schema所有的表和视图
-                List<TableAndViewInfoDTO> tableAndViewInfoDTOS = dataSourceDao.selectAllTableAndView(dsId);
+                List<TableAndViewInfoDTO> tableAndViewInfoDTOS = cacheComponent.selectAllTableAndView(dsId);
                 //获取所有的data facet key
-                List<DfKeyInfoDTO> allDataFacetKey = dfKeyBasicConfigDao.getAllDataFacetKey();
+                List<DfKeyInfoDTO> allDataFacetKey = cacheComponent.getAllDataFacetKey();
 
                 if (CollectionUtils.isEmpty(tableAndViewInfoDTOS)) {
                     return result;
@@ -280,6 +277,7 @@ public class DataSourceServiceImpl implements DataSourceService {
             }
         }
     }
+
 
     @Override
     public List<Map<String, Object>> selectDataSourceProperty(Long dsId) throws IOException, SQLException {

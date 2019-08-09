@@ -2,6 +2,7 @@ package ai.sparklabinc.d1.component;
 
 import ai.sparklabinc.d1.constant.FormTableSettingConstants;
 import ai.sparklabinc.d1.dao.DataSourceDao;
+import ai.sparklabinc.d1.dao.DbSecurityConfigDao;
 import ai.sparklabinc.d1.dao.DfKeyBasicConfigDao;
 import ai.sparklabinc.d1.dao.DfFormTableSettingDao;
 import ai.sparklabinc.d1.dto.DbInforamtionDTO;
@@ -37,6 +38,7 @@ public class MysqlDataSourceComponent {
     @Autowired
     @Qualifier("DfKeyBasicConfigDao")
     private DfKeyBasicConfigDao dfKeyBasicConfigDao;
+
 
     @Resource(name="DataSourceDao")
     private DataSourceDao dataSourceDao;
