@@ -218,11 +218,9 @@ public class MysqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingDa
                 "  form_field_visible as  formFieldVisible," +
                 "  form_field_sequence as  formFieldSequence ," +
                 "  form_field_query_type as  formFieldQueryType," +
-                "  form_field_is_exactly as  formFieldIsExactly ," +
                 "  form_field_child_field_name as  formFieldChildrenDbFieldName ," +
-                "  form_field_dict_domain_name as  formFieldDicDomainName ," +
-                "  form_field_use_dic as  formFieldUseDic ," +
-                "  form_field_def_val_stratege as  formFieldDefalutValStratege ," +
+                "  form_field_dict_domain_name as  formFieldDictDomainName ," +
+                "  form_field_def_val_strategy as  formFieldDefalutValStrategy ," +
                 "  table_field_visible as  tableFieldVisible," +
                 "  table_field_order_by as  tableFieldOrderBy ," +
                 "  table_field_query_required as  tableFieldQueryRequired," +
@@ -234,7 +232,6 @@ public class MysqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingDa
                 "  table_parent_label as  tableParentLabel," +
                 "  form_field_use_default_val as  formFieldUseDefaultVal," +
                 "  form_field_default_val as  formFieldManMadeDefaultVal," +
-                "  form_field_default_val_sql as formFieldDefaultValSql ," +
                 "  column_is_exist as columIsExist " +
                 " from df_form_table_setting where df_key = ? and export_field_visible = ?";
         LOGGER.info("querySql:{}", querySql);
@@ -252,21 +249,25 @@ public class MysqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingDa
                 "   db_field_name = ?," +
                 "   db_field_type = ?," +
                 "   view_field_label = ?," +
+
                 "   db_field_comment = ?," +
                 "   form_field_visible = ?," +
                 "   form_field_sequence = ?," +
                 "   form_field_query_type = ?," +
                 "   form_field_child_field_name = ?," +
+
                 "   form_field_dict_domain_name = ?," +
                 "   form_field_def_val_strategy = ?," +
                 "   table_field_visible = ?," +
                 "   table_field_order_by = ?," +
                 "   table_field_query_required = ?," +
+
                 "   table_field_sequence = ?," +
                 "   table_field_column_width = ?," +
                 "   export_field_visible = ?," +
                 "   export_field_sequence = ?," +
                 "   export_field_width = ?," +
+
                 "   table_parent_label = ?," +
                 "   form_field_use_default_val = ?," +
                 "   form_field_default_val = ?," +
@@ -284,23 +285,22 @@ public class MysqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingDa
                 dfFormTableSettingDO.getFormFieldVisible()?1:0,
                 dfFormTableSettingDO.getFormFieldSequence(),
                 dfFormTableSettingDO.getFormFieldQueryType(),
-
                 dfFormTableSettingDO.getFormFieldChildFieldName(),
+
                 dfFormTableSettingDO.getFormFieldDictDomainName(),
                 dfFormTableSettingDO.getFormFieldDefValStrategy(),
                 dfFormTableSettingDO.getTableFieldVisible()?1:0,
-
                 dfFormTableSettingDO.getTableFieldOrderBy(),
                 dfFormTableSettingDO.getTableFieldQueryRequired()?1:0,
+
                 dfFormTableSettingDO.getTableFieldSequence(),
                 dfFormTableSettingDO.getTableFieldColumnWidth(),
                 dfFormTableSettingDO.getExportFieldVisible()?1:0,
-
                 dfFormTableSettingDO.getExportFieldSequence(),
                 dfFormTableSettingDO.getExportFieldWidth(),
+
                 dfFormTableSettingDO.getTableParentLabel(),
                 dfFormTableSettingDO.getFormFieldUseDefaultVal()?1:0,
-
                 dfFormTableSettingDO.getFormFieldDefaultVal(),
                 dfFormTableSettingDO.getColumnIsExist()?1:0,
                 dfFormTableSettingDO.getId()

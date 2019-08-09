@@ -3,12 +3,7 @@ package ai.sparklabinc.d1.service;
 import ai.sparklabinc.d1.dto.DbBasicConfigDTO;
 import ai.sparklabinc.d1.dto.DbInforamtionDTO;
 import ai.sparklabinc.d1.dto.DbSecurityConfigDTO;
-import ai.sparklabinc.d1.dto.DfKeyBasicConfigDTO;
-import ai.sparklabinc.d1.entity.DfFormTableSettingDO;
-import ai.sparklabinc.d1.entity.DfKeyBasicConfigDO;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -20,17 +15,19 @@ import java.util.Map;
  * @Version V1.0
  */
 public interface DataSourceService {
-    boolean Connection2DataSource(Long dsId) throws SQLException, IOException, Exception;
+    boolean Connection2DataSource(Long dsId) throws Exception;
 
-    DbInforamtionDTO addDataSources(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO)  throws IOException, SQLException;
+    DbInforamtionDTO addDataSources(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO)  throws Exception;
 
-    boolean deleteDataSources(Long dsId) throws IOException, SQLException;
+    boolean deleteDataSources(Long dsId) throws Exception;
 
-    List<DbInforamtionDTO> selectDataSources(Long dsId, Integer dfKeyFilter) throws IOException, SQLException, Exception;
+    List<DbInforamtionDTO> selectDataSources() throws Exception;
 
-    List<Map<String, Object>>  selectDataSourceProperty(Long dsId) throws IOException, SQLException;
+    DbInforamtionDTO refreshDataSources(Long dsId) throws Exception;
 
-    boolean editDataSourceProperty(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws IOException, SQLException;
+    List<Map<String, Object>>  selectDataSourceProperty(Long dsId) throws Exception;
+
+    boolean editDataSourceProperty(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws Exception;
 
 
     boolean dataSourceTestConnection(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws Exception;

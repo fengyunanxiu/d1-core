@@ -7,12 +7,12 @@ import ai.sparklabinc.d1.dto.DbInforamtionDTO;
 import ai.sparklabinc.d1.dto.DfKeyInfoDTO;
 import ai.sparklabinc.d1.dto.TableAndViewInfoDTO;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Component;
+
 import javax.annotation.Resource;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -33,34 +33,43 @@ public class CacheComponent {
     @Resource(name = "DfKeyBasicConfigDao")
     private DfKeyBasicConfigDao dfKeyBasicConfigDao;
 
-    @Cacheable(value = "selectDataSources")
-    public List<DbInforamtionDTO> selectDataSources(Long dsId) throws IOException, SQLException {
-        return dbBasicConfigDao.selectDataSources(dsId);
-    }
 
     @Cacheable(value = "selectAllSchema")
     public List<DbInforamtionDTO> selectAllSchema(Long dsId) throws Exception {
-      return   dataSourceDao.selectAllSchema(dsId);
+        return null;
     }
 
     @Cacheable(value = "selectAllTableAndView")
     public List<TableAndViewInfoDTO> selectAllTableAndView(Long dsId) throws Exception {
-        return  dataSourceDao.selectAllTableAndView(dsId);
+        return null;
     }
 
     @Cacheable(value = "getAllDataFacetKey")
-    public List<DfKeyInfoDTO> getAllDataFacetKey() throws IOException, SQLException {
+    public List<DfKeyInfoDTO> getAllDataFacetKey() throws Exception {
         return dfKeyBasicConfigDao.getAllDataFacetKey();
     }
+
+
+
+    @CachePut(value = "selectAllSchema")
+    public List<DbInforamtionDTO> selectAllSchemaPut(Long dsId) throws Exception {
+        return dataSourceDao.selectAllSchema(dsId);
+    }
+
+    @CachePut(value = "selectAllTableAndView")
+    public List<TableAndViewInfoDTO> selectAllTableAndViewPut(Long dsId) throws Exception {
+        return dataSourceDao.selectAllTableAndView(dsId);
+    }
+
+
 
     /**
      * 清除多个缓存
      */
-    @Caching(evict = {@CacheEvict(value = "selectDataSources",key = "#dsId"),
-            @CacheEvict(value = "selectAllSchema",key = "#dsId"),
-            @CacheEvict(value = "selectAllTableAndView",key = "#dsId"),
-            @CacheEvict(value = "getAllDataFacetKey") })
-    public void clearDataSourceTreeAllCache(Long dsId){
+    @Caching(evict = {@CacheEvict(value = "selectAllSchema", key = "#dsId"),
+            @CacheEvict(value = "selectAllTableAndView", key = "#dsId"),
+            @CacheEvict(value = "getAllDataFacetKey")})
+    public void clearDataSourceTreeAllCache(Long dsId) {
     }
 
 }
