@@ -19,7 +19,7 @@ public class SQLEngine {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SQLEngine.class);
 
-    public List<Map<String, Object>> execute(String jdbcUrl, String username, String password, String sql) throws Exception {
+    public List<Map<String, String>> execute(String jdbcUrl, String username, String password, String sql) throws Exception {
         Connection connection = getConnection(jdbcUrl, username, password);
         return executeSQL(connection, sql);
     }
@@ -40,18 +40,18 @@ public class SQLEngine {
         return DriverManager.getConnection(jdbcUrl, username, password);
     }
 
-    private List<Map<String, Object>> executeSQL(Connection connection, String sql) throws SQLException {
+    private List<Map<String, String>> executeSQL(Connection connection, String sql) throws SQLException {
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql);) {
-            List<Map<String, Object>> result = new ArrayList<>();
+            List<Map<String, String>> result = new ArrayList<>();
             while (resultSet.next()) {
-                Map<String, Object> rowMap = new LinkedHashMap<>();
+                Map<String, String> rowMap = new LinkedHashMap<>();
                 result.add(rowMap);
                 ResultSetMetaData metaData = resultSet.getMetaData();
                 int columnCount = metaData.getColumnCount();
                 for (int i = 1; i <= columnCount; i++) {
                     String columnLabel = metaData.getColumnLabel(i);
-                    Object columnValue = resultSet.getObject(i);
+                    String columnValue = resultSet.getString(i);
                     rowMap.put(columnLabel, columnValue);
                 }
             }

@@ -1,15 +1,11 @@
 package ai.sparklabinc.d1.scheduler;
 
-import ai.sparklabinc.d1.defaults.task.DefaultsConfigurationTaskManager;
+import ai.sparklabinc.d1.defaults.plugin.DefaultsConfigurationTaskManager;
+import ai.sparklabinc.d1.dict.plugin.DictPluginTaskManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 /**
  * @author : zxiuwu
@@ -26,8 +22,12 @@ public class PluginsScheduler {
     @Autowired
     private DefaultsConfigurationTaskManager defaultsConfigurationTaskManager;
 
+    @Autowired
+    private DictPluginTaskManager dictPluginTaskManager;
+
     public void init() {
         this.defaultsConfigurationTaskManager.run();
+        dictPluginTaskManager.run();
     }
 
 }

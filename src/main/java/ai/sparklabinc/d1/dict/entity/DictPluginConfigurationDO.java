@@ -3,6 +3,8 @@ package ai.sparklabinc.d1.dict.entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
+
 /**
  * @author : zxiuwu
  * @version : V1.0
@@ -13,79 +15,116 @@ import org.slf4j.LoggerFactory;
 public class DictPluginConfigurationDO {
 
     public static String TABLE_NAME = "db_dict_plugin_configuration";
+    public static String F_ID = "field_id";
+    public static String F_DOMAIN = "field_domain";
+    public static String F_ITEM = "field_item";
+    public static String F_ENABLE = "field_enable";
+    public static String F_TYPE = "field_type";
+    public static String F_PARAM = "field_param";
+    public static String F_CRON = "field_cron";
 
-    public static String F_ENABLE = "f_enable";
+    private Long fieldId;
 
-    private Long fId;
+    private String fieldDomain;
 
-    private String fDomain;
+    private String fieldItem;
 
-    private String fItem;
+    private Boolean fieldEnable;
 
-    private Boolean fEnable;
-
-    private String fType;
+    private String fieldType;
 
     /**
      * JSON形式
      */
-    private String fParam;
+    private String fieldParam;
 
-    private String fCron;
+    private String fieldCron;
 
-    public Long getFId() {
-        return fId;
+    public Long getFieldId() {
+        return fieldId;
     }
 
-    public void setFId(Long fId) {
-        this.fId = fId;
+    public void setFieldId(Long fieldId) {
+        this.fieldId = fieldId;
     }
 
-    public String getFDomain() {
-        return fDomain;
+    public String getFieldDomain() {
+        return fieldDomain;
     }
 
-    public void setFDomain(String fDomain) {
-        this.fDomain = fDomain;
+    public void setFieldDomain(String fieldDomain) {
+        this.fieldDomain = fieldDomain;
     }
 
-    public String getFItem() {
-        return fItem;
+    public String getFieldItem() {
+        return fieldItem;
     }
 
-    public void setFItem(String fItem) {
-        this.fItem = fItem;
+    public void setFieldItem(String fieldItem) {
+        this.fieldItem = fieldItem;
     }
 
-    public Boolean getFEnable() {
-        return fEnable;
+    public Boolean getFieldEnable() {
+        return fieldEnable;
     }
 
-    public void setFEnable(Boolean fEnable) {
-        this.fEnable = fEnable;
+    public void setFieldEnable(Boolean fieldEnable) {
+        this.fieldEnable = fieldEnable;
     }
 
-    public String getFType() {
-        return fType;
+    public String getFieldType() {
+        return fieldType;
     }
 
-    public void setFType(String fType) {
-        this.fType = fType;
+    public void setFieldType(String fieldType) {
+        this.fieldType = fieldType;
     }
 
-    public String getFParam() {
-        return fParam;
+    public String getFieldParam() {
+        return fieldParam;
     }
 
-    public void setFParam(String fParam) {
-        this.fParam = fParam;
+    public void setFieldParam(String fieldParam) {
+        this.fieldParam = fieldParam;
     }
 
-    public String getFCron() {
-        return fCron;
+    public String getFieldCron() {
+        return fieldCron;
     }
 
-    public void setFCron(String fCron) {
-        this.fCron = fCron;
+    public void setFieldCron(String fieldCron) {
+        this.fieldCron = fieldCron;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DictPluginConfigurationDO that = (DictPluginConfigurationDO) o;
+        return Objects.equals(fieldId, that.fieldId) &&
+                Objects.equals(fieldDomain, that.fieldDomain) &&
+                Objects.equals(fieldItem, that.fieldItem) &&
+                Objects.equals(fieldEnable, that.fieldEnable) &&
+                Objects.equals(fieldType, that.fieldType) &&
+                Objects.equals(fieldParam, that.fieldParam) &&
+                Objects.equals(fieldCron, that.fieldCron);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fieldId, fieldDomain, fieldItem, fieldEnable, fieldType, fieldParam, fieldCron);
+    }
+
+    @Override
+    public String toString() {
+        return "DictPluginConfigurationDO{" +
+                "fieldId=" + fieldId +
+                ", fieldDomain='" + fieldDomain + '\'' +
+                ", fieldItem='" + fieldItem + '\'' +
+                ", fieldEnable=" + fieldEnable +
+                ", fieldType='" + fieldType + '\'' +
+                ", fieldParam='" + fieldParam + '\'' +
+                ", fieldCron='" + fieldCron + '\'' +
+                '}';
     }
 }

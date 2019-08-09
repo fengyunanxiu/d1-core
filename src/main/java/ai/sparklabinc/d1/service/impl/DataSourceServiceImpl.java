@@ -65,7 +65,7 @@ public class DataSourceServiceImpl implements DataSourceService {
 
 
     @Override
-    public boolean Connection2DataSource(Long dsId) throws SQLException, IOException {
+    public boolean Connection2DataSource(Long dsId) throws Exception {
         Connection connection = null;
         try {
             DataSource mysql = dataSourceFactory.builder(Constants.DATABASE_TYPE_MYSQL, dsId);

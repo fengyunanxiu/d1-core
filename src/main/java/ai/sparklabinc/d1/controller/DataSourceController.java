@@ -42,7 +42,7 @@ public class DataSourceController {
 
     @ResponseBody
     @GetMapping("/connection")
-    public Object Connection2DataSource(@RequestParam(required = true) Long dsId) throws IOException, SQLException {
+    public Object Connection2DataSource(@RequestParam(required = true) Long dsId) throws Exception {
         return  dataSourceService.Connection2DataSource(dsId);
     }
 
@@ -76,11 +76,6 @@ public class DataSourceController {
     }
 
     /**
-     *
-     * @param dsId
-     * @param dfKeyFilter 0查询所有的table、view；
-     *                    1查询配置了data facet key的table view
-     *                    2查询没有配置data facet key的table view
      * @return
      * @throws IOException
      * @throws SQLException

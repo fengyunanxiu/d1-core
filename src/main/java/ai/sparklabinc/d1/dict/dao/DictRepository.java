@@ -32,4 +32,6 @@ public interface DictRepository {
     List<DictDO> findByDomainAndItem(String domain, String item) throws SQLException;
 
     List<DictDO> queryLimitByDomainAndItem(Map<String, String> params, long offset, int pageSize) throws SQLException;
+
+    void updateValueByDomainAndItem(List<DictDO> dictDOList) throws SQLException;
 }

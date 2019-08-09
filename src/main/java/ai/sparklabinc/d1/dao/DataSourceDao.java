@@ -19,9 +19,9 @@ public interface DataSourceDao {
 
     DataDaoType getDataDaoType();
 
-    List<DbInforamtionDTO> selectAllSchema(Long dsId) throws IOException, SQLException;
+    List<DbInforamtionDTO> selectAllSchema(Long dsId) throws IOException, SQLException, Exception;
 
-    List<TableAndViewInfoDTO> selectAllTableAndView(Long dsId) throws IOException, SQLException;
+    List<TableAndViewInfoDTO> selectAllTableAndView(Long dsId) throws IOException, SQLException, Exception;
 
-    List<TableColumnsDetailDTO> selectTableColumnsDetail(Long dsId, String schema, String table) throws IOException, SQLException;
+    List<TableColumnsDetailDTO> selectTableColumnsDetail(Long dsId, String schema, String table) throws IOException, SQLException, Exception;
 }

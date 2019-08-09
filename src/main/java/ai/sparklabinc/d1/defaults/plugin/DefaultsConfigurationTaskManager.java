@@ -1,10 +1,8 @@
-package ai.sparklabinc.d1.defaults.task;
+package ai.sparklabinc.d1.defaults.plugin;
 
 import ai.sparklabinc.d1.defaults.dao.DefaultsConfigurationRepository;
 import ai.sparklabinc.d1.defaults.entity.DefaultConfigurationType;
 import ai.sparklabinc.d1.defaults.entity.DefaultsConfigurationDO;
-import ai.sparklabinc.d1.defaults.plugin.DefaultValueSQLPlugin;
-import ai.sparklabinc.d1.scheduler.PluginsScheduler;
 import ai.sparklabinc.d1.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -53,7 +51,7 @@ public class DefaultsConfigurationTaskManager {
     public void run() {
         LOGGER.info("start default value task schedule");
         this.taskScheduler.scheduleWithFixedDelay(
-                () -> this.task(),
+                () -> task(),
                 new Date(), 24 * 60 * 60 * 1000L);
     }
 
@@ -66,7 +64,20 @@ public class DefaultsConfigurationTaskManager {
             }
             // 筛选出自动执行的配置信息
             Map<String, DefaultsConfigurationDO> allSchedule = all.stream()
-                    .filter((tmp) -> DefaultConfigurationType.AUTO.equals(tmp.getFieldType()))
+                    .filter((tmp) -> {
+                        boolean auto = DefaultConfigurationType.AUTO.equals(tmp.getFieldType());
+                        if (auto) {
+                            String fieldPluginConf = tmp.getFieldPluginConf();
+                            if (StringUtils.isNotNullNorEmpty(fieldPluginConf)) {
+                                JSONObject pluginConfJSON = JSON.parseObject(fieldPluginConf);
+                                Boolean enable = pluginConfJSON.getBoolean("enable");
+                                if (Boolean.TRUE.equals(enable)) {
+                                    return true;
+                                }
+                            }
+                        }
+                        return false;
+                    })
                     .collect(Collectors.toMap((tmp) -> generateRunningScheduleMapKey(tmp), (tmp) -> tmp));
 
             // 当前不应该再运行的schedule
@@ -82,19 +93,21 @@ public class DefaultsConfigurationTaskManager {
             }
             // 删除不应再执行的schedule
             if (!needDeleteConfiguration.isEmpty()) {
-                LOGGER.info("begin cancel unused default value task, size: {}", needDeleteConfiguration.size());
+                LOGGER.info("begin to cancel unused default value task, size: {}", needDeleteConfiguration.size());
                 for (ScheduledFuture scheduledFuture : needDeleteConfiguration) {
                     scheduledFuture.cancel(false);
                 }
-                LOGGER.info("cancel unused default value task completed");
+                LOGGER.info("end to cancel unused default value task, size: {}", needDeleteConfiguration.size());
             }
             // 执行新的schedule
             if (!allSchedule.isEmpty()) {
                 LOGGER.info("begin start new default value task, size: {}", allSchedule.size());
                 for (DefaultsConfigurationDO defaultsConfigurationDO : allSchedule.values()) {
                     ScheduledFuture<?> scheduledFuture = this.schedule(defaultsConfigurationDO);
-                    String key = generateRunningScheduleMapKey(defaultsConfigurationDO);
-                    runningScheduleMap.put(key, scheduledFuture);
+                    if (scheduledFuture != null) {
+                        String key = generateRunningScheduleMapKey(defaultsConfigurationDO);
+                        runningScheduleMap.put(key, scheduledFuture);
+                    }
                 }
             }
         } catch (SQLException e) {

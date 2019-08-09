@@ -30,6 +30,8 @@ public interface DataSourceService {
 
     DbInforamtionDTO refreshDataSources(Long dsId) throws IOException, SQLException;
 
+    List<DbInforamtionDTO> selectDataSources(Long dsId, Integer dfKeyFilter) throws  Exception;
+
     List<Map<String, Object>>  selectDataSourceProperty(Long dsId) throws IOException, SQLException;
 
     boolean editDataSourceProperty(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws IOException, SQLException;
