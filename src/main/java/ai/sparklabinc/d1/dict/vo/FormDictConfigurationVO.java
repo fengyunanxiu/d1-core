@@ -15,6 +15,8 @@ import java.util.List;
  */
 public class FormDictConfigurationVO {
 
+    private String fieldId;
+
     private String fieldFormDfKey;
 
     private String fieldFormFieldKey;
@@ -24,6 +26,14 @@ public class FormDictConfigurationVO {
     private String fieldItem;
 
     private List<DictDO> dictList;
+
+    public String getFieldId() {
+        return fieldId;
+    }
+
+    public void setFieldId(String fieldId) {
+        this.fieldId = fieldId;
+    }
 
     public String getFieldFormDfKey() {
         return fieldFormDfKey;
