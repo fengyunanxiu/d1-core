@@ -1,10 +1,12 @@
 package ai.sparklabinc.d1.component;
 
+import ai.sparklabinc.d1.constant.DsConstants;
 import ai.sparklabinc.d1.constant.FormTableSettingConstants;
 import ai.sparklabinc.d1.dao.DataSourceDao;
 import ai.sparklabinc.d1.dao.DbSecurityConfigDao;
 import ai.sparklabinc.d1.dao.DfKeyBasicConfigDao;
 import ai.sparklabinc.d1.dao.DfFormTableSettingDao;
+import ai.sparklabinc.d1.datasource.Constants;
 import ai.sparklabinc.d1.dto.DbInforamtionDTO;
 import ai.sparklabinc.d1.dto.DfKeyBasicConfigDTO;
 import ai.sparklabinc.d1.dto.TableColumnsDetailDTO;
@@ -79,7 +81,7 @@ public class MysqlDataSourceComponent {
                 dfFormTableSettingDO.setDbFieldComment(tableColumnsDetailDTO.getColumnComment());
                 dfFormTableSettingDO.setFormFieldVisible(true);
                 dfFormTableSettingDO.setFormFieldSequence(tableColumnsDetailDTO.getOrdinalPosition());
-                dfFormTableSettingDO.setFormFieldQueryType(FormTableSettingConstants.FormType.TEXT.toString());
+                dfFormTableSettingDO.setFormFieldQueryType(DsConstants.FormFieldQueryTypeEnum.EXACT_MATCHING_TEXT.getVal());
 
                 //dfFormTableSettingDO.setFormFieldChildrenDbFieldName();
                 //dfFormTableSettingDO.setFormFieldDictDomainName();
