@@ -93,12 +93,10 @@ create table if not exists  df_form_table_setting
     form_field_visible                tinyint,
     form_field_sequence               int,
     form_field_query_type             varchar(100),
-    form_field_is_exactly             tinyint,
     form_field_child_field_name varchar(100),
-    form_field_dic_domain_name        varchar(100),
+    form_field_dict_domain_name        varchar(100),
     form_field_dict_item              varchar(100),
-    form_field_use_dic                tinyint,
-    form_field_def_val_stratege   varchar(100),
+    form_field_def_val_strategy   varchar(100),
     table_field_visible               tinyint,
     table_field_order_by              varchar(10),
     table_field_query_required        tinyint,
@@ -110,7 +108,6 @@ create table if not exists  df_form_table_setting
     table_parent_label                varchar(100),
     form_field_use_default_val        tinyint,
     form_field_default_val   varchar(200),
-    form_field_default_val_sql        varchar(1024),
     column_is_exist                   tinyint default 1
 ) ;
 
