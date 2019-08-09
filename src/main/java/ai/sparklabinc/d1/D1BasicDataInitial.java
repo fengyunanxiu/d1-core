@@ -33,8 +33,6 @@ public class D1BasicDataInitial implements ApplicationListener<ContextRefreshedE
     @Autowired
     private PluginsScheduler pluginsScheduler;
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(D1BasicDataService.class);
-
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         this.pluginsScheduler.init();

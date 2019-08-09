@@ -52,13 +52,13 @@ public class DefaultsConfigurationTaskManager {
         LOGGER.info("start default value task schedule");
         this.taskScheduler.scheduleWithFixedDelay(
                 () -> task(),
-                new Date(), 24 * 60 * 60 * 1000L);
+                new Date(), 10 * 1000L);
     }
 
     private void task() {
         LOGGER.info("start default value task");
         try {
-            List<DefaultsConfigurationDO> all = this.defaultsConfigurationRepository.queryAll();
+            List<DefaultsConfigurationDO> all = this.defaultsConfigurationRepository.queryAllWithLock();
             if (all == null || all.isEmpty()) {
                 return;
             }
@@ -80,24 +80,32 @@ public class DefaultsConfigurationTaskManager {
                     })
                     .collect(Collectors.toMap((tmp) -> generateRunningScheduleMapKey(tmp), (tmp) -> tmp));
 
+            if (allSchedule.isEmpty()) {
+                LOGGER.info("no new default value task schedule");
+            }
             // 当前不应该再运行的schedule
-            List<ScheduledFuture> needDeleteConfiguration = new ArrayList<>();
+            List<Map.Entry<String, ScheduledFuture<?>>> needDeleteConfigurationEntryList = new ArrayList<>();
             for (Map.Entry<String, ScheduledFuture<?>> existSchedule : runningScheduleMap.entrySet()) {
                 String key = existSchedule.getKey();
                 ScheduledFuture<?> value = existSchedule.getValue();
                 if (allSchedule.containsKey(key)) {
                     allSchedule.remove(key);
                 } else {
-                    needDeleteConfiguration.add(value);
+                    needDeleteConfigurationEntryList.add(existSchedule);
                 }
             }
             // 删除不应再执行的schedule
-            if (!needDeleteConfiguration.isEmpty()) {
-                LOGGER.info("begin to cancel unused default value task, size: {}", needDeleteConfiguration.size());
-                for (ScheduledFuture scheduledFuture : needDeleteConfiguration) {
-                    scheduledFuture.cancel(false);
+            if (!needDeleteConfigurationEntryList.isEmpty()) {
+                LOGGER.info("begin to cancel unused default value task, size: {}", needDeleteConfigurationEntryList.size());
+                for (Map.Entry<String, ScheduledFuture<?>> needDeleteConfiguration : needDeleteConfigurationEntryList) {
+                    String key = needDeleteConfiguration.getKey();
+                    ScheduledFuture<?> scheduledFuture = needDeleteConfiguration.getValue();
+                    boolean cancel = scheduledFuture.cancel(false);
+                    if (cancel) {
+                        runningScheduleMap.remove(key);
+                    }
                 }
-                LOGGER.info("end to cancel unused default value task, size: {}", needDeleteConfiguration.size());
+                LOGGER.info("end to cancel unused default value task, size: {}", needDeleteConfigurationEntryList.size());
             }
             // 执行新的schedule
             if (!allSchedule.isEmpty()) {

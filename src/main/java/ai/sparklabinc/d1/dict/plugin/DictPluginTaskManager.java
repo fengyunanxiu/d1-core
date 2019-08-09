@@ -56,23 +56,28 @@ public class DictPluginTaskManager {
             }
             Map<String, DictPluginConfigurationDO> allEnableMap = allEnableList.stream().collect(Collectors.toMap((tmp) -> generateRunningScheduleMapKey(tmp), (tmp) -> tmp));
 
-            List<ScheduledFuture<?>> needDeleteScheduleList = new ArrayList<>();
+            List<Map.Entry<String,ScheduledFuture<?>>> needDeleteScheduleEntryList = new ArrayList<>();
             for (Map.Entry<String, ScheduledFuture<?>> existSchedule : runningScheduleMap.entrySet()) {
                 String key = existSchedule.getKey();
                 ScheduledFuture<?> value = existSchedule.getValue();
                 if (allEnableMap.containsKey(key)) {
                     allEnableMap.remove(key);
                 } else {
-                    needDeleteScheduleList.add(value);
+                    needDeleteScheduleEntryList.add(existSchedule);
                 }
             }
             // 删除不在执行的schedule
-            if (!needDeleteScheduleList.isEmpty()) {
-                LOGGER.info("begin to cancel unused dict sql plugin, size:{}", needDeleteScheduleList.size());
-                for (ScheduledFuture<?> scheduledFuture : needDeleteScheduleList) {
-                    scheduledFuture.cancel(false);
+            if (!needDeleteScheduleEntryList.isEmpty()) {
+                LOGGER.info("begin to cancel unused dict sql plugin, size:{}", needDeleteScheduleEntryList.size());
+                for (Map.Entry<String, ScheduledFuture<?>> needDeleteSchedule : needDeleteScheduleEntryList) {
+                    String key = needDeleteSchedule.getKey();
+                    ScheduledFuture<?> scheduledFuture = needDeleteSchedule.getValue();
+                    boolean cancel = scheduledFuture.cancel(false);
+                    if (cancel) {
+                        runningScheduleMap.remove(key);
+                    }
                 }
-                LOGGER.info("end to cancel unused dict sql plugin, size:{}", needDeleteScheduleList.size());
+                LOGGER.info("end to cancel unused dict sql plugin, size:{}", needDeleteScheduleEntryList.size());
             }
 
             // 执行新的schedule

@@ -27,6 +27,8 @@ public interface DefaultsConfigurationRepository {
 
     List<DefaultsConfigurationDO> queryAll() throws SQLException;
 
+    List<DefaultsConfigurationDO> queryAllWithLock() throws SQLException;
+
     DefaultsConfigurationDO insert(DefaultsConfigurationDO defaultsConfigurationDO) throws Exception;
 
     void update(DefaultsConfigurationDO defaultsConfigurationDO) throws Exception;
