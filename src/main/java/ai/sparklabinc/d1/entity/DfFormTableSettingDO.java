@@ -15,7 +15,7 @@ public class DfFormTableSettingDO {
     public static final String F_FORM_FIELD_SEQUENCE = "form_field_sequence";
     public static final String F_FORM_FIELD_QUERY_TYPE = "form_field_query_type";
     public static final String F_FORM_FIELD_CHILD_FIELD_NAME = "form_field_child_field_name";
-    public static final String F_FORM_FIELD_DICT_DOMAIN_NAME = "form_field_dic_domain_name";
+    public static final String F_FORM_FIELD_DICT_DOMAIN_NAME = "form_field_dict_domain_name";
     public static final String F_FORM_FIELD_DICT_ITEM = "form_field_dict_item";
     public static final String F_FORM_FIELD_USE_DICT = "form_field_use_dic";
     public static final String F_FORM_FIELD_DEF_VAL_STRATEGY = "form_field_def_val_stratege";

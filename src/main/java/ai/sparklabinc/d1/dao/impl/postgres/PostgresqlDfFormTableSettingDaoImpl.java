@@ -220,7 +220,7 @@ public class PostgresqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSett
                 "  form_field_query_type as  formFieldQueryType," +
                 "  form_field_is_exactly as  formFieldIsExactly ," +
                 "  form_field_child_field_name as  formFieldChildrenDbFieldName ," +
-                "  form_field_dic_domain_name as  formFieldDicDomainName ," +
+                "  form_field_dict_domain_name as  formFieldDicDomainName ," +
                 "  form_field_use_dic as  formFieldUseDic ," +
                 "  form_field_def_val_stratege as  formFieldDefalutValStratege ," +
                 "  table_field_visible as  tableFieldVisible," +
