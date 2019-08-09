@@ -2,7 +2,7 @@ package ai.sparklabinc.d1.defaults.plugin;
 
 import ai.sparklabinc.d1.defaults.entity.DefaultsConfigurationDO;
 import ai.sparklabinc.d1.defaults.service.DefaultsConfigurationService;
-import ai.sparklabinc.d1.plugin.SQLEngine;
+import ai.sparklabinc.d1.engine.SQLEngine;
 import ai.sparklabinc.d1.service.DataFacetKeyService;
 import ai.sparklabinc.d1.util.StringUtils;
 import com.alibaba.fastjson.JSON;
@@ -60,7 +60,7 @@ public class DefaultValueSQLPlugin {
         }, cronTrigger);
     }
 
-    public void process(DefaultsConfigurationDO defaultsConfigurationDO) throws Exception {
+    private void process(DefaultsConfigurationDO defaultsConfigurationDO) throws Exception {
         String fieldPluginConf = defaultsConfigurationDO.getFieldPluginConf();
         if (StringUtils.isNullOrEmpty(fieldPluginConf)) {
             return;

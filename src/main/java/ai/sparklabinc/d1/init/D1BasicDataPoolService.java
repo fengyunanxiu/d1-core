@@ -16,6 +16,7 @@ import java.util.Properties;
  */
 @Component
 public class D1BasicDataPoolService{
+
     public DataSource createDatasource(Properties properties) throws Exception {
         DataSource ds = null;
         PoolProperties p = new PoolProperties();

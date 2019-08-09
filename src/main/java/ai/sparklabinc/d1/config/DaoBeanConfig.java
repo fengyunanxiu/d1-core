@@ -7,6 +7,10 @@ import ai.sparklabinc.d1.dict.dao.FormDictConfigurationRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
@@ -16,14 +20,14 @@ import org.springframework.stereotype.Component;
  * @description:
  * @version: V1.0
  */
-@Component
+@Configuration
 public class DaoBeanConfig {
+
     @Autowired
     private BasicDbConfig basicDbConfig;
 
     @Autowired
     private DataDaoFactory dataDaoFactory;
-
 
     @Bean("DfFormTableSettingDao")
     public DfFormTableSettingDao getDfFormTableSettingDao(){
@@ -52,6 +56,7 @@ public class DaoBeanConfig {
 
 
     @Bean("DbSecurityConfigDao")
+
     public DbSecurityConfigDao getDbSecurityConfigDao(){
         if(StringUtils.isBlank(basicDbConfig.getType())){
             basicDbConfig.setType("sqlite");
@@ -119,8 +124,5 @@ public class DaoBeanConfig {
         }
         return dataDaoFactory.getDaoBean(DefaultsConfigurationRepository.class, basicDbConfig.getType());
     }
-
-
-
 
 }

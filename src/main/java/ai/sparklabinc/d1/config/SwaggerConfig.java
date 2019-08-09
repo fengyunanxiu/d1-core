@@ -26,7 +26,7 @@ import java.util.TimeZone;
 
 
 /**This class file configures the basic configuration of Swagger, please do not delete it. Modify the specific configuration information according to actual needs.
- * @author maven plugin
+ * @author maven engine
  */
 @EnableSwagger2
 @Configuration
