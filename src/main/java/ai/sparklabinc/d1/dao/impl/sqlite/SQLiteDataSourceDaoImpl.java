@@ -38,7 +38,7 @@ public class SQLiteDataSourceDaoImpl implements DataSourceDao {
     }
 
     @Override
-    public List<DbInforamtionDTO> selectAllSchema(Long dsId) throws IOException, SQLException {
+    public List<DbInforamtionDTO> selectAllSchema(Long dsId) throws Exception {
         QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_MYSQL, dsId));
         String sql = "select" +
                 "   schema_name as label," +
@@ -52,7 +52,7 @@ public class SQLiteDataSourceDaoImpl implements DataSourceDao {
 
 
     @Override
-    public List<TableAndViewInfoDTO> selectAllTableAndView(Long dsId) throws IOException, SQLException {
+    public List<TableAndViewInfoDTO> selectAllTableAndView(Long dsId) throws Exception {
         QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_MYSQL, dsId));
         String sql = "select  table_schema as tableSchema," +
                 "   table_name as tableName," +
@@ -67,7 +67,7 @@ public class SQLiteDataSourceDaoImpl implements DataSourceDao {
 
 
     @Override
-    public List<TableColumnsDetailDTO> selectTableColumnsDetail(Long dsId, String schema, String table) throws IOException, SQLException {
+    public List<TableColumnsDetailDTO> selectTableColumnsDetail(Long dsId, String schema, String table) throws Exception {
         QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_MYSQL, dsId));
         String sql = "select column_name as columnName," +
                 "   column_type as dataType," +

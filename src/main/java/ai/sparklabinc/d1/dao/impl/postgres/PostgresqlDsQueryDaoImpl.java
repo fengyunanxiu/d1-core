@@ -43,7 +43,7 @@ public class PostgresqlDsQueryDaoImpl implements DsQueryDao {
     private DataSourceFactory dataSourceFactory;
 
     @Override
-    public PageResultDTO excuteQuery(AssemblyResultDTO assemblyResultDTO, Long fkDbId) throws IOException, SQLException {
+    public PageResultDTO excuteQuery(AssemblyResultDTO assemblyResultDTO, Long fkDbId) throws Exception {
         DbBasicConfigDO dbBasicConfigDO = dbBasicConfigDao.findById(fkDbId);
         QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(dbBasicConfigDO.getDbType(), dbBasicConfigDO.getId()));
 

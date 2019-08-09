@@ -136,7 +136,7 @@ public class MysqlDataSourceComponent {
     }
 
 
-    public List<Map<String, Object>> refreshDfFormTableSettingProcess(String dfKey, DfKeyBasicConfigDO dfKeyBasicConfigDO) throws SQLException, IOException, ResourceNotFoundException {
+    public List<Map<String, Object>> refreshDfFormTableSettingProcess(String dfKey, DfKeyBasicConfigDO dfKeyBasicConfigDO) throws Exception {
         //获dfKey FormTableSetting的信息
         List<DfFormTableSettingDO> allDfFormTableSettingByDfKey = dfFormTableSettingDao.getAllDfFormTableSettingByDfKey(dfKey);
 

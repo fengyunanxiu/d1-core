@@ -32,7 +32,7 @@ public class TestController {
 
     @ResponseBody
     @RequestMapping("/test")
-    public Object getInfo() throws SQLException, IOException {
+    public Object getInfo() throws Exception {
         DataSource dataSource = dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,0L);
         QueryRunner queryRunner = new QueryRunner(dataSource);
         List<DbBasicConfigDO> dbBasicConfigDOList =queryRunner.query("select * from db_basic_config", new ResultSetHandler<List<DbBasicConfigDO>>() {
@@ -82,7 +82,7 @@ public class TestController {
 
     @ResponseBody
     @RequestMapping("/test2")
-    public Object getInfo2() throws SQLException, IOException {
+    public Object getInfo2() throws Exception {
         DataSource dataSource =dataSourceFactory.builder(Constants.DATABASE_TYPE_SQLITE,0L);
         QueryRunner queryRunner = new QueryRunner(dataSource);
 

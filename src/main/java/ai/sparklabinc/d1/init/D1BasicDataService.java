@@ -1,10 +1,10 @@
 package ai.sparklabinc.d1.init;
 
 import ai.sparklabinc.d1.config.BasicDbConfig;
-import ai.sparklabinc.d1.constant.DsConstants;
 import ai.sparklabinc.d1.datasource.Constants;
 import ai.sparklabinc.d1.exception.ServiceException;
 import ai.sparklabinc.d1.exception.custom.IllegalParameterException;
+import ai.sparklabinc.d1.util.DataSourcePoolUtils;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import org.apache.commons.lang3.StringUtils;
@@ -27,8 +27,6 @@ import java.util.Properties;
 public class D1BasicDataService {
     private final static Logger LOGGER = LoggerFactory.getLogger(D1BasicDataService.class);
 
-    @Autowired
-    private D1BasicDataPoolService d1BasicDataPoolService;
 
     public DataSource createD1BasicDataSource(BasicDbConfig basicDbConfig) throws Exception {
 
@@ -122,7 +120,7 @@ public class D1BasicDataService {
         properties.setProperty("Password", StringUtils.isBlank(dbPassword)?"":dbPassword);
         properties.setProperty("Driver",driverName);
 
-        DataSource datasource = d1BasicDataPoolService.createDatasource(properties);
+        DataSource datasource = DataSourcePoolUtils.createDatasource(properties);
         LOGGER.info("D1 Core Init>>>D1 Core Basic Database connection established");
         LOGGER.info("D1 Core Init>>>DONE");
         return datasource;

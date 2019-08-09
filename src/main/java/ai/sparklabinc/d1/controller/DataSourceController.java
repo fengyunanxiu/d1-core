@@ -38,7 +38,7 @@ public class DataSourceController {
 
     @ResponseBody
     @GetMapping("/connection")
-    public Object Connection2DataSource(@RequestParam(required = true) Long dsId) throws IOException, SQLException {
+    public Object Connection2DataSource(@RequestParam(required = true) Long dsId) throws Exception {
         return  dataSourceService.Connection2DataSource(dsId);
     }
 
@@ -85,7 +85,7 @@ public class DataSourceController {
     @ResponseBody
     @GetMapping("/select")
     public Object selectDataSources(@RequestParam(required = false) Long dsId,
-                                    @RequestParam(defaultValue = "0") Integer dfKeyFilter)throws IOException, SQLException {
+                                    @RequestParam(defaultValue = "0") Integer dfKeyFilter)throws Exception {
        return dataSourceService.selectDataSources(dsId,dfKeyFilter);
     }
 

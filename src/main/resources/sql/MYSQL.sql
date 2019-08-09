@@ -192,3 +192,15 @@ create table if not exists db_defaults_configuration(
     field_plugin_conf longtext ,
     field_manual_conf longtext
 ) charset=utf8 collate utf8_croatian_ci;
+
+###
+create table if not exists db_dict_plugin_configuration(
+    field_id varchar(64) primary key ,
+    field_domain varchar(100) not null,
+    field_item varchar(100) not null,
+    field_enable tinyint not null,
+    field_type varchar(50) not null,
+    field_param longtext,
+    field_cron varchar(100)
+)charset=utf8 collate utf8_croatian_ci
+

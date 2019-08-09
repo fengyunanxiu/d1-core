@@ -3,12 +3,10 @@ package ai.sparklabinc.d1.datasource;
 import ai.sparklabinc.d1.dao.DbBasicConfigDao;
 import ai.sparklabinc.d1.dao.DbSecurityConfigDao;
 import ai.sparklabinc.d1.datasource.impl.ConnectionServiceImpl;
-import ai.sparklabinc.d1.datasource.impl.MysqlPoolServiceImpl;
-import ai.sparklabinc.d1.datasource.impl.PostGresqlPoolServiceImpl;
-import ai.sparklabinc.d1.datasource.impl.SqlitePoolServiceImpl;
 import ai.sparklabinc.d1.entity.DbBasicConfigDO;
 import ai.sparklabinc.d1.entity.DbSecurityConfigDO;
 import ai.sparklabinc.d1.exception.custom.IllegalParameterException;
+import ai.sparklabinc.d1.util.DataSourcePoolUtils;
 import ai.sparklabinc.d1.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.jcraft.jsch.JSch;
@@ -47,7 +45,7 @@ public class DataSourceFactory {
     @Autowired
     private ConnectionService connectionService;
 
-    public DataSource builder(String dbType, Long dsId) throws IOException, SQLException {
+    public DataSource builder(String dbType, Long dsId) throws Exception {
         /***************************************************************
          *step1 先判断是否创建了DataSource，没有则获取是sqlite中的数据源配置信息
          ***************************************************************
@@ -200,7 +198,7 @@ public class DataSourceFactory {
      * @throws SQLException
      * @throws IOException
      */
-    private DataSource createDataSource(Long dsId, boolean useSshTunnel, int localPort, String dbHost, int dbPort, String dbUserName, String dbPassword, String url) throws SQLException, IOException {
+    private DataSource createDataSource(Long dsId, boolean useSshTunnel, int localPort, String dbHost, int dbPort, String dbUserName, String dbPassword, String url) throws Exception {
         DataSource datasource = null;
         String driverName = "";
         DbBasicConfigDO dbBasicConfigDO = dbBasicConfigDao.findById(dsId);
@@ -222,7 +220,7 @@ public class DataSourceFactory {
         return datasource;
     }
 
-    private DataSource CreateMysqlDataSource(Long dsId, boolean useSshTunnel, int localPort, String dbHost, int dbPort, String dbUserName, String dbPassword, DbBasicConfigDO dbBasicConfigDO, DbSecurityConfigDO dbSecurityConfigDTO) throws SQLException {
+    private DataSource CreateMysqlDataSource(Long dsId, boolean useSshTunnel, int localPort, String dbHost, int dbPort, String dbUserName, String dbPassword, DbBasicConfigDO dbBasicConfigDO, DbSecurityConfigDO dbSecurityConfigDTO) throws Exception {
         String url;
         String driverName;
         DataSource datasource;
@@ -238,18 +236,17 @@ public class DataSourceFactory {
         }
         //驱动
         driverName = "com.mysql.jdbc.Driver";
-        ConnectionPoolService mysqlPoolService = new MysqlPoolServiceImpl();
         Properties mysqlProperties = new Properties();
         mysqlProperties.setProperty("Url", url);
         mysqlProperties.setProperty("User", dbUserName);
         mysqlProperties.setProperty("Password", dbPassword);
-        datasource = mysqlPoolService.createDatasource(mysqlProperties);
+        datasource = DataSourcePoolUtils.createDatasource(mysqlProperties);
         dataSourceMap.put(dsId, datasource);
         return datasource;
     }
 
 
-    private DataSource createPostGresqlDataSource(Long dsId, boolean useSshTunnel, int localPort, String dbHost, int dbPort, String dbUserName, String dbPassword, DbBasicConfigDO dbBasicConfigDO, DbSecurityConfigDO dbSecurityConfigDTO) throws SQLException {
+    private DataSource createPostGresqlDataSource(Long dsId, boolean useSshTunnel, int localPort, String dbHost, int dbPort, String dbUserName, String dbPassword, DbBasicConfigDO dbBasicConfigDO, DbSecurityConfigDO dbSecurityConfigDTO) throws Exception {
         String url;
         String driverName;
         DataSource datasource;
@@ -274,12 +271,11 @@ public class DataSourceFactory {
         }
         //驱动
         driverName = "org.postgresql.Driver";
-        ConnectionPoolService postGresqlPoolService = new PostGresqlPoolServiceImpl();
         Properties postGresqlProperties = new Properties();
         postGresqlProperties.setProperty("Url", url);
         postGresqlProperties.setProperty("User", dbUserName);
         postGresqlProperties.setProperty("Password", dbPassword);
-        datasource = postGresqlPoolService.createDatasource(postGresqlProperties);
+        datasource = DataSourcePoolUtils.createDatasource(postGresqlProperties);
         dataSourceMap.put(dsId, datasource);
         return datasource;
     }

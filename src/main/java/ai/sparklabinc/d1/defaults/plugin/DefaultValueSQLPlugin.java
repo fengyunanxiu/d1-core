@@ -53,7 +53,9 @@ public class DefaultValueSQLPlugin {
         CronTrigger cronTrigger = new CronTrigger(cron);
         return this.taskScheduler.schedule(() -> {
             try {
+                LOGGER.info("begin to process default value sql plugin task");
                 process(defaultsConfigurationDO);
+                LOGGER.info("end to process default value sql plugin task");
             } catch (Exception e) {
                 LOGGER.error("", e);
             }
@@ -69,20 +71,21 @@ public class DefaultValueSQLPlugin {
         String fieldFormFieldKey = defaultsConfigurationDO.getFieldFormFieldKey();
         // 每次执行任务，都要查询最新的任务信息
         defaultsConfigurationDO = this.defaultsConfigurationService.queryByDfKeyAndFieldKey(fieldFormDfKey, fieldFormFieldKey);
-
         JSONObject pluginParamsJSONObject = JSON.parseObject(fieldPluginConf);
         String jdbcUrl = pluginParamsJSONObject.getString("jdbc_url");
         String username = pluginParamsJSONObject.getString("username");
         String password = pluginParamsJSONObject.getString("password");
         String sql = pluginParamsJSONObject.getString("sql");
-
-        List<Map<String, Object>> result = sqlEngine.execute(jdbcUrl, username, password, sql);
+        if (StringUtils.isNullOrEmpty(sql)) {
+            return;
+        }
+        List<Map<String, String>> result = sqlEngine.execute(jdbcUrl, username, password, sql);
         if (result == null || result.isEmpty()) {
             return;
         }
 
-        Map<String, Object> rowMap = result.get(0);
-        Collection<Object> values = rowMap.values();
+        Map<String, String> rowMap = result.get(0);
+        Collection<String> values = rowMap.values();
         String defaultValue = JSON.toJSONString(values);
         // 更新默认值到FormTableSetting
         this.dataFacetKeyService.updateDefaultValueByDfKeyAndFieldKey(fieldFormDfKey, fieldFormFieldKey, defaultValue);

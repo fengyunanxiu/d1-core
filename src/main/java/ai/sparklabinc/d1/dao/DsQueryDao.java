@@ -16,5 +16,5 @@ import java.sql.SQLException;
 public interface DsQueryDao {
     DataDaoType getDataDaoType();
 
-    PageResultDTO excuteQuery(AssemblyResultDTO assemblyResultDTO, Long fkDbId) throws IOException, SQLException;
+    PageResultDTO excuteQuery(AssemblyResultDTO assemblyResultDTO, Long fkDbId) throws IOException, SQLException, Exception;
 }

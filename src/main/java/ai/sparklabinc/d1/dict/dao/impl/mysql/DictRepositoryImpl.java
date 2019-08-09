@@ -5,6 +5,7 @@ import ai.sparklabinc.d1.dict.dao.DictRepository;
 import ai.sparklabinc.d1.dict.entity.DictDO;
 import ai.sparklabinc.d1.exception.ServiceException;
 import ai.sparklabinc.d1.util.StringUtils;
+import ch.qos.logback.classic.db.names.TableName;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
@@ -22,6 +23,8 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Handler;
 import java.util.stream.Collectors;
+
+import static ai.sparklabinc.d1.dict.entity.DictDO.*;
 
 /**
  * @author : zxiuwu
@@ -348,6 +351,38 @@ public class DictRepositoryImpl implements DictRepository {
         sqlBuilder.append(" order by " + DictDO.F_DOMAIN + ", " + DictDO.F_ITEM + ",  " + DictDO.F_SEQUENCE);
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         return qr.query(sqlBuilder.toString(), new BeanListHandler<>(DictDO.class, new QueryRunnerRowProcessor()), paramList.toArray(new Object[0]));
+    }
+
+    @Override
+    public void updateValueByDomainAndItem(List<DictDO> dictDOList) throws SQLException {
+        String sql = " insert into " + TABLE_NAME + " (" + F_ID + ", " + F_DOMAIN + ", " + F_ITEM + ", " + F_VALUE + " , " + F_LABEL + " , " + F_SEQUENCE + " , " + F_ENABLE + " , " + F_PARENT_ID + " ) " +
+                " values (?, ?, ?, ?, ?, ?, ?, ?) on duplicate key update " + F_VALUE + " = ?, " + F_LABEL + " = ?, " + F_SEQUENCE + " = ?, " + F_ENABLE + " = ?, " + F_PARENT_ID + " = ? ";
+        QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
+        Object[][] param = new Object[dictDOList.size()][13];
+        for (int i = 0; i < dictDOList.size(); i++) {
+            DictDO dictDO = dictDOList.get(i);
+            String fieldDomain = dictDO.getFieldDomain();
+            String fieldItem = dictDO.getFieldItem();
+            String fieldValue = dictDO.getFieldValue();
+            String fieldLabel = dictDO.getFieldLabel();
+            String fieldSequence = dictDO.getFieldSequence();
+            String fieldEnable = dictDO.getFieldEnable();
+            String fieldParentId = dictDO.getFieldParentId();
+            param[i][0] = UUID.randomUUID().toString();
+            param[i][1] = fieldDomain;
+            param[i][2] = fieldItem;
+            param[i][3] = param[i][8] = fieldValue;
+            param[i][4] = param[i][9] = fieldLabel;
+            param[i][5] = param[i][10] = fieldSequence;
+            param[i][6] = param[i][11] = fieldEnable;
+            param[i][7] = param[i][12] = fieldParentId;
+//            param[i][5] = fieldValue;
+//            param[i][6] = fieldLabel;
+//            param[i][7] = fieldSequence;
+//            param[i][8] = fieldEnable;
+//            param[i][9] = fieldParentId;
+        }
+        qr.batch(sql, param);
     }
 
 }

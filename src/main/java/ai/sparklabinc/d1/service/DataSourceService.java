@@ -20,13 +20,13 @@ import java.util.Map;
  * @Version V1.0
  */
 public interface DataSourceService {
-    boolean Connection2DataSource(Long dsId) throws SQLException, IOException;
+    boolean Connection2DataSource(Long dsId) throws SQLException, IOException, Exception;
 
     DbInforamtionDTO addDataSources(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO)  throws IOException, SQLException;
 
     boolean deleteDataSources(Long dsId) throws IOException, SQLException;
 
-    List<DbInforamtionDTO> selectDataSources(Long dsId, Integer dfKeyFilter) throws IOException, SQLException;
+    List<DbInforamtionDTO> selectDataSources(Long dsId, Integer dfKeyFilter) throws IOException, SQLException, Exception;
 
     List<Map<String, Object>>  selectDataSourceProperty(Long dsId) throws IOException, SQLException;
 
