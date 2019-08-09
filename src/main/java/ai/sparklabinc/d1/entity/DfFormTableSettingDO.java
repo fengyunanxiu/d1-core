@@ -54,17 +54,15 @@ public class DfFormTableSettingDO {
 
     private String formFieldQueryType;
 
-    private Boolean formFieldIsExactly;
 
     private String formFieldChildFieldName;
 
-    private String formFieldDicDomainName;
+    private String formFieldDictDomainName;
 
     private String formFieldDictItem;
 
-    private Boolean formFieldUseDic;
 
-    private String formFieldDefValStratege;
+    private String formFieldDefValStrategy;
 
     private Boolean tableFieldVisible;
 
@@ -89,7 +87,6 @@ public class DfFormTableSettingDO {
 
     private String formFieldDefaultVal;
 
-    private String formFieldDefaultValSql;
 
     private Boolean columnIsExist;
 
@@ -181,13 +178,6 @@ public class DfFormTableSettingDO {
         this.formFieldQueryType = formFieldQueryType;
     }
 
-    public Boolean getFormFieldIsExactly() {
-        return formFieldIsExactly;
-    }
-
-    public void setFormFieldIsExactly(Boolean formFieldIsExactly) {
-        this.formFieldIsExactly = formFieldIsExactly;
-    }
 
     public String getFormFieldChildFieldName() {
         return formFieldChildFieldName;
@@ -197,13 +187,7 @@ public class DfFormTableSettingDO {
         this.formFieldChildFieldName = formFieldChildFieldName;
     }
 
-    public String getFormFieldDicDomainName() {
-        return formFieldDicDomainName;
-    }
 
-    public void setFormFieldDicDomainName(String formFieldDicDomainName) {
-        this.formFieldDicDomainName = formFieldDicDomainName;
-    }
 
     public String getFormFieldDictItem() {
         return formFieldDictItem;
@@ -213,20 +197,13 @@ public class DfFormTableSettingDO {
         this.formFieldDictItem = formFieldDictItem;
     }
 
-    public Boolean getFormFieldUseDic() {
-        return formFieldUseDic;
+
+    public String getFormFieldDefValStrategy() {
+        return formFieldDefValStrategy;
     }
 
-    public void setFormFieldUseDic(Boolean formFieldUseDic) {
-        this.formFieldUseDic = formFieldUseDic;
-    }
-
-    public String getFormFieldDefValStratege() {
-        return formFieldDefValStratege;
-    }
-
-    public void setFormFieldDefValStratege(String formFieldDefValStratege) {
-        this.formFieldDefValStratege = formFieldDefValStratege;
+    public void setFormFieldDefValStrategy(String formFieldDefValStrategy) {
+        this.formFieldDefValStrategy = formFieldDefValStrategy;
     }
 
     public Boolean getTableFieldVisible() {
@@ -309,6 +286,14 @@ public class DfFormTableSettingDO {
         this.formFieldUseDefaultVal = formFieldUseDefaultVal;
     }
 
+    public String getFormFieldDictDomainName() {
+        return formFieldDictDomainName;
+    }
+
+    public void setFormFieldDictDomainName(String formFieldDictDomainName) {
+        this.formFieldDictDomainName = formFieldDictDomainName;
+    }
+
     public String getFormFieldDefaultVal() {
         return formFieldDefaultVal;
     }
@@ -317,13 +302,7 @@ public class DfFormTableSettingDO {
         this.formFieldDefaultVal = formFieldDefaultVal;
     }
 
-    public String getFormFieldDefaultValSql() {
-        return formFieldDefaultValSql;
-    }
 
-    public void setFormFieldDefaultValSql(String formFieldDefaultValSql) {
-        this.formFieldDefaultValSql = formFieldDefaultValSql;
-    }
 
     public Boolean getColumnIsExist() {
         return columnIsExist;

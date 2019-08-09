@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static ai.sparklabinc.d1.constant.DsConstants.FormFieldQueryTypeEnum.FUZZY_MATCHING_TEXT;
+
 /**
  * @author : Kingzer
  * @date : 2019-07-03 17:32
@@ -44,7 +46,6 @@ public class DfFormTableSettingComponent {
         queryParameterGroup.setAccurateNumberRange(accurateNumberRangeQueryParameterMap);
 
 
-
         // 精确日期区间查询参数Map
         Map<String, String[]> accurateDateRangeQueryParameterMap = new HashMap<>();
         queryParameterGroup.setAccurateDateRange(accurateDateRangeQueryParameterMap);
@@ -62,11 +63,11 @@ public class DfFormTableSettingComponent {
             String frontFieldName = entry.getKey();
             String[] queryParameterValueArray = entry.getValue();
 
-            Optional<DfFormTableSettingDO> optionalDfFormTableSettingDO  = dfFormTableSettingDOList.stream()
-                    .filter(item ->  item.getDbFieldName() != null && (frontFieldName.equals(item.getDbFieldName()) || (frontFieldName).equals(item.getDbFieldName() + DsConstants.RangeFieldSuffixEnum.SUFFIX_START.getVal())
-                       || (frontFieldName).equals(item.getDbFieldName() + DsConstants.RangeFieldSuffixEnum.SUFFIX_END.getVal()))).findFirst();
+            Optional<DfFormTableSettingDO> optionalDfFormTableSettingDO = dfFormTableSettingDOList.stream()
+                    .filter(item -> item.getDbFieldName() != null && (frontFieldName.equals(item.getDbFieldName()) || (frontFieldName).equals(item.getDbFieldName() + DsConstants.RangeFieldSuffixEnum.SUFFIX_START.getVal())
+                            || (frontFieldName).equals(item.getDbFieldName() + DsConstants.RangeFieldSuffixEnum.SUFFIX_END.getVal()))).findFirst();
             DfFormTableSettingDO dfFormTableSettingDO = null;
-            if(optionalDfFormTableSettingDO.isPresent()){
+            if (optionalDfFormTableSettingDO.isPresent()) {
                 dfFormTableSettingDO = optionalDfFormTableSettingDO.get();
             }
 
@@ -74,7 +75,7 @@ public class DfFormTableSettingComponent {
             DsConstants.FormFieldQueryTypeEnum formFieldQueryTypeEnum = DsConstants.FormFieldQueryTypeEnum.getFormFieldQueryTypeEnumByVal(formFieldQueryType);
 
             //没在query_setting中配置，但出现在查询参数里边（可能是错误，需要注意）
-            if(dfFormTableSettingDO == null || formFieldQueryTypeEnum == null){
+            if (dfFormTableSettingDO == null || formFieldQueryTypeEnum == null) {
                 if (queryParameterValueArray.length > 1) {
                     accurateInStringQueryParameterMap.put(frontFieldName, queryParameterValueArray);
                 } else {
@@ -86,110 +87,88 @@ public class DfFormTableSettingComponent {
 
 
             String fieldName = dfFormTableSettingDO.getDbFieldName();
-            switch (formFieldQueryTypeEnum){
+            switch (formFieldQueryTypeEnum) {
                 case SINGLE_DATE:
                 case SINGLE_CHOICE_LIST:
-                case RADIOBOX_CHOICE:{
+                case RADIOBOX_CHOICE: {
                     accurateEqualsStringQueryParameterMap.put(fieldName, queryParameterValueArray[0]);
                     break;
                 }
                 case MULTIPLE_CHOICE_LIST:
-                case CHECKBOX_CHOICE:{
+                case CHECKBOX_CHOICE: {
                     if (queryParameterValueArray.length == 1) {
                         accurateEqualsStringQueryParameterMap.put(fieldName, queryParameterValueArray[0]);
-                    }else{
+                    } else {
                         accurateInStringQueryParameterMap.put(fieldName, queryParameterValueArray);
                     }
                     break;
                 }
 
 
-                case TEXT:{
-                    Boolean formFieldIsExactly = dfFormTableSettingDO.getFormFieldIsExactly();
-                    if(formFieldIsExactly){
-                        accurateEqualsStringQueryParameterMap.put(fieldName, queryParameterValueArray[0]);
-                    }else{
-                        fuzzyLikeQueryParameterMap.put(fieldName,queryParameterValueArray[0]);
-                    }
-                    break;
+                case EXACT_MATCHING_TEXT: {
+                    accurateEqualsStringQueryParameterMap.put(fieldName, queryParameterValueArray[0]);
+                }
+                break;
+                case FUZZY_MATCHING_TEXT: {
+                    fuzzyLikeQueryParameterMap.put(fieldName, queryParameterValueArray[0]);
                 }
 
-                case DATE_RANGE:
-                    {
+                break;
+
+                case DATE_RANGE: {
                     String[] rangeArr = accurateDateRangeQueryParameterMap.get(fieldName);
-                    if(rangeArr == null){
+                    if (rangeArr == null) {
                         rangeArr = new String[2];
                         accurateDateRangeQueryParameterMap.put(fieldName, rangeArr);
                     }
-                    if((fieldName + DsConstants.RangeFieldSuffixEnum.SUFFIX_START.getVal()).equals(frontFieldName)){
+                    if ((fieldName + DsConstants.RangeFieldSuffixEnum.SUFFIX_START.getVal()).equals(frontFieldName)) {
                         rangeArr[0] = queryParameterValueArray[0];
-                    }else if((fieldName + DsConstants.RangeFieldSuffixEnum.SUFFIX_END.getVal()).equals(frontFieldName)){
+                    } else if ((fieldName + DsConstants.RangeFieldSuffixEnum.SUFFIX_END.getVal()).equals(frontFieldName)) {
                         rangeArr[1] = queryParameterValueArray[0];
                     }
                     break;
                 }
 
-                case DATE_TIME_RANGE:{
+                case DATE_TIME_RANGE: {
                     String[] dateTimeRangeArr = accurateDateTimeRangeQueryParameterMap.get(fieldName);
-                    if(dateTimeRangeArr == null){
+                    if (dateTimeRangeArr == null) {
                         dateTimeRangeArr = new String[2];
                         accurateDateTimeRangeQueryParameterMap.put(fieldName, dateTimeRangeArr);
                     }
-                    if((fieldName + DsConstants.RangeFieldSuffixEnum.SUFFIX_START.getVal()).equals(frontFieldName)){
+                    if ((fieldName + DsConstants.RangeFieldSuffixEnum.SUFFIX_START.getVal()).equals(frontFieldName)) {
                         dateTimeRangeArr[0] = queryParameterValueArray[0];
-                    }else if((fieldName + DsConstants.RangeFieldSuffixEnum.SUFFIX_END.getVal()).equals(frontFieldName)){
+                    } else if ((fieldName + DsConstants.RangeFieldSuffixEnum.SUFFIX_END.getVal()).equals(frontFieldName)) {
                         dateTimeRangeArr[1] = queryParameterValueArray[0];
                     }
                     break;
                 }
 
-                case NUMBER_RANGE:{
+                case NUMBER_RANGE: {
                     String[] numberRangeArr = accurateNumberRangeQueryParameterMap.get(fieldName);
-                    if(numberRangeArr == null){
+                    if (numberRangeArr == null) {
                         numberRangeArr = new String[2];
                         accurateNumberRangeQueryParameterMap.put(fieldName, numberRangeArr);
                     }
-                    if((fieldName + DsConstants.RangeFieldSuffixEnum.SUFFIX_START.getVal()).equals(frontFieldName)){
+                    if ((fieldName + DsConstants.RangeFieldSuffixEnum.SUFFIX_START.getVal()).equals(frontFieldName)) {
                         numberRangeArr[0] = queryParameterValueArray[0];
-                    }else if((fieldName + DsConstants.RangeFieldSuffixEnum.SUFFIX_END.getVal()).equals(frontFieldName)){
+                    } else if ((fieldName + DsConstants.RangeFieldSuffixEnum.SUFFIX_END.getVal()).equals(frontFieldName)) {
                         numberRangeArr[1] = queryParameterValueArray[0];
                     }
                     break;
                 }
-                default:{
+                default: {
                     accurateEqualsStringQueryParameterMap.put(fieldName, queryParameterValueArray[0]);
                     break;
                 }
 
 
-
-
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         }
 
 
         return queryParameterGroup;
-
 
 
     }

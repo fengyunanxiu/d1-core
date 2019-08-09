@@ -72,11 +72,9 @@ public class OracleDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingD
                     Boolean formFieldVisible = resultSet.getBoolean("form_field_visible");
                     Integer formFieldSequence = resultSet.getInt("form_field_sequence");
                     String formFieldQueryType = resultSet.getString("form_field_query_type");
-                    Boolean formFieldIsExactly = resultSet.getBoolean("form_field_is_exactly");
                     String formFieldChildrenDbFieldName = resultSet.getString("form_field_child_field_name");
-                    String formFieldDicDomainName = resultSet.getString("form_field_dic_domain_name");
-                    Boolean formFieldUseDic = resultSet.getBoolean("form_field_use_dic");
-                    String formFieldDefalutValStratege = resultSet.getString("form_field_def_val_stratege");
+                    String formFieldDictDomainName = resultSet.getString("form_field_dict_domain_name");
+                    String formFieldDefalutValStrategy = resultSet.getString("form_field_def_val_strategy");
                     Boolean tableFieldVisible = resultSet.getBoolean("table_field_visible");
                     String tableFiedldOrderBy = resultSet.getString("table_field_order_by");
                     Boolean tableFieldQueryRequired = resultSet.getBoolean("table_field_query_required");
@@ -89,7 +87,6 @@ public class OracleDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingD
 
                     Boolean formFieldUseDefaultVal = resultSet.getBoolean("form_field_use_default_val");
                     String formFieldManMadeDefaultVal = resultSet.getString("form_field_default_val");
-                    String formFieldDefaultValSql = resultSet.getString("form_field_default_val_sql");
                     Boolean columIsExist = resultSet.getBoolean("column_is_exist");
 
                     dfFormTableSettingDO = new DfFormTableSettingDO();
@@ -104,11 +101,9 @@ public class OracleDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingD
                     dfFormTableSettingDO.setFormFieldVisible(formFieldVisible);
                     dfFormTableSettingDO.setFormFieldSequence(formFieldSequence);
                     dfFormTableSettingDO.setFormFieldQueryType(formFieldQueryType);
-                    dfFormTableSettingDO.setFormFieldIsExactly(formFieldIsExactly);
                     dfFormTableSettingDO.setFormFieldChildFieldName(formFieldChildrenDbFieldName);
-                    dfFormTableSettingDO.setFormFieldDicDomainName(formFieldDicDomainName);
-                    dfFormTableSettingDO.setFormFieldUseDic(formFieldUseDic);
-                    dfFormTableSettingDO.setFormFieldDefValStratege(formFieldDefalutValStratege);
+                    dfFormTableSettingDO.setFormFieldDictDomainName(formFieldDictDomainName);
+                    dfFormTableSettingDO.setFormFieldDefValStrategy(formFieldDefalutValStrategy);
                     dfFormTableSettingDO.setTableFieldVisible(tableFieldVisible);
                     dfFormTableSettingDO.setTableFieldOrderBy(tableFiedldOrderBy);
                     dfFormTableSettingDO.setTableFieldQueryRequired(tableFieldQueryRequired);
@@ -120,7 +115,6 @@ public class OracleDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingD
                     dfFormTableSettingDO.setTableParentLabel(tableParentLabel);
                     dfFormTableSettingDO.setFormFieldUseDefaultVal(formFieldUseDefaultVal);
                     dfFormTableSettingDO.setFormFieldDefaultVal(formFieldManMadeDefaultVal);
-                    dfFormTableSettingDO.setFormFieldDefaultValSql(formFieldDefaultValSql);
                     dfFormTableSettingDO.setColumnIsExist(columIsExist);
 
                     dfFormTableSettingDOS.add(dfFormTableSettingDO);
@@ -131,19 +125,18 @@ public class OracleDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingD
         return dfFormTableSettingDOList;
     }
 
-
     @Override
     public Integer add(DfFormTableSettingDO dfFormTableSettingDO) throws IOException, SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql ="insert into df_form_table_setting(gmt_create, gmt_modified, df_key, db_field_name, db_field_type," +
                 " view_field_label, db_field_comment, form_field_visible, form_field_sequence, form_field_query_type," +
-                " form_field_is_exactly, form_field_child_field_name, form_field_dic_domain_name, form_field_use_dic, form_field_def_val_stratege," +
+                " form_field_child_field_name, form_field_dict_domain_name, form_field_def_val_strategy," +
                 " table_field_visible, table_field_order_by, table_field_query_required, table_field_sequence, table_field_column_width," +
                 " export_field_visible, export_field_sequence, export_field_width,table_parent_label,form_field_use_default_val," +
-                " form_field_default_val,form_field_default_val_sql,column_is_exist)" +
+                " form_field_default_val,column_is_exist)" +
                 " values (?, ?, ?, ?, ?," +
                 "  ?, ?, ?, ?, ?," +
-                "  ?, ?, ?, ?, ?," +
+                "  ?, ?, ?," +
                 "  ?, ?, ?, ?, ?," +
                 "  ?, ?, ?, ?, ?," +
                 "  ?, ?, ?)";
@@ -159,11 +152,9 @@ public class OracleDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingD
                 dfFormTableSettingDO.getFormFieldSequence(),
                 dfFormTableSettingDO.getFormFieldQueryType(),
 
-                dfFormTableSettingDO.getFormFieldIsExactly()?1:0,
                 dfFormTableSettingDO.getFormFieldChildFieldName(),
-                dfFormTableSettingDO.getFormFieldDicDomainName(),
-                dfFormTableSettingDO.getFormFieldUseDic()?1:0,
-                dfFormTableSettingDO.getFormFieldDefValStratege(),
+                dfFormTableSettingDO.getFormFieldDictDomainName(),
+                dfFormTableSettingDO.getFormFieldDefValStrategy(),
 
                 dfFormTableSettingDO.getTableFieldVisible()?1:0,
                 dfFormTableSettingDO.getTableFieldOrderBy(),
@@ -178,7 +169,6 @@ public class OracleDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingD
                 dfFormTableSettingDO.getFormFieldUseDefaultVal()?1:0,
 
                 dfFormTableSettingDO.getFormFieldDefaultVal(),
-                dfFormTableSettingDO.getFormFieldDefaultValSql(),
                 dfFormTableSettingDO.getColumnIsExist()?1:0
         };
         LOGGER.info("insert sql:{}",sql);
@@ -194,7 +184,6 @@ public class OracleDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingD
         List<Map<String, Object>> result = queryRunner.query(querySql, new MapListHandler(),dataFacetKey);
         return result;
     }
-
 
     @Override
     public Integer updateDataFacetKey(String dataFacetKey,String newDataFacetKey) throws SQLException, IOException {
@@ -214,7 +203,6 @@ public class OracleDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingD
         int update = queryRunner.update(sql, dfKey);
         return update;
     }
-
 
     @Override
     public List<DfFormTableSettingDO> getAllDfFormTableSettingByDfKeyForExport(String dataFacetKey) throws SQLException, IOException {
@@ -249,12 +237,11 @@ public class OracleDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingD
                 "  form_field_default_val as  formFieldManMadeDefaultVal," +
                 "  form_field_default_val_sql as formFieldDefaultValSql ," +
                 "  column_is_exist as columIsExist " +
-                " from df_form_table_setting where df_key = ? and exportFieldVisible = ?";
+                " from df_form_table_setting where df_key = ? and export_field_visible = ?";
         LOGGER.info("querySql:{}", querySql);
         List<DfFormTableSettingDO> dfFormTableSettingDOList = queryRunner.query(querySql, new BeanListHandler<>(DfFormTableSettingDO.class), dataFacetKey, 1);
         return dfFormTableSettingDOList;
     }
-
 
     @Override
     public Integer updateDfFormTableSetting(DfFormTableSettingDO dfFormTableSettingDO) throws SQLException, IOException {
@@ -270,11 +257,9 @@ public class OracleDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingD
                 "   form_field_visible = ?," +
                 "   form_field_sequence = ?," +
                 "   form_field_query_type = ?," +
-                "   form_field_is_exactly = ?," +
                 "   form_field_child_field_name = ?," +
-                "   form_field_dic_domain_name = ?," +
-                "   form_field_use_dic = ?," +
-                "   form_field_def_val_stratege = ?," +
+                "   form_field_dict_domain_name = ?," +
+                "   form_field_def_val_strategy = ?," +
                 "   table_field_visible = ?," +
                 "   table_field_order_by = ?," +
                 "   table_field_query_required = ?," +
@@ -286,7 +271,6 @@ public class OracleDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingD
                 "   table_parent_label = ?," +
                 "   form_field_use_default_val = ?," +
                 "   form_field_default_val = ?," +
-                "   form_field_default_val_sql = ?," +
                 "   column_is_exist = ?" +
                 " where id = ?";
         LOGGER.info("updateSql:{}", updateSql);
@@ -301,12 +285,10 @@ public class OracleDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingD
                 dfFormTableSettingDO.getFormFieldVisible()?1:0,
                 dfFormTableSettingDO.getFormFieldSequence(),
                 dfFormTableSettingDO.getFormFieldQueryType(),
-                dfFormTableSettingDO.getFormFieldIsExactly()?1:0,
 
                 dfFormTableSettingDO.getFormFieldChildFieldName(),
-                dfFormTableSettingDO.getFormFieldDicDomainName(),
-                dfFormTableSettingDO.getFormFieldUseDic()?1:0,
-                dfFormTableSettingDO.getFormFieldDefValStratege(),
+                dfFormTableSettingDO.getFormFieldDictDomainName(),
+                dfFormTableSettingDO.getFormFieldDefValStrategy(),
                 dfFormTableSettingDO.getTableFieldVisible()?1:0,
 
                 dfFormTableSettingDO.getTableFieldOrderBy(),
@@ -321,7 +303,6 @@ public class OracleDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingD
                 dfFormTableSettingDO.getFormFieldUseDefaultVal()?1:0,
 
                 dfFormTableSettingDO.getFormFieldDefaultVal(),
-                dfFormTableSettingDO.getFormFieldDefaultValSql(),
                 dfFormTableSettingDO.getColumnIsExist()?1:0,
                 dfFormTableSettingDO.getId()
         };

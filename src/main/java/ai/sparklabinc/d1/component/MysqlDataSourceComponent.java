@@ -79,11 +79,9 @@ public class MysqlDataSourceComponent {
                 dfFormTableSettingDO.setFormFieldSequence(tableColumnsDetailDTO.getOrdinalPosition());
                 dfFormTableSettingDO.setFormFieldQueryType(FormTableSettingConstants.FormType.TEXT.toString());
 
-                dfFormTableSettingDO.setFormFieldIsExactly(true);
                 //dfFormTableSettingDO.setFormFieldChildrenDbFieldName();
-                //dfFormTableSettingDO.setFormFieldDicDomainName();
-                dfFormTableSettingDO.setFormFieldUseDic(false);
-                //dfFormTableSettingDO.getFormFieldDefaultValStratege();
+                //dfFormTableSettingDO.setFormFieldDictDomainName();
+                //dfFormTableSettingDO.getFormFieldDefaultValStrategy();
 
                 dfFormTableSettingDO.setTableFieldVisible(true);
                 dfFormTableSettingDO.setTableFieldOrderBy(FormTableSettingConstants.OrderBy.NONE.toString());
@@ -189,11 +187,9 @@ public class MysqlDataSourceComponent {
                 dfFormTableSettingDO.setFormFieldSequence(tableColumnsDetailDTO.getOrdinalPosition());
                 dfFormTableSettingDO.setFormFieldQueryType(FormTableSettingConstants.FormType.TEXT.toString());
 
-                dfFormTableSettingDO.setFormFieldIsExactly(true);
                 //dfFormTableSettingDO.setFormFieldChildrenDbFieldName();
-                //dfFormTableSettingDO.setFormFieldDicDomainName();
-                dfFormTableSettingDO.setFormFieldUseDic(false);
-                //dfFormTableSettingDO.getFormFieldDefaultValStratege();
+                //dfFormTableSettingDO.setFormFieldDictDomainName();
+                //dfFormTableSettingDO.getFormFieldDefaultValStrategy();
 
                 dfFormTableSettingDO.setTableFieldVisible(true);
                 dfFormTableSettingDO.setTableFieldOrderBy(FormTableSettingConstants.OrderBy.NONE.toString());

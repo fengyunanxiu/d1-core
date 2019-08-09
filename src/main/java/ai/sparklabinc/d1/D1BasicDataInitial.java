@@ -42,7 +42,8 @@ public class D1BasicDataInitial implements ApplicationListener<ContextRefreshedE
         if(contextRefreshedEvent.getApplicationContext().getParent() == null){
             //建表初始化语句
             try {
-               this.createD1BasicDataSource(basicDbConfig);
+                LOGGER.info("============");
+//               this.createD1BasicDataSource(basicDbConfig);
             } catch (Exception e) {
                 LOGGER.error("D1 Basic Data Initial is failed!");
                 LOGGER.error("",e);

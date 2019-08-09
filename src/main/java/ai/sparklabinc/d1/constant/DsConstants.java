@@ -23,7 +23,10 @@ public interface DsConstants {
         CHECKBOX_CHOICE("CHECKBOX_CHOICE"),
 
 
-        TEXT("TEXT"),
+        //精确查询文本类型
+        EXACT_MATCHING_TEXT("EXACT_MATCHING_TEXT"),
+        //模糊查询文本类型
+        FUZZY_MATCHING_TEXT("FUZZY_MATCHING_TEXT"),
         NUMBER("NUMBER"),
         NUMBER_RANGE("NUMBER_RANGE"),
 
