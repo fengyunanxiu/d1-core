@@ -138,7 +138,7 @@ public class PostgresqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSett
                 "  ?, ?, ?," +
                 "  ?, ?, ?, ?, ?," +
                 "  ?, ?, ?, ?, ?," +
-                "  ?, ?, ?)";
+                "  ?, ?)";
         String now = DateUtils.ofLongStr(new java.util.Date());
         Object[] objectParams={now, now,
                 dfFormTableSettingDO.getDfKey(),
