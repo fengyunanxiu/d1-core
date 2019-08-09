@@ -96,7 +96,7 @@ public class DataSourceController {
     @ResponseBody
     @GetMapping("/refresh-datasource")
     public Object srefreshDataSources(@RequestParam(required = false) Long dsId,
-                                    @RequestParam(defaultValue = "0") Integer dfKeyFilter)throws IOException, SQLException {
+                                    @RequestParam(defaultValue = "0") Integer dfKeyFilter) throws Exception {
         //清除缓存
         cacheComponent.clearDataSourceTreeAllCache(dsId);
         return dataSourceService.selectDataSources(dsId,dfKeyFilter);

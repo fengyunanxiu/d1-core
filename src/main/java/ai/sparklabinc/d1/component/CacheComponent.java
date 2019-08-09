@@ -39,12 +39,12 @@ public class CacheComponent {
     }
 
     @Cacheable(value = "selectAllSchema")
-    public List<DbInforamtionDTO> selectAllSchema(Long dsId) throws IOException, SQLException {
+    public List<DbInforamtionDTO> selectAllSchema(Long dsId) throws Exception {
       return   dataSourceDao.selectAllSchema(dsId);
     }
 
     @Cacheable(value = "selectAllTableAndView")
-    public List<TableAndViewInfoDTO> selectAllTableAndView(Long dsId) throws IOException, SQLException {
+    public List<TableAndViewInfoDTO> selectAllTableAndView(Long dsId) throws Exception {
         return  dataSourceDao.selectAllTableAndView(dsId);
     }
 
