@@ -28,7 +28,7 @@ public class PostGresqlPoolServiceImpl implements ConnectionPoolService {
         p.setValidationQuery("SELECT 1");
         p.setTestOnReturn(false);
         p.setTimeBetweenEvictionRunsMillis(30000);
-        p.setMaxActive(100);
+        p.setMaxActive(3);
         p.setMaxWait(10000);
         p.setRemoveAbandonedTimeout(60);
         p.setLogAbandoned(true);

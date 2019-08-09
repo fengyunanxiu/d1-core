@@ -26,7 +26,9 @@ public interface DataSourceService {
 
     boolean deleteDataSources(Long dsId) throws IOException, SQLException;
 
-    List<DbInforamtionDTO> selectDataSources(Long dsId, Integer dfKeyFilter) throws IOException, SQLException;
+    List<DbInforamtionDTO> selectDataSources() throws IOException, SQLException;
+
+    DbInforamtionDTO refreshDataSources(Long dsId) throws IOException, SQLException;
 
     List<Map<String, Object>>  selectDataSourceProperty(Long dsId) throws IOException, SQLException;
 

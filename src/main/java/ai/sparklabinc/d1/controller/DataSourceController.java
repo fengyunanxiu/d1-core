@@ -88,18 +88,14 @@ public class DataSourceController {
 
     @ResponseBody
     @GetMapping("/select")
-    public Object selectDataSources(@RequestParam(required = false) Long dsId,
-                                    @RequestParam(defaultValue = "0") Integer dfKeyFilter)throws IOException, SQLException {
-       return dataSourceService.selectDataSources(dsId,dfKeyFilter);
+    public Object selectDataSources()throws IOException, SQLException {
+       return dataSourceService.selectDataSources();
     }
 
     @ResponseBody
     @GetMapping("/refresh-datasource")
-    public Object srefreshDataSources(@RequestParam(required = false) Long dsId,
-                                    @RequestParam(defaultValue = "0") Integer dfKeyFilter)throws IOException, SQLException {
-        //清除缓存
-        cacheComponent.clearDataSourceTreeAllCache(dsId);
-        return dataSourceService.selectDataSources(dsId,dfKeyFilter);
+    public Object srefreshDataSources(@RequestParam(required = false) Long dsId)throws IOException, SQLException {
+        return dataSourceService.refreshDataSources(dsId);
     }
 
     @ResponseBody
