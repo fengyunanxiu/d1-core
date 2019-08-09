@@ -58,7 +58,7 @@ public class DefaultsConfigurationTaskManager {
     private void task() {
         LOGGER.info("start default value task");
         try {
-            List<DefaultsConfigurationDO> all = this.defaultsConfigurationRepository.queryAllWithLock();
+            List<DefaultsConfigurationDO> all = this.defaultsConfigurationRepository.queryAll();
             if (all == null || all.isEmpty()) {
                 return;
             }
