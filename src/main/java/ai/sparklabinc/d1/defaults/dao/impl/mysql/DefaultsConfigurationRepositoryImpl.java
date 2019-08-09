@@ -11,11 +11,10 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
@@ -55,6 +54,20 @@ public class DefaultsConfigurationRepositoryImpl implements DefaultsConfiguratio
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         return qr.query(sql, new BeanListHandler<>(DefaultsConfigurationDO.class, new QueryRunnerRowProcessor()));
     }
+
+    /**
+     * 手动关闭connectioin
+     * @param connection
+     * @return
+     * @throws SQLException
+     */
+    @Override
+    public List<DefaultsConfigurationDO> queryAllWithLockTransaction(Connection connection) throws SQLException {
+        String sql = "select * from " + DefaultsConfigurationDO.TABLE_NAME + " for update ";
+        QueryRunner qr = new QueryRunner();
+        return qr.query(connection, sql, new BeanListHandler<>(DefaultsConfigurationDO.class, new QueryRunnerRowProcessor()));
+    }
+
 
     @Override
     public DefaultsConfigurationDO insert(DefaultsConfigurationDO defaultsConfigurationDO) throws Exception {

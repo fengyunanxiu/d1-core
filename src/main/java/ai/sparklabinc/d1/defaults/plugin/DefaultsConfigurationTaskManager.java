@@ -6,6 +6,7 @@ import ai.sparklabinc.d1.defaults.entity.DefaultsConfigurationDO;
 import ai.sparklabinc.d1.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.tomcat.jdbc.pool.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,6 +45,9 @@ public class DefaultsConfigurationTaskManager {
     @Autowired
     private TaskScheduler taskScheduler;
 
+    @Resource(name = "D1BasicDataSource")
+    private DataSource d1BasicDataSource;
+
     /**
      * key: dfKey_fieldName_cron
      */
@@ -57,8 +62,12 @@ public class DefaultsConfigurationTaskManager {
 
     private void task() {
         LOGGER.info("start default value task");
-        try {
-            List<DefaultsConfigurationDO> all = this.defaultsConfigurationRepository.queryAll();
+        try (
+                Connection connection = this.d1BasicDataSource.getConnection();
+        ) {
+            // 开启事务
+            connection.setAutoCommit(false);
+            List<DefaultsConfigurationDO> all = this.defaultsConfigurationRepository.queryAllWithLockTransaction(connection);
             if (all == null || all.isEmpty()) {
                 return;
             }
@@ -118,6 +127,7 @@ public class DefaultsConfigurationTaskManager {
                     }
                 }
             }
+            connection.commit();
         } catch (SQLException e) {
             LOGGER.error("", e);
         }

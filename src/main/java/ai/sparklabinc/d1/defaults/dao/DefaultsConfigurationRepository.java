@@ -9,6 +9,7 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.core.Ordered;
 
 import javax.annotation.PostConstruct;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -26,6 +27,8 @@ public interface DefaultsConfigurationRepository {
     DefaultsConfigurationDO queryById(String id) throws SQLException;
 
     List<DefaultsConfigurationDO> queryAll() throws SQLException;
+
+    List<DefaultsConfigurationDO> queryAllWithLockTransaction(Connection connection) throws SQLException;
 
     DefaultsConfigurationDO insert(DefaultsConfigurationDO defaultsConfigurationDO) throws Exception;
 
