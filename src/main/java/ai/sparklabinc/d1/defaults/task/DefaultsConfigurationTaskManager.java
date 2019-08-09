@@ -54,7 +54,7 @@ public class DefaultsConfigurationTaskManager {
         LOGGER.info("start default value task schedule");
         this.taskScheduler.scheduleWithFixedDelay(
                 () -> this.task(),
-                new Date(), 10 * 1000L);
+                new Date(), 24 * 60 * 60 * 1000L);
     }
 
     private void task() {
