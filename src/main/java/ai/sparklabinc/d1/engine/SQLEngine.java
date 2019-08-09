@@ -1,4 +1,4 @@
-package ai.sparklabinc.d1.plugin;
+package ai.sparklabinc.d1.engine;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
