@@ -1,6 +1,6 @@
 package ai.sparklabinc.d1.scheduler;
 
-import ai.sparklabinc.d1.defaults.plugin.DefaultsConfigurationTaskManager;
+import ai.sparklabinc.d1.defaults.plugin.DefaultsPluginTaskManager;
 import ai.sparklabinc.d1.dict.plugin.DictPluginTaskManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,13 +20,13 @@ public class PluginsScheduler {
     private static final Logger LOGGER = LoggerFactory.getLogger(PluginsScheduler.class);
 
     @Autowired
-    private DefaultsConfigurationTaskManager defaultsConfigurationTaskManager;
+    private DefaultsPluginTaskManager defaultsPluginTaskManager;
 
     @Autowired
     private DictPluginTaskManager dictPluginTaskManager;
 
     public void init() {
-        this.defaultsConfigurationTaskManager.run();
+        this.defaultsPluginTaskManager.run();
         dictPluginTaskManager.run();
     }
 

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,9 +31,9 @@ import java.util.stream.Collectors;
  * @description :
  */
 @Component
-public class DefaultsConfigurationTaskManager {
+public class DefaultsPluginTaskManager {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultsConfigurationTaskManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultsPluginTaskManager.class);
 
     @Resource(name = "DefaultsConfigurationRepository")
     private DefaultsConfigurationRepository defaultsConfigurationRepository;
@@ -96,7 +95,6 @@ public class DefaultsConfigurationTaskManager {
             List<Map.Entry<String, ScheduledFuture<?>>> needDeleteConfigurationEntryList = new ArrayList<>();
             for (Map.Entry<String, ScheduledFuture<?>> existSchedule : runningScheduleMap.entrySet()) {
                 String key = existSchedule.getKey();
-                ScheduledFuture<?> value = existSchedule.getValue();
                 if (allSchedule.containsKey(key)) {
                     allSchedule.remove(key);
                 } else {
@@ -128,7 +126,7 @@ public class DefaultsConfigurationTaskManager {
                 }
             }
             connection.commit();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             LOGGER.error("", e);
         }
     }

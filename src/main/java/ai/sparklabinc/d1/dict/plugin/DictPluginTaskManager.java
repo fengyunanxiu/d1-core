@@ -1,7 +1,12 @@
 package ai.sparklabinc.d1.dict.plugin;
 
+import ai.sparklabinc.d1.defaults.entity.DefaultConfigurationType;
+import ai.sparklabinc.d1.defaults.entity.DefaultsConfigurationDO;
 import ai.sparklabinc.d1.dict.dao.DictPluginConfigurationRepository;
 import ai.sparklabinc.d1.dict.entity.DictPluginConfigurationDO;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import org.apache.tomcat.jdbc.pool.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +14,7 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,9 +42,11 @@ public class DictPluginTaskManager {
     @Autowired
     private TaskScheduler taskScheduler;
 
-
     @Autowired
     private DictSQLPlugin dictSQLPlugin;
+
+    @Resource(name = "D1BasicDataSource")
+    private DataSource d1BasicDataSource;
 
     private Map<String, ScheduledFuture<?>> runningScheduleMap = new ConcurrentHashMap<>();
 
@@ -49,17 +57,19 @@ public class DictPluginTaskManager {
     }
 
     private void task() {
-        try {
-            List<DictPluginConfigurationDO> allEnableList = this.dictPluginConfigurationRepository.findAllEnable();
+        try (
+                Connection connection = this.d1BasicDataSource.getConnection()
+        ) {
+            connection.setAutoCommit(false);
+            List<DictPluginConfigurationDO> allEnableList = this.dictPluginConfigurationRepository.findAllEnableWithLockTransaction(connection);
             if (allEnableList == null || allEnableList.isEmpty()) {
                 return;
             }
             Map<String, DictPluginConfigurationDO> allEnableMap = allEnableList.stream().collect(Collectors.toMap((tmp) -> generateRunningScheduleMapKey(tmp), (tmp) -> tmp));
 
-            List<Map.Entry<String,ScheduledFuture<?>>> needDeleteScheduleEntryList = new ArrayList<>();
+            List<Map.Entry<String, ScheduledFuture<?>>> needDeleteScheduleEntryList = new ArrayList<>();
             for (Map.Entry<String, ScheduledFuture<?>> existSchedule : runningScheduleMap.entrySet()) {
                 String key = existSchedule.getKey();
-                ScheduledFuture<?> value = existSchedule.getValue();
                 if (allEnableMap.containsKey(key)) {
                     allEnableMap.remove(key);
                 } else {
@@ -84,7 +94,7 @@ public class DictPluginTaskManager {
             if (!allEnableMap.isEmpty()) {
                 LOGGER.info("begin to start new dict sql plugin, size: {}", allEnableMap.size());
                 for (DictPluginConfigurationDO dictPluginConfigurationDO : allEnableMap.values()) {
-                    ScheduledFuture<?> scheduledFuture = this.dictSQLPlugin.run(dictPluginConfigurationDO);
+                    ScheduledFuture<?> scheduledFuture = this.schedule(dictPluginConfigurationDO);
                     if (scheduledFuture != null) {
                         String key = generateRunningScheduleMapKey(dictPluginConfigurationDO);
                         runningScheduleMap.put(key, scheduledFuture);
@@ -92,12 +102,24 @@ public class DictPluginTaskManager {
                 }
                 LOGGER.info("end to start new dict sql plugin, size: {}", allEnableMap.size());
             }
-
+            connection.commit();
         } catch (SQLException e) {
             LOGGER.error("", e);
         }
     }
 
+    private ScheduledFuture<?> schedule(DictPluginConfigurationDO dictPluginConfigurationDO) {
+        String fieldType = dictPluginConfigurationDO.getFieldType();
+        switch (fieldType) {
+            case "SQL":
+                return this.dictSQLPlugin.run(dictPluginConfigurationDO);
+            case "CUSTOMER":
+                break;
+            default:
+                break;
+        }
+        return null;
+    }
 
     private String generateRunningScheduleMapKey(DictPluginConfigurationDO dictPluginConfigurationDO) {
         return String.valueOf(dictPluginConfigurationDO.hashCode());
