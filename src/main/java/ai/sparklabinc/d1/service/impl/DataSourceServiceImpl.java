@@ -1,9 +1,10 @@
 package ai.sparklabinc.d1.service.impl;
 
 import ai.sparklabinc.d1.component.CacheComponent;
-import ai.sparklabinc.d1.component.MysqlDataSourceComponent;
 import ai.sparklabinc.d1.constant.DsConstants;
-import ai.sparklabinc.d1.dao.*;
+import ai.sparklabinc.d1.dao.DbBasicConfigDao;
+import ai.sparklabinc.d1.dao.DbSecurityConfigDao;
+import ai.sparklabinc.d1.dao.DfKeyBasicConfigDao;
 import ai.sparklabinc.d1.datasource.ConnectionService;
 import ai.sparklabinc.d1.datasource.Constants;
 import ai.sparklabinc.d1.datasource.DataSourceFactory;
@@ -12,14 +13,12 @@ import ai.sparklabinc.d1.entity.DbBasicConfigDO;
 import ai.sparklabinc.d1.entity.DbSecurityConfigDO;
 import ai.sparklabinc.d1.service.DataSourceService;
 import ai.sparklabinc.d1.util.FileReaderUtil;
-import ai.sparklabinc.d1.util.FileUtils;
 import com.alibaba.fastjson.JSON;
 import com.jcraft.jsch.Session;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -86,7 +85,7 @@ public class DataSourceServiceImpl implements DataSourceService {
     }
 
     @Override
-    public DbInforamtionDTO addDataSources(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws IOException, SQLException {
+    public DbInforamtionDTO addDataSources(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws Exception {
         DbBasicConfigDO dbBasicConfigDO = new DbBasicConfigDO();
         BeanUtils.copyProperties(dbBasicConfigDTO, dbBasicConfigDO);
         if (dbBasicConfigDTO.getOtherParams() != null) {
@@ -131,7 +130,7 @@ public class DataSourceServiceImpl implements DataSourceService {
     }
 
     @Override
-    public boolean deleteDataSources(Long dsId) throws IOException, SQLException {
+    public boolean deleteDataSources(Long dsId) throws Exception {
         Integer delete = dbBasicConfigDao.delete(dsId);
         Integer delete1 = dbSecurityConfigDao.delete(dsId);
         if (delete > 0 && delete1 > 0) {
@@ -141,7 +140,7 @@ public class DataSourceServiceImpl implements DataSourceService {
     }
 
     @Override
-    public List<DbInforamtionDTO> selectDataSources() throws IOException, SQLException {
+    public List<DbInforamtionDTO> selectDataSources() throws Exception {
 
         /*********************************************************************
          * step1 拿到前端需要展示的第一层信息
@@ -215,7 +214,7 @@ public class DataSourceServiceImpl implements DataSourceService {
 
 
     @Override
-    public DbInforamtionDTO refreshDataSources(Long dsId) throws IOException, SQLException {
+    public DbInforamtionDTO refreshDataSources(Long dsId) throws Exception {
         //清除缓存
         cacheComponent.clearDataSourceTreeAllCache(dsId);
         /*********************************************************************
@@ -247,7 +246,6 @@ public class DataSourceServiceImpl implements DataSourceService {
             if (CollectionUtils.isEmpty(tableAndViewInfoDTOS)) {
               return dbInforamtionDTO;
             }
-
 
             for (DbInforamtionDTO schema : schemas) {
                 List<DbInforamtionDTO> tableAndViews = new LinkedList<>();

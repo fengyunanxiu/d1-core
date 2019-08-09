@@ -2,14 +2,9 @@ package ai.sparklabinc.d1.controller;
 
 import ai.sparklabinc.d1.component.CacheComponent;
 import ai.sparklabinc.d1.dto.DbFullConfigDTO;
-import ai.sparklabinc.d1.dto.DfKeyBasicConfigDTO;
-import ai.sparklabinc.d1.entity.DfFormTableSettingDO;
-import ai.sparklabinc.d1.exception.custom.IllegalParameterException;
 import ai.sparklabinc.d1.service.DataSourceService;
 import io.swagger.annotations.Api;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,10 +13,8 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * @version V1.0
@@ -54,7 +47,7 @@ public class DataSourceController {
 
     @ResponseBody
     @PostMapping(value = "/file-upLoad")
-    public Object fileUpload(@RequestParam(required = true) MultipartFile multipartFile,HttpServletRequest request) throws IOException {
+    public Object fileUpload(@RequestParam(required = true) MultipartFile multipartFile,HttpServletRequest request) throws Exception {
         String filePath = uploadFile(multipartFile, request);
         Map<String,String> resultMap = new HashMap<>();
         resultMap.put("file_path",filePath);
@@ -71,7 +64,7 @@ public class DataSourceController {
 
     @ResponseBody
     @DeleteMapping("/delete")
-    public Object deleteDataSources(@RequestParam(required = true) Long dsId)throws IOException, SQLException {
+    public Object deleteDataSources(@RequestParam(required = true) Long dsId)throws Exception {
         return dataSourceService.deleteDataSources(dsId);
     }
 
@@ -83,19 +76,19 @@ public class DataSourceController {
 
     @ResponseBody
     @GetMapping("/select")
-    public Object selectDataSources()throws IOException, SQLException {
+    public Object selectDataSources()throws Exception {
        return dataSourceService.selectDataSources();
     }
 
     @ResponseBody
     @GetMapping("/refresh-datasource")
-    public Object srefreshDataSources(@RequestParam(required = false) Long dsId)throws IOException, SQLException {
+    public Object srefreshDataSources(@RequestParam(required = true) Long dsId)throws Exception {
         return dataSourceService.refreshDataSources(dsId);
     }
 
     @ResponseBody
     @GetMapping("/select-property")
-    public Object selectDataSourceProperty(Long dsId)throws IOException, SQLException {
+    public Object selectDataSourceProperty(Long dsId)throws Exception {
         return dataSourceService.selectDataSourceProperty(dsId);
     }
 
@@ -108,7 +101,7 @@ public class DataSourceController {
 
 
 
-    private String uploadFile(MultipartFile file, HttpServletRequest request) throws IOException {
+    private String uploadFile(MultipartFile file, HttpServletRequest request) throws Exception {
         String fileName = file.getOriginalFilename();
         String projectPath = System.getProperty("user.dir");
         String savePath=projectPath+File.separator+"UploadFile";

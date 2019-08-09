@@ -13,8 +13,6 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -37,29 +35,29 @@ public class CacheComponent {
 
 
     @Cacheable(value = "selectAllSchema")
-    public List<DbInforamtionDTO> selectAllSchema(Long dsId) throws IOException, SQLException {
+    public List<DbInforamtionDTO> selectAllSchema(Long dsId) throws Exception {
         return null;
     }
 
     @Cacheable(value = "selectAllTableAndView")
-    public List<TableAndViewInfoDTO> selectAllTableAndView(Long dsId) throws IOException, SQLException {
+    public List<TableAndViewInfoDTO> selectAllTableAndView(Long dsId) throws Exception {
         return null;
     }
 
     @Cacheable(value = "getAllDataFacetKey")
-    public List<DfKeyInfoDTO> getAllDataFacetKey() throws IOException, SQLException {
+    public List<DfKeyInfoDTO> getAllDataFacetKey() throws Exception {
         return dfKeyBasicConfigDao.getAllDataFacetKey();
     }
 
 
 
     @CachePut(value = "selectAllSchema")
-    public List<DbInforamtionDTO> selectAllSchemaPut(Long dsId) throws IOException, SQLException {
+    public List<DbInforamtionDTO> selectAllSchemaPut(Long dsId) throws Exception {
         return dataSourceDao.selectAllSchema(dsId);
     }
 
     @CachePut(value = "selectAllTableAndView")
-    public List<TableAndViewInfoDTO> selectAllTableAndViewPut(Long dsId) throws IOException, SQLException {
+    public List<TableAndViewInfoDTO> selectAllTableAndViewPut(Long dsId) throws Exception {
         return dataSourceDao.selectAllTableAndView(dsId);
     }
 
