@@ -198,7 +198,7 @@ create table if not exists db_dict_plugin_configuration(
     field_id varchar(64) primary key ,
     field_domain varchar(100) not null,
     field_item varchar(100) not null,
-    field_enable tinyint not null,
+    field_enable bit not null,
     field_type varchar(50) not null,
     field_param longtext,
     field_cron varchar(100)

@@ -16,6 +16,7 @@ import static ai.sparklabinc.d1.dict.entity.DictPluginConfigurationDO.*;
 
 
 import javax.annotation.Resource;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -44,6 +45,13 @@ public class DictPluginConfigurationRepositoryImpl implements DictPluginConfigur
         String sql = " select * from " + TABLE_NAME + " where " + F_ENABLE + " = ? ";
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         return qr.query(sql, new BeanListHandler<>(DictPluginConfigurationDO.class, new QueryRunnerRowProcessor()), true);
+    }
+
+    @Override
+    public List<DictPluginConfigurationDO> findAllEnableWithLockTransaction(Connection connection) throws SQLException {
+        String sql = " select * from " + TABLE_NAME + " where " + F_ENABLE + " = ? for update";
+        QueryRunner qr = new QueryRunner();
+        return qr.query(connection, sql, new BeanListHandler<>(DictPluginConfigurationDO.class, new QueryRunnerRowProcessor()), true);
     }
 
     /**
