@@ -215,8 +215,6 @@ public class DataSourceServiceImpl implements DataSourceService {
 
     @Override
     public DbInforamtionDTO refreshDataSources(Long dsId) throws Exception {
-        //清除缓存
-        cacheComponent.clearDataSourceTreeAllCache(dsId);
         /*********************************************************************
          * step1 拿到前端需要展示的第一层信息
          * *******************************************************************

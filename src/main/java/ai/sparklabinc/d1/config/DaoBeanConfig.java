@@ -5,6 +5,7 @@ import ai.sparklabinc.d1.defaults.dao.DefaultsConfigurationRepository;
 import ai.sparklabinc.d1.dict.dao.DictPluginConfigurationRepository;
 import ai.sparklabinc.d1.dict.dao.DictRepository;
 import ai.sparklabinc.d1.dict.dao.FormDictConfigurationRepository;
+import ai.sparklabinc.d1.entity.DsTreeMenuCacheDO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -133,5 +134,15 @@ public class DaoBeanConfig {
         }
         return dataDaoFactory.getDaoBean(DictPluginConfigurationRepository.class, basicDbConfig.getType());
     }
+
+    @Bean("DsTreeMenuCacheDao")
+    public DsTreeMenuCacheDao getDsTreeMenuCacheDao(){
+        if(StringUtils.isBlank(basicDbConfig.getType())){
+            basicDbConfig.setType("sqlite");
+        }
+        DsTreeMenuCacheDao daoBean = dataDaoFactory.getDaoBean(DsTreeMenuCacheDao.class, basicDbConfig.getType());
+        return daoBean;
+    }
+
 
 }
