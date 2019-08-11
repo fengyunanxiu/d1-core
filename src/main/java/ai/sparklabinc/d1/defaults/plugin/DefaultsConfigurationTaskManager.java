@@ -127,8 +127,10 @@ public class DefaultsConfigurationTaskManager {
                     }
                 }
             }
+            Thread.sleep(300000L);
             connection.commit();
-        } catch (SQLException e) {
+
+        } catch (Exception e) {
             LOGGER.error("", e);
         }
     }

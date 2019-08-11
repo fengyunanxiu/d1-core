@@ -92,8 +92,9 @@
 
         <!--MySQL驱动-->
         <dependency>
-            <groupId>mysql</groupId>
+            <groupId>Maven.mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.46</version>
         </dependency>
 
         <!--oracle驱动包-->
@@ -203,6 +204,7 @@
     </dependencies>
 
     <build>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
