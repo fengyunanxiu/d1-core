@@ -35,13 +35,13 @@ public class DataSourcePoolUtils {
         p.setDriverClassName(properties.getProperty("Driver"));
         p.setUsername(properties.getProperty("User"));
         p.setPassword(properties.getProperty("Password"));
-        p.setUrl((String) properties.get("Url"));
+        p.setUrl(properties.getProperty("Url"));
         // 初始化时获取100条连接
         p.setInitialSize(3);
         // 每60秒检查所有连接池中的空闲连接
         p.setValidationInterval(60);
         // 最大空闲时间,3600秒内未使用则连接被丢弃。若为0则永不丢弃
-        p.setMaxIdle(3);
+        p.setMaxIdle(1);
         p.setRollbackOnReturn(true);
         ds = new DataSource();
         ds.setPoolProperties(p);

@@ -23,7 +23,7 @@ public class DictPluginConfigurationDO {
     public static String F_PARAM = "field_param";
     public static String F_CRON = "field_cron";
 
-    private Long fieldId;
+    private String fieldId;
 
     private String fieldDomain;
 
@@ -40,11 +40,11 @@ public class DictPluginConfigurationDO {
 
     private String fieldCron;
 
-    public Long getFieldId() {
+    public String getFieldId() {
         return fieldId;
     }
 
-    public void setFieldId(Long fieldId) {
+    public void setFieldId(String fieldId) {
         this.fieldId = fieldId;
     }
 

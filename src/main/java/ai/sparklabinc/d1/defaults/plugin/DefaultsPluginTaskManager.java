@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -61,9 +62,9 @@ public class DefaultsPluginTaskManager {
 
     private void task() {
         LOGGER.info("start default value task");
-        try (
-                Connection connection = this.d1BasicDataSource.getConnection();
-        ) {
+        Connection connection = null;
+        try {
+            connection = this.d1BasicDataSource.getConnection();
             // 开启事务
             connection.setAutoCommit(false);
             List<DefaultsConfigurationDO> all = this.defaultsConfigurationRepository.queryAllWithLockTransaction(connection);
@@ -128,6 +129,14 @@ public class DefaultsPluginTaskManager {
             connection.commit();
         } catch (Exception e) {
             LOGGER.error("", e);
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    LOGGER.error("", e);
+                }
+            }
         }
     }
 
