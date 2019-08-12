@@ -57,9 +57,10 @@ public class DictPluginTaskManager {
     }
 
     private void task() {
-        try (
-                Connection connection = this.d1BasicDataSource.getConnection()
-        ) {
+        LOGGER.info(" start to process dict task ");
+        Connection connection = null;
+        try{
+            connection = this.d1BasicDataSource.getConnection();
             connection.setAutoCommit(false);
             List<DictPluginConfigurationDO> allEnableList = this.dictPluginConfigurationRepository.findAllEnableWithLockTransaction(connection);
             if (allEnableList == null || allEnableList.isEmpty()) {
@@ -103,8 +104,16 @@ public class DictPluginTaskManager {
                 LOGGER.info("end to start new dict sql plugin, size: {}", allEnableMap.size());
             }
             connection.commit();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             LOGGER.error("", e);
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    LOGGER.error("", e);
+                }
+            }
         }
     }
 

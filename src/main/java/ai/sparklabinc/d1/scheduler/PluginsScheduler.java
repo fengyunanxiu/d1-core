@@ -27,7 +27,7 @@ public class PluginsScheduler {
 
     public void init() {
         this.defaultsPluginTaskManager.run();
-        dictPluginTaskManager.run();
+        this.dictPluginTaskManager.run();
     }
 
 }

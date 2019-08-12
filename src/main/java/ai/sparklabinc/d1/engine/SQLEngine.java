@@ -20,8 +20,12 @@ public class SQLEngine {
     private static final Logger LOGGER = LoggerFactory.getLogger(SQLEngine.class);
 
     public List<Map<String, String>> execute(String jdbcUrl, String username, String password, String sql) throws Exception {
-        Connection connection = getConnection(jdbcUrl, username, password);
-        return executeSQL(connection, sql);
+        try(Connection connection = getConnection(jdbcUrl, username, password)) {
+            return executeSQL(connection, sql);
+        } catch (Exception e) {
+            LOGGER.error("", e);
+        }
+        return null;
     }
 
     private Connection getConnection(String jdbcUrl, String username, String password) throws Exception {
@@ -56,7 +60,7 @@ public class SQLEngine {
                 }
             }
             return result;
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw e;
         }
     }
