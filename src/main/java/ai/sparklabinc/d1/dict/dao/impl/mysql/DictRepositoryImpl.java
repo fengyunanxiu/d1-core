@@ -13,6 +13,7 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.MapHandler;
 import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.apache.tomcat.jdbc.pool.DataSource;
+import org.apache.xmlbeans.impl.xb.xsdschema.FieldDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -122,8 +123,7 @@ public class DictRepositoryImpl implements DictRepository {
             throw new ServiceException("dict list is null");
         }
         List<Object[]> paramList = new ArrayList<>();
-        String sql = String.format(" insert into %s (%s, %s, %s, %s, %s, %s, %s, %s) values (?, ?, ?, ?, ?, ?, ?, ?)",
-                DictDO.TABLE_NAME, DictDO.F_ID, DictDO.F_DOMAIN, DictDO.F_ITEM, DictDO.F_VALUE, DictDO.F_LABEL, DictDO.F_SEQUENCE, DictDO.F_ENABLE, DictDO.F_PARENT_ID);
+        String sql = "insert into " + TABLE_NAME + " (" + F_ID + ", " + F_GMT_CREATE + ", " + F_DOMAIN + ", " + F_ITEM + ", " + F_VALUE + ", " + F_LABEL + ", " + F_SEQUENCE + ", " + F_ENABLE + ", " + F_PARENT_ID + ") values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         for (DictDO dictDO : dictDOList) {
             if (dictDO == null
                     || StringUtils.isNullOrEmpty(dictDO.getFieldDomain())
@@ -135,6 +135,7 @@ public class DictRepositoryImpl implements DictRepository {
             }
             Object[] param = new Object[]{
                     UUID.randomUUID().toString(),
+                    new Date(),
                     dictDO.getFieldDomain(),
                     dictDO.getFieldItem(),
                     dictDO.getFieldValue(),
@@ -161,7 +162,9 @@ public class DictRepositoryImpl implements DictRepository {
         if (dictDOList == null || dictDOList.isEmpty()) {
             throw new ServiceException("dict list is null");
         }
-        String sql = "update " + DictDO.TABLE_NAME + " set field_domain = ?, field_item = ?, field_value = ?, field_label = ?, field_sequence = ?, field_enable = ?, field_parent_id = ? where field_id = ?";
+        String sql = "update " + TABLE_NAME + " set " + F_GMT_MODIFIED + " = ?, " + F_DOMAIN + " = ?, " +
+                F_ITEM + " = ?, " + F_VALUE + " = ?, " + F_LABEL + " = ?, " + F_SEQUENCE + " = ?, " +
+                F_ENABLE + " = ?, " + F_PARENT_ID + "= ? where " + F_ID + " = ?";
         List<Object[]> paramList = new ArrayList<>();
         for (DictDO dictDO : dictDOList) {
             if (dictDO == null
@@ -174,6 +177,7 @@ public class DictRepositoryImpl implements DictRepository {
                 throw new ServiceException("field_id, field_domain, field_item, field_value, field_sequence, field_enable不能为空");
             }
             Object[] param = new Object[]{
+                    new Date(),
                     dictDO.getFieldDomain(),
                     dictDO.getFieldItem(),
                     dictDO.getFieldValue(),
@@ -200,7 +204,7 @@ public class DictRepositoryImpl implements DictRepository {
         if (idList == null || idList.isEmpty()) {
             throw new ServiceException("id is null");
         }
-        StringBuilder sqlBuilder = new StringBuilder("delete from " + DictDO.TABLE_NAME + " where field_id in (");
+        StringBuilder sqlBuilder = new StringBuilder("delete from " + DictDO.TABLE_NAME + " where " + F_ID + " in (");
         for (String id : idList) {
             sqlBuilder.append("?,");
         }
@@ -230,13 +234,13 @@ public class DictRepositoryImpl implements DictRepository {
             sqlParamList.add(dictDO.getFieldItem());
             sqlParamList.add(dictDO.getFieldValue());
             if (i == 0) {
-                sqlBuilder.append(" where (field_domain = ? and field_item = ? and field_value = ?) ");
+                sqlBuilder.append(" where (" + F_DOMAIN + " = ? and " + F_ITEM + " = ? and " + F_VALUE + " = ?) ");
             } else {
-                sqlBuilder.append(" or (field_domain = ? and field_item = ? and field_value = ?) ");
+                sqlBuilder.append(" or (" + F_DOMAIN + " = ? and " + F_ITEM + " = ? and " + F_VALUE + " = ?) ");
             }
         }
         // 排序
-        sqlBuilder.append(" order by field_domain, field_item, field_sequence ");
+        sqlBuilder.append(" order by " + F_DOMAIN + ", " + F_ITEM + ", " + F_SEQUENCE + " ");
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         LOGGER.info("find by field_domain and field_item sql: {}", sqlBuilder.toString());
         return qr.query(sqlBuilder.toString(), new BeanListHandler<>(DictDO.class, new QueryRunnerRowProcessor()), sqlParamList.toArray(new Object[0]));
@@ -355,10 +359,10 @@ public class DictRepositoryImpl implements DictRepository {
 
     @Override
     public void updateValueByDomainAndItem(List<DictDO> dictDOList) throws SQLException {
-        String sql = " insert into " + TABLE_NAME + " (" + F_ID + ", " + F_DOMAIN + ", " + F_ITEM + ", " + F_VALUE + " , " + F_LABEL + " , " + F_SEQUENCE + " , " + F_ENABLE + " , " + F_PARENT_ID + " ) " +
-                " values (?, ?, ?, ?, ?, ?, ?, ?) on duplicate key update " + F_VALUE + " = ?, " + F_LABEL + " = ?, " + F_SEQUENCE + " = ?, " + F_ENABLE + " = ?, " + F_PARENT_ID + " = ? ";
+        String sql = " insert into " + TABLE_NAME + " (" + F_ID + ", " + F_GMT_CREATE + ", " + F_DOMAIN + ", " + F_ITEM + ", " + F_VALUE + " , " + F_LABEL + " , " + F_SEQUENCE + " , " + F_ENABLE + " , " + F_PARENT_ID + " ) " +
+                " values (?, ?, ?, ?, ?, ?, ?, ?, ?) on duplicate key update " + F_GMT_MODIFIED + " = ?, " + F_VALUE + " = ?, " + F_LABEL + " = ?, " + F_SEQUENCE + " = ?, " + F_ENABLE + " = ?, " + F_PARENT_ID + " = ? ";
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
-        Object[][] param = new Object[dictDOList.size()][13];
+        Object[][] param = new Object[dictDOList.size()][15];
         for (int i = 0; i < dictDOList.size(); i++) {
             DictDO dictDO = dictDOList.get(i);
             String fieldDomain = dictDO.getFieldDomain();
@@ -369,13 +373,15 @@ public class DictRepositoryImpl implements DictRepository {
             String fieldEnable = dictDO.getFieldEnable();
             String fieldParentId = dictDO.getFieldParentId();
             param[i][0] = UUID.randomUUID().toString();
-            param[i][1] = fieldDomain;
-            param[i][2] = fieldItem;
-            param[i][3] = param[i][8] = fieldValue;
-            param[i][4] = param[i][9] = fieldLabel;
-            param[i][5] = param[i][10] = fieldSequence;
-            param[i][6] = param[i][11] = fieldEnable;
-            param[i][7] = param[i][12] = fieldParentId;
+            param[i][1] = param[i][9] = new Date();
+            param[i][2] = fieldDomain;
+            param[i][3] = fieldItem;
+            param[i][4] = param[i][10] = fieldValue;
+            param[i][5] = param[i][11] = fieldLabel;
+            param[i][6] = param[i][12] = fieldSequence;
+            param[i][7] = param[i][13] = fieldEnable;
+            param[i][8] = param[i][14] = fieldParentId;
+
 //            param[i][5] = fieldValue;
 //            param[i][6] = fieldLabel;
 //            param[i][7] = fieldSequence;

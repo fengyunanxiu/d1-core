@@ -163,6 +163,8 @@ from db_basic_config t1
 
 create table if not exists db_dict (
     field_id varchar(64) primary key ,
+    field_gmt_create datetime,
+    field_gmt_modified datetime,
     field_domain varchar(64) not null ,
     field_item varchar(64) not null ,
     field_value varchar(100) not null ,

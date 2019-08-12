@@ -4,6 +4,8 @@ import ai.sparklabinc.d1.dao.convert.Column;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Date;
+
 /**
  * @author : zxiuwu
  * @version : V1.0
@@ -16,6 +18,8 @@ public class DictDO {
     public static final String TABLE_NAME = "db_dict";
 
     public static final String F_ID = "field_id";
+    public static final String F_GMT_CREATE = "field_gmt_create";
+    public static final String F_GMT_MODIFIED = "field_gmt_modified";
     public static final String F_DOMAIN = "field_domain";
     public static final String F_ITEM = "field_item";
     public static final String F_VALUE = "field_value";
@@ -25,6 +29,10 @@ public class DictDO {
     public static final String F_PARENT_ID = "field_parent_id";
 
     private String fieldId;
+
+    private Date gmtCreate;
+
+    private Date gmtModified;
 
     private String fieldDomain;
 
@@ -47,6 +55,22 @@ public class DictDO {
 
     public void setFieldId(String fieldId) {
         this.fieldId = fieldId;
+    }
+
+    public Date getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Date gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public Date getGmtModified() {
+        return gmtModified;
+    }
+
+    public void setGmtModified(Date gmtModified) {
+        this.gmtModified = gmtModified;
     }
 
     public String getFieldDomain() {
