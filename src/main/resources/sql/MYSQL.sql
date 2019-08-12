@@ -202,5 +202,19 @@ create table if not exists db_dict_plugin_configuration(
     field_type varchar(50) not null,
     field_param longtext,
     field_cron varchar(100)
-)charset=utf8 collate utf8_croatian_ci
+)charset=utf8 collate utf8_croatian_ci;
+
+###
+
+create table if not exists ds_tree_menu_cache
+(
+    ds_id              bigint not null
+        primary key,
+    ds_basic_info      json   null,
+    ds_schema_info     json   null,
+    ds_table_view_info json   null,
+    ds_key_info        json   null
+)charset =utf8;
+
+
 

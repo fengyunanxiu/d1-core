@@ -225,14 +225,14 @@ public class DataSourceFactory {
         String driverName;
         DataSource datasource;
         if (useSshTunnel) {
-            url = "jdbc:mysql://localhost:" + localPort + (org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getDbUrl()) ? "" : (dbBasicConfigDO.getDbUrl()));
+            url = "jdbc:mysql://localhost:" + localPort + (org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getDbUrl()) ? "?" : (dbBasicConfigDO.getDbUrl()));
         } else {
             url = "jdbc:mysql://" + dbHost + ":" + dbPort + (org.apache.commons.lang3.StringUtils.isBlank(dbBasicConfigDO.getDbUrl()) ? "" : (dbBasicConfigDO.getDbUrl()));
         }
         if (dbSecurityConfigDTO.getUseSsl() != null && dbSecurityConfigDTO.getUseSsl()) {
-            url += "?&useSSL=true";
+            url += "&useSSL=true";
         } else {
-            url += "?&useSSL=false";
+            url += "&useSSL=false";
         }
         //驱动
         driverName = "com.mysql.jdbc.Driver";
