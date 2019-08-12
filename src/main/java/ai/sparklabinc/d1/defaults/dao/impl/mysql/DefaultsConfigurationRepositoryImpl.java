@@ -63,7 +63,7 @@ public class DefaultsConfigurationRepositoryImpl implements DefaultsConfiguratio
      */
     @Override
     public List<DefaultsConfigurationDO> queryAllWithLockTransaction(Connection connection) throws SQLException {
-        String sql = "select * from " + DefaultsConfigurationDO.TABLE_NAME + " for update ";
+        String sql = "select * from " + DefaultsConfigurationDO.TABLE_NAME + " ";
         QueryRunner qr = new QueryRunner();
         return qr.query(connection, sql, new BeanListHandler<>(DefaultsConfigurationDO.class, new QueryRunnerRowProcessor()));
     }

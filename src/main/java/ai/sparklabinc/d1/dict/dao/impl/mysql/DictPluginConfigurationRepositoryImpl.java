@@ -49,7 +49,7 @@ public class DictPluginConfigurationRepositoryImpl implements DictPluginConfigur
 
     @Override
     public List<DictPluginConfigurationDO> findAllEnableWithLockTransaction(Connection connection) throws SQLException {
-        String sql = " select * from " + TABLE_NAME + " where " + F_ENABLE + " = ? for update";
+        String sql = " select * from " + TABLE_NAME + " where " + F_ENABLE + " = ?";
         QueryRunner qr = new QueryRunner();
         return qr.query(connection, sql, new BeanListHandler<>(DictPluginConfigurationDO.class, new QueryRunnerRowProcessor()), true);
     }
