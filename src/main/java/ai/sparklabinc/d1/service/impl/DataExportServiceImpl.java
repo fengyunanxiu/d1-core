@@ -70,6 +70,14 @@ public class DataExportServiceImpl implements DataExportService {
 
         List<DfFormTableSettingDO> queryTableSettings = dfFormTableSettingDao.getAllDfFormTableSettingByDfKeyForExport(dataFacetKey);
 
+        //临时文件处理
+        File tmpFile=new File(fullFilePathOfExportFile);
+        File parentFile = tmpFile.getParentFile();
+        // 如果没有文件夹则创建
+        if (!parentFile.exists()) {
+            parentFile.mkdirs();
+        }
+
         String querySql=assemblyResultDTO.getQuerySql();
         List<Object> paramList = assemblyResultDTO.getParamList();
 
