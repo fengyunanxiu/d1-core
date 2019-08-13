@@ -1,7 +1,6 @@
 package ai.sparklabinc.d1.dao.impl.mysql;
 
 import ai.sparklabinc.d1.dao.DataDaoType;
-import ai.sparklabinc.d1.dao.DfFormTableSettingDao;
 import ai.sparklabinc.d1.dao.impl.AbstractDfFormTableSettingDao;
 import ai.sparklabinc.d1.datasource.DataSourceFactory;
 import ai.sparklabinc.d1.entity.DfFormTableSettingDO;
@@ -15,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -73,6 +71,7 @@ public class MysqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingDa
                     String formFieldQueryType = resultSet.getString("form_field_query_type");
                     String formFieldChildrenDbFieldName = resultSet.getString("form_field_child_field_name");
                     String formFieldDictDomainName = resultSet.getString("form_field_dict_domain_name");
+                    String formFieldDictItem=resultSet.getString("form_field_dict_item");
                     String formFieldDefalutValStrategy = resultSet.getString("form_field_def_val_strategy");
                     Boolean tableFieldVisible = resultSet.getBoolean("table_field_visible");
                     String tableFiedldOrderBy = resultSet.getString("table_field_order_by");
@@ -102,6 +101,7 @@ public class MysqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingDa
                     dfFormTableSettingDO.setFormFieldQueryType(formFieldQueryType);
                     dfFormTableSettingDO.setFormFieldChildFieldName(formFieldChildrenDbFieldName);
                     dfFormTableSettingDO.setFormFieldDictDomainName(formFieldDictDomainName);
+                    dfFormTableSettingDO.setFormFieldDictItem(formFieldDictItem);
                     dfFormTableSettingDO.setFormFieldDefValStrategy(formFieldDefalutValStrategy);
                     dfFormTableSettingDO.setTableFieldVisible(tableFieldVisible);
                     dfFormTableSettingDO.setTableFieldOrderBy(tableFiedldOrderBy);
@@ -129,13 +129,13 @@ public class MysqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingDa
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql ="insert into df_form_table_setting(gmt_create, gmt_modified, df_key, db_field_name, db_field_type," +
                 " view_field_label, db_field_comment, form_field_visible, form_field_sequence, form_field_query_type," +
-                " form_field_child_field_name, form_field_dict_domain_name, form_field_def_val_strategy," +
+                " form_field_child_field_name, form_field_dict_domain_name, form_field_dict_item,form_field_def_val_strategy," +
                 " table_field_visible, table_field_order_by, table_field_query_required, table_field_sequence, table_field_column_width," +
                 " export_field_visible, export_field_sequence, export_field_width,table_parent_label,form_field_use_default_val," +
                 " form_field_default_val,column_is_exist)" +
                 " values (?, ?, ?, ?, ?," +
                 "  ?, ?, ?, ?, ?," +
-                "  ?, ?, ?," +
+                "  ?, ?, ?, ?," +
                 "  ?, ?, ?, ?, ?," +
                 "  ?, ?, ?, ?, ?," +
                 "  ?, ?)";
@@ -153,6 +153,7 @@ public class MysqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingDa
 
                 dfFormTableSettingDO.getFormFieldChildFieldName(),
                 dfFormTableSettingDO.getFormFieldDictDomainName(),
+                dfFormTableSettingDO.getFormFieldDictItem(),
                 dfFormTableSettingDO.getFormFieldDefValStrategy(),
 
                 dfFormTableSettingDO.getTableFieldVisible()?1:0,
@@ -220,6 +221,7 @@ public class MysqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingDa
                 "  form_field_query_type as  formFieldQueryType," +
                 "  form_field_child_field_name as  formFieldChildrenDbFieldName ," +
                 "  form_field_dict_domain_name as  formFieldDictDomainName ," +
+                "  form_field_dict_item as  formFieldDictItem ," +
                 "  form_field_def_val_strategy as  formFieldDefalutValStrategy ," +
                 "  table_field_visible as  tableFieldVisible," +
                 "  table_field_order_by as  tableFieldOrderBy ," +
@@ -257,6 +259,7 @@ public class MysqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingDa
                 "   form_field_child_field_name = ?," +
 
                 "   form_field_dict_domain_name = ?," +
+                "   form_field_dict_item = ?," +
                 "   form_field_def_val_strategy = ?," +
                 "   table_field_visible = ?," +
                 "   table_field_order_by = ?," +
@@ -288,6 +291,7 @@ public class MysqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingDa
                 dfFormTableSettingDO.getFormFieldChildFieldName(),
 
                 dfFormTableSettingDO.getFormFieldDictDomainName(),
+                dfFormTableSettingDO.getFormFieldDictItem(),
                 dfFormTableSettingDO.getFormFieldDefValStrategy(),
                 dfFormTableSettingDO.getTableFieldVisible()?1:0,
                 dfFormTableSettingDO.getTableFieldOrderBy(),

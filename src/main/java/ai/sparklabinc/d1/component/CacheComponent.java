@@ -107,6 +107,11 @@ public class CacheComponent {
     }
 
 
+    public Integer clearDataSourceCacheByDsId(Long dsId) throws Exception {
+        return dsTreeMenuCacheDao.clearDataSourceCacheByDsId(dsId);
+    }
+
+
 //    @Cacheable(value = "selectAllSchema")
 //    public List<DbInforamtionDTO> selectAllSchema(Long dsId) throws Exception {
 //        return null;

@@ -32,7 +32,7 @@ if total<1 then
     gmt_create   varchar(30),
     gmt_modified varchar(30),
     db_type         varchar(100),
-    db_name         varchar(100) unique,
+    db_name         varchar(100) unique not null,
     db_host         varchar(255),
     db_port         int,
     db_user         varchar(255),

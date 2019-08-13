@@ -11,5 +11,5 @@ import java.sql.SQLException;
  * @description :
  */
 public interface DsBasicDictionaryService {
-    OptionListAndDefaultValDTO getOptionListAndDefaultValDTOByDomainName(String domainName) throws SQLException, IOException;
+    OptionListAndDefaultValDTO getOptionListAndDefaultValDTOByDomainName(String domainName, String item) throws SQLException, IOException;
 }

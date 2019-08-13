@@ -134,6 +134,8 @@ public class DataSourceServiceImpl implements DataSourceService {
         Integer delete = dbBasicConfigDao.delete(dsId);
         Integer delete1 = dbSecurityConfigDao.delete(dsId);
         if (delete > 0 && delete1 > 0) {
+            //清楚缓存
+            cacheComponent.clearDataSourceCacheByDsId(dsId);
             return true;
         }
         return false;

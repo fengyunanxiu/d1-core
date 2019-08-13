@@ -16,7 +16,7 @@ create table if not exists  db_basic_config
     gmt_create   varchar(30),
     gmt_modified varchar(30),
     db_type         varchar(100),
-    db_name         varchar(100) unique,
+    db_name         varchar(100) unique not null,
     db_host         varchar(255),
     db_port         int,
     db_user         varchar(255),
@@ -107,7 +107,7 @@ create table if not exists  df_form_table_setting
     export_field_width                int,
     table_parent_label                varchar(100),
     form_field_use_default_val        tinyint,
-    form_field_default_val   varchar(200),
+    form_field_default_val            varchar(200),
     column_is_exist                   tinyint default 1
 ) charset = utf8;
 

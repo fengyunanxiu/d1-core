@@ -15,4 +15,6 @@ public interface DsTreeMenuCacheDao {
     Integer updateDsTreeMenuCache(DsTreeMenuCacheDO dsTreeMenuCacheDO) throws Exception;
 
     DsTreeMenuCacheDO getDsTreeMenuCache(Long dsId) throws Exception;
+
+    Integer clearDataSourceCacheByDsId(Long dsId) throws Exception;
 }

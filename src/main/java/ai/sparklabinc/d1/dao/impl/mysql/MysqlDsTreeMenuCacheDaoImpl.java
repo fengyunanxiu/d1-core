@@ -74,4 +74,13 @@ public class MysqlDsTreeMenuCacheDaoImpl implements DsTreeMenuCacheDao {
         DsTreeMenuCacheDO dsTreeMenuCacheDO = queryRunner.query(sql, new BeanHandler<>(DsTreeMenuCacheDO.class), dsId);
         return dsTreeMenuCacheDO;
     }
+
+    @Override
+    public Integer clearDataSourceCacheByDsId(Long dsId) throws Exception {
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
+        String sql = "delete from ds_tree_menu_cache where ds_id = ?";
+        LOGGER.info("sql string:{}",sql);
+        int update = queryRunner.update(sql, dsId);
+        return update;
+    }
 }
