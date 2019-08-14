@@ -12,6 +12,8 @@ import com.alibaba.fastjson.JSON;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import org.apache.tomcat.jdbc.pool.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -33,6 +35,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 public class DataSourceFactory {
+    private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceFactory.class);
+
     public volatile ConcurrentHashMap<Long, Session> sshSessionMap = new ConcurrentHashMap<>();
     public volatile ConcurrentHashMap<Long, DataSource> dataSourceMap = new ConcurrentHashMap<>();
 
@@ -46,6 +50,7 @@ public class DataSourceFactory {
     private ConnectionService connectionService;
 
     public DataSource builder(String dbType, Long dsId) throws Exception {
+        long startTime = System.currentTimeMillis();
         /***************************************************************
          *step1 先判断是否创建了DataSource，没有则获取是sqlite中的数据源配置信息
          ***************************************************************
@@ -122,12 +127,15 @@ public class DataSourceFactory {
          * 并放到内存中
          ***************************************************************
          */
+        DataSource dataSource = null;
         if (dataSourceMap.get(dsId) == null) {
-            return createDataSource(dsId, useSshTunnel, localPort, dbHost, dbPort, dbUserName, dbPassword, url);
+            dataSource = createDataSource(dsId, useSshTunnel, localPort, dbHost, dbPort, dbUserName, dbPassword, url);
         } else {
-            return dataSourceMap.get(dsId);
+            dataSource = dataSourceMap.get(dsId);
         }
-
+        long spendTime=System.currentTimeMillis()-startTime;
+        LOGGER.info("Get data source spend time>>>{}", spendTime);
+        return dataSource;
     }
 
 

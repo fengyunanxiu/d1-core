@@ -126,6 +126,7 @@ public class MysqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingDa
 
     @Override
     public Integer add(DfFormTableSettingDO dfFormTableSettingDO) throws IOException, SQLException {
+        long startTime=System.currentTimeMillis();
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql ="insert into df_form_table_setting(gmt_create, gmt_modified, df_key, db_field_name, db_field_type," +
                 " view_field_label, db_field_comment, form_field_visible, form_field_sequence, form_field_query_type," +
@@ -173,6 +174,7 @@ public class MysqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingDa
                 };
         LOGGER.info("insert sql:{}",sql);
         int result = queryRunner.update(sql, objectParams);
+        LOGGER.info("insert spent time：{}",System.currentTimeMillis()-startTime);
         return  result;
     }
 

@@ -36,12 +36,14 @@ public class DataSourcePoolUtils {
         p.setUsername(properties.getProperty("User"));
         p.setPassword(properties.getProperty("Password"));
         p.setUrl(properties.getProperty("Url"));
-        // 初始化时获取100条连接
+        // 初始化时获取5条连接
         p.setInitialSize(3);
+        //最大连接数
+        p.setMaxActive(20);
         // 每60秒检查所有连接池中的空闲连接
         p.setValidationInterval(60);
-        // 最大空闲时间,3600秒内未使用则连接被丢弃。若为0则永不丢弃
-        p.setMaxIdle(1);
+        //MaxIdle是最大的空闲连接数，这里取值为5，表示即使没有数据库连接时依然可以保持5空闲的
+        p.setMaxIdle(10);
         p.setRollbackOnReturn(true);
         ds = new DataSource();
         ds.setPoolProperties(p);

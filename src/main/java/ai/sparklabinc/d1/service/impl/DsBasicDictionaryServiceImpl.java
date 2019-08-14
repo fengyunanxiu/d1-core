@@ -40,7 +40,5 @@ public class DsBasicDictionaryServiceImpl implements DsBasicDictionaryService {
             return optionListAndDefaultValDTO;
         }
         return null;
-
-
     }
 }

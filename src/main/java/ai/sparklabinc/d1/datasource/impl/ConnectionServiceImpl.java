@@ -114,12 +114,12 @@ public class ConnectionServiceImpl implements ConnectionService {
             switch (dbType) {
                 case Constants.DATABASE_TYPE_MYSQL:
                     //url
+                    if (dbSecurityConfigDTO.getUseSsl() != null && dbSecurityConfigDTO.getUseSsl()) {
+                        urlSuffix += "&useSSL=true";
+                    } else {
+                        urlSuffix += "&useSSL=false";
+                    }
                     if (useSshTunnel) {
-                        if (dbSecurityConfigDTO.getUseSsl() != null && dbSecurityConfigDTO.getUseSsl()) {
-                            urlSuffix += "&useSSL=true";
-                        } else {
-                            urlSuffix += "&useSSL=false";
-                        }
                         url = "jdbc:mysql://localhost:" + localPort + (StringUtils.isBlank(dbBasicConfigDTO.getDbUrl()) ? "" : ("/" + dbBasicConfigDTO.getDbUrl()));
                     } else {
                         url = "jdbc:mysql://" + dbHost + ":" + dbPort + (StringUtils.isBlank(dbBasicConfigDTO.getDbUrl()) ? "" : ("/" + dbBasicConfigDTO.getDbUrl()));
