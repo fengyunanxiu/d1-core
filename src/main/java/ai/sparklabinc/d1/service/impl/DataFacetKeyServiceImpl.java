@@ -18,6 +18,7 @@ import ai.sparklabinc.d1.service.DataFacetKeyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -42,7 +43,7 @@ public class DataFacetKeyServiceImpl implements DataFacetKeyService {
     private DataSourceDao dataSourceDao;
 
     @Resource(name = "DfKeyBasicConfigDao")
-    private  DfKeyBasicConfigDao  dfKeyBasicConfigDao;
+    private DfKeyBasicConfigDao dfKeyBasicConfigDao;
 
     @Resource(name = "DfFormTableSettingDao")
     private DfFormTableSettingDao dfFormTableSettingDao;
@@ -124,23 +125,21 @@ public class DataFacetKeyServiceImpl implements DataFacetKeyService {
     }
 
     @Override
-    public Boolean saveDfFormTableSetting(List<DfFormTableSettingDO> dfFormTableSettingDOSForUpdate, List<DfFormTableSettingDO> dfFormTableSettingDOSForAdd) throws Exception{
+    public Boolean saveDfFormTableSetting(List<DfFormTableSettingDO> dfFormTableSettingDOSForUpdate, List<DfFormTableSettingDO> dfFormTableSettingDOSForAdd) throws Exception {
         //更新操作
-        if(!CollectionUtils.isEmpty(dfFormTableSettingDOSForUpdate)){
-            for(DfFormTableSettingDO dfFormTableSettingDO : dfFormTableSettingDOSForUpdate){
+        if (!CollectionUtils.isEmpty(dfFormTableSettingDOSForUpdate)) {
+            for (DfFormTableSettingDO dfFormTableSettingDO : dfFormTableSettingDOSForUpdate) {
                 Integer updateResult = dfFormTableSettingDao.updateDfFormTableSetting(dfFormTableSettingDO);
-                if(updateResult<=0){
+                if (updateResult <= 0) {
                     return false;
                 }
             }
         }
         //添加操作
-        if(!CollectionUtils.isEmpty(dfFormTableSettingDOSForAdd)){
-            for(DfFormTableSettingDO dfFormTableSettingDO : dfFormTableSettingDOSForAdd){
-                Integer add = dfFormTableSettingDao.add(dfFormTableSettingDO);
-                if(add<=0){
-                    return false;
-                }
+        if (!CollectionUtils.isEmpty(dfFormTableSettingDOSForAdd)) {
+            Integer add = dfFormTableSettingDao.batchAdd(dfFormTableSettingDOSForAdd);
+            if (add <= 0) {
+                return false;
             }
         }
 
@@ -171,6 +170,7 @@ public class DataFacetKeyServiceImpl implements DataFacetKeyService {
 
     /**
      * 写入默认值
+     *
      * @param dfKey
      * @param fieldKey
      * @param jsonValue
@@ -183,6 +183,7 @@ public class DataFacetKeyServiceImpl implements DataFacetKeyService {
 
     /**
      * 写入字典domain和item
+     *
      * @param dfKey
      * @param fieldName
      * @param domain

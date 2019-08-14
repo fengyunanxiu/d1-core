@@ -18,7 +18,7 @@ public interface DfFormTableSettingDao {
 
     List<DfFormTableSettingDO> getAllDfFormTableSettingByDfKey(String dataFacetKey) throws SQLException, IOException;
 
-    Integer add(DfFormTableSettingDO dfFormTableSettingDO) throws IOException, SQLException;
+    Integer batchAdd(List<DfFormTableSettingDO> dfFormTableSettingDOS) throws IOException, SQLException;
 
     List<Map<String,Object>> selectAllDfFormTableSettingByDfKey(String dataFacetKey) throws SQLException, IOException;
 

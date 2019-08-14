@@ -22,6 +22,7 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -69,6 +70,7 @@ public class MysqlDataSourceComponent {
             }
 
             DfFormTableSettingDO dfFormTableSettingDO = null;
+            List<DfFormTableSettingDO> dfFormTableSettingDOSAdd=new LinkedList<>();
             for (TableColumnsDetailDTO tableColumnsDetailDTO : tableColumnsDetailDTOList) {
                 dfFormTableSettingDO = new DfFormTableSettingDO();
 
@@ -133,8 +135,13 @@ public class MysqlDataSourceComponent {
 
                 dfFormTableSettingDO.setColumnIsExist(true);
 
-                dfFormTableSettingDao.add(dfFormTableSettingDO);
+                dfFormTableSettingDOSAdd.add(dfFormTableSettingDO);
             }
+            //入库
+            if(!CollectionUtils.isEmpty(dfFormTableSettingDOSAdd)){
+                dfFormTableSettingDao.batchAdd(dfFormTableSettingDOSAdd);
+            }
+
         }
         return dbInforamtionDTO;
     }
@@ -177,6 +184,7 @@ public class MysqlDataSourceComponent {
                 }
             }
             //如果不存在，则加入配置
+            List<DfFormTableSettingDO> dfFormTableSettingDOSAdd=new LinkedList<>();
             if (!columnIsExist) {
                 DfFormTableSettingDO dfFormTableSettingDO = new DfFormTableSettingDO();
 
@@ -241,7 +249,11 @@ public class MysqlDataSourceComponent {
 
                 dfFormTableSettingDO.setColumnIsExist(true);
 
-                dfFormTableSettingDao.add(dfFormTableSettingDO);
+                dfFormTableSettingDOSAdd.add(dfFormTableSettingDO);
+            }
+            //入库
+            if(!CollectionUtils.isEmpty(dfFormTableSettingDOSAdd)){
+                dfFormTableSettingDao.batchAdd(dfFormTableSettingDOSAdd);
             }
         }
         return dfFormTableSettingDao.selectAllDfFormTableSettingByDfKey(dfKey);
