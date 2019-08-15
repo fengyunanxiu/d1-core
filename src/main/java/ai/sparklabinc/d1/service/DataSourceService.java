@@ -15,7 +15,7 @@ import java.util.Map;
  * @Version V1.0
  */
 public interface DataSourceService {
-    boolean Connection2DataSource(Long dsId) throws Exception;
+    void Connection2DataSource(Long dsId) throws Exception;
 
 
     DbInforamtionDTO addDataSources(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO)  throws Exception;

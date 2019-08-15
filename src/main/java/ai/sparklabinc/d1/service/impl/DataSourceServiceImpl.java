@@ -70,13 +70,13 @@ public class DataSourceServiceImpl implements DataSourceService {
 
 
     @Override
-    public boolean Connection2DataSource(Long dsId) throws Exception {
+    public void Connection2DataSource(Long dsId) throws Exception {
         Connection connection = null;
         try {
             DataSource mysql = dataSourceFactory.builder(Constants.DATABASE_TYPE_MYSQL, dsId);
             connection = mysql.getConnection();
-            if (connection != null) {
-                return true;
+            if (connection == null) {
+                throw new ServiceException("connection is to db is failed");
             }
         } finally {
             if (connection != null) {
@@ -87,7 +87,6 @@ public class DataSourceServiceImpl implements DataSourceService {
                 }
             }
         }
-        return false;
     }
 
     @Override
@@ -98,7 +97,6 @@ public class DataSourceServiceImpl implements DataSourceService {
             String jsonString = JSON.toJSONString(dbBasicConfigDTO.getOtherParams());
             dbBasicConfigDO.setOtherParams(jsonString);
         }
-
         String urlSuffix = DsConstants.urlSuffix;
         if (dbSecurityConfigDTO.getUseSshTunnel()) {
             if (dbSecurityConfigDTO.getUseSsl() != null && dbSecurityConfigDTO.getUseSsl()) {

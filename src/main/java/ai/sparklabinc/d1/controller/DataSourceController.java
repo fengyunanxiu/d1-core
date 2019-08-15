@@ -35,8 +35,8 @@ public class DataSourceController {
 
     @ResponseBody
     @GetMapping("/connection")
-    public Object Connection2DataSource(@RequestParam(required = true) Long dsId) throws Exception {
-        return  dataSourceService.Connection2DataSource(dsId);
+    public void Connection2DataSource(@RequestParam(required = true) Long dsId) throws Exception {
+          dataSourceService.Connection2DataSource(dsId);
     }
 
     @ResponseBody
