@@ -85,7 +85,7 @@ public class DataFacetKeyController {
 
     @ResponseBody
     @PostMapping("/update-dfkey")
-    public Object updateDataFacetKey(String dfKey, String newDfKey, String description) throws IOException, SQLException{
+    public Object updateDataFacetKey(String dfKey, String newDfKey, String description) throws Exception{
         return dataFacetKeyService.updateDataFacetKey(dfKey,newDfKey,description);
     }
 

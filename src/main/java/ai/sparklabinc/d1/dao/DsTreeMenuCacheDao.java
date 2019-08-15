@@ -2,6 +2,8 @@ package ai.sparklabinc.d1.dao;
 
 import ai.sparklabinc.d1.entity.DsTreeMenuCacheDO;
 
+import java.util.List;
+
 /**
  * @function:
  * @author: DAM
@@ -15,6 +17,8 @@ public interface DsTreeMenuCacheDao {
     Integer updateDsTreeMenuCache(DsTreeMenuCacheDO dsTreeMenuCacheDO) throws Exception;
 
     DsTreeMenuCacheDO getDsTreeMenuCache(Long dsId) throws Exception;
+
+    List<DsTreeMenuCacheDO> getDsTreeMenuCache() throws Exception;
 
     Integer clearDataSourceCacheByDsId(Long dsId) throws Exception;
 }

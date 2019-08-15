@@ -15,6 +15,8 @@ import ai.sparklabinc.d1.entity.DfKeyBasicConfigDO;
 import ai.sparklabinc.d1.exception.custom.IllegalParameterException;
 import ai.sparklabinc.d1.exception.custom.ResourceNotFoundException;
 import ai.sparklabinc.d1.service.DataFacetKeyService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -36,6 +38,8 @@ import java.util.stream.Collectors;
 @Service
 public class DataFacetKeyServiceImpl implements DataFacetKeyService {
 
+    private final static Logger LOGGER=LoggerFactory.getLogger(DataFacetKeyServiceImpl.class);
+
     @Resource(name = "DbBasicConfigDao")
     private DbBasicConfigDao dbBasicConfigDao;
 
@@ -53,12 +57,14 @@ public class DataFacetKeyServiceImpl implements DataFacetKeyService {
 
     @Override
     public DbInforamtionDTO addDataFacetKey(DfKeyBasicConfigDTO dfKeyBasicConfigDTO) throws Exception {
+        long start=System.currentTimeMillis();
         DfKeyBasicConfigDO dfKeyBasicConfigByDfKey = dfKeyBasicConfigDao.getDfKeyBasicConfigByDfKey(dfKeyBasicConfigDTO.getDfKey());
         //新加的df key 是否已经存在
         if (dfKeyBasicConfigByDfKey != null) {
             throw new IllegalParameterException("data facet key already exists!");
         }
         DbBasicConfigDO dbBasicConfigDO = dbBasicConfigDao.findById(dfKeyBasicConfigDTO.getFkDbId());
+        LOGGER.info("valid spend time：{}",System.currentTimeMillis()-start);
         switch (dbBasicConfigDO.getDbType()) {
             case Constants.DATABASE_TYPE_MYSQL:
                 return mysqlDataSourceComponent.addDataFacetKeyProcess(dfKeyBasicConfigDTO);
@@ -99,8 +105,13 @@ public class DataFacetKeyServiceImpl implements DataFacetKeyService {
     }
 
     @Override
-    public boolean updateDataFacetKey(String dfKey, String newDfKey, String description) throws IOException, SQLException {
+    public boolean updateDataFacetKey(String dfKey, String newDfKey, String description) throws Exception {
         boolean updateResult = false;
+        DfKeyBasicConfigDO dfKeyBasicConfigByDfKey = dfKeyBasicConfigDao.getDfKeyBasicConfigByDfKey(newDfKey);
+        //新加的df key 是否已经存在
+        if (dfKeyBasicConfigByDfKey != null) {
+            throw new IllegalParameterException("data facet key already exists!");
+        }
         int updateRows = dfKeyBasicConfigDao.updateDataFacetKey(dfKey, newDfKey, description);
         if (updateRows > 0) {
             updateRows = dfFormTableSettingDao.updateDataFacetKey(dfKey, newDfKey);

@@ -245,6 +245,9 @@ public class DataSourceFactory {
         //驱动
         driverName = "com.mysql.jdbc.Driver";
         Properties mysqlProperties = new Properties();
+        if(StringUtils.isNullOrEmpty(url)||StringUtils.isNullOrEmpty(dbUserName)||StringUtils.isNullOrEmpty(dbPassword)){
+            throw new IllegalParameterException("db url or username or password can not be null");
+        }
         mysqlProperties.setProperty("Url", url);
         mysqlProperties.setProperty("User", dbUserName);
         mysqlProperties.setProperty("Password", dbPassword);

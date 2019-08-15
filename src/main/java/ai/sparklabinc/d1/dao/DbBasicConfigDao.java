@@ -22,7 +22,7 @@ public interface DbBasicConfigDao {
 
    Integer delete(Long dsId) throws SQLException, IOException;
 
-   List<DbInforamtionDTO> selectDataSources(Long dsId) throws IOException, SQLException;
+   List<DbInforamtionDTO> selectDataSources(Long dsId) throws IOException, SQLException, Exception;
 
    List<Map<String,Object>> selectDataSourceProperty(Long dsId)throws IOException, SQLException;
 

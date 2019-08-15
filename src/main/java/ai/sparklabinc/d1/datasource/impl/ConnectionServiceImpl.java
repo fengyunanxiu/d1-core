@@ -7,6 +7,7 @@ import ai.sparklabinc.d1.datasource.Constants;
 import ai.sparklabinc.d1.dto.DbBasicConfigDTO;
 import ai.sparklabinc.d1.dto.DbSecurityConfigDTO;
 import ai.sparklabinc.d1.entity.DbSecurityConfigDO;
+import ai.sparklabinc.d1.exception.ServiceException;
 import ai.sparklabinc.d1.exception.custom.IllegalParameterException;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
@@ -160,6 +161,7 @@ public class ConnectionServiceImpl implements ConnectionService {
             }
         } catch (Exception e) {
             LOGGER.error("error>>>" + e);
+            throw new ServiceException(e.getMessage());
         } finally {
             if (conn != null && !conn.isClosed()) {
                 LOGGER.info("Closing Database Connection");

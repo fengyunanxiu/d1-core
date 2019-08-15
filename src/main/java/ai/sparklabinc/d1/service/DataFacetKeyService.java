@@ -22,7 +22,7 @@ public interface DataFacetKeyService {
 
     List<Map<String, Object>> selectAllDfFormTableSettingByDfKey(String dfKey) throws Exception;
 
-    boolean updateDataFacetKey(String dfKey, String newDfKey, String description) throws IOException, SQLException;
+    boolean updateDataFacetKey(String dfKey, String newDfKey, String description) throws Exception;
 
     boolean deleteDataFacetKey(String dfKey) throws IOException, SQLException;
 
