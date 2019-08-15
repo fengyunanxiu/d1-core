@@ -21,7 +21,7 @@ public class D1BasicDataInitial implements ApplicationListener<ContextRefreshedE
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-//       this.pluginsScheduler.init();
+       this.pluginsScheduler.init();
     }
 
 }
