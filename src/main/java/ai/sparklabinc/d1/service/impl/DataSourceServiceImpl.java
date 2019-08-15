@@ -13,6 +13,7 @@ import ai.sparklabinc.d1.dto.*;
 import ai.sparklabinc.d1.entity.DbBasicConfigDO;
 import ai.sparklabinc.d1.entity.DbSecurityConfigDO;
 import ai.sparklabinc.d1.entity.DsTreeMenuCacheDO;
+import ai.sparklabinc.d1.exception.ServiceException;
 import ai.sparklabinc.d1.service.DataSourceService;
 import ai.sparklabinc.d1.util.FileReaderUtil;
 import com.alibaba.fastjson.JSON;
@@ -135,15 +136,13 @@ public class DataSourceServiceImpl implements DataSourceService {
     }
 
     @Override
-    public boolean deleteDataSources(Long dsId) throws Exception {
+    public void deleteDataSources(Long dsId) throws Exception {
         Integer delete = dbBasicConfigDao.delete(dsId);
         Integer delete1 = dbSecurityConfigDao.delete(dsId);
         if (delete > 0 && delete1 > 0) {
             //清楚缓存
             cacheComponent.clearDataSourceCacheByDsId(dsId);
-            return true;
         }
-        return false;
     }
 
     @Override
@@ -326,7 +325,7 @@ public class DataSourceServiceImpl implements DataSourceService {
     }
 
     @Override
-    public boolean editDataSourceProperty(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws IOException, SQLException {
+    public void editDataSourceProperty(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws Exception {
         boolean updateResult = false;
         DbBasicConfigDO dbBasicConfigDO = new DbBasicConfigDO();
         BeanUtils.copyProperties(dbBasicConfigDTO, dbBasicConfigDO);
@@ -379,8 +378,9 @@ public class DataSourceServiceImpl implements DataSourceService {
             }
             updateResult = true;
         }
-
-        return updateResult;
+        if(!updateResult){
+            throw new ServiceException("update datasource property is failed");
+        }
     }
 
 

@@ -23,6 +23,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.rmi.ServerException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -105,7 +106,7 @@ public class DataFacetKeyServiceImpl implements DataFacetKeyService {
     }
 
     @Override
-    public boolean updateDataFacetKey(String dfKey, String newDfKey, String description) throws Exception {
+    public void updateDataFacetKey(String dfKey, String newDfKey, String description) throws Exception {
         boolean updateResult = false;
         DfKeyBasicConfigDO dfKeyBasicConfigByDfKey = dfKeyBasicConfigDao.getDfKeyBasicConfigByDfKey(newDfKey);
         //新加的df key 是否已经存在
@@ -119,11 +120,14 @@ public class DataFacetKeyServiceImpl implements DataFacetKeyService {
                 updateResult = true;
             }
         }
-        return updateResult;
+        if(!updateResult){
+          throw new ServerException("update data facet key is failed") ;
+        }
+
     }
 
     @Override
-    public boolean deleteDataFacetKey(String dfKey) throws IOException, SQLException {
+    public void deleteDataFacetKey(String dfKey) throws IOException, SQLException {
         boolean updateResult = false;
         int updateRows = dfKeyBasicConfigDao.deleteDataFacetKey(dfKey);
         if (updateRows > 0) {
@@ -132,17 +136,19 @@ public class DataFacetKeyServiceImpl implements DataFacetKeyService {
                 updateResult = true;
             }
         }
-        return updateResult;
+        if(!updateResult){
+            throw new ServerException("delete data facet key is failed") ;
+        }
     }
 
     @Override
-    public Boolean saveDfFormTableSetting(List<DfFormTableSettingDO> dfFormTableSettingDOSForUpdate, List<DfFormTableSettingDO> dfFormTableSettingDOSForAdd) throws Exception {
+    public void saveDfFormTableSetting(List<DfFormTableSettingDO> dfFormTableSettingDOSForUpdate, List<DfFormTableSettingDO> dfFormTableSettingDOSForAdd) throws Exception {
         //更新操作
         if (!CollectionUtils.isEmpty(dfFormTableSettingDOSForUpdate)) {
             for (DfFormTableSettingDO dfFormTableSettingDO : dfFormTableSettingDOSForUpdate) {
                 Integer updateResult = dfFormTableSettingDao.updateDfFormTableSetting(dfFormTableSettingDO);
                 if (updateResult <= 0) {
-                    return false;
+                    throw new ServerException("save form table setting is failed") ;
                 }
             }
         }
@@ -150,11 +156,9 @@ public class DataFacetKeyServiceImpl implements DataFacetKeyService {
         if (!CollectionUtils.isEmpty(dfFormTableSettingDOSForAdd)) {
             Integer add = dfFormTableSettingDao.batchAdd(dfFormTableSettingDOSForAdd);
             if (add <= 0) {
-                return false;
+                throw new ServerException("save form table setting is failed") ;
             }
         }
-
-        return true;
     }
 
     @Override

@@ -22,11 +22,11 @@ public interface DataFacetKeyService {
 
     List<Map<String, Object>> selectAllDfFormTableSettingByDfKey(String dfKey) throws Exception;
 
-    boolean updateDataFacetKey(String dfKey, String newDfKey, String description) throws Exception;
+    void updateDataFacetKey(String dfKey, String newDfKey, String description) throws Exception;
 
-    boolean deleteDataFacetKey(String dfKey) throws IOException, SQLException;
+    void deleteDataFacetKey(String dfKey) throws IOException, SQLException;
 
-    Boolean saveDfFormTableSetting(List<DfFormTableSettingDO> dfFormTableSettingDOSForUpdate, List<DfFormTableSettingDO> dfFormTableSettingDOSForAdd) throws Exception;
+    void saveDfFormTableSetting(List<DfFormTableSettingDO> dfFormTableSettingDOSForUpdate, List<DfFormTableSettingDO> dfFormTableSettingDOSForAdd) throws Exception;
 
     List<Map<String, Object>> refreshDfFormTableSetting(String dfKey) throws Exception;
 

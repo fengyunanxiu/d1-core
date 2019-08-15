@@ -43,8 +43,8 @@ public class DataFacetKeyController {
 
     @ResponseBody
     @DeleteMapping("/delete-dfkey")
-    public Object deleteDataFacetKey(String dfKey) throws IOException, SQLException{
-        return dataFacetKeyService.deleteDataFacetKey(dfKey);
+    public void deleteDataFacetKey(String dfKey) throws Exception{
+         dataFacetKeyService.deleteDataFacetKey(dfKey);
     }
 
 
@@ -57,7 +57,7 @@ public class DataFacetKeyController {
 
     @ResponseBody
     @PostMapping("/save-df-form-table-setting")
-    public boolean saveDfFormTableSetting(@RequestBody List<DfFormTableSettingDO> dfFormTableSettingDOS) throws Exception {
+    public void saveDfFormTableSetting(@RequestBody List<DfFormTableSettingDO> dfFormTableSettingDOS) throws Exception {
         if(CollectionUtils.isEmpty(dfFormTableSettingDOS)){
             throw new IllegalParameterException("form infomation can not be null!");
         }
@@ -68,8 +68,7 @@ public class DataFacetKeyController {
         List<DfFormTableSettingDO> dfFormTableSettingDOSForAdd = dfFormTableSettingDOS.stream()
                 .filter((e) -> e.getId() == null || e.getId() <= 0)
                 .collect(Collectors.toList());
-
-        return dataFacetKeyService.saveDfFormTableSetting(dfFormTableSettingDOSForUpdate, dfFormTableSettingDOSForAdd);
+         dataFacetKeyService.saveDfFormTableSetting(dfFormTableSettingDOSForUpdate, dfFormTableSettingDOSForAdd);
     }
 
 
@@ -85,8 +84,8 @@ public class DataFacetKeyController {
 
     @ResponseBody
     @PostMapping("/update-dfkey")
-    public Object updateDataFacetKey(String dfKey, String newDfKey, String description) throws Exception{
-        return dataFacetKeyService.updateDataFacetKey(dfKey,newDfKey,description);
+    public void updateDataFacetKey(String dfKey, String newDfKey, String description) throws Exception{
+         dataFacetKeyService.updateDataFacetKey(dfKey,newDfKey,description);
     }
 
 
