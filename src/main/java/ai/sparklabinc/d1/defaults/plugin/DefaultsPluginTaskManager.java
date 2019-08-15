@@ -68,8 +68,8 @@ public class DefaultsPluginTaskManager {
             // 开启事务
             connection.setAutoCommit(false);
             List<DefaultsConfigurationDO> all = this.defaultsConfigurationRepository.queryAllWithLockTransaction(connection);
-            if (all == null || all.isEmpty()) {
-                return;
+            if (all == null ) {
+                all = new ArrayList<>();
             }
             // 筛选出自动执行的配置信息
             Map<String, DefaultsConfigurationDO> allSchedule = all.stream()

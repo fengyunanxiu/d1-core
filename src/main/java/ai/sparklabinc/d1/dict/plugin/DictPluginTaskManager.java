@@ -63,8 +63,8 @@ public class DictPluginTaskManager {
             connection = this.d1BasicDataSource.getConnection();
             connection.setAutoCommit(false);
             List<DictPluginConfigurationDO> allEnableList = this.dictPluginConfigurationRepository.findAllEnableWithLockTransaction(connection);
-            if (allEnableList == null || allEnableList.isEmpty()) {
-                return;
+            if (allEnableList == null ) {
+                allEnableList = new ArrayList<>();
             }
             Map<String, DictPluginConfigurationDO> allEnableMap = allEnableList.stream().collect(Collectors.toMap((tmp) -> generateRunningScheduleMapKey(tmp), (tmp) -> tmp));
 
