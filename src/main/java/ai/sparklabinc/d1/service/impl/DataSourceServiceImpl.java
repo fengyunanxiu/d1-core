@@ -5,18 +5,23 @@ import ai.sparklabinc.d1.constant.DsConstants;
 import ai.sparklabinc.d1.dao.DbBasicConfigDao;
 import ai.sparklabinc.d1.dao.DbSecurityConfigDao;
 import ai.sparklabinc.d1.dao.DfKeyBasicConfigDao;
+import ai.sparklabinc.d1.dao.DsTreeMenuCacheDao;
 import ai.sparklabinc.d1.datasource.ConnectionService;
 import ai.sparklabinc.d1.datasource.Constants;
 import ai.sparklabinc.d1.datasource.DataSourceFactory;
 import ai.sparklabinc.d1.dto.*;
 import ai.sparklabinc.d1.entity.DbBasicConfigDO;
 import ai.sparklabinc.d1.entity.DbSecurityConfigDO;
+import ai.sparklabinc.d1.entity.DsTreeMenuCacheDO;
+import ai.sparklabinc.d1.exception.ServiceException;
 import ai.sparklabinc.d1.service.DataSourceService;
 import ai.sparklabinc.d1.util.FileReaderUtil;
 import com.alibaba.fastjson.JSON;
 import com.jcraft.jsch.Session;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.jdbc.pool.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,10 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -43,6 +45,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class DataSourceServiceImpl implements DataSourceService {
+    private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceServiceImpl.class);
+
     @Autowired
     private DataSourceFactory dataSourceFactory;
 
@@ -58,9 +62,11 @@ public class DataSourceServiceImpl implements DataSourceService {
     @Resource(name = "DfKeyBasicConfigDao")
     private DfKeyBasicConfigDao dfKeyBasicConfigDao;
 
+    @Resource(name = "DsTreeMenuCacheDao")
+    private DsTreeMenuCacheDao dsTreeMenuCacheDao;
+
     @Autowired
     private ConnectionService connectionService;
-
 
 
     @Override
@@ -130,13 +136,13 @@ public class DataSourceServiceImpl implements DataSourceService {
     }
 
     @Override
-    public boolean deleteDataSources(Long dsId) throws Exception {
+    public void deleteDataSources(Long dsId) throws Exception {
         Integer delete = dbBasicConfigDao.delete(dsId);
         Integer delete1 = dbSecurityConfigDao.delete(dsId);
         if (delete > 0 && delete1 > 0) {
-            return true;
+            //清楚缓存
+            cacheComponent.clearDataSourceCacheByDsId(dsId);
         }
-        return false;
     }
 
     @Override
@@ -146,91 +152,34 @@ public class DataSourceServiceImpl implements DataSourceService {
          * step1 拿到前端需要展示的第一层信息
          * *******************************************************************
          */
+        long startTime = System.currentTimeMillis();
         List<DbInforamtionDTO> result = dbBasicConfigDao.selectDataSources(null);
         if (CollectionUtils.isEmpty(result)) {
             return null;
         }
+        //获取所有的data facet key
+        List<DfKeyInfoDTO> allDataFacetKey = cacheComponent.getAllDataFacetKey();
 
-          for (DbInforamtionDTO dbInforamtionDTO:result){
+        //获取所有缓存
+        List<DsTreeMenuCacheDO> dsTreeMenuCache = dsTreeMenuCacheDao.getDsTreeMenuCache();
+        LOGGER.info("selectDataSources、getAllDataFacetKey、getDsTreeMenuCache耗时：{}", System.currentTimeMillis() - startTime);
 
-              /*********************************************************************
-               * step2 拿到所有的数据库名称
-               * *******************************************************************
-               */
-              Long dsId=dbInforamtionDTO.getId();
-              List<DbInforamtionDTO> schemas = cacheComponent.selectAllSchema(dsId);
-              if (CollectionUtils.isEmpty(schemas)) {
-                  continue;
-              }
-              dbInforamtionDTO.setChildren(schemas);
-              /*********************************************************************
-               * step3 拿到所有schema所有的表和视图,还有所有的data facet key，提高性能
-               * *******************************************************************
-               */
-              //所有schema所有的表和视图
-              List<TableAndViewInfoDTO> tableAndViewInfoDTOS = cacheComponent.selectAllTableAndView(dsId);
-              //获取所有的data facet key
-              List<DfKeyInfoDTO> allDataFacetKey = cacheComponent.getAllDataFacetKey();
+        startTime = System.currentTimeMillis();
+        for (DbInforamtionDTO dbInforamtionDTO : result) {
 
-              if (CollectionUtils.isEmpty(tableAndViewInfoDTOS)) {
-                  continue;
-              }
-
-
-              for (DbInforamtionDTO schema : schemas) {
-                  List<DbInforamtionDTO> tableAndViews = new LinkedList<>();
-                  //获取schema的talbe
-                  List<TableAndViewInfoDTO> collect = tableAndViewInfoDTOS.stream()
-                          .filter(e -> schema.getLabel().equalsIgnoreCase(e.getTableSchema()))
-                          .collect(Collectors.toList());
-
-                  if (CollectionUtils.isEmpty(collect)) {
-                      continue;
-                  }
-
-                  //封装数据
-                  collect.forEach(e -> {
-                      DbInforamtionDTO dbInfo = new DbInforamtionDTO();
-                      dbInfo.setLabel(e.getTableName());
-                      dbInfo.setType(e.getType());
-                      dbInfo.setLevel(e.getLevel());
-                      tableAndViews.add(dbInfo);
-                  });
-
-                  /*********************************************************************
-                   * step4 拿到表和视图的data facet key
-                   * *******************************************************************
-                   */
-
-                  getDfKeyOfTableAndView(dsId,schema, tableAndViews, allDataFacetKey);
-
-                  //加入 table and view
-                  schema.setChildren(tableAndViews);
-              }
-
-          }
-        return result;
-    }
-
-
-    @Override
-    public DbInforamtionDTO refreshDataSources(Long dsId) throws Exception {
-        /*********************************************************************
-         * step1 拿到前端需要展示的第一层信息
-         * *******************************************************************
-         */
-        List<DbInforamtionDTO> result = dbBasicConfigDao.selectDataSources(dsId);
-        if (CollectionUtils.isEmpty(result)) {
-            return null;
-        }
-        DbInforamtionDTO dbInforamtionDTO = result.get(0);
             /*********************************************************************
              * step2 拿到所有的数据库名称
              * *******************************************************************
              */
-            List<DbInforamtionDTO> schemas = cacheComponent.selectAllSchemaPut(dsId);
+            Long dsId = dbInforamtionDTO.getId();
+            DsTreeMenuCacheDO dsTreeMenuCacheDO=null;
+            Optional<DsTreeMenuCacheDO> first = dsTreeMenuCache.stream().filter(e -> e.getDsId().equals(dsId)).findFirst();
+            if(first.isPresent()){
+                dsTreeMenuCacheDO = first.get();
+            }
+            List<DbInforamtionDTO> schemas = cacheComponent.selectAllSchema(dsTreeMenuCacheDO);
             if (CollectionUtils.isEmpty(schemas)) {
-                return dbInforamtionDTO;
+                continue;
             }
             dbInforamtionDTO.setChildren(schemas);
             /*********************************************************************
@@ -238,11 +187,10 @@ public class DataSourceServiceImpl implements DataSourceService {
              * *******************************************************************
              */
             //所有schema所有的表和视图
-            List<TableAndViewInfoDTO> tableAndViewInfoDTOS = cacheComponent.selectAllTableAndViewPut(dsId);
-            //获取所有的data facet key
-            List<DfKeyInfoDTO> allDataFacetKey = cacheComponent.getAllDataFacetKey();
+            List<TableAndViewInfoDTO> tableAndViewInfoDTOS = cacheComponent.selectAllTableAndView(dsTreeMenuCacheDO);
+
             if (CollectionUtils.isEmpty(tableAndViewInfoDTOS)) {
-              return dbInforamtionDTO;
+                continue;
             }
 
             for (DbInforamtionDTO schema : schemas) {
@@ -269,10 +217,79 @@ public class DataSourceServiceImpl implements DataSourceService {
                  * step4 拿到表和视图的data facet key
                  * *******************************************************************
                  */
-                getDfKeyOfTableAndView(dsId,schema, tableAndViews, allDataFacetKey);
+
+                getDfKeyOfTableAndView(dsId, schema, tableAndViews, allDataFacetKey);
+
                 //加入 table and view
                 schema.setChildren(tableAndViews);
             }
+            LOGGER.info("selectAllTableAndView、getDfKeyOfTableAndView>>>：{},{}", dbInforamtionDTO.getLabel(), System.currentTimeMillis() - startTime);
+        }
+        LOGGER.info("selectAllTableAndView、getDfKeyOfTableAndView：{}", System.currentTimeMillis() - startTime);
+        return result;
+    }
+
+
+    @Override
+    public DbInforamtionDTO refreshDataSources(Long dsId) throws Exception {
+        /*********************************************************************
+         * step1 拿到前端需要展示的第一层信息
+         * *******************************************************************
+         */
+        List<DbInforamtionDTO> result = dbBasicConfigDao.selectDataSources(dsId);
+        if (CollectionUtils.isEmpty(result)) {
+            return null;
+        }
+        DbInforamtionDTO dbInforamtionDTO = result.get(0);
+        /*********************************************************************
+         * step2 拿到所有的数据库名称
+         * *******************************************************************
+         */
+        List<DbInforamtionDTO> schemas = cacheComponent.selectAllSchemaPut(dsId);
+        if (CollectionUtils.isEmpty(schemas)) {
+            return dbInforamtionDTO;
+        }
+        dbInforamtionDTO.setChildren(schemas);
+        /*********************************************************************
+         * step3 拿到所有schema所有的表和视图,还有所有的data facet key，提高性能
+         * *******************************************************************
+         */
+        //所有schema所有的表和视图
+        List<TableAndViewInfoDTO> tableAndViewInfoDTOS = cacheComponent.selectAllTableAndViewPut(dsId);
+        //获取所有的data facet key
+        List<DfKeyInfoDTO> allDataFacetKey = cacheComponent.getAllDataFacetKey();
+        if (CollectionUtils.isEmpty(tableAndViewInfoDTOS)) {
+            return dbInforamtionDTO;
+        }
+
+        for (DbInforamtionDTO schema : schemas) {
+            List<DbInforamtionDTO> tableAndViews = new LinkedList<>();
+            //获取schema的talbe
+            List<TableAndViewInfoDTO> collect = tableAndViewInfoDTOS.stream()
+                    .filter(e -> schema.getLabel().equalsIgnoreCase(e.getTableSchema()))
+                    .collect(Collectors.toList());
+
+            if (CollectionUtils.isEmpty(collect)) {
+                continue;
+            }
+
+            //封装数据
+            collect.forEach(e -> {
+                DbInforamtionDTO dbInfo = new DbInforamtionDTO();
+                dbInfo.setLabel(e.getTableName());
+                dbInfo.setType(e.getType());
+                dbInfo.setLevel(e.getLevel());
+                tableAndViews.add(dbInfo);
+            });
+
+            /*********************************************************************
+             * step4 拿到表和视图的data facet key
+             * *******************************************************************
+             */
+            getDfKeyOfTableAndView(dsId, schema, tableAndViews, allDataFacetKey);
+            //加入 table and view
+            schema.setChildren(tableAndViews);
+        }
         return dbInforamtionDTO;
     }
 
@@ -308,7 +325,7 @@ public class DataSourceServiceImpl implements DataSourceService {
     }
 
     @Override
-    public boolean editDataSourceProperty(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws IOException, SQLException {
+    public void editDataSourceProperty(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws Exception {
         boolean updateResult = false;
         DbBasicConfigDO dbBasicConfigDO = new DbBasicConfigDO();
         BeanUtils.copyProperties(dbBasicConfigDTO, dbBasicConfigDO);
@@ -337,7 +354,7 @@ public class DataSourceServiceImpl implements DataSourceService {
             String sshKeyFile = dbSecurityConfigDO.getSshKeyFile();
             File file = new File(sshKeyFile);
             //文件存在则更新key文件内容
-            if(file.exists()){
+            if (file.exists()) {
                 String sshKeyContent = FileReaderUtil.readFile(sshKeyFile);
                 dbSecurityConfigDO.setSshKeyContent(sshKeyContent);
             }
@@ -361,8 +378,9 @@ public class DataSourceServiceImpl implements DataSourceService {
             }
             updateResult = true;
         }
-
-        return updateResult;
+        if(!updateResult){
+            throw new ServiceException("update datasource property is failed");
+        }
     }
 
 

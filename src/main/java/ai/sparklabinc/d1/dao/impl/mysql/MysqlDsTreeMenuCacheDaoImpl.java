@@ -4,11 +4,13 @@ import ai.sparklabinc.d1.dao.DsTreeMenuCacheDao;
 import ai.sparklabinc.d1.entity.DsTreeMenuCacheDO;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @function:
@@ -73,5 +75,28 @@ public class MysqlDsTreeMenuCacheDaoImpl implements DsTreeMenuCacheDao {
         LOGGER.info("sql string:{}",sql);
         DsTreeMenuCacheDO dsTreeMenuCacheDO = queryRunner.query(sql, new BeanHandler<>(DsTreeMenuCacheDO.class), dsId);
         return dsTreeMenuCacheDO;
+    }
+
+    @Override
+    public List<DsTreeMenuCacheDO> getDsTreeMenuCache() throws Exception {
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
+        String sql = "select ds_id as dsId," +
+                "   ds_basic_info as dsBasicInfo," +
+                "   ds_schema_info as dsSchemaInfo ," +
+                "   ds_table_view_info as dsTableViewInfo," +
+                "   ds_key_info as dsKeyInfo" +
+                " from ds_tree_menu_cache";
+        LOGGER.info("sql string:{}",sql);
+       List<DsTreeMenuCacheDO>  dsTreeMenuCacheDOS = queryRunner.query(sql, new BeanListHandler<>(DsTreeMenuCacheDO.class));
+       return dsTreeMenuCacheDOS;
+    }
+
+    @Override
+    public Integer clearDataSourceCacheByDsId(Long dsId) throws Exception {
+        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
+        String sql = "delete from ds_tree_menu_cache where ds_id = ?";
+        LOGGER.info("sql string:{}",sql);
+        int update = queryRunner.update(sql, dsId);
+        return update;
     }
 }

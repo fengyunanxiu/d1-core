@@ -11,6 +11,8 @@ import ai.sparklabinc.d1.entity.DsTreeMenuCacheDO;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
@@ -25,6 +27,8 @@ import java.util.List;
  */
 @Component
 public class CacheComponent {
+    private final static Logger LOGGER=LoggerFactory.getLogger(CacheComponent.class);
+
     @Resource(name = "DbBasicConfigDao")
     private DbBasicConfigDao dbBasicConfigDao;
 
@@ -41,8 +45,7 @@ public class CacheComponent {
         return dbBasicConfigDao.selectDataSources(dsId);
     }
 
-    public List<DbInforamtionDTO> selectAllSchema(Long dsId) throws Exception {
-        DsTreeMenuCacheDO dsTreeMenuCache = dsTreeMenuCacheDao.getDsTreeMenuCache(dsId);
+    public List<DbInforamtionDTO> selectAllSchema(DsTreeMenuCacheDO dsTreeMenuCache) throws Exception {
         if(dsTreeMenuCache==null||StringUtils.isBlank( dsTreeMenuCache.getDsSchemaInfo())){
            return null;
         }
@@ -51,8 +54,8 @@ public class CacheComponent {
         return dbInforamtionDTOS;
     }
 
-    public List<TableAndViewInfoDTO> selectAllTableAndView(Long dsId) throws Exception {
-        DsTreeMenuCacheDO dsTreeMenuCache = dsTreeMenuCacheDao.getDsTreeMenuCache(dsId);
+    public List<TableAndViewInfoDTO> selectAllTableAndView(DsTreeMenuCacheDO dsTreeMenuCache) throws Exception {
+        long start=System.currentTimeMillis();
         if(dsTreeMenuCache==null||StringUtils.isBlank( dsTreeMenuCache.getDsTableViewInfo())){
             return null;
         }
@@ -104,6 +107,11 @@ public class CacheComponent {
 
         }
         return tableAndViewInfoDTOS;
+    }
+
+
+    public Integer clearDataSourceCacheByDsId(Long dsId) throws Exception {
+        return dsTreeMenuCacheDao.clearDataSourceCacheByDsId(dsId);
     }
 
 

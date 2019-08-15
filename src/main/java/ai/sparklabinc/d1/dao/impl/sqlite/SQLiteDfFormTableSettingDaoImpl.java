@@ -123,55 +123,67 @@ public class SQLiteDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingD
     }
 
     @Override
-    public Integer add(DfFormTableSettingDO dfFormTableSettingDO) throws IOException, SQLException {
-        QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
-        String sql ="insert into df_form_table_setting(gmt_create, gmt_modified, df_key, db_field_name, db_field_type," +
-                " view_field_label, db_field_comment, form_field_visible, form_field_sequence, form_field_query_type," +
-                " form_field_child_field_name, form_field_dict_domain_name, form_field_def_val_strategy," +
-                " table_field_visible, table_field_order_by, table_field_query_required, table_field_sequence, table_field_column_width," +
-                " export_field_visible, export_field_sequence, export_field_width,table_parent_label,form_field_use_default_val," +
-                " form_field_default_val,column_is_exist)" +
-                " values (?, ?, ?, ?, ?," +
-                "  ?, ?, ?, ?, ?," +
-                "  ?, ?, ?," +
-                "  ?, ?, ?, ?, ?," +
-                "  ?, ?, ?, ?, ?," +
-                "  ?, ?)";
-        String now = DateUtils.ofLongStr(new java.util.Date());
-        Object[] objectParams={now, now,
-                dfFormTableSettingDO.getDfKey(),
-                dfFormTableSettingDO.getDbFieldName(),
-                dfFormTableSettingDO.getDbFieldType(),
+    public Integer batchAdd(List<DfFormTableSettingDO> dfFormTableSettingDOS) throws IOException, SQLException {
+        int result=0;
+        long startTime=System.currentTimeMillis();
+        for(DfFormTableSettingDO dfFormTableSettingDO: dfFormTableSettingDOS ){
+            QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
+            String sql ="insert into df_form_table_setting(gmt_create, gmt_modified, df_key, db_field_name, db_field_type," +
+                    " view_field_label, db_field_comment, form_field_visible, form_field_sequence, form_field_query_type," +
+                    " form_field_child_field_name, form_field_dict_domain_name, form_field_def_val_strategy," +
+                    " table_field_visible, table_field_order_by, table_field_query_required, table_field_sequence, table_field_column_width," +
+                    " export_field_visible, export_field_sequence, export_field_width,table_parent_label,form_field_use_default_val," +
+                    " form_field_default_val,column_is_exist)" +
+                    " values (?, ?, ?, ?, ?," +
+                    "  ?, ?, ?, ?, ?," +
+                    "  ?, ?, ?," +
+                    "  ?, ?, ?, ?, ?," +
+                    "  ?, ?, ?, ?, ?," +
+                    "  ?, ?)";
+            String now = DateUtils.ofLongStr(new java.util.Date());
+            Object[] objectParams={now, now,
+                    dfFormTableSettingDO.getDfKey(),
+                    dfFormTableSettingDO.getDbFieldName(),
+                    dfFormTableSettingDO.getDbFieldType(),
 
-                dfFormTableSettingDO.getViewFieldLabel(),
-                dfFormTableSettingDO.getDbFieldComment(),
-                dfFormTableSettingDO.getFormFieldVisible()?1:0,
-                dfFormTableSettingDO.getFormFieldSequence(),
-                dfFormTableSettingDO.getFormFieldQueryType(),
+                    dfFormTableSettingDO.getViewFieldLabel(),
+                    dfFormTableSettingDO.getDbFieldComment(),
+                    dfFormTableSettingDO.getFormFieldVisible()?1:0,
+                    dfFormTableSettingDO.getFormFieldSequence(),
+                    dfFormTableSettingDO.getFormFieldQueryType(),
 
-                dfFormTableSettingDO.getFormFieldChildFieldName(),
-                dfFormTableSettingDO.getFormFieldDictDomainName(),
-                dfFormTableSettingDO.getFormFieldDefValStrategy(),
+                    dfFormTableSettingDO.getFormFieldChildFieldName(),
+                    dfFormTableSettingDO.getFormFieldDictDomainName(),
+                    dfFormTableSettingDO.getFormFieldDefValStrategy(),
 
-                dfFormTableSettingDO.getTableFieldVisible()?1:0,
-                dfFormTableSettingDO.getTableFieldOrderBy(),
-                dfFormTableSettingDO.getTableFieldQueryRequired()?1:0,
-                dfFormTableSettingDO.getTableFieldSequence(),
-                dfFormTableSettingDO.getTableFieldColumnWidth(),
+                    dfFormTableSettingDO.getTableFieldVisible()?1:0,
+                    dfFormTableSettingDO.getTableFieldOrderBy(),
+                    dfFormTableSettingDO.getTableFieldQueryRequired()?1:0,
+                    dfFormTableSettingDO.getTableFieldSequence(),
+                    dfFormTableSettingDO.getTableFieldColumnWidth(),
 
-                dfFormTableSettingDO.getExportFieldVisible()?1:0,
-                dfFormTableSettingDO.getExportFieldSequence(),
-                dfFormTableSettingDO.getExportFieldWidth(),
-                dfFormTableSettingDO.getTableParentLabel(),
-                dfFormTableSettingDO.getFormFieldUseDefaultVal()?1:0,
+                    dfFormTableSettingDO.getExportFieldVisible()?1:0,
+                    dfFormTableSettingDO.getExportFieldSequence(),
+                    dfFormTableSettingDO.getExportFieldWidth(),
+                    dfFormTableSettingDO.getTableParentLabel(),
+                    dfFormTableSettingDO.getFormFieldUseDefaultVal()?1:0,
 
-                dfFormTableSettingDO.getFormFieldDefaultVal(),
-                dfFormTableSettingDO.getColumnIsExist()?1:0
-        };
-        LOGGER.info("insert sql:{}",sql);
-        int result = queryRunner.update(sql, objectParams);
+                    dfFormTableSettingDO.getFormFieldDefaultVal(),
+                    dfFormTableSettingDO.getColumnIsExist()?1:0
+            };
+            LOGGER.info("insert sql:{}",sql);
+            int update = queryRunner.update(sql, objectParams);
+            if(update>0){
+              result++;
+            }
+        }
+        LOGGER.info("insert spent time：{}",System.currentTimeMillis()-startTime);
         return  result;
     }
+
+
+
+
 
     @Override
     public List<Map<String, Object>> selectAllDfFormTableSettingByDfKey(String dataFacetKey) throws SQLException, IOException {

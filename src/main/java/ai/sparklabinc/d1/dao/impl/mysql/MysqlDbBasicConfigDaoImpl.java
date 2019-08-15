@@ -138,7 +138,7 @@ public class MysqlDbBasicConfigDaoImpl implements DbBasicConfigDao {
     }
 
     @Override
-    public List<DbInforamtionDTO> selectDataSources(Long dsId) throws IOException, SQLException {
+    public List<DbInforamtionDTO> selectDataSources(Long dsId) throws Exception {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String querySql = "select id,db_name as label,1 as level,'' as type from db_basic_config where 1=1 ";
         List<DbInforamtionDTO> dbInforamtionDTOList=null;

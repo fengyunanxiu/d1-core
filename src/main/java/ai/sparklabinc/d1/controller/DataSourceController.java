@@ -64,8 +64,8 @@ public class DataSourceController {
 
     @ResponseBody
     @DeleteMapping("/delete")
-    public Object deleteDataSources(@RequestParam(required = true) Long dsId)throws Exception {
-        return dataSourceService.deleteDataSources(dsId);
+    public void deleteDataSources(@RequestParam(required = true) Long dsId)throws Exception {
+         dataSourceService.deleteDataSources(dsId);
     }
 
     /**
@@ -82,7 +82,7 @@ public class DataSourceController {
 
     @ResponseBody
     @GetMapping("/refresh-datasource")
-    public Object srefreshDataSources(@RequestParam(required = true) Long dsId)throws Exception {
+    public Object refreshDataSources(@RequestParam(required = true) Long dsId)throws Exception {
         return dataSourceService.refreshDataSources(dsId);
     }
 
@@ -94,8 +94,8 @@ public class DataSourceController {
 
     @ResponseBody
     @PostMapping("/edit-property")
-    public Object editDataSourceProperty(@RequestBody DbFullConfigDTO dbFullConfigDTO )throws Exception {
-        return dataSourceService.editDataSourceProperty(dbFullConfigDTO.getDbBasicConfigDTO(),dbFullConfigDTO.getDbSecurityConfigDTO());
+    public void editDataSourceProperty(@RequestBody DbFullConfigDTO dbFullConfigDTO )throws Exception {
+        dataSourceService.editDataSourceProperty(dbFullConfigDTO.getDbBasicConfigDTO(),dbFullConfigDTO.getDbSecurityConfigDTO());
     }
 
 

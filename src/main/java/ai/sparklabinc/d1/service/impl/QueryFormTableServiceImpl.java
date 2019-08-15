@@ -305,7 +305,8 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
                 if(DsConstants.FormFieldQueryTypeEnum.getChoiceList().contains(formQueryType)){
                     // 查找optionList,以及默认值
                     String domainName = dfFormTableSettingDO.getFormFieldDictDomainName();
-                    OptionListAndDefaultValDTO optionListAndDefaultValDTO = this.dsBasicDictionaryService.getOptionListAndDefaultValDTOByDomainName(domainName);
+                    String item=dfFormTableSettingDO.getFormFieldDictItem();
+                    OptionListAndDefaultValDTO optionListAndDefaultValDTO = this.dsBasicDictionaryService.getOptionListAndDefaultValDTOByDomainName(domainName,item);
                     if(optionListAndDefaultValDTO != null){
                         dfKeyQueryFormSettingVO.setFieldValue(optionListAndDefaultValDTO.getDefaultVal());
                         dfKeyQueryFormSettingVO.setFieldOptionalValueList(optionListAndDefaultValDTO.getOptionDTOList());

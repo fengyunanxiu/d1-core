@@ -20,7 +20,7 @@ public interface DataSourceService {
 
     DbInforamtionDTO addDataSources(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO)  throws Exception;
 
-    boolean deleteDataSources(Long dsId) throws Exception;
+    void deleteDataSources(Long dsId) throws Exception;
 
     List<DbInforamtionDTO> selectDataSources() throws Exception;
 
@@ -28,7 +28,7 @@ public interface DataSourceService {
 
     List<Map<String, Object>>  selectDataSourceProperty(Long dsId) throws Exception;
 
-    boolean editDataSourceProperty(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws Exception;
+    void editDataSourceProperty(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws Exception;
 
 
     boolean dataSourceTestConnection(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws Exception;

@@ -15,11 +15,15 @@ import ai.sparklabinc.d1.entity.DfKeyBasicConfigDO;
 import ai.sparklabinc.d1.exception.custom.IllegalParameterException;
 import ai.sparklabinc.d1.exception.custom.ResourceNotFoundException;
 import ai.sparklabinc.d1.service.DataFacetKeyService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.rmi.ServerException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +39,8 @@ import java.util.stream.Collectors;
 @Service
 public class DataFacetKeyServiceImpl implements DataFacetKeyService {
 
+    private final static Logger LOGGER=LoggerFactory.getLogger(DataFacetKeyServiceImpl.class);
+
     @Resource(name = "DbBasicConfigDao")
     private DbBasicConfigDao dbBasicConfigDao;
 
@@ -42,7 +48,7 @@ public class DataFacetKeyServiceImpl implements DataFacetKeyService {
     private DataSourceDao dataSourceDao;
 
     @Resource(name = "DfKeyBasicConfigDao")
-    private  DfKeyBasicConfigDao  dfKeyBasicConfigDao;
+    private DfKeyBasicConfigDao dfKeyBasicConfigDao;
 
     @Resource(name = "DfFormTableSettingDao")
     private DfFormTableSettingDao dfFormTableSettingDao;
@@ -52,12 +58,14 @@ public class DataFacetKeyServiceImpl implements DataFacetKeyService {
 
     @Override
     public DbInforamtionDTO addDataFacetKey(DfKeyBasicConfigDTO dfKeyBasicConfigDTO) throws Exception {
+        long start=System.currentTimeMillis();
         DfKeyBasicConfigDO dfKeyBasicConfigByDfKey = dfKeyBasicConfigDao.getDfKeyBasicConfigByDfKey(dfKeyBasicConfigDTO.getDfKey());
         //新加的df key 是否已经存在
         if (dfKeyBasicConfigByDfKey != null) {
             throw new IllegalParameterException("data facet key already exists!");
         }
         DbBasicConfigDO dbBasicConfigDO = dbBasicConfigDao.findById(dfKeyBasicConfigDTO.getFkDbId());
+        LOGGER.info("valid spend time：{}",System.currentTimeMillis()-start);
         switch (dbBasicConfigDO.getDbType()) {
             case Constants.DATABASE_TYPE_MYSQL:
                 return mysqlDataSourceComponent.addDataFacetKeyProcess(dfKeyBasicConfigDTO);
@@ -98,8 +106,13 @@ public class DataFacetKeyServiceImpl implements DataFacetKeyService {
     }
 
     @Override
-    public boolean updateDataFacetKey(String dfKey, String newDfKey, String description) throws IOException, SQLException {
+    public void updateDataFacetKey(String dfKey, String newDfKey, String description) throws Exception {
         boolean updateResult = false;
+        DfKeyBasicConfigDO dfKeyBasicConfigByDfKey = dfKeyBasicConfigDao.getDfKeyBasicConfigByDfKey(newDfKey);
+        //新加的df key 是否已经存在
+        if (dfKeyBasicConfigByDfKey != null) {
+            throw new IllegalParameterException("data facet key already exists!");
+        }
         int updateRows = dfKeyBasicConfigDao.updateDataFacetKey(dfKey, newDfKey, description);
         if (updateRows > 0) {
             updateRows = dfFormTableSettingDao.updateDataFacetKey(dfKey, newDfKey);
@@ -107,11 +120,14 @@ public class DataFacetKeyServiceImpl implements DataFacetKeyService {
                 updateResult = true;
             }
         }
-        return updateResult;
+        if(!updateResult){
+          throw new ServerException("update data facet key is failed") ;
+        }
+
     }
 
     @Override
-    public boolean deleteDataFacetKey(String dfKey) throws IOException, SQLException {
+    public void deleteDataFacetKey(String dfKey) throws IOException, SQLException {
         boolean updateResult = false;
         int updateRows = dfKeyBasicConfigDao.deleteDataFacetKey(dfKey);
         if (updateRows > 0) {
@@ -120,31 +136,29 @@ public class DataFacetKeyServiceImpl implements DataFacetKeyService {
                 updateResult = true;
             }
         }
-        return updateResult;
+        if(!updateResult){
+            throw new ServerException("delete data facet key is failed") ;
+        }
     }
 
     @Override
-    public Boolean saveDfFormTableSetting(List<DfFormTableSettingDO> dfFormTableSettingDOSForUpdate, List<DfFormTableSettingDO> dfFormTableSettingDOSForAdd) throws Exception{
+    public void saveDfFormTableSetting(List<DfFormTableSettingDO> dfFormTableSettingDOSForUpdate, List<DfFormTableSettingDO> dfFormTableSettingDOSForAdd) throws Exception {
         //更新操作
-        if(!CollectionUtils.isEmpty(dfFormTableSettingDOSForUpdate)){
-            for(DfFormTableSettingDO dfFormTableSettingDO : dfFormTableSettingDOSForUpdate){
+        if (!CollectionUtils.isEmpty(dfFormTableSettingDOSForUpdate)) {
+            for (DfFormTableSettingDO dfFormTableSettingDO : dfFormTableSettingDOSForUpdate) {
                 Integer updateResult = dfFormTableSettingDao.updateDfFormTableSetting(dfFormTableSettingDO);
-                if(updateResult<=0){
-                    return false;
+                if (updateResult <= 0) {
+                    throw new ServerException("save form table setting is failed") ;
                 }
             }
         }
         //添加操作
-        if(!CollectionUtils.isEmpty(dfFormTableSettingDOSForAdd)){
-            for(DfFormTableSettingDO dfFormTableSettingDO : dfFormTableSettingDOSForAdd){
-                Integer add = dfFormTableSettingDao.add(dfFormTableSettingDO);
-                if(add<=0){
-                    return false;
-                }
+        if (!CollectionUtils.isEmpty(dfFormTableSettingDOSForAdd)) {
+            Integer add = dfFormTableSettingDao.batchAdd(dfFormTableSettingDOSForAdd);
+            if (add <= 0) {
+                throw new ServerException("save form table setting is failed") ;
             }
         }
-
-        return true;
     }
 
     @Override
@@ -171,6 +185,7 @@ public class DataFacetKeyServiceImpl implements DataFacetKeyService {
 
     /**
      * 写入默认值
+     *
      * @param dfKey
      * @param fieldKey
      * @param jsonValue
@@ -183,6 +198,7 @@ public class DataFacetKeyServiceImpl implements DataFacetKeyService {
 
     /**
      * 写入字典domain和item
+     *
      * @param dfKey
      * @param fieldName
      * @param domain
