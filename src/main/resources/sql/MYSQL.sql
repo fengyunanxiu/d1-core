@@ -108,7 +108,8 @@ create table if not exists  df_form_table_setting
     table_parent_label                varchar(100),
     form_field_use_default_val        tinyint,
     form_field_default_val            varchar(200),
-    column_is_exist                   tinyint default 1
+    column_is_exist                   tinyint default 1,
+    index index_df_key(df_key)
 ) charset = utf8;
 
 ###
