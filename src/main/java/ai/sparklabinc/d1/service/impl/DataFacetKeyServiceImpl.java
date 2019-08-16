@@ -15,6 +15,7 @@ import ai.sparklabinc.d1.entity.DfKeyBasicConfigDO;
 import ai.sparklabinc.d1.exception.custom.IllegalParameterException;
 import ai.sparklabinc.d1.exception.custom.ResourceNotFoundException;
 import ai.sparklabinc.d1.service.DataFacetKeyService;
+import ai.sparklabinc.d1.service.DataSourceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,9 +57,15 @@ public class DataFacetKeyServiceImpl implements DataFacetKeyService {
     @Autowired
     private MysqlDataSourceComponent mysqlDataSourceComponent;
 
+    @Autowired
+    private DataSourceService dataSourceService;
+
     @Override
     public DbInforamtionDTO addDataFacetKey(DfKeyBasicConfigDTO dfKeyBasicConfigDTO) throws Exception {
         long start=System.currentTimeMillis();
+        //是否能够连接上真实的数据库
+        dataSourceService.Connection2DataSource(dfKeyBasicConfigDTO.getFkDbId());
+
         DfKeyBasicConfigDO dfKeyBasicConfigByDfKey = dfKeyBasicConfigDao.getDfKeyBasicConfigByDfKey(dfKeyBasicConfigDTO.getDfKey());
         //新加的df key 是否已经存在
         if (dfKeyBasicConfigByDfKey != null) {

@@ -37,7 +37,6 @@ public class DataFacetKeyController {
         if(StringUtils.isBlank(dfKeyBasicConfigDTO.getDfKey())){
             throw new IllegalParameterException("dfKey can not be null!");
         }
-
         return dataFacetKeyService.addDataFacetKey(dfKeyBasicConfigDTO);
     }
 
