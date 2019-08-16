@@ -86,7 +86,7 @@ public class FormDictConfigurationServiceImpl implements FormDictConfigurationSe
         String fieldItem = formDictConfigurationDO.getFieldItem();
         if (StringUtils.isNullOrEmpty(fieldFormDfKey)
                 || StringUtils.isNullOrEmpty(fieldFormFieldKey)) {
-            throw new IllegalParameterException("field_form_df_key, field_form_field_key, field_domain, field_item不能为空");
+            throw new IllegalParameterException("field_form_df_key, field_form_field_key 不能为空");
         }
         String id = formDictConfigurationDO.getFieldId();
         FormDictConfigurationDO existFormDictConfigurationDO = null;
