@@ -3,11 +3,9 @@ package ai.sparklabinc.d1.component;
 import ai.sparklabinc.d1.constant.DsConstants;
 import ai.sparklabinc.d1.constant.FormTableSettingConstants;
 import ai.sparklabinc.d1.dao.DataSourceDao;
-import ai.sparklabinc.d1.dao.DbSecurityConfigDao;
 import ai.sparklabinc.d1.dao.DfKeyBasicConfigDao;
 import ai.sparklabinc.d1.dao.DfFormTableSettingDao;
-import ai.sparklabinc.d1.datasource.Constants;
-import ai.sparklabinc.d1.dto.DbInforamtionDTO;
+import ai.sparklabinc.d1.dto.DbInformationDTO;
 import ai.sparklabinc.d1.dto.DfKeyBasicConfigDTO;
 import ai.sparklabinc.d1.dto.TableColumnsDetailDTO;
 import ai.sparklabinc.d1.entity.DfFormTableSettingDO;
@@ -20,8 +18,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -49,15 +45,15 @@ public class MysqlDataSourceComponent {
     @Resource(name = "DfFormTableSettingDao")
     private DfFormTableSettingDao dfFormTableSettingDao;
 
-    public DbInforamtionDTO addDataFacetKeyProcess(DfKeyBasicConfigDTO dfKeyBasicConfigDTO) throws Exception {
+    public DbInformationDTO addDataFacetKeyProcess(DfKeyBasicConfigDTO dfKeyBasicConfigDTO) throws Exception {
         DfKeyBasicConfigDO dfKeyBasicConfigDO = new DfKeyBasicConfigDO();
         BeanUtils.copyProperties(dfKeyBasicConfigDTO, dfKeyBasicConfigDO);
         Long dsId = dfKeyBasicConfigDao.addDataFacetKeyAndReturnId(dfKeyBasicConfigDO);
 
-        DbInforamtionDTO dbInforamtionDTO = new DbInforamtionDTO();
-        dbInforamtionDTO.setId(dsId);
-        dbInforamtionDTO.setLevel(4);
-        dbInforamtionDTO.setLabel(dfKeyBasicConfigDTO.getDfKey());
+        DbInformationDTO dbInformationDTO = new DbInformationDTO();
+        dbInformationDTO.setId(dsId);
+        dbInformationDTO.setLevel(4L);
+        dbInformationDTO.setLabel(dfKeyBasicConfigDTO.getDfKey());
 
         if (dsId != null) {
 
@@ -66,7 +62,7 @@ public class MysqlDataSourceComponent {
                     dfKeyBasicConfigDO.getSchemaName(),
                     dfKeyBasicConfigDO.getTableName());
             if (CollectionUtils.isEmpty(tableColumnsDetailDTOList)) {
-                return dbInforamtionDTO;
+                return dbInformationDTO;
             }
 
             DfFormTableSettingDO dfFormTableSettingDO = null;
@@ -143,7 +139,7 @@ public class MysqlDataSourceComponent {
             }
 
         }
-        return dbInforamtionDTO;
+        return dbInformationDTO;
     }
 
 

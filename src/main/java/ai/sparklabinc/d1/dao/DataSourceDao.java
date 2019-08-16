@@ -1,6 +1,6 @@
 package ai.sparklabinc.d1.dao;
 
-import ai.sparklabinc.d1.dto.DbInforamtionDTO;
+import ai.sparklabinc.d1.dto.DbInformationDTO;
 import ai.sparklabinc.d1.dto.TableAndViewInfoDTO;
 import ai.sparklabinc.d1.dto.TableColumnsDetailDTO;
 
@@ -19,7 +19,7 @@ public interface DataSourceDao {
 
     DataDaoType getDataDaoType();
 
-    List<DbInforamtionDTO> selectAllSchema(Long dsId) throws IOException, SQLException, Exception;
+    List<DbInformationDTO> selectAllSchema(Long dsId) throws IOException, SQLException, Exception;
 
     List<TableAndViewInfoDTO> selectAllTableAndView(Long dsId) throws IOException, SQLException, Exception;
 

@@ -13,7 +13,7 @@ public class DfKeyInfoDTO {
     private String schemaName;
     private String tableName;
     private String label;
-    private Integer level;
+    private Long level;
 
     public Long getId() {
         return id;
@@ -47,11 +47,11 @@ public class DfKeyInfoDTO {
         this.tableName = tableName;
     }
 
-    public Integer getLevel() {
+    public Long getLevel() {
         return level;
     }
 
-    public void setLevel(Integer level) {
+    public void setLevel(Long level) {
         this.level = level;
     }
 

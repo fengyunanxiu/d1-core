@@ -1,6 +1,6 @@
 package ai.sparklabinc.d1.service;
 
-import ai.sparklabinc.d1.dto.DbInforamtionDTO;
+import ai.sparklabinc.d1.dto.DbInformationDTO;
 import ai.sparklabinc.d1.dto.DfKeyBasicConfigDTO;
 import ai.sparklabinc.d1.entity.DfFormTableSettingDO;
 import ai.sparklabinc.d1.entity.DfKeyBasicConfigDO;
@@ -18,7 +18,7 @@ import java.util.Map;
  * @version: V1.0
  */
 public interface DataFacetKeyService {
-    DbInforamtionDTO addDataFacetKey(DfKeyBasicConfigDTO dfKeyBasicConfigDTO) throws Exception;
+    DbInformationDTO addDataFacetKey(DfKeyBasicConfigDTO dfKeyBasicConfigDTO) throws Exception;
 
     List<Map<String, Object>> selectAllDfFormTableSettingByDfKey(String dfKey) throws Exception;
 

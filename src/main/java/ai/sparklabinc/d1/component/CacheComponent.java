@@ -4,7 +4,7 @@ import ai.sparklabinc.d1.dao.DataSourceDao;
 import ai.sparklabinc.d1.dao.DbBasicConfigDao;
 import ai.sparklabinc.d1.dao.DfKeyBasicConfigDao;
 import ai.sparklabinc.d1.dao.DsTreeMenuCacheDao;
-import ai.sparklabinc.d1.dto.DbInforamtionDTO;
+import ai.sparklabinc.d1.dto.DbInformationDTO;
 import ai.sparklabinc.d1.dto.DfKeyInfoDTO;
 import ai.sparklabinc.d1.dto.TableAndViewInfoDTO;
 import ai.sparklabinc.d1.entity.DsTreeMenuCacheDO;
@@ -41,17 +41,17 @@ public class CacheComponent {
     @Resource(name = "DsTreeMenuCacheDao")
     private DsTreeMenuCacheDao dsTreeMenuCacheDao;
 
-    public List<DbInforamtionDTO> selectDataSources(Long dsId) throws Exception {
+    public List<DbInformationDTO> selectDataSources(Long dsId) throws Exception {
         return dbBasicConfigDao.selectDataSources(dsId);
     }
 
-    public List<DbInforamtionDTO> selectAllSchema(DsTreeMenuCacheDO dsTreeMenuCache) throws Exception {
+    public List<DbInformationDTO> selectAllSchema(DsTreeMenuCacheDO dsTreeMenuCache) throws Exception {
         if(dsTreeMenuCache==null||StringUtils.isBlank( dsTreeMenuCache.getDsSchemaInfo())){
            return null;
         }
         String dsSchemaInfoJSON = dsTreeMenuCache.getDsSchemaInfo();
-        List<DbInforamtionDTO> dbInforamtionDTOS = JSONObject.parseArray(dsSchemaInfoJSON, DbInforamtionDTO.class);
-        return dbInforamtionDTOS;
+        List<DbInformationDTO> dbInformationDTOS = JSONObject.parseArray(dsSchemaInfoJSON, DbInformationDTO.class);
+        return dbInformationDTOS;
     }
 
     public List<TableAndViewInfoDTO> selectAllTableAndView(DsTreeMenuCacheDO dsTreeMenuCache) throws Exception {
@@ -70,10 +70,10 @@ public class CacheComponent {
     }
 
 
-    public List<DbInforamtionDTO> selectAllSchemaPut(Long dsId) throws Exception {
-        List<DbInforamtionDTO> dbInforamtionDTOS = dataSourceDao.selectAllSchema(dsId);
-        if(!CollectionUtils.isEmpty(dbInforamtionDTOS)){
-            String jsonString = JSON.toJSONString(dbInforamtionDTOS);
+    public List<DbInformationDTO> selectAllSchemaPut(Long dsId) throws Exception {
+        List<DbInformationDTO> dbInformationDTOS = dataSourceDao.selectAllSchema(dsId);
+        if(!CollectionUtils.isEmpty(dbInformationDTOS)){
+            String jsonString = JSON.toJSONString(dbInformationDTOS);
             DsTreeMenuCacheDO dsTreeMenuCache = dsTreeMenuCacheDao.getDsTreeMenuCache(dsId);
             if(dsTreeMenuCache!=null){
                 dsTreeMenuCache.setDsSchemaInfo(jsonString);
@@ -86,7 +86,7 @@ public class CacheComponent {
             }
 
         }
-        return dbInforamtionDTOS;
+        return dbInformationDTOS;
 
     }
 
@@ -116,7 +116,7 @@ public class CacheComponent {
 
 
 //    @Cacheable(value = "selectAllSchema")
-//    public List<DbInforamtionDTO> selectAllSchema(Long dsId) throws Exception {
+//    public List<DbInformationDTO> selectAllSchema(Long dsId) throws Exception {
 //        return null;
 //    }
 //
@@ -133,7 +133,7 @@ public class CacheComponent {
 //
 //
 //    @CachePut(value = "selectAllSchema")
-//    public List<DbInforamtionDTO> selectAllSchemaPut(Long dsId) throws Exception {
+//    public List<DbInformationDTO> selectAllSchemaPut(Long dsId) throws Exception {
 //        return dataSourceDao.selectAllSchema(dsId);
 //    }
 //

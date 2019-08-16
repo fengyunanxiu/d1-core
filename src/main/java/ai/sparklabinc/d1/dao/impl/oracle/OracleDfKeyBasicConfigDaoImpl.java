@@ -3,7 +3,7 @@ package ai.sparklabinc.d1.dao.impl.oracle;
 import ai.sparklabinc.d1.dao.DataDaoType;
 import ai.sparklabinc.d1.dao.DfKeyBasicConfigDao;
 import ai.sparklabinc.d1.datasource.DataSourceFactory;
-import ai.sparklabinc.d1.dto.DbInforamtionDTO;
+import ai.sparklabinc.d1.dto.DbInformationDTO;
 import ai.sparklabinc.d1.dto.DfKeyInfoDTO;
 import ai.sparklabinc.d1.entity.DfKeyBasicConfigDO;
 import ai.sparklabinc.d1.util.DateUtils;
@@ -81,7 +81,7 @@ public class OracleDfKeyBasicConfigDaoImpl implements DfKeyBasicConfigDao {
     }
 
     @Override
-    public List<DbInforamtionDTO> getDataFacetKey(Long dsId, String schema, String tableName) throws IOException, SQLException {
+    public List<DbInformationDTO> getDataFacetKey(Long dsId, String schema, String tableName) throws IOException, SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql ="select  id," +
                 "       df_key as label," +
@@ -90,7 +90,7 @@ public class OracleDfKeyBasicConfigDaoImpl implements DfKeyBasicConfigDao {
                 " where fk_db_id=? " +
                 " and schema_name=? " +
                 " and table_name=?";
-        List<DbInforamtionDTO> result = queryRunner.query(sql, new BeanListHandler<>(DbInforamtionDTO.class), dsId, schema, tableName);
+        List<DbInformationDTO> result = queryRunner.query(sql, new BeanListHandler<>(DbInformationDTO.class), dsId, schema, tableName);
         return  result;
     }
 

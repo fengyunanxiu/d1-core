@@ -4,7 +4,7 @@ import ai.sparklabinc.d1.dao.DataDaoType;
 import ai.sparklabinc.d1.dao.DataSourceDao;
 import ai.sparklabinc.d1.datasource.Constants;
 import ai.sparklabinc.d1.datasource.DataSourceFactory;
-import ai.sparklabinc.d1.dto.DbInforamtionDTO;
+import ai.sparklabinc.d1.dto.DbInformationDTO;
 import ai.sparklabinc.d1.dto.TableAndViewInfoDTO;
 import ai.sparklabinc.d1.dto.TableColumnsDetailDTO;
 import org.apache.commons.dbutils.QueryRunner;
@@ -12,8 +12,6 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -34,15 +32,15 @@ public class OracleDataSourceDaoImpl implements DataSourceDao {
     }
 
     @Override
-    public List<DbInforamtionDTO> selectAllSchema(Long dsId) throws Exception {
+    public List<DbInformationDTO> selectAllSchema(Long dsId) throws Exception {
         QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(Constants.DATABASE_TYPE_MYSQL, dsId));
         String sql = "select" +
                 "   schema_name as label," +
                 "    2 as level" +
                 "   from information_schema.schemata" +
                 "   where schema_name not in ('information_schema','performance_schema','tmp','sys','mysql')";
-        List<DbInforamtionDTO> dbInforamtionDTOList = queryRunner.query(sql, new BeanListHandler<>(DbInforamtionDTO.class));
-        return dbInforamtionDTOList;
+        List<DbInformationDTO> dbInformationDTOList = queryRunner.query(sql, new BeanListHandler<>(DbInformationDTO.class));
+        return dbInformationDTOList;
     }
 
 

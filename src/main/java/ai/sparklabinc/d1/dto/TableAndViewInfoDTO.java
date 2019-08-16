@@ -10,7 +10,7 @@ package ai.sparklabinc.d1.dto;
 public class TableAndViewInfoDTO {
     private String tableSchema;
     private String tableName;
-    private Integer level;
+    private Long level;
     private String type;
 
     public String getTableSchema() {
@@ -29,11 +29,11 @@ public class TableAndViewInfoDTO {
         this.tableName = tableName;
     }
 
-    public Integer getLevel() {
+    public Long getLevel() {
         return level;
     }
 
-    public void setLevel(Integer level) {
+    public void setLevel(Long level) {
         this.level = level;
     }
 

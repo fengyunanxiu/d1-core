@@ -1,6 +1,6 @@
 package ai.sparklabinc.d1.dao;
 
-import ai.sparklabinc.d1.dto.DbInforamtionDTO;
+import ai.sparklabinc.d1.dto.DbInformationDTO;
 import ai.sparklabinc.d1.entity.DbBasicConfigDO;
 
 import java.io.IOException;
@@ -22,7 +22,7 @@ public interface DbBasicConfigDao {
 
    Integer delete(Long dsId) throws SQLException, IOException;
 
-   List<DbInforamtionDTO> selectDataSources(Long dsId) throws IOException, SQLException, Exception;
+   List<DbInformationDTO> selectDataSources(Long dsId) throws IOException, SQLException, Exception;
 
    List<Map<String,Object>> selectDataSourceProperty(Long dsId)throws IOException, SQLException;
 

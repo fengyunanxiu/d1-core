@@ -1,7 +1,7 @@
 package ai.sparklabinc.d1.service;
 
 import ai.sparklabinc.d1.dto.DbBasicConfigDTO;
-import ai.sparklabinc.d1.dto.DbInforamtionDTO;
+import ai.sparklabinc.d1.dto.DbInformationDTO;
 import ai.sparklabinc.d1.dto.DbSecurityConfigDTO;
 
 import java.util.List;
@@ -18,13 +18,13 @@ public interface DataSourceService {
     void Connection2DataSource(Long dsId) throws Exception;
 
 
-    DbInforamtionDTO addDataSources(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO)  throws Exception;
+    DbInformationDTO addDataSources(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO)  throws Exception;
 
     void deleteDataSources(Long dsId) throws Exception;
 
-    List<DbInforamtionDTO> selectDataSources() throws Exception;
+    List<DbInformationDTO> selectDataSources() throws Exception;
 
-    DbInforamtionDTO refreshDataSources(Long dsId) throws Exception;
+    DbInformationDTO refreshDataSources(Long dsId) throws Exception;
 
     List<Map<String, Object>>  selectDataSourceProperty(Long dsId) throws Exception;
 

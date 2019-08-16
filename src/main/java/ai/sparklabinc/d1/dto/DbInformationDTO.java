@@ -9,12 +9,12 @@ import java.util.List;
  * @description:
  * @version: V1.0
  */
-public class DbInforamtionDTO {
+public class DbInformationDTO {
     private Long id;
     private String label;
-    private Integer level;
+    private Long level;
     private String type;
-    private List<DbInforamtionDTO> children;
+    private List<DbInformationDTO> children;
 
     public Long getId() {
         return id;
@@ -32,11 +32,11 @@ public class DbInforamtionDTO {
         this.label = label;
     }
 
-    public Integer getLevel() {
+    public Long getLevel() {
         return level;
     }
 
-    public void setLevel(Integer level) {
+    public void setLevel(Long level) {
         this.level = level;
     }
 
@@ -48,11 +48,11 @@ public class DbInforamtionDTO {
         this.type = type;
     }
 
-    public List<DbInforamtionDTO> getChildren() {
+    public List<DbInformationDTO> getChildren() {
         return children;
     }
 
-    public void setChildren(List<DbInforamtionDTO> children) {
+    public void setChildren(List<DbInformationDTO> children) {
         this.children = children;
     }
 }

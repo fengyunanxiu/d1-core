@@ -2,7 +2,7 @@ package ai.sparklabinc.d1.dao.impl.mysql;
 
 import ai.sparklabinc.d1.dao.DataDaoType;
 import ai.sparklabinc.d1.dao.DbBasicConfigDao;
-import ai.sparklabinc.d1.dto.DbInforamtionDTO;
+import ai.sparklabinc.d1.dto.DbInformationDTO;
 import ai.sparklabinc.d1.entity.DbBasicConfigDO;
 import ai.sparklabinc.d1.util.DateUtils;
 import org.apache.commons.dbutils.QueryRunner;
@@ -27,7 +27,7 @@ import java.util.Map;
  */
 @Repository(value = "MysqlDbBasicConfigDaoImpl")
 public class MysqlDbBasicConfigDaoImpl implements DbBasicConfigDao {
-    @Resource(name="D1BasicDataSource")
+    @Resource(name = "D1BasicDataSource")
     private DataSource d1BasicDataSource;
 
     @Override
@@ -82,7 +82,7 @@ public class MysqlDbBasicConfigDaoImpl implements DbBasicConfigDao {
 
     @Override
     public Long add(DbBasicConfigDO dbBasicConfigDO) throws SQLException, IOException {
-        Connection conn=null;
+        Connection conn = null;
         Long id = 0L;
         try {
 
@@ -90,7 +90,7 @@ public class MysqlDbBasicConfigDaoImpl implements DbBasicConfigDao {
                     "values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             DataSource dataSource = d1BasicDataSource;
             conn = dataSource.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             String now = DateUtils.ofLongStr(new java.util.Date());
             //绑定参数
             bindParameters(preparedStatement, now, now,
@@ -108,7 +108,7 @@ public class MysqlDbBasicConfigDaoImpl implements DbBasicConfigDao {
             while (rs.next()) {
                 id = rs.getLong(1);
             }
-        }finally {
+        } finally {
             if (conn != null) {
                 conn.close();
             }
@@ -119,17 +119,17 @@ public class MysqlDbBasicConfigDaoImpl implements DbBasicConfigDao {
 
     @Override
     public Integer delete(Long dsId) throws SQLException, IOException {
-        Connection conn=null;
-        int update=0;
+        Connection conn = null;
+        int update = 0;
         try {
             String sql = "delete from db_basic_config where id = ?";
             DataSource dataSource = d1BasicDataSource;
             conn = dataSource.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             //绑定参数
             bindParameters(preparedStatement, dsId);
             update = preparedStatement.executeUpdate();
-        }finally {
+        } finally {
             if (conn != null) {
                 conn.close();
             }
@@ -138,33 +138,33 @@ public class MysqlDbBasicConfigDaoImpl implements DbBasicConfigDao {
     }
 
     @Override
-    public List<DbInforamtionDTO> selectDataSources(Long dsId) throws Exception {
+    public List<DbInformationDTO> selectDataSources(Long dsId) throws Exception {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String querySql = "select id,db_name as label,1 as level,'' as type from db_basic_config where 1=1 ";
-        List<DbInforamtionDTO> dbInforamtionDTOList=null;
-        if(dsId!=null){
-            querySql+=" and id = ? order by id asc";
-            dbInforamtionDTOList=queryRunner.query(querySql, new BeanListHandler<>(DbInforamtionDTO.class),dsId);
-        }else {
-            querySql+=" order by id asc";
-            dbInforamtionDTOList=queryRunner.query(querySql, new BeanListHandler<>(DbInforamtionDTO.class));
+        List<DbInformationDTO> dbInformationDTOList = null;
+        if (dsId != null) {
+            querySql += " and id = ? order by id asc";
+            dbInformationDTOList = queryRunner.query(querySql, new BeanListHandler<>(DbInformationDTO.class), dsId);
+        } else {
+            querySql += " order by id asc";
+            dbInformationDTOList = queryRunner.query(querySql, new BeanListHandler<>(DbInformationDTO.class));
         }
-        return  dbInforamtionDTOList;
+        return dbInformationDTOList;
     }
 
     @Override
     public List<Map<String, Object>> selectDataSourceProperty(Long dsId) throws IOException, SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String querySql = "select * from ds_full_config_view where id = ?";
-        List<Map<String, Object>> result = queryRunner.query(querySql, new MapListHandler(),dsId);
-        return  result;
+        List<Map<String, Object>> result = queryRunner.query(querySql, new MapListHandler(), dsId);
+        return result;
     }
 
 
     @Override
     public Integer editDataSourceProperty(DbBasicConfigDO dbBasicConfigDO) throws IOException, SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
-        String sql="update db_basic_config set  gmt_modified = ?," +
+        String sql = "update db_basic_config set  gmt_modified = ?," +
                 "   db_type = ?," +
                 "   db_name = ?," +
                 "   db_host = ?," +
@@ -175,7 +175,7 @@ public class MysqlDbBasicConfigDaoImpl implements DbBasicConfigDao {
                 "   other_params = ? " +
                 "where  id = ?";
         String now = DateUtils.ofLongStr(new java.util.Date());
-        Object[] objectsParams={now,
+        Object[] objectsParams = {now,
                 dbBasicConfigDO.getDbType(),
                 dbBasicConfigDO.getDbName(),
                 dbBasicConfigDO.getDbHost(),
@@ -186,7 +186,7 @@ public class MysqlDbBasicConfigDaoImpl implements DbBasicConfigDao {
                 dbBasicConfigDO.getOtherParams(),
                 dbBasicConfigDO.getId()
         };
-        int update = queryRunner.update(sql,objectsParams);
+        int update = queryRunner.update(sql, objectsParams);
         return update;
     }
 

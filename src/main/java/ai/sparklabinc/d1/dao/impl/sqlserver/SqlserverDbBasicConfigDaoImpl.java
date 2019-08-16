@@ -2,7 +2,7 @@ package ai.sparklabinc.d1.dao.impl.sqlserver;
 
 import ai.sparklabinc.d1.dao.DataDaoType;
 import ai.sparklabinc.d1.dao.DbBasicConfigDao;
-import ai.sparklabinc.d1.dto.DbInforamtionDTO;
+import ai.sparklabinc.d1.dto.DbInformationDTO;
 import ai.sparklabinc.d1.entity.DbBasicConfigDO;
 import ai.sparklabinc.d1.util.DateUtils;
 import org.apache.commons.dbutils.QueryRunner;
@@ -138,18 +138,18 @@ public class SqlserverDbBasicConfigDaoImpl implements DbBasicConfigDao {
     }
 
     @Override
-    public List<DbInforamtionDTO> selectDataSources(Long dsId) throws IOException, SQLException {
+    public List<DbInformationDTO> selectDataSources(Long dsId) throws IOException, SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String querySql = "select id,db_name as label,1 as level,'' as type from db_basic_config where 1=1 ";
-        List<DbInforamtionDTO> dbInforamtionDTOList=null;
+        List<DbInformationDTO> dbInformationDTOList =null;
         if(dsId!=null){
             querySql+=" and id = ? order by id asc";
-            dbInforamtionDTOList=queryRunner.query(querySql, new BeanListHandler<>(DbInforamtionDTO.class),dsId);
+            dbInformationDTOList =queryRunner.query(querySql, new BeanListHandler<>(DbInformationDTO.class),dsId);
         }else {
             querySql+=" order by id asc";
-            dbInforamtionDTOList=queryRunner.query(querySql, new BeanListHandler<>(DbInforamtionDTO.class));
+            dbInformationDTOList =queryRunner.query(querySql, new BeanListHandler<>(DbInformationDTO.class));
         }
-        return  dbInforamtionDTOList;
+        return dbInformationDTOList;
     }
 
     @Override

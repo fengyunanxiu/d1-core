@@ -1,6 +1,6 @@
 package ai.sparklabinc.d1.dao;
 
-import ai.sparklabinc.d1.dto.DbInforamtionDTO;
+import ai.sparklabinc.d1.dto.DbInformationDTO;
 import ai.sparklabinc.d1.dto.DfKeyInfoDTO;
 import ai.sparklabinc.d1.entity.DfKeyBasicConfigDO;
 
@@ -18,7 +18,7 @@ public interface DfKeyBasicConfigDao {
 
     DfKeyBasicConfigDO getDfKeyBasicConfigByDfKey(String dataFacetKey) throws SQLException, IOException;
 
-    List<DbInforamtionDTO> getDataFacetKey(Long dsId, String schema, String tableName) throws IOException, SQLException;
+    List<DbInformationDTO> getDataFacetKey(Long dsId, String schema, String tableName) throws IOException, SQLException;
 
     List<DfKeyInfoDTO> getAllDataFacetKey() throws IOException, SQLException;
 

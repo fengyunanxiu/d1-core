@@ -6,7 +6,7 @@ import ai.sparklabinc.d1.dao.DbBasicConfigDao;
 import ai.sparklabinc.d1.dao.DfFormTableSettingDao;
 import ai.sparklabinc.d1.dao.DfKeyBasicConfigDao;
 import ai.sparklabinc.d1.datasource.Constants;
-import ai.sparklabinc.d1.dto.DbInforamtionDTO;
+import ai.sparklabinc.d1.dto.DbInformationDTO;
 import ai.sparklabinc.d1.dto.DfKeyBasicConfigDTO;
 import ai.sparklabinc.d1.dto.TableColumnsDetailDTO;
 import ai.sparklabinc.d1.entity.DbBasicConfigDO;
@@ -61,7 +61,7 @@ public class DataFacetKeyServiceImpl implements DataFacetKeyService {
     private DataSourceService dataSourceService;
 
     @Override
-    public DbInforamtionDTO addDataFacetKey(DfKeyBasicConfigDTO dfKeyBasicConfigDTO) throws Exception {
+    public DbInformationDTO addDataFacetKey(DfKeyBasicConfigDTO dfKeyBasicConfigDTO) throws Exception {
         long start=System.currentTimeMillis();
         //是否能够连接上真实的数据库
         dataSourceService.Connection2DataSource(dfKeyBasicConfigDTO.getFkDbId());
