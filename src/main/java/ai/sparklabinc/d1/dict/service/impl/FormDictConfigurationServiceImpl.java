@@ -55,18 +55,12 @@ public class FormDictConfigurationServiceImpl implements FormDictConfigurationSe
         FormDictConfigurationDO formDictConfigurationDO = formDictConfigurationList.get(0);
         String domain = formDictConfigurationDO.getFieldDomain();
         String item = formDictConfigurationDO.getFieldItem();
-        if (StringUtils.isNullOrEmpty(domain) || StringUtils.isNullOrEmpty(item)) {
-           return null;
-        }
-        List<DictDO> dictDOList = this.dictRepository.findByDomainAndItem(domain, item);
-        if (dictDOList == null || dictDOList.isEmpty()) {
-            return null;
-        }
-        dictDOList.sort(Comparator.comparing(DictDO::getFieldSequence));
+//        List<DictDO> dictDOList = this.dictRepository.findByDomainAndItem(domain, item);
+//        dictDOList.sort(Comparator.comparing(DictDO::getFieldSequence));
         // 构造前端数据结构
         FormDictConfigurationVO formDictConfigurationVO = new FormDictConfigurationVO();
         formDictConfigurationVO.setFieldId(formDictConfigurationDO.getFieldId());
-        formDictConfigurationVO.setDictList(dictDOList);
+//        formDictConfigurationVO.setDictList(dictDOList);
         formDictConfigurationVO.setFieldDomain(domain);
         formDictConfigurationVO.setFieldItem(item);
         formDictConfigurationVO.setFieldFormDfKey(formDfKey);
