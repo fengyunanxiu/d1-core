@@ -383,8 +383,8 @@ public class DataSourceServiceImpl implements DataSourceService {
 
 
     @Override
-    public boolean dataSourceTestConnection(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws Exception {
-        return connectionService.createConnection(dbBasicConfigDTO, dbSecurityConfigDTO);
+    public void dataSourceTestConnection(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws Exception {
+         connectionService.createConnection(dbBasicConfigDTO, dbSecurityConfigDTO);
     }
 
 
