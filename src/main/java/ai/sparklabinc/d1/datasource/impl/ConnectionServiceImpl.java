@@ -14,7 +14,6 @@ import com.jcraft.jsch.Session;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -25,7 +24,6 @@ import java.net.ServerSocket;
 import java.rmi.ServerException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.Map;
 import java.util.UUID;
 
@@ -44,7 +42,7 @@ public class ConnectionServiceImpl implements ConnectionService {
     private DbSecurityConfigDao dbSecurityConfigDao;
 
     @Override
-    public boolean createConnection(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws Exception {
+    public void createConnection(DbBasicConfigDTO dbBasicConfigDTO, DbSecurityConfigDTO dbSecurityConfigDTO) throws Exception {
         boolean connectResult = false;
         //数据库类型
         String dbType = dbBasicConfigDTO.getDbType();
@@ -173,7 +171,10 @@ public class ConnectionServiceImpl implements ConnectionService {
                 session.disconnect();
             }
         }
-        return connectResult;
+        if(!connectResult){
+            throw  new ServiceException("");
+        }
+
     }
 
     @Override
