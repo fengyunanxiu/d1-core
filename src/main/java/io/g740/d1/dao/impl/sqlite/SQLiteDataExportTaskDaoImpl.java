@@ -76,7 +76,7 @@ public class SQLiteDataExportTaskDaoImpl implements DataExportTaskDao {
     }
 
     @Override
-    public DataExportTaskDO findById(Long id) throws IOException, SQLException {
+    public DataExportTaskDO findById(Long id) throws SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql = "select id," +
                 "   start_at as startAt," +
@@ -93,7 +93,7 @@ public class SQLiteDataExportTaskDaoImpl implements DataExportTaskDao {
     }
 
     @Override
-    public DataExportTaskDO updateDataExportTask(DataExportTaskDO dataExportTaskDO) throws IOException, SQLException {
+    public DataExportTaskDO updateDataExportTask(DataExportTaskDO dataExportTaskDO) throws SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql = "update data_export_task set start_at=?," +
                 "  end_at=?," +

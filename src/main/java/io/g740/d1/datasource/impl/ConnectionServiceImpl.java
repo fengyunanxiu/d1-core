@@ -222,7 +222,7 @@ public class ConnectionServiceImpl implements ConnectionService {
      */
     private Integer findRandomOpenPort() throws IOException {
         try (
-                ServerSocket socket = new ServerSocket(0);
+                ServerSocket socket = new ServerSocket(0)
         ) {
             return socket.getLocalPort();
         }

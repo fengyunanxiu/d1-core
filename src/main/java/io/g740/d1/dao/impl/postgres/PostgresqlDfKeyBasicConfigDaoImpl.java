@@ -44,7 +44,7 @@ public class PostgresqlDfKeyBasicConfigDaoImpl implements DfKeyBasicConfigDao {
 
 
     @Override
-    public DfKeyBasicConfigDO getDfKeyBasicConfigByDfKey(String dataFacetKey) throws SQLException, IOException {
+    public DfKeyBasicConfigDO getDfKeyBasicConfigByDfKey(String dataFacetKey) throws SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String querySql = "select * from df_key_basic_config where df_key = ? ";
         LOGGER.info("querySql:{}", querySql);
@@ -81,7 +81,7 @@ public class PostgresqlDfKeyBasicConfigDaoImpl implements DfKeyBasicConfigDao {
     }
 
     @Override
-    public List<DbInformationDTO> getDataFacetKey(Long dsId, String schema, String tableName) throws IOException, SQLException {
+    public List<DbInformationDTO> getDataFacetKey(Long dsId, String schema, String tableName) throws SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql ="select  id," +
                 "       df_key as label," +
@@ -96,7 +96,7 @@ public class PostgresqlDfKeyBasicConfigDaoImpl implements DfKeyBasicConfigDao {
 
 
     @Override
-    public List<DfKeyInfoDTO> getAllDataFacetKey() throws IOException, SQLException {
+    public List<DfKeyInfoDTO> getAllDataFacetKey() throws SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql ="select  id," +
                 "       fk_db_id as fkDbId," +
@@ -113,7 +113,7 @@ public class PostgresqlDfKeyBasicConfigDaoImpl implements DfKeyBasicConfigDao {
     }
 
     @Override
-    public Integer addDataFacetKey(DfKeyBasicConfigDO dfKeyBasicConfigDO) throws IOException, SQLException {
+    public Integer addDataFacetKey(DfKeyBasicConfigDO dfKeyBasicConfigDO) throws SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql ="insert into df_key_basic_config( df_key, fk_db_id, schema_name, table_name, " +
                 " description, gmt_create, gmt_modified)" +
@@ -131,7 +131,7 @@ public class PostgresqlDfKeyBasicConfigDaoImpl implements DfKeyBasicConfigDao {
 
 
     @Override
-    public Integer updateDataFacetKey(String dfKey,String newDfKey,String description) throws IOException, SQLException {
+    public Integer updateDataFacetKey(String dfKey,String newDfKey,String description) throws SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql =" update df_key_basic_config set df_key = ?,description = ?,gmt_modified = ?" +
                 " where df_key = ? ";
@@ -142,7 +142,7 @@ public class PostgresqlDfKeyBasicConfigDaoImpl implements DfKeyBasicConfigDao {
     }
 
     @Override
-    public Integer deleteDataFacetKey(String dfKey) throws SQLException, IOException {
+    public Integer deleteDataFacetKey(String dfKey) throws SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql="delete from df_key_basic_config where df_key = ? ";
         int result=queryRunner.update(sql,dfKey);

@@ -37,7 +37,7 @@ public class OracleDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
     }
 
     @Override
-    public DbSecurityConfigDO findById(Long id) throws SQLException, IOException {
+    public DbSecurityConfigDO findById(Long id) throws SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
 
         String querySql = "select * from db_security_config where id = ? ";
@@ -89,7 +89,7 @@ public class OracleDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
     }
 
     @Override
-    public Integer add(DbSecurityConfigDO dbSecurityConfigDO) throws IOException, SQLException {
+    public Integer add(DbSecurityConfigDO dbSecurityConfigDO) throws SQLException {
         Connection conn = null;
         int update = 0;
         try {
@@ -140,7 +140,7 @@ public class OracleDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
     }
 
     @Override
-    public Integer delete(Long dsId) throws SQLException, IOException {
+    public Integer delete(Long dsId) throws SQLException {
         Connection conn = null;
         int update = 0;
         try {
@@ -160,7 +160,7 @@ public class OracleDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
     }
 
     @Override
-    public Integer editDataSourceProperty(DbSecurityConfigDO dbSecurityConfigDO) throws IOException, SQLException {
+    public Integer editDataSourceProperty(DbSecurityConfigDO dbSecurityConfigDO) throws SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql = "update db_security_config set  gmt_modified  = ?," +
                 "use_ssl = ?," +

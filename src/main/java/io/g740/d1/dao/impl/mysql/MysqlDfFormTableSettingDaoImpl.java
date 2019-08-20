@@ -48,7 +48,7 @@ public class MysqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingDa
     }
 
     @Override
-    public List<DfFormTableSettingDO> getAllDfFormTableSettingByDfKey(String dataFacetKey) throws SQLException, IOException {
+    public List<DfFormTableSettingDO> getAllDfFormTableSettingByDfKey(String dataFacetKey) throws SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String querySql = "select * from df_form_table_setting where df_key = ? ";
         LOGGER.info("querySql:{}", querySql);
@@ -125,7 +125,7 @@ public class MysqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingDa
     }
 
     @Override
-    public Integer batchAdd(List<DfFormTableSettingDO> dfFormTableSettingDOS) throws IOException, SQLException {
+    public Integer batchAdd(List<DfFormTableSettingDO> dfFormTableSettingDOS) throws SQLException {
         long startTime=System.currentTimeMillis();
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql ="insert into df_form_table_setting(gmt_create, gmt_modified, df_key, db_field_name, db_field_type," +
@@ -186,7 +186,7 @@ public class MysqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingDa
 
 
     @Override
-    public List<Map<String, Object>> selectAllDfFormTableSettingByDfKey(String dataFacetKey) throws SQLException, IOException {
+    public List<Map<String, Object>> selectAllDfFormTableSettingByDfKey(String dataFacetKey) throws SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String querySql = "select * from df_form_table_setting where df_key = ? ";
         LOGGER.info("querySql:{}", querySql);
@@ -195,7 +195,7 @@ public class MysqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingDa
     }
 
     @Override
-    public Integer updateDataFacetKey(String dataFacetKey,String newDataFacetKey) throws SQLException, IOException {
+    public Integer updateDataFacetKey(String dataFacetKey,String newDataFacetKey) throws SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String querySql = " update df_form_table_setting set gmt_modified = ?, df_key = ? " +
                           " where df_key = ?";
@@ -206,7 +206,7 @@ public class MysqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingDa
     }
 
     @Override
-    public Integer deleteDataFacetKey(String dfKey) throws SQLException, IOException {
+    public Integer deleteDataFacetKey(String dfKey) throws SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql="delete from df_form_table_setting where df_key = ?";
         int update = queryRunner.update(sql, dfKey);
@@ -214,7 +214,7 @@ public class MysqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingDa
     }
 
     @Override
-    public List<DfFormTableSettingDO> getAllDfFormTableSettingByDfKeyForExport(String dataFacetKey) throws SQLException, IOException {
+    public List<DfFormTableSettingDO> getAllDfFormTableSettingByDfKeyForExport(String dataFacetKey) throws SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String querySql = "" +
                 "select id as  id," +
@@ -251,7 +251,7 @@ public class MysqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSettingDa
     }
 
     @Override
-    public Integer updateDfFormTableSetting(DfFormTableSettingDO dfFormTableSettingDO) throws SQLException, IOException {
+    public Integer updateDfFormTableSetting(DfFormTableSettingDO dfFormTableSettingDO) throws SQLException {
         int result=0;
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String updateSql = "update df_form_table_setting " +

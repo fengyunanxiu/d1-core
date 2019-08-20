@@ -37,7 +37,7 @@ public class OracleDsBasicDictionaryDaoImpl implements DsBasicDictionaryDao {
     }
 
     @Override
-    public List<DsBasicDictionaryDO> findListByDomainName(String domainName) throws SQLException, IOException {
+    public List<DsBasicDictionaryDO> findListByDomainName(String domainName) throws SQLException {
 
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String querySql = "select * from ds_basic_dictionary where domain_name = ?  order by gmt_modified desc ";

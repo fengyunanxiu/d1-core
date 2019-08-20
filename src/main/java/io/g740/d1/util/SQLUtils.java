@@ -56,10 +56,8 @@ public class SQLUtils {
 	 * 
 	 * @param queryParameterMap
 	 * @return
-	 * @throws Exception
-	 */
-	public static String buildAccurateEqualsStringQueryParameterString(Map<String, String> queryParameterMap)
-			throws Exception {
+     */
+	public static String buildAccurateEqualsStringQueryParameterString(Map<String, String> queryParameterMap) {
 		StringBuilder filterParameterString = new StringBuilder();
 		for (Map.Entry<String, String> queryParameter : queryParameterMap.entrySet()) {
 			String filterParameterKey = queryParameter.getKey();
@@ -88,10 +86,8 @@ public class SQLUtils {
 	 * 
 	 * @param queryParameterMap
 	 * @return
-	 * @throws Exception
-	 */
-	public static String buildAccurateEqualsNumberQueryParameterString(Map<String, String> queryParameterMap)
-			throws Exception {
+     */
+	public static String buildAccurateEqualsNumberQueryParameterString(Map<String, String> queryParameterMap) {
 		StringBuilder filterParameterString = new StringBuilder();
 		for (Map.Entry<String, String> queryParameter : queryParameterMap.entrySet()) {
 			String filterParameterKey = queryParameter.getKey();
@@ -120,10 +116,8 @@ public class SQLUtils {
 	 * 
 	 * @param queryParameterMap
 	 * @return
-	 * @throws Exception
-	 */
-	public static String buildAccurateInStringQueryParameterString(Map<String, String[]> queryParameterMap)
-			throws Exception {
+     */
+	public static String buildAccurateInStringQueryParameterString(Map<String, String[]> queryParameterMap) {
 		StringBuilder filterParameterString = new StringBuilder();
 		for (Map.Entry<String, String[]> queryParameter : queryParameterMap.entrySet()) {
 			String filterParameterKey = queryParameter.getKey();
@@ -184,10 +178,8 @@ public class SQLUtils {
 	 * 
 	 * @param queryParameterMap
 	 * @return
-	 * @throws Exception
-	 */
-	public static String buildAccurateInNumberQueryParameterString(Map<String, String[]> queryParameterMap)
-			throws Exception {
+     */
+	public static String buildAccurateInNumberQueryParameterString(Map<String, String[]> queryParameterMap) {
 		StringBuilder filterParameterString = new StringBuilder();
 		for (Map.Entry<String, String[]> queryParameter : queryParameterMap.entrySet()) {
 			String filterParameterKey = queryParameter.getKey();
@@ -245,10 +237,8 @@ public class SQLUtils {
 	 * 
 	 * @param queryParameterMap
 	 * @return
-	 * @throws Exception
-	 */
-	public static String buildAccurateDateRangeQueryParameterString(Map<String, String[]> queryParameterMap)
-			throws Exception {
+     */
+	public static String buildAccurateDateRangeQueryParameterString(Map<String, String[]> queryParameterMap) {
 		StringBuilder filterParameterString = new StringBuilder();
 		for (Map.Entry<String, String[]> queryParameter : queryParameterMap.entrySet()) {
 			String filterParameterKey = queryParameter.getKey();
@@ -375,10 +365,8 @@ public class SQLUtils {
 	 *
 	 * @param queryParameterMap
 	 * @return
-	 * @throws Exception
-	 */
-	public static String buildAccurateNumberRangeQueryParameterString(Map<String, String[]> queryParameterMap)
-			throws Exception {
+     */
+	public static String buildAccurateNumberRangeQueryParameterString(Map<String, String[]> queryParameterMap) {
 		StringBuilder filterParameterString = new StringBuilder();
 		for (Map.Entry<String, String[]> queryParameter : queryParameterMap.entrySet()) {
 			String filterParameterKey = queryParameter.getKey();
@@ -495,9 +483,8 @@ public class SQLUtils {
 	 *
 	 * @param queryParameterMap
 	 * @return
-	 * @throws Exception
-	 */
-	public static String buildAccurateQueryParameterString(Map<String, String[]> queryParameterMap) throws Exception {
+     */
+	public static String buildAccurateQueryParameterString(Map<String, String[]> queryParameterMap) {
 		StringBuilder filterParameterString = new StringBuilder();
 		for (Map.Entry<String, String[]> queryParameter : queryParameterMap.entrySet()) {
 			// 永远加上" AND"
@@ -745,9 +732,8 @@ public class SQLUtils {
 	 * 
 	 * @param queryParameterMap
 	 * @return
-	 * @throws Exception
-	 */
-	public static String buildFuzzyLikeQueryParameterString(Map<String, String> queryParameterMap) throws Exception {
+     */
+	public static String buildFuzzyLikeQueryParameterString(Map<String, String> queryParameterMap) {
 		StringBuilder filterParameterString = new StringBuilder();
 		for (Map.Entry<String, String> queryParameter : queryParameterMap.entrySet()) {
 			// 永远加上" AND"

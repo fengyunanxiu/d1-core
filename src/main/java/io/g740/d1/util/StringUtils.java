@@ -28,21 +28,16 @@ public class StringUtils {
 		if (source == null)
 			return false;
 
-		if (source.trim().isEmpty())
-			return false;
-
-		return true;
-	}
+        return !source.trim().isEmpty();
+    }
 
 	public static boolean isNullOrEmpty(String source) {
 		if (source == null)
 			return true;
 
-		if (source.trim().isEmpty())
-			return true;
+        return source.trim().isEmpty();
 
-		return false;
-	}
+    }
 
 	public static boolean isInteger(String source) {
 		return source.matches(INTEGER_REGEX_PATTERN);

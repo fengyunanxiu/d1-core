@@ -291,7 +291,7 @@ public class DataSourceServiceImpl implements DataSourceService {
         return dbInformationDTO;
     }
 
-    private void getDfKeyOfTableAndView(Long dsId, DbInformationDTO schema, List<DbInformationDTO> tableAndViews, List<DfKeyInfoDTO> allDataFacetKey) throws IOException, SQLException {
+    private void getDfKeyOfTableAndView(Long dsId, DbInformationDTO schema, List<DbInformationDTO> tableAndViews, List<DfKeyInfoDTO> allDataFacetKey) {
         Iterator<DbInformationDTO> tableAndViewsIterator = tableAndViews.iterator();
         while (tableAndViewsIterator.hasNext()) {
             DbInformationDTO tableAndView = tableAndViewsIterator.next();

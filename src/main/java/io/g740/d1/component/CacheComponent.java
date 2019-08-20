@@ -45,7 +45,7 @@ public class CacheComponent {
         return dbBasicConfigDao.selectDataSources(dsId);
     }
 
-    public List<DbInformationDTO> selectAllSchema(DsTreeMenuCacheDO dsTreeMenuCache) throws Exception {
+    public List<DbInformationDTO> selectAllSchema(DsTreeMenuCacheDO dsTreeMenuCache) {
         if(dsTreeMenuCache==null||StringUtils.isBlank( dsTreeMenuCache.getDsSchemaInfo())){
            return null;
         }
@@ -54,7 +54,7 @@ public class CacheComponent {
         return dbInformationDTOS;
     }
 
-    public List<TableAndViewInfoDTO> selectAllTableAndView(DsTreeMenuCacheDO dsTreeMenuCache) throws Exception {
+    public List<TableAndViewInfoDTO> selectAllTableAndView(DsTreeMenuCacheDO dsTreeMenuCache) {
         long start=System.currentTimeMillis();
         if(dsTreeMenuCache==null||StringUtils.isBlank( dsTreeMenuCache.getDsTableViewInfo())){
             return null;

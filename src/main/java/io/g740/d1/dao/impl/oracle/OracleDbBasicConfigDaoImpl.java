@@ -37,7 +37,7 @@ public class OracleDbBasicConfigDaoImpl implements DbBasicConfigDao {
 
 
     @Override
-    public DbBasicConfigDO findById(Long id) throws SQLException, IOException {
+    public DbBasicConfigDO findById(Long id) throws SQLException {
 
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
 
@@ -82,7 +82,7 @@ public class OracleDbBasicConfigDaoImpl implements DbBasicConfigDao {
 
 
     @Override
-    public Long add(DbBasicConfigDO dbBasicConfigDO) throws SQLException, IOException {
+    public Long add(DbBasicConfigDO dbBasicConfigDO) throws SQLException {
         Connection conn=null;
         Long id = 0L;
         try {
@@ -119,7 +119,7 @@ public class OracleDbBasicConfigDaoImpl implements DbBasicConfigDao {
 
 
     @Override
-    public Integer delete(Long dsId) throws SQLException, IOException {
+    public Integer delete(Long dsId) throws SQLException {
         Connection conn=null;
         int update=0;
         try {
@@ -139,7 +139,7 @@ public class OracleDbBasicConfigDaoImpl implements DbBasicConfigDao {
     }
 
     @Override
-    public List<DbInformationDTO> selectDataSources(Long dsId) throws IOException, SQLException {
+    public List<DbInformationDTO> selectDataSources(Long dsId) throws SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String querySql = "select id,db_name as label,1 as level,'' as type from db_basic_config where 1=1 ";
         List<DbInformationDTO> dbInformationDTOList =null;
@@ -154,7 +154,7 @@ public class OracleDbBasicConfigDaoImpl implements DbBasicConfigDao {
     }
 
     @Override
-    public List<Map<String, Object>> selectDataSourceProperty(Long dsId) throws IOException, SQLException {
+    public List<Map<String, Object>> selectDataSourceProperty(Long dsId) throws SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String querySql = "select * from ds_full_config_view where id = ?";
         List<Map<String, Object>> result = queryRunner.query(querySql, new MapListHandler(),dsId);
@@ -163,7 +163,7 @@ public class OracleDbBasicConfigDaoImpl implements DbBasicConfigDao {
 
 
     @Override
-    public Integer editDataSourceProperty(DbBasicConfigDO dbBasicConfigDO) throws IOException, SQLException {
+    public Integer editDataSourceProperty(DbBasicConfigDO dbBasicConfigDO) throws SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);
         String sql="update db_basic_config set  gmt_modified = ?," +
                 "   db_type = ?," +

@@ -29,7 +29,7 @@ public class DsBasicDictionaryServiceImpl implements DsBasicDictionaryService {
 
 
     @Override
-    public OptionListAndDefaultValDTO getOptionListAndDefaultValDTOByDomainName(String domainName, String item) throws SQLException, IOException {
+    public OptionListAndDefaultValDTO getOptionListAndDefaultValDTOByDomainName(String domainName, String item) throws SQLException {
         List<DictDO> dictDOS = this.dictRepository.findByDomainAndItem(domainName, item);
         if(!CollectionUtils.isEmpty(dictDOS)){
             OptionListAndDefaultValDTO optionListAndDefaultValDTO = new OptionListAndDefaultValDTO();
