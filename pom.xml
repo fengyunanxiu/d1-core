@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ai.sparklabinc</groupId>
+    <groupId>io.g740</groupId>
     <artifactId>d1-core</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>d1-core</name>
@@ -17,7 +17,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
-        <start-class>ai.sparklabinc.d1.D1CoreApplication</start-class>
+        <start-class>io.g740.d1.D1CoreApplication</start-class>
         <springfox.version>2.7.0</springfox.version>
         <poi.version>3.9</poi.version>
     </properties>
