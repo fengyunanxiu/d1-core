@@ -1,6 +1,7 @@
 package io.g740.d1.executor.impl;
 
 import io.g740.d1.entity.DfFormTableSettingDO;
+import io.g740.d1.exception.custom.ResourceNotFoundException;
 import io.g740.d1.executor.ExportExecutor;
 import io.g740.d1.poi.CommonExcelWriter;
 import io.g740.d1.poi.RowUnit;
@@ -68,12 +69,15 @@ public class CommonExportExecutor implements ExportExecutor {
             preparedStatement = connection.prepareStatement(querySql);
             //绑定参数
             if(!CollectionUtils.isEmpty(paramList)){
-                bindParameters(preparedStatement,paramList);
+                bindParameters(preparedStatement,paramList.toArray());
             }
             preparedStatement.setQueryTimeout(3600);
             resultSet = preparedStatement.executeQuery();
             List<Map<String, String>> cacheRowMapList = new ArrayList<>();
-            while (resultSet.next()) {
+            if(resultSet==null){
+                throw new ResourceNotFoundException("can not find any data for export");
+            }
+            while(resultSet.next()){
                 Map<String, String> rowMap = new LinkedHashMap<>();
                 for (String fieldKey : fieldKeyList) {
                     try {
@@ -85,12 +89,13 @@ public class CommonExportExecutor implements ExportExecutor {
                 }
                 cacheRowMapList.add(rowMap);
             }
+
             if (cacheRowMapList.size() > 0) {
                 // 写入Excel
                 write2Excel(cacheRowMapList, queryTableSettings, file, fieldAliasLabelList, fieldAliasLabelWidth);
                 cacheRowMapList.clear();
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             LOGGER.error("", e);
         } finally {
             if (resultSet != null) {
