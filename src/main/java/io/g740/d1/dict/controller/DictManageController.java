@@ -1,5 +1,6 @@
 package io.g740.d1.dict.controller;
 
+import io.g740.d1.defaults.entity.DefaultsConfigurationDO;
 import io.g740.d1.dict.dto.DictDTO;
 import io.g740.d1.dict.vo.DictQueryVO;
 import io.g740.d1.dict.entity.DictDO;
@@ -32,7 +33,7 @@ public class DictManageController {
     @Autowired
     private DictService dictService;
 
-    @GetMapping("")
+    @GetMapping("/domain")
     @ResponseBody
     @ApiOperation("query")
     public PageResultDTO<DictQueryVO> query(@RequestParam(required = false, value = "field_domain") String domain,
@@ -52,26 +53,47 @@ public class DictManageController {
         return this.dictService.query(dictDTO, offset, pageSize);
     }
 
-    @PostMapping("")
-    @ResponseBody
-    @ApiOperation("add")
-    public List<DictDO> add(@RequestBody List<DictDO> dictDOList) throws Exception {
-        return this.dictService.batchInsert(dictDOList);
-    }
 
-    @DeleteMapping("")
+    @DeleteMapping("/value")
     @ResponseBody
     @ApiOperation("delete")
     public void delete(@RequestBody List<String> idList) throws Exception {
         this.dictService.batchDelete(idList);
     }
 
-    @PutMapping("")
+
+
+
+
+    @PostMapping("/domain")
     @ResponseBody
-    @ApiOperation("update")
-    public void update(@RequestBody List<DictDO> dictDOList) throws Exception {
-        this.dictService.batchUpdate(dictDOList);
+    @ApiOperation("add ")
+    public void addBaseDictList(@RequestBody  List<DictDTO> dictDTOS) throws Exception {
+        // 前端只会传fieldDomain 、fieldItem 、 fieldValue 、 fieldLabel 四个字段 ;前端判断了value的重复值问题
+        this.dictService.addBaseDictList(dictDTOS);
+
     }
+
+
+    @PostMapping("/value")
+    @ResponseBody
+    @ApiOperation("add base dict config ")
+    public void addBaseDict(@RequestBody  DictDTO dictDTO) throws Exception {
+        // 前端只会传fieldDomain 、fieldItem 、 fieldValue 、 fieldLabel 四个字段 ;前端判断了value的重复值问题
+        this.dictService.addBaseDict(dictDTO);
+
+    }
+
+
+    @PutMapping("/value")
+    @ResponseBody
+    @ApiOperation("update base dict config List")
+    public void updateBaseDict(@RequestBody  DictDTO dictDTO) throws Exception {
+        // 前端只会传fieldDomain 、fieldItem 、 fieldValue 、 fieldLabel 四个字段 ;前端判断了value的重复值问题
+        this.dictService.updateBaseDict(dictDTO);
+
+    }
+
 
 
 

@@ -391,4 +391,31 @@ public class DictRepositoryImpl implements DictRepository {
         qr.batch(sql, param);
     }
 
+    @Override
+    public void findByApplication(String domain, String item, String value, String label) {
+        
+    }
+
+//    @Override
+//    public void findByApplication(String domain, String item, String value, String label) {
+//        StringBuilder sqlBuilder = new StringBuilder("select * from " + DictDO.TABLE_NAME);
+//        List<String> sqlParamList = new ArrayList<>();
+//        for (int i = 0; i < dictDOList.size(); i++) {
+//            DictDO dictDO = dictDOList.get(i);
+//            sqlParamList.add(dictDO.getFieldDomain());
+//            sqlParamList.add(dictDO.getFieldItem());
+//            sqlParamList.add(dictDO.getFieldValue());
+//            if (i == 0) {
+//                sqlBuilder.append(" where (" + F_DOMAIN + " = ? and " + F_ITEM + " = ? and " + F_VALUE + " = ?) ");
+//            } else {
+//                sqlBuilder.append(" or (" + F_DOMAIN + " = ? and " + F_ITEM + " = ? and " + F_VALUE + " = ?) ");
+//            }
+//        }
+//        // 排序
+//        sqlBuilder.append(" order by " + F_DOMAIN + ", " + F_ITEM + ", " + F_SEQUENCE + " ");
+//        QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
+//        LOGGER.info("find by field_domain and field_item sql: {}", sqlBuilder.toString());
+//        return qr.query(sqlBuilder.toString(), new BeanListHandler<>(DictDO.class, new QueryRunnerRowProcessor()), sqlParamList.toArray(new Object[0]));
+//    }
+
 }

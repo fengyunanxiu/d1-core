@@ -11,6 +11,7 @@ import io.g740.d1.exception.custom.DuplicateResourceException;
 import io.g740.d1.util.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -150,6 +151,48 @@ public class DictServiceImpl implements DictService {
             dictDOList.add(dictDO);
         }
         return new PageResultDTO<DictQueryVO>(new ArrayList<>(resultMap.values()), count);
+
+    }
+
+    @Override
+    public void addBaseDictList(List<DictDTO> dictDTOS) throws Exception {
+       String domain = dictDTOS.get(0).getFieldDomain();
+       String item = dictDTOS.get(0).getFieldItem();
+       List<DictDO> dictDOList = this.dictRepository.findByDomainAndItem(domain, item);
+       if(!org.springframework.util.CollectionUtils.isEmpty(dictDOList)){
+           throw new DuplicateResourceException(String.format("Domain:%s,Item:%s is duplicate",domain,item));
+       }
+
+       //遍历设置序号
+       int index = 1;
+       List<DictDO> dictDOS = new LinkedList<>();
+       DictDO dictDO = null;
+
+        for (DictDTO dictDTO : dictDTOS) {
+            dictDO = new DictDO();
+            BeanUtils.copyProperties(dictDTO,dictDO);
+            dictDO.setFieldSequence("" + (index) );
+            dictDO.setFieldEnable("1");
+            index ++;
+            dictDOS.add(dictDO);
+        }
+        this.dictRepository.batchInsert(dictDOS);
+
+
+    }
+
+    @Override
+    public void addBaseDict(DictDTO dictDTO) {
+        String domain = dictDTO.getFieldDomain();
+        String item = dictDTO.getFieldItem();
+        String value = dictDTO.getFieldValue();
+        String label = dictDTO.getFieldLabel();
+        this.dictRepository.findByApplication(domain,item,value,label);
+
+    }
+
+    @Override
+    public void updateBaseDict(DictDTO dictDTO) {
 
     }
 

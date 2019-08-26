@@ -1,5 +1,6 @@
 package io.g740.d1.dict.dao;
 
+import io.g740.d1.dict.dto.DictDTO;
 import io.g740.d1.dict.entity.DictDO;
 import io.g740.d1.exception.ServiceException;
 
@@ -34,4 +35,6 @@ public interface DictRepository {
     List<DictDO> queryLimitByDomainAndItem(Map<String, String> params, long offset, int pageSize) throws SQLException;
 
     void updateValueByDomainAndItem(List<DictDO> dictDOList) throws SQLException;
+
+    void findByApplication(String domain, String item, String value, String label);
 }
