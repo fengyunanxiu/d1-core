@@ -1,5 +1,6 @@
 package io.g740.d1.defaults.service;
 
+import io.g740.d1.defaults.dto.DefaultsConfigurationDTO;
 import io.g740.d1.defaults.entity.DefaultsConfigurationDO;
 
 /**
@@ -10,7 +11,7 @@ import io.g740.d1.defaults.entity.DefaultsConfigurationDO;
  * @description :
  */
 public interface DefaultsConfigurationService {
-    DefaultsConfigurationDO queryByDfKeyAndFieldKey(String dfKey, String fieldKey) throws Exception;
+    DefaultsConfigurationDTO queryByDfKeyAndFieldKey(String dfKey, String fieldKey) throws Exception;
 
-    void allocateDefaultsConfiguration(DefaultsConfigurationDO defaultsConfigurationDO) throws Exception;
+    void allocateDefaultsConfiguration(DefaultsConfigurationDTO defaultsConfigurationDTO) throws Exception;
 }

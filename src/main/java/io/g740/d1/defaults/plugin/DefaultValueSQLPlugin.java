@@ -1,5 +1,6 @@
 package io.g740.d1.defaults.plugin;
 
+import io.g740.d1.defaults.dto.DefaultsConfigurationDTO;
 import io.g740.d1.defaults.entity.DefaultsConfigurationDO;
 import io.g740.d1.defaults.service.DefaultsConfigurationService;
 import io.g740.d1.engine.SQLEngine;
@@ -70,12 +71,11 @@ public class DefaultValueSQLPlugin {
         String fieldFormDfKey = defaultsConfigurationDO.getFieldFormDfKey();
         String fieldFormFieldKey = defaultsConfigurationDO.getFieldFormFieldKey();
         // 每次执行任务，都要查询最新的任务信息
-        defaultsConfigurationDO = this.defaultsConfigurationService.queryByDfKeyAndFieldKey(fieldFormDfKey, fieldFormFieldKey);
-        JSONObject pluginParamsJSONObject = JSON.parseObject(fieldPluginConf);
-        String jdbcUrl = pluginParamsJSONObject.getString("jdbc_url");
-        String username = pluginParamsJSONObject.getString("username");
-        String password = pluginParamsJSONObject.getString("password");
-        String sql = pluginParamsJSONObject.getString("sql");
+        DefaultsConfigurationDTO defaultsConfigurationDTO = this.defaultsConfigurationService.queryByDfKeyAndFieldKey(fieldFormDfKey, fieldFormFieldKey);
+        String sql = defaultsConfigurationDTO.getPluginSQL();
+        String jdbcUrl = defaultsConfigurationDTO.getPluginJdbcUrl();
+        String username = defaultsConfigurationDTO.getPluginUsername();
+        String password = defaultsConfigurationDTO.getPluginPassword();
         if (StringUtils.isNullOrEmpty(sql)) {
             return;
         }
