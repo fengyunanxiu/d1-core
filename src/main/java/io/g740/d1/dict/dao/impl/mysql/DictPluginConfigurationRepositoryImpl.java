@@ -2,6 +2,7 @@ package io.g740.d1.dict.dao.impl.mysql;
 
 import io.g740.d1.dao.convert.QueryRunnerRowProcessor;
 import io.g740.d1.dict.dao.DictPluginConfigurationRepository;
+import io.g740.d1.util.UUIDUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
@@ -19,6 +20,7 @@ import javax.annotation.Resource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author : zxiuwu
@@ -55,7 +57,6 @@ public class DictPluginConfigurationRepositoryImpl implements DictPluginConfigur
     }
 
     /**
-     *
      * @param domain
      * @param item
      * @return
@@ -66,6 +67,33 @@ public class DictPluginConfigurationRepositoryImpl implements DictPluginConfigur
         String sql = " select * from " + TABLE_NAME + " where " + F_DOMAIN + " = ? and " + F_ITEM + " = ? ";
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         return qr.query(sql, new BeanHandler<>(DictPluginConfigurationDO.class, new QueryRunnerRowProcessor()), domain, item);
+    }
+
+    @Override
+    public DictPluginConfigurationDO create(DictPluginConfigurationDO dictPluginConfigurationDO) throws SQLException {
+        String sql = "insert into " + TABLE_NAME + " (" + F_ID + "," + F_DOMAIN + "," + F_ITEM + "," + F_ENABLE + "," + F_TYPE + "," + F_PARAM + "," + F_CRON + ") values (?, ?, ?, ?, ?, ?, ?) ";
+        QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
+        return qr.insert(sql, new BeanHandler<>(DictPluginConfigurationDO.class, new QueryRunnerRowProcessor()),
+                UUIDUtils.compress(),
+                dictPluginConfigurationDO.getFieldDomain(),
+                dictPluginConfigurationDO.getFieldItem(),
+                dictPluginConfigurationDO.getFieldEnable(),
+                dictPluginConfigurationDO.getFieldType(),
+                dictPluginConfigurationDO.getFieldParam(),
+                dictPluginConfigurationDO.getFieldCron());
+    }
+
+    @Override
+    public void update(DictPluginConfigurationDO dictPluginConfigurationDO) throws SQLException {
+        String sql = "update " + TABLE_NAME + " set " + F_DOMAIN + " = ?, " + F_ITEM + " = ?," + F_ENABLE + " = ?, " + F_TYPE + " = ?, " + F_PARAM + " = ?, " + F_CRON + " = ? where " + F_ID + " = ? ";
+        QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
+        qr.update(sql, dictPluginConfigurationDO.getFieldDomain(),
+                dictPluginConfigurationDO.getFieldItem(),
+                dictPluginConfigurationDO.getFieldEnable(),
+                dictPluginConfigurationDO.getFieldType(),
+                dictPluginConfigurationDO.getFieldParam(),
+                dictPluginConfigurationDO.getFieldCron(),
+                dictPluginConfigurationDO.getFieldId());
     }
 
 

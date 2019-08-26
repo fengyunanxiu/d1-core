@@ -19,4 +19,8 @@ public interface DictPluginConfigurationRepository {
     List<DictPluginConfigurationDO> findAllEnableWithLockTransaction(Connection connection) throws SQLException;
 
     DictPluginConfigurationDO findByDomainAndItem(String domain, String item) throws SQLException;
+
+    DictPluginConfigurationDO create(DictPluginConfigurationDO dictPluginConfigurationDO) throws SQLException;
+
+    void update(DictPluginConfigurationDO dictPluginConfigurationDO) throws SQLException;
 }

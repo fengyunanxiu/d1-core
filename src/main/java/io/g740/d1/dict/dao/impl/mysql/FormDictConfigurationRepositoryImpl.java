@@ -5,6 +5,7 @@ import io.g740.d1.dict.dao.FormDictConfigurationRepository;
 import io.g740.d1.dict.entity.FormDictConfigurationDO;
 import io.g740.d1.exception.ServiceException;
 import io.g740.d1.util.StringUtils;
+import io.g740.d1.util.UUIDUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
@@ -62,7 +63,7 @@ public class FormDictConfigurationRepositoryImpl implements FormDictConfiguratio
         }
         String sql = "insert into db_form_dict_configuration(field_id, field_form_df_key, field_form_field_key, field_domain, field_item) values(?, ?, ?, ?, ?)";
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
-        return qr.insert(sql, new BeanHandler<>(FormDictConfigurationDO.class, new QueryRunnerRowProcessor()), UUID.randomUUID().toString(), formDfKey, formFieldKey, domain, item);
+        return qr.insert(sql, new BeanHandler<>(FormDictConfigurationDO.class, new QueryRunnerRowProcessor()), UUIDUtils.compress(), formDfKey, formFieldKey, domain, item);
     }
 
     @Override

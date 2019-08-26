@@ -14,6 +14,7 @@ import java.util.Objects;
  */
 public class DictPluginConfigurationDO {
 
+
     public static String TABLE_NAME = "db_dict_plugin_configuration";
     public static String F_ID = "field_id";
     public static String F_DOMAIN = "field_domain";

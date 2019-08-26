@@ -5,6 +5,7 @@ import io.g740.d1.defaults.dao.DefaultsConfigurationRepository;
 import io.g740.d1.defaults.entity.DefaultConfigurationType;
 import io.g740.d1.defaults.entity.DefaultsConfigurationDO;
 import io.g740.d1.util.StringUtils;
+import io.g740.d1.util.UUIDUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
@@ -85,7 +86,7 @@ public class DefaultsConfigurationRepositoryImpl implements DefaultsConfiguratio
                 " values(?, ?, ?, ?, ?, ?)";
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         return qr.insert(sql, new BeanHandler<>(DefaultsConfigurationDO.class, new QueryRunnerRowProcessor()),
-                UUID.randomUUID().toString(), fieldFormDfKey, fieldFormFieldKey, fieldType.name(), fieldPluginConf, fieldManualConf);
+                UUIDUtils.compress(), fieldFormDfKey, fieldFormFieldKey, fieldType.name(), fieldPluginConf, fieldManualConf);
     }
 
     @Override

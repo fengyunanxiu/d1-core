@@ -6,6 +6,7 @@ import io.g740.d1.dict.entity.DictDO;
 import io.g740.d1.exception.ServiceException;
 import io.g740.d1.util.StringUtils;
 import ch.qos.logback.classic.db.names.TableName;
+import io.g740.d1.util.UUIDUtils;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
@@ -134,7 +135,7 @@ public class DictRepositoryImpl implements DictRepository {
                 throw new ServiceException("domain, item, value, sequence, enable不能为空");
             }
             Object[] param = new Object[]{
-                    UUID.randomUUID().toString(),
+                    UUIDUtils.compress(),
                     new Date(),
                     dictDO.getFieldDomain(),
                     dictDO.getFieldItem(),
@@ -372,7 +373,7 @@ public class DictRepositoryImpl implements DictRepository {
             String fieldSequence = dictDO.getFieldSequence();
             String fieldEnable = dictDO.getFieldEnable();
             String fieldParentId = dictDO.getFieldParentId();
-            param[i][0] = UUID.randomUUID().toString();
+            param[i][0] = UUIDUtils.compress();
             param[i][1] = param[i][9] = new Date();
             param[i][2] = fieldDomain;
             param[i][3] = fieldItem;
