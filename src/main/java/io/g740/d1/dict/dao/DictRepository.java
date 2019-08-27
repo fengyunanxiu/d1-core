@@ -37,4 +37,6 @@ public interface DictRepository {
     DictDO findById(String id) throws SQLException;
 
     void updateDomainNameOrItemName(String oldDomain, String newDomain, String oldItem, String newItem) throws SQLException;
+
+    List<DictDO> findByParentIdList(List<String> parentIdList) throws SQLException;
 }

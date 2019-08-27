@@ -320,7 +320,7 @@ public class DictRepositoryImpl implements DictRepository {
 
     @Override
     public void findByApplication(String domain, String item, String value, String label) {
-        
+
     }
     @Override
     public DictDO findById(String id) throws SQLException {
@@ -328,11 +328,31 @@ public class DictRepositoryImpl implements DictRepository {
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         return qr.query(sql, new BeanHandler<>(DictDO.class, new QueryRunnerRowProcessor()), id);
     }
+
     @Override
     public void updateDomainNameOrItemName(String oldDomain, String newDomain, String oldItem, String newItem) throws SQLException {
         String sql = " update " + TABLE_NAME + " set " + F_DOMAIN + " = ?," + F_ITEM + " = ? where " + F_DOMAIN + " = ? and " + F_ITEM + " = ? ";
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         qr.update(sql, newDomain, newItem, oldDomain, oldItem);
+    }
+
+    @Override
+    public List<DictDO> findByParentIdList(List<String> parentIdList) throws SQLException {
+        if (parentIdList == null || parentIdList.isEmpty()) {
+            return null;
+        }
+        StringBuilder sqlBuilder = new StringBuilder(" select * from " + TABLE_NAME + " where " + F_PARENT_ID + " in (");
+        for (int i = 0; i < parentIdList.size(); i++) {
+            String parentId = parentIdList.get(i);
+            if (i == 0) {
+                sqlBuilder.append("?");
+            } else {
+                sqlBuilder.append(",?");
+            }
+        }
+        sqlBuilder.append(")");
+        QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
+        return qr.query(sqlBuilder.toString(), new BeanListHandler<>(DictDO.class, new QueryRunnerRowProcessor()), parentIdList.toArray(new Object[0]));
     }
 
 }

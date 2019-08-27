@@ -3,8 +3,11 @@ package io.g740.d1.controller;
 
 import io.g740.d1.datasource.Constants;
 import io.g740.d1.datasource.DataSourceFactory;
+import io.g740.d1.dict.dto.DictOptionCascadeQueryDTO;
+import io.g740.d1.dict.service.DictService;
 import io.g740.d1.entity.DbBasicConfigDO;
 import io.g740.d1.util.DateUtils;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.tomcat.jdbc.pool.DataSource;
@@ -34,8 +37,15 @@ public class TestController {
     @Resource(name = "D1BasicDataSource")
     private DataSource dataSource;
 
+    @Autowired
+    private DictService dictService;
 
-
+    @ApiOperation("test cascade query")
+    @GetMapping("/cascade-query")
+    @ResponseBody
+    public List<DictOptionCascadeQueryDTO> cascadeQueryByDomainAndItem(String domain, String item) throws Exception {
+        return this.dictService.cascadeQueryByDomainAndItem(domain, item);
+    }
 
     @ResponseBody
     @GetMapping("/test")
@@ -84,9 +94,6 @@ public class TestController {
         System.out.println(dbBasicConfigDOList);
         return  dbBasicConfigDOList;
     }
-
-
-
     @ResponseBody
     @GetMapping("/test2")
     public Object getInfo2() throws Exception {

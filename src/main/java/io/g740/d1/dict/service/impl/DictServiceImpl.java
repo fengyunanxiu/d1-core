@@ -2,13 +2,13 @@ package io.g740.d1.dict.service.impl;
 
 import io.g740.d1.dict.dao.DictRepository;
 import io.g740.d1.dict.dto.DictDTO;
+import io.g740.d1.dict.dto.DictOptionCascadeQueryDTO;
 import io.g740.d1.dict.service.DictService;
 import io.g740.d1.dict.vo.DictQueryVO;
 import io.g740.d1.dict.entity.DictDO;
 import io.g740.d1.dto.PageResultDTO;
 import io.g740.d1.exception.ServiceException;
 import io.g740.d1.exception.custom.DuplicateResourceException;
-import io.g740.d1.exception.custom.IllegalParameterException;
 import io.g740.d1.util.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -164,25 +164,47 @@ public class DictServiceImpl implements DictService {
 
     }
 
-    /**
-     * 更新Domain，Item的名字
-     * @param domain
-     * @param item
-     * @param firstValueId
-     */
-    public void updateDomainNameOrItemName(String domain, String item, String firstValueId) throws Exception {
-        DictDO existDictDO = this.dictRepository.findById(firstValueId);
-        if (existDictDO == null) {
-            throw new IllegalParameterException("Dict not found");
+    @Override
+    public List<DictOptionCascadeQueryDTO> cascadeQueryByDomainAndItem(String domain, String item) throws Exception {
+        // 查询当前的domain，item
+        List<DictDO> dictDOList = this.dictRepository.findByDomainAndItem(domain, item);
+        if (dictDOList == null || dictDOList.isEmpty()) {
+            return null;
         }
-
-        // 查询是否有相同的domain，item
-        List<DictDO> existDictList = this.dictRepository.findByDomainAndItem(domain, item);
-        if (existDictList != null && !existDictList.isEmpty()) {
-            throw new DuplicateResourceException("find exists domain " + domain + " item " + item);
+        // 查询当前domain，item的下一级
+        List<String> dictIdList = dictDOList.stream().map(DictDO::getFieldId).collect(Collectors.toList());
+        List<DictDO> childDictDOList = this.dictRepository.findByParentIdList(dictIdList);
+        if (childDictDOList == null || childDictDOList.isEmpty()) {
+            // 只有一级结构
+            return dictDOList.stream().map(dictDO -> {
+                String fieldLabel = dictDO.getFieldLabel();
+                String fieldValue = dictDO.getFieldValue();
+                DictOptionCascadeQueryDTO dictOptionCascadeQueryDTO = new DictOptionCascadeQueryDTO();
+                dictOptionCascadeQueryDTO.setOptionLabel(fieldLabel);
+                dictOptionCascadeQueryDTO.setOptionValue(fieldValue);
+                return dictOptionCascadeQueryDTO;
+            }).collect(Collectors.toList());
         }
-        this.dictRepository.updateDomainNameOrItemName(existDictDO.getFieldDomain(), domain, existDictDO.getFieldItem(), item);
+        // 根据当前domain，item的value分类下一级
+        Map<String, List<DictDO>> parentIdDictMapList = childDictDOList.stream().collect(Collectors.groupingBy(DictDO::getFieldParentId, Collectors.toList()));
+        return dictDOList.stream().map(dictDO -> {
+            String fieldLabel = dictDO.getFieldLabel();
+            String fieldValue = dictDO.getFieldValue();
+            DictOptionCascadeQueryDTO dictOptionCascadeQueryDTO = new DictOptionCascadeQueryDTO();
+            dictOptionCascadeQueryDTO.setOptionLabel(fieldLabel);
+            dictOptionCascadeQueryDTO.setOptionValue(fieldValue);
+            List<DictDO> tmpChildDictDOList = parentIdDictMapList.get(dictDO.getFieldId());
+            if (tmpChildDictDOList != null && !tmpChildDictDOList.isEmpty()) {
+                dictOptionCascadeQueryDTO.setChildren(tmpChildDictDOList.stream().map(childDictDO -> {
+                    String childFieldLabel = childDictDO.getFieldLabel();
+                    String childFieldValue = childDictDO.getFieldValue();
+                    DictOptionCascadeQueryDTO childDictOptionCascadeQueryDTO = new DictOptionCascadeQueryDTO();
+                    childDictOptionCascadeQueryDTO.setOptionLabel(childFieldLabel);
+                    childDictOptionCascadeQueryDTO.setOptionValue(childFieldValue);
+                    return childDictOptionCascadeQueryDTO;
+                }).collect(Collectors.toList()));
+            }
+            return dictOptionCascadeQueryDTO;
+        }).collect(Collectors.toList());
     }
-
-
 }

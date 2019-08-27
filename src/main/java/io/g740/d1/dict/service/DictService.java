@@ -1,6 +1,7 @@
 package io.g740.d1.dict.service;
 
 import io.g740.d1.dict.dto.DictDTO;
+import io.g740.d1.dict.dto.DictOptionCascadeQueryDTO;
 import io.g740.d1.dict.vo.DictQueryVO;
 import io.g740.d1.dict.entity.DictDO;
 import io.g740.d1.dto.PageResultDTO;
@@ -28,4 +29,13 @@ public interface DictService {
     void addBaseDict(DictDTO dictDTO);
 
     void updateBaseDict(DictDTO dictDTO);
+
+    /**
+     * 级联查询字典数据
+     * @param domain
+     * @param item
+     * @return
+     * @throws Exception
+     */
+    List<DictOptionCascadeQueryDTO> cascadeQueryByDomainAndItem(String domain, String item) throws Exception;
 }

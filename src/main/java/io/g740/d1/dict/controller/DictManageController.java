@@ -52,19 +52,12 @@ public class DictManageController {
         int pageSize = pageable.getPageSize();
         return this.dictService.query(dictDTO, offset, pageSize);
     }
-
-
     @DeleteMapping("/value")
     @ResponseBody
     @ApiOperation("delete")
     public void delete(@RequestBody List<String> idList) throws Exception {
         this.dictService.batchDelete(idList);
     }
-
-
-
-
-
     @PostMapping("/domain")
     @ResponseBody
     @ApiOperation("add ")
@@ -73,8 +66,6 @@ public class DictManageController {
         this.dictService.addBaseDictList(dictDTOS);
 
     }
-
-
     @PostMapping("/value")
     @ResponseBody
     @ApiOperation("add base dict config ")
@@ -83,8 +74,6 @@ public class DictManageController {
         this.dictService.addBaseDict(dictDTO);
 
     }
-
-
     @PutMapping("/value")
     @ResponseBody
     @ApiOperation("update base dict config List")
@@ -93,8 +82,6 @@ public class DictManageController {
         this.dictService.updateBaseDict(dictDTO);
 
     }
-
-
 
 
 }
