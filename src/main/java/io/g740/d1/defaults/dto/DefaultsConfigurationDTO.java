@@ -1,9 +1,5 @@
 package io.g740.d1.defaults.dto;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.lang.NonNull;
-
 import javax.validation.constraints.NotNull;
 
 /**
@@ -23,7 +19,7 @@ public class DefaultsConfigurationDTO {
     @NotNull
     private String formFieldKey;
 
-    @NonNull
+    @NotNull
     private String fieldType;
 
     private String pluginCron;

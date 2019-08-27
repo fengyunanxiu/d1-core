@@ -33,7 +33,7 @@ public class D1BasicDataSourceConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(D1BasicDataSourceConfig.class);
 
-    @Bean("D1BasicDataSource")
+    @Bean(name="D1BasicDataSource")
     public DataSource createD1BasicDataSource(BasicDbConfig basicDbConfig) throws Exception {
         if (StringUtils.isBlank(basicDbConfig.getUrl()) || StringUtils.isBlank(basicDbConfig.getType())) {
             basicDbConfig.setUseSsl(false);

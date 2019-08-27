@@ -5,17 +5,12 @@ import io.g740.d1.dict.dao.DictRepository;
 import io.g740.d1.dict.entity.DictDO;
 import io.g740.d1.exception.ServiceException;
 import io.g740.d1.util.StringUtils;
-import ch.qos.logback.classic.db.names.TableName;
 import io.g740.d1.util.UUIDUtils;
-import io.swagger.annotations.ApiOperation;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
-import org.apache.commons.dbutils.handlers.MapHandler;
-import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.apache.tomcat.jdbc.pool.DataSource;
-import org.apache.xmlbeans.impl.xb.xsdschema.FieldDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -24,8 +19,6 @@ import javax.annotation.Resource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.logging.Handler;
-import java.util.stream.Collectors;
 
 import static io.g740.d1.dict.entity.DictDO.*;
 
