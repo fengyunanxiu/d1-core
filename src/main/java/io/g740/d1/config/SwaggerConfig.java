@@ -73,10 +73,4 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
         super.configureMessageConverters(converters);
     }
 
-
-    @Override
-    protected void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-        configurer.defaultContentType(MediaType.APPLICATION_JSON);
-        super.configureContentNegotiation(configurer);
-    }
 }

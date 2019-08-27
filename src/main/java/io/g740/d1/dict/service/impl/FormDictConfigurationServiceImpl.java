@@ -2,23 +2,18 @@ package io.g740.d1.dict.service.impl;
 
 import io.g740.d1.dict.dao.DictRepository;
 import io.g740.d1.dict.dao.FormDictConfigurationRepository;
-import io.g740.d1.dict.entity.DictDO;
 import io.g740.d1.dict.entity.FormDictConfigurationDO;
 import io.g740.d1.dict.service.FormDictConfigurationService;
 import io.g740.d1.dict.vo.FormDictConfigurationVO;
-import io.g740.d1.exception.ServiceException;
 import io.g740.d1.exception.custom.IllegalParameterException;
 import io.g740.d1.service.DataFacetKeyService;
 import io.g740.d1.util.StringUtils;
-import com.netflix.discovery.converters.Auto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.sql.SQLException;
-import java.util.Comparator;
 import java.util.List;
 
 /**
