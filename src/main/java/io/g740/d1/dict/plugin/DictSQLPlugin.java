@@ -105,7 +105,7 @@ public class DictSQLPlugin {
                     String value = tmp.get("value");
                     String label = tmp.get("label");
                     String sequence = tmp.get("sequence");
-                    String enable = tmp.get("enable");
+//                    String enable = tmp.get("enable");
                     String parentId = tmp.get("parent_id");
                     DictDO dictDO = new DictDO();
                     dictDO.setFieldDomain(fieldDomain);
@@ -113,7 +113,7 @@ public class DictSQLPlugin {
                     dictDO.setFieldValue(value);
                     dictDO.setFieldLabel(label);
                     dictDO.setFieldSequence(sequence);
-                    dictDO.setFieldEnable(enable);
+//                    dictDO.setFieldEnable(enable);
                     dictDO.setFieldParentId(parentId);
                     return dictDO;
                 }).collect(Collectors.toList());
