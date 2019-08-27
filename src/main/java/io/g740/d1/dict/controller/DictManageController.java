@@ -1,6 +1,5 @@
 package io.g740.d1.dict.controller;
 
-import io.g740.d1.defaults.entity.DefaultsConfigurationDO;
 import io.g740.d1.dict.dto.DictDTO;
 import io.g740.d1.dict.vo.DictQueryVO;
 import io.g740.d1.dict.entity.DictDO;
@@ -47,7 +46,7 @@ public class DictManageController {
         dictDTO.setFieldDomain(domain);
         dictDTO.setFieldItem(item);
         dictDTO.setFieldValue(value);
-        PageRequest pageable = PageRequest.of(page, size);
+        PageRequest pageable =new PageRequest(page, size);
         long offset = pageable.getPageSize()*pageable.getPageNumber();
         int pageSize = pageable.getPageSize();
         return this.dictService.query(dictDTO, offset, pageSize);
@@ -56,14 +55,14 @@ public class DictManageController {
 
     @PostMapping("/domain")
     @ResponseBody
-    @ApiOperation("add base data")
-    public void addBaseDictList(@RequestBody  List<DictDTO> dictDTOS) throws Exception {
+    @ApiOperation("add dict List ")
+    public void addDictList(@RequestBody  List<DictDTO> dictDTOS) throws Exception {
         // 前端只会传fieldDomain 、fieldItem 、 fieldValue 、 fieldLabel 四个字段 ;前端判断了value的重复值问题
-        this.dictService.addBaseDictList(dictDTOS);
+        this.dictService.addDictList(dictDTOS);
 
     }
 
-    @PutMapping("")
+    @PutMapping("/domain")
     @ResponseBody
     @ApiOperation("batch update")
     public void batchUpdate(@RequestBody List<DictDO> dictDOList) throws Exception {

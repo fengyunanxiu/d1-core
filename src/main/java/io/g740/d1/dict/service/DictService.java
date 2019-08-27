@@ -27,7 +27,7 @@ public interface DictService {
 
     PageResultDTO<DictQueryVO> query(DictDTO dictDTO, Long offset, Integer pageSize) throws Exception;
 
-    void addBaseDictList(List<DictDTO> dictDTOS) throws SQLException, Exception;
+    void addDictList(List<DictDTO> dictDTOS) throws SQLException, Exception;
 
     void addBaseDict(DictDTO dictDTO) throws SQLException, ServiceException;
 

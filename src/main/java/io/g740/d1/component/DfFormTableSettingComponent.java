@@ -3,14 +3,13 @@ package io.g740.d1.component;
 import io.g740.d1.constant.DsConstants;
 import io.g740.d1.dto.QueryParameterGroupDTO;
 import io.g740.d1.entity.DfFormTableSettingDO;
+import io.g740.d1.util.DateUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static io.g740.d1.constant.DsConstants.FormFieldQueryTypeEnum.FUZZY_MATCHING_TEXT;
+import static io.g740.d1.constant.DsConstants.FormFieldQueryTypeEnum.SINGLE_DATETIME;
 
 /**
  * @author : Kingzer
@@ -88,12 +87,31 @@ public class DfFormTableSettingComponent {
 
             String fieldName = dfFormTableSettingDO.getDbFieldName();
             switch (formFieldQueryTypeEnum) {
-                case SINGLE_DATE:
                 case SINGLE_CHOICE_LIST:
+                case SINGLE_DATETIME:
                 case RADIOBOX_CHOICE: {
                     accurateEqualsStringQueryParameterMap.put(fieldName, queryParameterValueArray[0]);
                     break;
                 }
+                case SINGLE_DATE:{
+                    String[] dateTimeRangeArr = accurateDateTimeRangeQueryParameterMap.get(fieldName);
+                    if (dateTimeRangeArr == null) {
+                        dateTimeRangeArr = new String[2];
+                        accurateDateTimeRangeQueryParameterMap.put(fieldName, dateTimeRangeArr);
+                    }
+                    String dateStr = queryParameterValueArray[0];
+                    Date date = DateUtils.ofShortDate(dateStr);
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(date);
+                    //获取一天的开始时间
+                    Date startTime = DateUtils.getStartTime(calendar);
+                    //获取一天的结束时间
+                    Date endTime = DateUtils.getEndTime(calendar);
+                    dateTimeRangeArr[0] = DateUtils.ofLongStr(startTime);
+                    dateTimeRangeArr[1] = DateUtils.ofLongStr(endTime);
+                    break;
+                }
+
                 case MULTIPLE_CHOICE_LIST:
                 case CHECKBOX_CHOICE: {
                     if (queryParameterValueArray.length == 1) {

@@ -5,7 +5,7 @@ import io.g740.d1.datasource.Constants;
 import io.g740.d1.exception.ServiceException;
 import io.g740.d1.util.FileReaderUtil;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

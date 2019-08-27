@@ -1,7 +1,7 @@
 package io.g740.d1.config;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
  * @function:
@@ -12,42 +12,59 @@ import org.springframework.context.annotation.Configuration;
  */
 
 //@PropertySource("classpath:db.properties")
-@Configuration
-@ConfigurationProperties(prefix = "d1.basic.datasource")
+//@Configuration
+//@ConfigurationProperties(prefix = "d1.basic.datasource")
+@Component
 public class BasicDbConfig {
-
+    @Value("${d1.basic.datasource.type:}")
     private String type;
 
+    @Value("${d1.basic.datasource.url:}")
     private String url;
 
+    @Value("${d1.basic.datasource.user:}")
     private String user;
 
+    @Value("${d1.basic.datasource.password:}")
     private String password;
 
+    @Value("${d1.basic.datasource.useSsl:}")
     private Boolean useSsl=false;
 
+    @Value("${d1.basic.datasource.useSshTunnel:}")
     private Boolean useSshTunnel=false;
 
+    @Value("${d1.basic.datasource.sslCaFile:}")
     private String sslCaFile;
 
+    @Value("${d1.basic.datasource.sslClientCertificateFile:}")
     private String sslClientCertificateFile;
 
+    @Value("${d1.basic.datasource.sslClientKeyFile:}")
     private String sslClientKeyFile;
 
+    @Value("${d1.basic.datasource.sshProxyHost:}")
     private String sshProxyHost;
 
+    @Value("${d1.basic.datasource.sshProxyPort:}")
     private Integer sshProxyPort;
 
+    @Value("${d1.basic.datasource.sshProxyUser:}")
     private String sshProxyUser;
 
+    @Value("${d1.basic.datasource.sshLocalPort:}")
     private Integer sshLocalPort;
 
+    @Value("${d1.basic.datasource.sshAuthType:}")
     private String sshAuthType;
 
+    @Value("${d1.basic.datasource.sshProxyPassword:}")
     private String sshProxyPassword;
 
+    @Value("${d1.basic.datasource.sshKeyFile:}")
     private String sshKeyFile;
 
+    @Value("${d1.basic.datasource.sshPassPhrase:}")
     private String sshPassPhrase;
 
     public String getType() {

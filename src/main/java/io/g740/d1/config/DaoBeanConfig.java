@@ -31,7 +31,7 @@ public class DaoBeanConfig {
     @Autowired
     private DataDaoFactory dataDaoFactory;
 
-    @Bean("DfFormTableSettingDao")
+    @Bean(name="DfFormTableSettingDao")
     public DfFormTableSettingDao getDfFormTableSettingDao(){
         if(StringUtils.isBlank(basicDbConfig.getType())){
             basicDbConfig.setType("sqlite");
@@ -39,7 +39,7 @@ public class DaoBeanConfig {
         return dataDaoFactory.getDaoBean(DfFormTableSettingDao.class, basicDbConfig.getType());
     }
 
-    @Bean("DataSourceDao")
+    @Bean(name="DataSourceDao")
     public DataSourceDao getDataSourceDao(){
         if(StringUtils.isBlank(basicDbConfig.getType())){
             basicDbConfig.setType("sqlite");
@@ -48,7 +48,7 @@ public class DaoBeanConfig {
     }
 
 
-    @Bean("DbBasicConfigDao")
+    @Bean(name="DbBasicConfigDao")
     public DbBasicConfigDao getDbBasicConfigDao(){
         if(StringUtils.isBlank(basicDbConfig.getType())){
             basicDbConfig.setType("sqlite");
@@ -57,7 +57,7 @@ public class DaoBeanConfig {
     }
 
 
-    @Bean("DbSecurityConfigDao")
+    @Bean(name="DbSecurityConfigDao")
 
     public DbSecurityConfigDao getDbSecurityConfigDao(){
         if(StringUtils.isBlank(basicDbConfig.getType())){
@@ -67,7 +67,7 @@ public class DaoBeanConfig {
     }
 
 
-    @Bean("DsBasicDictionaryDao")
+    @Bean(name="DsBasicDictionaryDao")
     public DsBasicDictionaryDao getDsBasicDictionaryDao(){
         if(StringUtils.isBlank(basicDbConfig.getType())){
             basicDbConfig.setType("sqlite");
@@ -76,7 +76,7 @@ public class DaoBeanConfig {
     }
 
 
-    @Bean("DfKeyBasicConfigDao")
+    @Bean(name="DfKeyBasicConfigDao")
     public DfKeyBasicConfigDao getDfKeyBasicConfigDao(){
         if(StringUtils.isBlank(basicDbConfig.getType())){
             basicDbConfig.setType("sqlite");
@@ -85,7 +85,7 @@ public class DaoBeanConfig {
     }
 
 
-    @Bean("DsQueryDao")
+    @Bean(name="DsQueryDao")
     public DsQueryDao getDsQueryDao(){
         if(StringUtils.isBlank(basicDbConfig.getType())){
             basicDbConfig.setType("sqlite");
@@ -93,7 +93,7 @@ public class DaoBeanConfig {
         return dataDaoFactory.getDaoBean(DsQueryDao.class, basicDbConfig.getType());
     }
 
-    @Bean("DataExportTaskDao")
+    @Bean(name="DataExportTaskDao")
     public DataExportTaskDao getDataExportTaskDao(){
         if(StringUtils.isBlank(basicDbConfig.getType())){
             basicDbConfig.setType("sqlite");
@@ -102,7 +102,7 @@ public class DaoBeanConfig {
     }
 
 
-    @Bean("DictRepository")
+    @Bean(name="DictRepository")
     public DictRepository getDataDictRepository(){
         if(StringUtils.isBlank(basicDbConfig.getType())){
             basicDbConfig.setType("sqlite");
@@ -111,7 +111,7 @@ public class DaoBeanConfig {
     }
 
 
-    @Bean("FormDictConfigurationRepository")
+    @Bean(name="FormDictConfigurationRepository")
     public FormDictConfigurationRepository formDictConfigurationRepository(){
         if(StringUtils.isBlank(basicDbConfig.getType())){
             basicDbConfig.setType("sqlite");
@@ -119,7 +119,7 @@ public class DaoBeanConfig {
         return dataDaoFactory.getDaoBean(FormDictConfigurationRepository.class, basicDbConfig.getType());
     }
 
-    @Bean("DefaultsConfigurationRepository")
+    @Bean(name="DefaultsConfigurationRepository")
     public DefaultsConfigurationRepository defaultsConfigurationRepository(){
         if(StringUtils.isBlank(basicDbConfig.getType())){
             basicDbConfig.setType("sqlite");
@@ -127,7 +127,7 @@ public class DaoBeanConfig {
         return dataDaoFactory.getDaoBean(DefaultsConfigurationRepository.class, basicDbConfig.getType());
     }
 
-    @Bean("DictPluginConfigurationRepository")
+    @Bean(name="DictPluginConfigurationRepository")
     public DictPluginConfigurationRepository dictPluginConfigurationRepository(){
         if(StringUtils.isBlank(basicDbConfig.getType())){
             basicDbConfig.setType("sqlite");
@@ -135,7 +135,7 @@ public class DaoBeanConfig {
         return dataDaoFactory.getDaoBean(DictPluginConfigurationRepository.class, basicDbConfig.getType());
     }
 
-    @Bean("DsTreeMenuCacheDao")
+    @Bean(name="DsTreeMenuCacheDao")
     public DsTreeMenuCacheDao getDsTreeMenuCacheDao(){
         if(StringUtils.isBlank(basicDbConfig.getType())){
             basicDbConfig.setType("sqlite");

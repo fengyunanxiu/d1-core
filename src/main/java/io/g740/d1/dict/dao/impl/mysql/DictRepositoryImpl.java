@@ -5,17 +5,12 @@ import io.g740.d1.dict.dao.DictRepository;
 import io.g740.d1.dict.entity.DictDO;
 import io.g740.d1.exception.ServiceException;
 import io.g740.d1.util.StringUtils;
-import ch.qos.logback.classic.db.names.TableName;
 import io.g740.d1.util.UUIDUtils;
-import io.swagger.annotations.ApiOperation;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
-import org.apache.commons.dbutils.handlers.MapHandler;
-import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.apache.tomcat.jdbc.pool.DataSource;
-import org.apache.xmlbeans.impl.xb.xsdschema.FieldDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -24,8 +19,6 @@ import javax.annotation.Resource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.logging.Handler;
-import java.util.stream.Collectors;
 
 import static io.g740.d1.dict.entity.DictDO.*;
 
@@ -394,15 +387,20 @@ public class DictRepositoryImpl implements DictRepository {
 
 
     @Override
-    public List<DictDO> findByApplication(String domain, String item, String value) throws SQLException {
+    public List<DictDO> findByApplication(String domain, String item, List<String> values) throws SQLException {
         StringBuilder sqlBuilder = new StringBuilder("select * from " + DictDO.TABLE_NAME);
         List<String> sqlParamList = new ArrayList<>();
         sqlParamList.add(domain);
         sqlParamList.add(item);
-        sqlParamList.add(value);
-        sqlBuilder.append(" where (" + F_DOMAIN + " = ? and " + F_ITEM + " = ? and " + F_VALUE + " = ?) ");
-        // 排序
 
+        sqlBuilder.append(" where (" + F_DOMAIN + " = ? and " + F_ITEM + " = ? and " + F_VALUE + " in (  ");
+        // 排序
+        for (String value : values) {
+            sqlBuilder.append("?,");
+            sqlParamList.add(value);
+        }
+        sqlBuilder = sqlBuilder.deleteCharAt(sqlBuilder.length() - 1);
+        sqlBuilder.append(") )");
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         LOGGER.info("find by field_domain and field_item sql: {}", sqlBuilder.toString());
         return qr.query(sqlBuilder.toString(), new BeanListHandler<>(DictDO.class, new QueryRunnerRowProcessor()), sqlParamList.toArray(new Object[0]));

@@ -57,7 +57,7 @@ public class ParameterHandlerUtils {
             }
         }
         if (page != null && size != null) {
-            return  PageRequest.of(page, size, sort);
+            return  new PageRequest(page, size, sort);
         }
         return null;
     }
@@ -139,7 +139,7 @@ public class ParameterHandlerUtils {
             size = 0;
         }
 
-        return PageRequest.of(page,size,sort);
+        return new PageRequest(page,size,sort);
 
 
     }
