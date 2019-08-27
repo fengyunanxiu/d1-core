@@ -34,5 +34,7 @@ public interface DataFacetKeyService {
 
     void updateDefaultValueByDfKeyAndFieldKey(String dfKey, String fieldKey, String jsonValue) throws Exception;
 
+    void updateDefaultValueStrategyType(String dfKey, String fieldKey, String strategyType) throws Exception;
+
     void updateDomainAndItemByDfKeyAndFieldName(String dfKey, String fieldName, String domain, String item) throws Exception;
 }

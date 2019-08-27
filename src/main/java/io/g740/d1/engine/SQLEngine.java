@@ -1,11 +1,14 @@
 package io.g740.d1.engine;
 
+import io.g740.d1.util.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.*;
+import java.util.Date;
 
 /**
  * @author : zxiuwu
@@ -46,8 +49,11 @@ public class SQLEngine {
 
 
     private List<Map<String, String>> executeSQL(Connection connection, String sql) throws SQLException {
-        try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
+        Statement statement = null;
+        ResultSet resultSet = null;
+        try  {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(sql);
             List<Map<String, String>> result = new ArrayList<>();
             while (resultSet.next()) {
                 Map<String, String> rowMap = new LinkedHashMap<>();
@@ -56,13 +62,37 @@ public class SQLEngine {
                 int columnCount = metaData.getColumnCount();
                 for (int i = 1; i <= columnCount; i++) {
                     String columnLabel = metaData.getColumnLabel(i);
-                    String columnValue = resultSet.getString(i);
-                    rowMap.put(columnLabel, columnValue);
+
+//                    String columnTypeName = metaData.getColumnTypeName(i);
+//                    switch (columnTypeName) {
+//                        case "DATE":
+//                        case "TIME":
+//                        case "DATETIME":
+//                        case "TIMESTAMP":
+//                    }
+                    Object object = resultSet.getObject(i);
+                    if (object != null) {
+                        if (object instanceof Date) {
+                            String s = DateUtils.ofLongStr((Date) object);
+                            rowMap.put(columnLabel, s);
+                        } else {
+                            rowMap.put(columnLabel, object.toString());
+                        }
+
+                    }
+//                    String columnValue = resultSet.getString(i);
                 }
             }
             return result;
         } catch (Exception e) {
             throw e;
+        } finally {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
         }
     }
 

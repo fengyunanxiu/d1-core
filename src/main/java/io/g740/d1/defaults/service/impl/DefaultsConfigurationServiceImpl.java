@@ -7,6 +7,7 @@ import io.g740.d1.defaults.dto.DefaultsConfigurationDTO;
 import io.g740.d1.defaults.entity.DefaultConfigurationType;
 import io.g740.d1.defaults.entity.DefaultsConfigurationDO;
 import io.g740.d1.defaults.service.DefaultsConfigurationService;
+import io.g740.d1.engine.SQLEngine;
 import io.g740.d1.exception.ServiceException;
 import io.g740.d1.exception.custom.DuplicateResourceException;
 import io.g740.d1.exception.custom.IllegalParameterException;
@@ -18,7 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author : zxiuwu
@@ -37,6 +40,9 @@ public class DefaultsConfigurationServiceImpl implements DefaultsConfigurationSe
 
     @Autowired
     private DataFacetKeyService dataFacetKeyService;
+
+    @Autowired
+    private SQLEngine sqlEngine;
 
     @Override
     public DefaultsConfigurationDTO queryByDfKeyAndFieldKey(String dfKey, String fieldKey) throws Exception {
@@ -109,7 +115,7 @@ public class DefaultsConfigurationServiceImpl implements DefaultsConfigurationSe
 
         String fieldId = defaultsConfigurationDO.getFieldId();
         DefaultsConfigurationDO existDefaultConfiguration = null;
-        if (fieldId != null) {
+        if (StringUtils.isNotNullNorEmpty(fieldId)) {
             existDefaultConfiguration = this.defaultsConfigurationRepository.queryById(fieldId);
         }
         if (existDefaultConfiguration != null) {
@@ -129,6 +135,21 @@ public class DefaultsConfigurationServiceImpl implements DefaultsConfigurationSe
             String fieldManualConf = defaultsConfigurationDO.getFieldManualConf();
             this.dataFacetKeyService.updateDefaultValueByDfKeyAndFieldKey(fieldFormDfKey, fieldFormFieldKey, fieldManualConf);
         }
+        // 填入form table中标识选择的默认值策略类型
+        this.dataFacetKeyService.updateDefaultValueStrategyType(fieldFormDfKey, fieldFormFieldKey, fieldType.name());
+    }
+
+
+    @Override
+    public Collection<String> executeSQLTest(DefaultsConfigurationDTO defaultsConfigurationDTO) {
+        String pluginJdbcUrl = defaultsConfigurationDTO.getPluginJdbcUrl();
+        String pluginUsername = defaultsConfigurationDTO.getPluginUsername();
+        String pluginPassword = defaultsConfigurationDTO.getPluginPassword();
+        String pluginSQL = defaultsConfigurationDTO.getPluginSQL();
+        List<Map<String, String>> executeResult = this.sqlEngine.execute(pluginJdbcUrl, pluginUsername, pluginPassword, pluginSQL);
+        Map<String, String> rowMap = executeResult.get(0);
+        Collection<String> values = rowMap.values();
+        return values;
     }
 
 }

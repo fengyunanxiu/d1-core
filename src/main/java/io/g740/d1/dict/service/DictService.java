@@ -18,11 +18,8 @@ import java.util.List;
  */
 public interface DictService {
 
-    List<DictDO> batchInsert(List<DictDO> dictDOList) throws Exception;
 
     void batchDelete(List<String> idList) throws Exception;
-
-    void batchUpdate(List<DictDO> dictDOList) throws Exception;
 
     PageResultDTO<DictQueryVO> query(DictDTO dictDTO, Long offset, Integer pageSize) throws Exception;
 

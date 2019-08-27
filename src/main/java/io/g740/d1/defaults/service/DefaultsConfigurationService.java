@@ -1,7 +1,8 @@
 package io.g740.d1.defaults.service;
 
 import io.g740.d1.defaults.dto.DefaultsConfigurationDTO;
-import io.g740.d1.defaults.entity.DefaultsConfigurationDO;
+
+import java.util.Collection;
 
 /**
  * @author : zxiuwu
@@ -14,4 +15,6 @@ public interface DefaultsConfigurationService {
     DefaultsConfigurationDTO queryByDfKeyAndFieldKey(String dfKey, String fieldKey) throws Exception;
 
     void allocateDefaultsConfiguration(DefaultsConfigurationDTO defaultsConfigurationDTO) throws Exception;
+
+    Collection<String> executeSQLTest(DefaultsConfigurationDTO defaultsConfigurationDTO);
 }

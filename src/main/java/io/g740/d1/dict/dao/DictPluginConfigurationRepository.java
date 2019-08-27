@@ -16,8 +16,6 @@ import java.util.List;
 public interface DictPluginConfigurationRepository {
     List<DictPluginConfigurationDO> findAllEnable() throws SQLException;
 
-    List<DictPluginConfigurationDO> findAllEnableWithLockTransaction(Connection connection) throws SQLException;
-
     DictPluginConfigurationDO findByDomainAndItem(String domain, String item) throws SQLException;
 
     DictPluginConfigurationDO create(DictPluginConfigurationDO dictPluginConfigurationDO) throws SQLException;
