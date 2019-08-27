@@ -20,6 +20,8 @@ public interface DictRepository {
 
     List<Map<String, String>> queryDistinctDomainItemLimit(Map<String, String> params, long offset, int pageSize) throws SQLException;
 
+    List<DictDO> queryByDomainAndItemAndValueTupleList(List<String[]> domainAndItemAndValueList) throws SQLException;
+
     long countByDomainAndItem(Map<String, String> params) throws SQLException;
 
     List<DictDO> batchInsert(List<DictDO> dictDOList) throws ServiceException, SQLException;

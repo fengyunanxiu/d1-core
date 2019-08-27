@@ -44,7 +44,7 @@ public class DictDO {
 
     private String fieldSequence;
 
-    private String fieldEnable;
+    private Boolean fieldEnable;
 
     @Column("parent_id")
     private String fieldParentId;
@@ -113,11 +113,11 @@ public class DictDO {
         this.fieldSequence = fieldSequence;
     }
 
-    public String getFieldEnable() {
+    public Boolean getFieldEnable() {
         return fieldEnable;
     }
 
-    public void setFieldEnable(String fieldEnable) {
+    public void setFieldEnable(Boolean fieldEnable) {
         this.fieldEnable = fieldEnable;
     }
 

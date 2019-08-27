@@ -63,6 +63,13 @@ public class DictManageController {
 
     }
 
+    @PutMapping("")
+    @ResponseBody
+    @ApiOperation("batch update")
+    public void batchUpdate(@RequestBody List<DictDO> dictDOList) throws Exception {
+        this.dictService.batchUpdate(dictDOList);
+    }
+
 
     @DeleteMapping("/domain")
     @ResponseBody

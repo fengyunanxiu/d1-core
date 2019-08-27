@@ -23,6 +23,8 @@ public interface DictService {
 
     void batchDelete(List<String> idList) throws Exception;
 
+    void batchUpdate(List<DictDO> dictDOList) throws Exception;
+
     PageResultDTO<DictQueryVO> query(DictDTO dictDTO, Long offset, Integer pageSize) throws Exception;
 
     void addBaseDictList(List<DictDTO> dictDTOS) throws SQLException, Exception;

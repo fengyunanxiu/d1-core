@@ -75,6 +75,36 @@ public class DictRepositoryImpl implements DictRepository {
     }
 
     /**
+     *
+     * @param domainAndItemAndValueList
+     * @return
+     * @throws SQLException
+     */
+    @Override
+    public List<DictDO> queryByDomainAndItemAndValueTupleList(List<String[]> domainAndItemAndValueList) throws SQLException {
+        if (domainAndItemAndValueList == null || domainAndItemAndValueList.isEmpty()) {
+            return null;
+        }
+        StringBuilder sqlBuilder = new StringBuilder(" select * from " + TABLE_NAME + " where 1 = 1");
+        List<String> paramList = new ArrayList<>();
+        for (int i = 0; i < domainAndItemAndValueList.size(); i++) {
+            String[] params = domainAndItemAndValueList.get(i);
+            if (i == 0) {
+                sqlBuilder.append(" and ( ");
+                sqlBuilder.append(" (" + F_DOMAIN + " = ? and " + F_ITEM + " = ? and " + F_VALUE + " = ? ) ");
+            } else {
+                sqlBuilder.append(" or (" + F_DOMAIN + " = ? and " + F_ITEM + " = ? and " + F_VALUE + " = ? ) ");
+            }
+            if (i == domainAndItemAndValueList.size() - 1) {
+                sqlBuilder.append(")");
+            }
+            paramList.addAll(Arrays.asList(params));
+        }
+        QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
+        return qr.query(sqlBuilder.toString(), new BeanListHandler<>(DictDO.class, new QueryRunnerRowProcessor()), paramList.toArray(new Object[0]));
+    }
+
+    /**
      * 不重复的Domain和Item总量
      *
      * @param params
@@ -133,7 +163,7 @@ public class DictRepositoryImpl implements DictRepository {
                     || StringUtils.isNullOrEmpty(dictDO.getFieldItem())
                     || StringUtils.isNullOrEmpty(dictDO.getFieldValue())
                     || StringUtils.isNullOrEmpty(dictDO.getFieldSequence())
-                    || StringUtils.isNullOrEmpty(dictDO.getFieldEnable())) {
+                    || dictDO.getFieldEnable() == null) {
                 throw new ServiceException("field_id, field_domain, field_item, field_value, field_sequence, field_enable不能为空");
             }
             Object[] param = new Object[]{
@@ -174,7 +204,7 @@ public class DictRepositoryImpl implements DictRepository {
                     || StringUtils.isNullOrEmpty(dictDO.getFieldItem())
                     || StringUtils.isNullOrEmpty(dictDO.getFieldValue())
                     || StringUtils.isNullOrEmpty(dictDO.getFieldSequence())
-                    || StringUtils.isNullOrEmpty(dictDO.getFieldEnable())) {
+                    || dictDO.getFieldEnable() == null) {
                 throw new ServiceException("domain, item, value, sequence, enable不能为空");
             }
             Object[] param = new Object[]{
@@ -341,7 +371,7 @@ public class DictRepositoryImpl implements DictRepository {
             String fieldValue = dictDO.getFieldValue();
             String fieldLabel = dictDO.getFieldLabel();
             String fieldSequence = dictDO.getFieldSequence();
-            String fieldEnable = dictDO.getFieldEnable();
+            Boolean fieldEnable = dictDO.getFieldEnable();
             String fieldParentId = dictDO.getFieldParentId();
             param[i][0] = UUIDUtils.compress();
             param[i][1] = param[i][9] = new Date();
@@ -363,7 +393,6 @@ public class DictRepositoryImpl implements DictRepository {
     }
 
 
-
     @Override
     public List<DictDO> findByApplication(String domain, String item, String value) throws SQLException {
         StringBuilder sqlBuilder = new StringBuilder("select * from " + DictDO.TABLE_NAME);
@@ -378,6 +407,7 @@ public class DictRepositoryImpl implements DictRepository {
         LOGGER.info("find by field_domain and field_item sql: {}", sqlBuilder.toString());
         return qr.query(sqlBuilder.toString(), new BeanListHandler<>(DictDO.class, new QueryRunnerRowProcessor()), sqlParamList.toArray(new Object[0]));
     }
+
     @Override
     public DictDO findById(String id) throws SQLException {
         String sql = " select * from " + TABLE_NAME + " where " + F_ID + " = ? ";
@@ -395,12 +425,12 @@ public class DictRepositoryImpl implements DictRepository {
 
     @Override
     public void deleteByDomainAndItem(String domain, String item) throws SQLException {
-        StringBuilder sqlBuilder = new StringBuilder("delete from " + DictDO.TABLE_NAME + " where " + F_DOMAIN );
-       sqlBuilder.append(" = ?  and  " + F_ITEM + "  = ? ");
+        StringBuilder sqlBuilder = new StringBuilder("delete from " + DictDO.TABLE_NAME + " where " + F_DOMAIN);
+        sqlBuilder.append(" = ?  and  " + F_ITEM + "  = ? ");
 
-       List<String> paramList = new LinkedList<>();
-       paramList.add(domain);
-       paramList.add(item);
+        List<String> paramList = new LinkedList<>();
+        paramList.add(domain);
+        paramList.add(item);
 
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         LOGGER.info("batch delete sql: {}", sqlBuilder.toString());

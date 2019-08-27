@@ -19,6 +19,7 @@ import javax.annotation.Resource;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author : zxiuwu
@@ -46,6 +47,33 @@ public class DictServiceImpl implements DictService {
     }
 
     @Override
+    public void batchUpdate(List<DictDO> dictDOList) throws Exception {
+        try {
+            this.dictRepository.batchUpdate(dictDOList);
+        } catch (SQLException e) {
+            // 有重复数据时，查询重复的数据
+            if (e.getMessage().contains("Duplicate")) {
+                List<String[]> domainAndItemAndValueTupleList = dictDOList.stream().map(dictDO -> {
+                    String fieldDomain = dictDO.getFieldDomain();
+                    String fieldItem = dictDO.getFieldItem();
+                    String fieldValue = dictDO.getFieldValue();
+                    return new String[]{fieldDomain, fieldItem, fieldValue};
+                }).collect(Collectors.toList());
+                List<DictDO> existDictDOList = this.dictRepository.queryByDomainAndItemAndValueTupleList(domainAndItemAndValueTupleList);
+                if (existDictDOList != null && !existDictDOList.isEmpty()) {
+                    throw new DuplicateResourceException("find duplicate domain, item, values" + existDictDOList.stream().map(dictDO -> {
+                        String fieldDomain = dictDO.getFieldDomain();
+                        String fieldItem = dictDO.getFieldItem();
+                        String fieldValue = dictDO.getFieldValue();
+                        return String.join("-", fieldDomain, fieldItem, fieldValue);
+                    }).collect(Collectors.toList()));
+                }
+            }
+            throw e;
+        }
+    }
+
+    @Override
     public PageResultDTO<DictQueryVO> query(DictDTO dictDTO, Long offset, Integer pageSize) throws Exception {
         if (offset == null) {
             offset = 0L;
@@ -58,16 +86,16 @@ public class DictServiceImpl implements DictService {
         String value = dictDTO.getFieldValue();
         String label = dictDTO.getFieldLabel();
         String sequence = dictDTO.getFieldSequence();
-        String enable = dictDTO.getFieldEnable();
+        Boolean enable = dictDTO.getFieldEnable();
         String parentId = dictDTO.getFieldParentId();
         Map<String, String> paramMap = new HashMap<>();
         CollectionUtils.putIfKVNotNull(paramMap, DictDO.F_DOMAIN, domain);
         CollectionUtils.putIfKVNotNull(paramMap, DictDO.F_ITEM, item);
         CollectionUtils.putIfKVNotNull(paramMap, DictDO.F_VALUE, value);
         CollectionUtils.putIfKVNotNull(paramMap, DictDO.F_LABEL, label);
-        CollectionUtils.putIfKVNotNull(paramMap, DictDO.F_SEQUENCE, sequence);
-        CollectionUtils.putIfKVNotNull(paramMap, DictDO.F_ENABLE, enable);
-        CollectionUtils.putIfKVNotNull(paramMap, DictDO.F_PARENT_ID, parentId);
+//        CollectionUtils.putIfKVNotNull(paramMap, DictDO.F_SEQUENCE, sequence);
+//        CollectionUtils.putIfKVNotNull(paramMap, DictDO.F_ENABLE, enable);
+//        CollectionUtils.putIfKVNotNull(paramMap, DictDO.F_PARENT_ID, parentId);
 
         // 查询不重复的domain和item总数
         long count = this.dictRepository.countByDomainAndItem(paramMap);
@@ -126,23 +154,23 @@ public class DictServiceImpl implements DictService {
 
     @Override
     public void addBaseDictList(List<DictDTO> dictDTOS) throws Exception {
-       String domain = dictDTOS.get(0).getFieldDomain();
-       String item = dictDTOS.get(0).getFieldItem();
-       List<DictDO> dictDOList = this.dictRepository.findByDomainAndItem(domain, item);
-       if(!org.springframework.util.CollectionUtils.isEmpty(dictDOList)){
-           throw new DuplicateResourceException(String.format("Domain:%s,Item:%s is duplicate",domain,item));
-       }
-       //遍历设置序号
-       int index = 1;
-       List<DictDO> dictDOS = new LinkedList<>();
-       DictDO dictDO = null;
+        String domain = dictDTOS.get(0).getFieldDomain();
+        String item = dictDTOS.get(0).getFieldItem();
+        List<DictDO> dictDOList = this.dictRepository.findByDomainAndItem(domain, item);
+        if (!org.springframework.util.CollectionUtils.isEmpty(dictDOList)) {
+            throw new DuplicateResourceException(String.format("Domain:%s,Item:%s is duplicate", domain, item));
+        }
+        //遍历设置序号
+        int index = 1;
+        List<DictDO> dictDOS = new LinkedList<>();
+        DictDO dictDO = null;
 
         for (DictDTO dictDTO : dictDTOS) {
             dictDO = new DictDO();
-            BeanUtils.copyProperties(dictDTO,dictDO);
-            dictDO.setFieldSequence("" + (index) );
-            dictDO.setFieldEnable("1");
-            index ++;
+            BeanUtils.copyProperties(dictDTO, dictDO);
+            dictDO.setFieldSequence("" + (index));
+            dictDO.setFieldEnable(Boolean.TRUE);
+            index++;
             dictDOS.add(dictDO);
         }
         this.dictRepository.batchInsert(dictDOS);
@@ -154,13 +182,13 @@ public class DictServiceImpl implements DictService {
         String item = dictDTO.getFieldItem();
         String value = dictDTO.getFieldValue();
         String label = dictDTO.getFieldLabel();
-        List<DictDO> dictDOS = this.dictRepository.findByApplication(domain,item,value);
-        if(!org.springframework.util.CollectionUtils.isEmpty(dictDOS)){
+        List<DictDO> dictDOS = this.dictRepository.findByApplication(domain, item, value);
+        if (!org.springframework.util.CollectionUtils.isEmpty(dictDOS)) {
             throw new DuplicateResourceException("duplicate domain,item,value");
         }
         dictDOS = new LinkedList<>();
         DictDO dictDo = new DictDO();
-        BeanUtils.copyProperties(dictDTO,dictDo);
+        BeanUtils.copyProperties(dictDTO, dictDo);
         dictDOS.add(dictDo);
         this.dictRepository.batchInsert(dictDOS);
     }
@@ -172,21 +200,18 @@ public class DictServiceImpl implements DictService {
         String value = dictDTO.getFieldValue();
         String label = dictDTO.getFieldLabel();
         String fileId = dictDTO.getFieldId();
-        List<DictDO> dictDOS = this.dictRepository.findByApplication(domain,item,value);
-        if(!org.springframework.util.CollectionUtils.isEmpty(dictDOS)){
-           DictDO dctDO = dictDOS.get(0);
-           if(!fileId.equals(dctDO.getFieldId())){
-               throw new DuplicateResourceException("duplicate domain,item,value");
-           }
+        List<DictDO> dictDOS = this.dictRepository.findByApplication(domain, item, value);
+        if (!org.springframework.util.CollectionUtils.isEmpty(dictDOS)) {
+            DictDO dctDO = dictDOS.get(0);
+            if (!fileId.equals(dctDO.getFieldId())) {
+                throw new DuplicateResourceException("duplicate domain,item,value");
+            }
         }
         dictDOS = new LinkedList<>();
         DictDO dictDo = new DictDO();
-        BeanUtils.copyProperties(dictDTO,dictDo);
+        BeanUtils.copyProperties(dictDTO, dictDo);
         dictDOS.add(dictDo);
         this.dictRepository.batchUpdate(dictDOS);
-
-
-
 
 
     }
@@ -195,7 +220,7 @@ public class DictServiceImpl implements DictService {
     public void deleteDomain(DictDTO dictDTO) throws SQLException {
         String domain = dictDTO.getFieldDomain();
         String item = dictDTO.getFieldItem();
-        this.dictRepository.deleteByDomainAndItem(domain,item);
+        this.dictRepository.deleteByDomainAndItem(domain, item);
     }
 
     @Override
