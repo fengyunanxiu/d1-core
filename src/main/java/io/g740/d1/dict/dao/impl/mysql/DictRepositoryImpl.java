@@ -10,6 +10,7 @@ import io.g740.d1.util.UUIDUtils;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.MapHandler;
 import org.apache.commons.dbutils.handlers.MapListHandler;
@@ -73,7 +74,6 @@ public class DictRepositoryImpl implements DictRepository {
         return qr.query(sqlBuilder.toString(), new BeanListHandler<>(DictDO.class, new QueryRunnerRowProcessor()), paramList.toArray(new Object[0]));
     }
 
-
     /**
      * 不重复的Domain和Item总量
      *
@@ -110,7 +110,6 @@ public class DictRepositoryImpl implements DictRepository {
             }
         }, paramList.toArray(new Object[0]));
     }
-
 
     /**
      * @param dictDOList
@@ -154,48 +153,6 @@ public class DictRepositoryImpl implements DictRepository {
 
 
     /**
-     * @param dictDOList
-     * @throws ServiceException
-     * @throws SQLException
-     */
-    @Override
-    public void batchUpdate(List<DictDO> dictDOList) throws ServiceException, SQLException {
-        if (dictDOList == null || dictDOList.isEmpty()) {
-            throw new ServiceException("dict list is null");
-        }
-        String sql = "update " + TABLE_NAME + " set " + F_GMT_MODIFIED + " = ?, " + F_DOMAIN + " = ?, " +
-                F_ITEM + " = ?, " + F_VALUE + " = ?, " + F_LABEL + " = ?, " + F_SEQUENCE + " = ?, " +
-                F_ENABLE + " = ?, " + F_PARENT_ID + "= ? where " + F_ID + " = ?";
-        List<Object[]> paramList = new ArrayList<>();
-        for (DictDO dictDO : dictDOList) {
-            if (dictDO == null
-                    || StringUtils.isNullOrEmpty(dictDO.getFieldId())
-                    || StringUtils.isNullOrEmpty(dictDO.getFieldDomain())
-                    || StringUtils.isNullOrEmpty(dictDO.getFieldItem())
-                    || StringUtils.isNullOrEmpty(dictDO.getFieldValue())
-                    || StringUtils.isNullOrEmpty(dictDO.getFieldSequence())
-                    || StringUtils.isNullOrEmpty(dictDO.getFieldEnable())) {
-                throw new ServiceException("field_id, field_domain, field_item, field_value, field_sequence, field_enable不能为空");
-            }
-            Object[] param = new Object[]{
-                    new Date(),
-                    dictDO.getFieldDomain(),
-                    dictDO.getFieldItem(),
-                    dictDO.getFieldValue(),
-                    dictDO.getFieldLabel(),
-                    dictDO.getFieldSequence(),
-                    dictDO.getFieldEnable(),
-                    dictDO.getFieldParentId(),
-                    dictDO.getFieldId()
-            };
-            paramList.add(param);
-        }
-        QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
-        LOGGER.info("bath update sql{}", sql);
-        qr.batch(sql, paramList.toArray(new Object[0][0]));
-    }
-
-    /**
      * @param idList
      * @throws ServiceException
      * @throws SQLException
@@ -214,37 +171,6 @@ public class DictRepositoryImpl implements DictRepository {
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         LOGGER.info("batch delete sql: {}", sqlBuilder.toString());
         qr.update(sqlBuilder.toString(), idList.toArray(new Object[0]));
-    }
-
-    /**
-     * @param dictDOList
-     * @return
-     * @throws SQLException
-     */
-    @Override
-    public List<DictDO> findByDomainAndItemAndValue(List<DictDO> dictDOList) throws SQLException {
-        if (dictDOList == null || dictDOList.isEmpty()) {
-            return null;
-        }
-        List<String[]> domainItemList = dictDOList.stream().map((item) -> new String[]{item.getFieldDomain(), item.getFieldItem()}).collect(Collectors.toList());
-        StringBuilder sqlBuilder = new StringBuilder("select * from " + DictDO.TABLE_NAME);
-        List<String> sqlParamList = new ArrayList<>();
-        for (int i = 0; i < dictDOList.size(); i++) {
-            DictDO dictDO = dictDOList.get(i);
-            sqlParamList.add(dictDO.getFieldDomain());
-            sqlParamList.add(dictDO.getFieldItem());
-            sqlParamList.add(dictDO.getFieldValue());
-            if (i == 0) {
-                sqlBuilder.append(" where (" + F_DOMAIN + " = ? and " + F_ITEM + " = ? and " + F_VALUE + " = ?) ");
-            } else {
-                sqlBuilder.append(" or (" + F_DOMAIN + " = ? and " + F_ITEM + " = ? and " + F_VALUE + " = ?) ");
-            }
-        }
-        // 排序
-        sqlBuilder.append(" order by " + F_DOMAIN + ", " + F_ITEM + ", " + F_SEQUENCE + " ");
-        QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
-        LOGGER.info("find by field_domain and field_item sql: {}", sqlBuilder.toString());
-        return qr.query(sqlBuilder.toString(), new BeanListHandler<>(DictDO.class, new QueryRunnerRowProcessor()), sqlParamList.toArray(new Object[0]));
     }
 
     @Override
@@ -396,27 +322,17 @@ public class DictRepositoryImpl implements DictRepository {
     public void findByApplication(String domain, String item, String value, String label) {
         
     }
-
-//    @Override
-//    public void findByApplication(String domain, String item, String value, String label) {
-//        StringBuilder sqlBuilder = new StringBuilder("select * from " + DictDO.TABLE_NAME);
-//        List<String> sqlParamList = new ArrayList<>();
-//        for (int i = 0; i < dictDOList.size(); i++) {
-//            DictDO dictDO = dictDOList.get(i);
-//            sqlParamList.add(dictDO.getFieldDomain());
-//            sqlParamList.add(dictDO.getFieldItem());
-//            sqlParamList.add(dictDO.getFieldValue());
-//            if (i == 0) {
-//                sqlBuilder.append(" where (" + F_DOMAIN + " = ? and " + F_ITEM + " = ? and " + F_VALUE + " = ?) ");
-//            } else {
-//                sqlBuilder.append(" or (" + F_DOMAIN + " = ? and " + F_ITEM + " = ? and " + F_VALUE + " = ?) ");
-//            }
-//        }
-//        // 排序
-//        sqlBuilder.append(" order by " + F_DOMAIN + ", " + F_ITEM + ", " + F_SEQUENCE + " ");
-//        QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
-//        LOGGER.info("find by field_domain and field_item sql: {}", sqlBuilder.toString());
-//        return qr.query(sqlBuilder.toString(), new BeanListHandler<>(DictDO.class, new QueryRunnerRowProcessor()), sqlParamList.toArray(new Object[0]));
-//    }
+    @Override
+    public DictDO findById(String id) throws SQLException {
+        String sql = " select * from " + TABLE_NAME + " where " + F_ID + " = ? ";
+        QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
+        return qr.query(sql, new BeanHandler<>(DictDO.class, new QueryRunnerRowProcessor()), id);
+    }
+    @Override
+    public void updateDomainNameOrItemName(String oldDomain, String newDomain, String oldItem, String newItem) throws SQLException {
+        String sql = " update " + TABLE_NAME + " set " + F_DOMAIN + " = ?," + F_ITEM + " = ? where " + F_DOMAIN + " = ? and " + F_ITEM + " = ? ";
+        QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
+        qr.update(sql, newDomain, newItem, oldDomain, oldItem);
+    }
 
 }

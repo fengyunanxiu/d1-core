@@ -8,6 +8,7 @@ import io.g740.d1.dict.entity.DictDO;
 import io.g740.d1.dto.PageResultDTO;
 import io.g740.d1.exception.ServiceException;
 import io.g740.d1.exception.custom.DuplicateResourceException;
+import io.g740.d1.exception.custom.IllegalParameterException;
 import io.g740.d1.util.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,22 +36,6 @@ public class DictServiceImpl implements DictService {
     private DictRepository dictRepository;
 
     /**
-     * @param dictDOList
-     * @return
-     * @throws ServiceException
-     * @throws SQLException
-     */
-    @Override
-    public List<DictDO> batchInsert(List<DictDO> dictDOList) throws Exception {
-        List<DictDO> byDomainAndItem = this.dictRepository.findByDomainAndItemAndValue(dictDOList);
-        if (byDomainAndItem != null && !byDomainAndItem.isEmpty()) {
-            String existMsg = byDomainAndItem.stream().map((item) -> String.format("domain:%s, item:%s, value:%s", item.getFieldDomain(), item.getFieldItem(), item.getFieldValue())).collect(Collectors.joining(";"));
-            throw new DuplicateResourceException("Find Duplicate Domain And Item , " + existMsg);
-        }
-        return this.dictRepository.batchInsert(dictDOList);
-    }
-
-    /**
      * @param idList
      * @throws ServiceException
      * @throws SQLException
@@ -58,21 +43,6 @@ public class DictServiceImpl implements DictService {
     @Override
     public void batchDelete(List<String> idList) throws Exception {
         this.dictRepository.batchDelete(idList);
-    }
-
-    /**
-     * @param dictDOList
-     * @throws ServiceException
-     * @throws SQLException
-     */
-    @Override
-    public void batchUpdate(List<DictDO> dictDOList) throws Exception {
-        List<DictDO> existDictList = this.dictRepository.findByDomainAndItemAndValue(dictDOList);
-        if (existDictList != null && !existDictList.isEmpty()) {
-            String existMsg = existDictList.stream().map((item) -> String.format("domain:%s, item:%s, value:%s", item.getFieldDomain(), item.getFieldItem(), item.getFieldValue())).collect(Collectors.joining(";"));
-            throw new DuplicateResourceException("Find Duplicate Domain And Item , " + existMsg);
-        }
-        this.dictRepository.batchUpdate(dictDOList);
     }
 
     @Override
@@ -150,7 +120,7 @@ public class DictServiceImpl implements DictService {
             dictDO.setFieldItem(null);
             dictDOList.add(dictDO);
         }
-        return new PageResultDTO<DictQueryVO>(new ArrayList<>(resultMap.values()), count);
+        return new PageResultDTO<>(new ArrayList<>(resultMap.values()), count);
 
     }
 
@@ -177,8 +147,6 @@ public class DictServiceImpl implements DictService {
             dictDOS.add(dictDO);
         }
         this.dictRepository.batchInsert(dictDOS);
-
-
     }
 
     @Override
@@ -195,5 +163,26 @@ public class DictServiceImpl implements DictService {
     public void updateBaseDict(DictDTO dictDTO) {
 
     }
+
+    /**
+     * 更新Domain，Item的名字
+     * @param domain
+     * @param item
+     * @param firstValueId
+     */
+    public void updateDomainNameOrItemName(String domain, String item, String firstValueId) throws Exception {
+        DictDO existDictDO = this.dictRepository.findById(firstValueId);
+        if (existDictDO == null) {
+            throw new IllegalParameterException("Dict not found");
+        }
+
+        // 查询是否有相同的domain，item
+        List<DictDO> existDictList = this.dictRepository.findByDomainAndItem(domain, item);
+        if (existDictList != null && !existDictList.isEmpty()) {
+            throw new DuplicateResourceException("find exists domain " + domain + " item " + item);
+        }
+        this.dictRepository.updateDomainNameOrItemName(existDictDO.getFieldDomain(), domain, existDictDO.getFieldItem(), item);
+    }
+
 
 }

@@ -24,7 +24,7 @@ import java.util.Map;
  */
 @Api("dict plugin")
 @RestController
-@RequestMapping("/dict/plugin")
+@RequestMapping("/d1/dict/plugin")
 public class DictPluginController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DictPluginController.class);

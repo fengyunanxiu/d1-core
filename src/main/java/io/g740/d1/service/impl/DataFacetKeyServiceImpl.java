@@ -204,6 +204,18 @@ public class DataFacetKeyServiceImpl implements DataFacetKeyService {
     }
 
     /**
+     * 写入默认值策略类型
+     * @param dfKey
+     * @param fieldKey
+     * @param strategyType
+     * @throws Exception
+     */
+    @Override
+    public void updateDefaultValueStrategyType(String dfKey, String fieldKey, String strategyType) throws Exception {
+        this.dfFormTableSettingDao.updateDefaultStrategyTypeByDfKeyAndFieldName(dfKey, fieldKey, strategyType);
+    }
+
+    /**
      * 写入字典domain和item
      *
      * @param dfKey
@@ -216,4 +228,9 @@ public class DataFacetKeyServiceImpl implements DataFacetKeyService {
     public void updateDomainAndItemByDfKeyAndFieldName(String dfKey, String fieldName, String domain, String item) throws Exception {
         this.dfFormTableSettingDao.updateDomainAndItemByDfKeyAndFieldName(dfKey, fieldName, domain, item);
     }
+
+
+
+
+
 }

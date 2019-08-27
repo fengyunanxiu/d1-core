@@ -51,23 +51,19 @@ public class DefaultsPluginTaskManager {
     /**
      * key: dfKey_fieldName_cron
      */
-    private Map<String, ScheduledFuture<?>> runningScheduleMap = new ConcurrentHashMap<>();
+    private static final Map<String, ScheduledFuture<?>> RUNNING_SCHEDULE_MAP = new ConcurrentHashMap<>();
 
     public void run() {
-        LOGGER.info("start default value task schedule");
+        LOGGER.info("start to initialize default value task schedule");
         this.taskScheduler.scheduleWithFixedDelay(
                 () -> task(),
                 new Date(), 10 * 1000L);
     }
 
     private void task() {
-        LOGGER.info("start default value task");
-        Connection connection = null;
+        LOGGER.info("start default value schedule");
         try {
-            connection = this.d1BasicDataSource.getConnection();
-            // 开启事务
-            connection.setAutoCommit(false);
-            List<DefaultsConfigurationDO> all = this.defaultsConfigurationRepository.queryAllWithLockTransaction(connection);
+            List<DefaultsConfigurationDO> all = this.defaultsConfigurationRepository.queryAll();
             if (all == null ) {
                 all = new ArrayList<>();
             }
@@ -88,11 +84,11 @@ public class DefaultsPluginTaskManager {
                     .collect(Collectors.toMap((tmp) -> generateRunningScheduleMapKey(tmp), (tmp) -> tmp));
 
             if (allSchedule.isEmpty()) {
-                LOGGER.info("no new default value task schedule");
+                LOGGER.info("default task schedule is empty");
             }
             // 当前不应该再运行的schedule
             List<Map.Entry<String, ScheduledFuture<?>>> needDeleteConfigurationEntryList = new ArrayList<>();
-            for (Map.Entry<String, ScheduledFuture<?>> existSchedule : runningScheduleMap.entrySet()) {
+            for (Map.Entry<String, ScheduledFuture<?>> existSchedule : RUNNING_SCHEDULE_MAP.entrySet()) {
                 String key = existSchedule.getKey();
                 if (allSchedule.containsKey(key)) {
                     allSchedule.remove(key);
@@ -108,7 +104,8 @@ public class DefaultsPluginTaskManager {
                     ScheduledFuture<?> scheduledFuture = needDeleteConfiguration.getValue();
                     boolean cancel = scheduledFuture.cancel(false);
                     if (cancel) {
-                        runningScheduleMap.remove(key);
+                        RUNNING_SCHEDULE_MAP.remove(key);
+                        LOGGER.info("success to cancel unused default value task, key: {}" + key);
                     }
                 }
                 LOGGER.info("end to cancel unused default value task, size: {}", needDeleteConfigurationEntryList.size());
@@ -120,26 +117,16 @@ public class DefaultsPluginTaskManager {
                     ScheduledFuture<?> scheduledFuture = this.schedule(defaultsConfigurationDO);
                     if (scheduledFuture != null) {
                         String key = generateRunningScheduleMapKey(defaultsConfigurationDO);
-                        runningScheduleMap.put(key, scheduledFuture);
+                        RUNNING_SCHEDULE_MAP.put(key, scheduledFuture);
                     }
                 }
             }
-            connection.commit();
         } catch (Exception e) {
             LOGGER.error("", e);
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    LOGGER.error("", e);
-                }
-            }
         }
     }
 
     private ScheduledFuture<?> schedule(DefaultsConfigurationDO defaultsConfigurationDO) {
-        DefaultConfigurationType fieldType = defaultsConfigurationDO.getFieldType();
         String fieldPluginConf = defaultsConfigurationDO.getFieldPluginConf();
         JSONObject pluginJSON = JSON.parseObject(fieldPluginConf);
         String type = pluginJSON.getString("type");
@@ -155,12 +142,7 @@ public class DefaultsPluginTaskManager {
     }
 
     private String generateRunningScheduleMapKey(DefaultsConfigurationDO defaultsConfigurationDO) {
-        String fieldFormDfKey = defaultsConfigurationDO.getFieldFormDfKey();
-        String fieldFormFieldKey = defaultsConfigurationDO.getFieldFormFieldKey();
-        String fieldPluginConf = defaultsConfigurationDO.getFieldPluginConf();
-        JSONObject pluginConf = JSON.parseObject(fieldPluginConf);
-        String cron = pluginConf.getString("cron");
-        return fieldFormDfKey + "_" + fieldFormFieldKey + "_" + cron;
+        return String.valueOf(defaultsConfigurationDO.hashCode());
     }
 
 }

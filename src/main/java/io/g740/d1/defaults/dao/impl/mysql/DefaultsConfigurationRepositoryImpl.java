@@ -56,19 +56,6 @@ public class DefaultsConfigurationRepositoryImpl implements DefaultsConfiguratio
         return qr.query(sql, new BeanListHandler<>(DefaultsConfigurationDO.class, new QueryRunnerRowProcessor()));
     }
 
-    /**
-     * 手动关闭connectioin
-     * @param connection
-     * @return
-     * @throws SQLException
-     */
-    @Override
-    public List<DefaultsConfigurationDO> queryAllWithLockTransaction(Connection connection) throws SQLException {
-        String sql = "select * from " + DefaultsConfigurationDO.TABLE_NAME + " ";
-        QueryRunner qr = new QueryRunner();
-        return qr.query(connection, sql, new BeanListHandler<>(DefaultsConfigurationDO.class, new QueryRunnerRowProcessor()));
-    }
-
 
     @Override
     public DefaultsConfigurationDO insert(DefaultsConfigurationDO defaultsConfigurationDO) throws Exception {

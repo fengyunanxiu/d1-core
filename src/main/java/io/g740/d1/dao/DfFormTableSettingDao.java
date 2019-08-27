@@ -33,5 +33,9 @@ public interface DfFormTableSettingDao {
 
     void updateDefaultValueByDfKeyAndFieldName(String dfKey, String fieldName, String jsonValue) throws SQLException;
 
+    void updateDefaultStrategyTypeByDfKeyAndFieldName(String dfKey, String fieldName, String strategyType) throws SQLException;
+
     void updateDomainAndItemByDfKeyAndFieldName(String dfKey, String fieldName, String domain, String item) throws SQLException;
+
+    DfFormTableSettingDO queryByDfKeyAndFieldName(String dfKey, String fieldName) throws SQLException;
 }

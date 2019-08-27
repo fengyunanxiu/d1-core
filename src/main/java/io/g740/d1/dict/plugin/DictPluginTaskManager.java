@@ -58,11 +58,8 @@ public class DictPluginTaskManager {
 
     private void task() {
         LOGGER.info(" start to process dict task ");
-        Connection connection = null;
         try{
-            connection = this.d1BasicDataSource.getConnection();
-            connection.setAutoCommit(false);
-            List<DictPluginConfigurationDO> allEnableList = this.dictPluginConfigurationRepository.findAllEnableWithLockTransaction(connection);
+            List<DictPluginConfigurationDO> allEnableList = this.dictPluginConfigurationRepository.findAllEnable();
             if (allEnableList == null ) {
                 allEnableList = new ArrayList<>();
             }
@@ -86,6 +83,7 @@ public class DictPluginTaskManager {
                     boolean cancel = scheduledFuture.cancel(false);
                     if (cancel) {
                         runningScheduleMap.remove(key);
+                        LOGGER.info("success to cancel unused dict sql plugin, key: {}", key);
                     }
                 }
                 LOGGER.info("end to cancel unused dict sql plugin, size:{}", needDeleteScheduleEntryList.size());
@@ -103,17 +101,8 @@ public class DictPluginTaskManager {
                 }
                 LOGGER.info("end to start new dict sql plugin, size: {}", allEnableMap.size());
             }
-            connection.commit();
         } catch (Exception e) {
             LOGGER.error("", e);
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    LOGGER.error("", e);
-                }
-            }
         }
     }
 
