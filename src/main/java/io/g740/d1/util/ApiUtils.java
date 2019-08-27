@@ -63,7 +63,7 @@ public class ApiUtils {
 		for(Map.Entry<String, String[]> entry : requestParameterMap.entrySet()) {
 			parameterMap.put(entry.getKey(), entry.getValue());
 		}
-		long offset = pageable.getOffset();
+		long offset = pageable.getPageSize()*pageable.getPageNumber();
 		int size = pageable.getPageSize();
 		long page = offset / size;
 		parameterMap.put("page", new String[] {page + ""} );

@@ -804,7 +804,7 @@ public class SQLUtils {
 	public static String buildeSimplePagePhrase(Pageable pageable) {
 		StringBuilder pagePhrase = new StringBuilder();
 		if (pageable != null) {
-			long offset = pageable.getOffset();
+			long offset = pageable.getPageSize()*pageable.getPageNumber();
 			int pageSize = pageable.getPageSize();
 			Sort sort = pageable.getSort();
 			if (sort != null) {

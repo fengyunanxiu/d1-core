@@ -48,7 +48,7 @@ public class DictManageController {
         dictDTO.setFieldItem(item);
         dictDTO.setFieldValue(value);
         PageRequest pageable = PageRequest.of(page, size);
-        long offset = pageable.getOffset();
+        long offset = pageable.getPageSize()*pageable.getPageNumber();
         int pageSize = pageable.getPageSize();
         return this.dictService.query(dictDTO, offset, pageSize);
     }
