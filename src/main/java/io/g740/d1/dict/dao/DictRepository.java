@@ -24,6 +24,8 @@ public interface DictRepository {
 
     List<DictDO> batchInsert(List<DictDO> dictDOList) throws ServiceException, SQLException;
 
+    void batchUpdate(List<DictDO> dictDOList) throws ServiceException, SQLException;
+
     void batchDelete(List<String> idList) throws ServiceException, SQLException;
 
     List<DictDO> findByDomainAndItem(String domain, String item) throws SQLException;
@@ -32,11 +34,13 @@ public interface DictRepository {
 
     void updateValueByDomainAndItem(List<DictDO> dictDOList) throws SQLException;
 
-    void findByApplication(String domain, String item, String value, String label);
 
     DictDO findById(String id) throws SQLException;
 
     void updateDomainNameOrItemName(String oldDomain, String newDomain, String oldItem, String newItem) throws SQLException;
+    List<DictDO>  findByApplication(String domain, String item, String value) throws SQLException;
+
+    void deleteByDomainAndItem(String domain, String item) throws SQLException;
 
     List<DictDO> findByParentIdList(List<String> parentIdList) throws SQLException;
 }

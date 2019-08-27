@@ -111,6 +111,50 @@ public class DictRepositoryImpl implements DictRepository {
         }, paramList.toArray(new Object[0]));
     }
 
+
+    /**
+     * @param dictDOList
+     * @throws ServiceException
+     * @throws SQLException
+     */
+    @Override
+    public void batchUpdate(List<DictDO> dictDOList) throws ServiceException, SQLException {
+        if (dictDOList == null || dictDOList.isEmpty()) {
+            throw new ServiceException("dict list is null");
+        }
+        String sql = "update " + TABLE_NAME + " set " + F_GMT_MODIFIED + " = ?, " + F_DOMAIN + " = ?, " +
+                F_ITEM + " = ?, " + F_VALUE + " = ?, " + F_LABEL + " = ?, " + F_SEQUENCE + " = ?, " +
+                F_ENABLE + " = ?, " + F_PARENT_ID + "= ? where " + F_ID + " = ?";
+        List<Object[]> paramList = new ArrayList<>();
+        for (DictDO dictDO : dictDOList) {
+            if (dictDO == null
+                    || StringUtils.isNullOrEmpty(dictDO.getFieldId())
+                    || StringUtils.isNullOrEmpty(dictDO.getFieldDomain())
+                    || StringUtils.isNullOrEmpty(dictDO.getFieldItem())
+                    || StringUtils.isNullOrEmpty(dictDO.getFieldValue())
+                    || StringUtils.isNullOrEmpty(dictDO.getFieldSequence())
+                    || StringUtils.isNullOrEmpty(dictDO.getFieldEnable())) {
+                throw new ServiceException("field_id, field_domain, field_item, field_value, field_sequence, field_enable不能为空");
+            }
+            Object[] param = new Object[]{
+                    new Date(),
+                    dictDO.getFieldDomain(),
+                    dictDO.getFieldItem(),
+                    dictDO.getFieldValue(),
+                    dictDO.getFieldLabel(),
+                    dictDO.getFieldSequence(),
+                    dictDO.getFieldEnable(),
+                    dictDO.getFieldParentId(),
+                    dictDO.getFieldId()
+            };
+            paramList.add(param);
+        }
+        QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
+        LOGGER.info("bath update sql{}", sql);
+        qr.batch(sql, paramList.toArray(new Object[0][0]));
+    }
+
+
     /**
      * @param dictDOList
      * @return
@@ -318,9 +362,21 @@ public class DictRepositoryImpl implements DictRepository {
         qr.batch(sql, param);
     }
 
-    @Override
-    public void findByApplication(String domain, String item, String value, String label) {
 
+
+    @Override
+    public List<DictDO> findByApplication(String domain, String item, String value) throws SQLException {
+        StringBuilder sqlBuilder = new StringBuilder("select * from " + DictDO.TABLE_NAME);
+        List<String> sqlParamList = new ArrayList<>();
+        sqlParamList.add(domain);
+        sqlParamList.add(item);
+        sqlParamList.add(value);
+        sqlBuilder.append(" where (" + F_DOMAIN + " = ? and " + F_ITEM + " = ? and " + F_VALUE + " = ?) ");
+        // 排序
+
+        QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
+        LOGGER.info("find by field_domain and field_item sql: {}", sqlBuilder.toString());
+        return qr.query(sqlBuilder.toString(), new BeanListHandler<>(DictDO.class, new QueryRunnerRowProcessor()), sqlParamList.toArray(new Object[0]));
     }
     @Override
     public DictDO findById(String id) throws SQLException {
@@ -334,6 +390,21 @@ public class DictRepositoryImpl implements DictRepository {
         String sql = " update " + TABLE_NAME + " set " + F_DOMAIN + " = ?," + F_ITEM + " = ? where " + F_DOMAIN + " = ? and " + F_ITEM + " = ? ";
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         qr.update(sql, newDomain, newItem, oldDomain, oldItem);
+    }
+
+
+    @Override
+    public void deleteByDomainAndItem(String domain, String item) throws SQLException {
+        StringBuilder sqlBuilder = new StringBuilder("delete from " + DictDO.TABLE_NAME + " where " + F_DOMAIN );
+       sqlBuilder.append(" = ?  and  " + F_ITEM + "  = ? ");
+
+       List<String> paramList = new LinkedList<>();
+       paramList.add(domain);
+       paramList.add(item);
+
+        QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
+        LOGGER.info("batch delete sql: {}", sqlBuilder.toString());
+        qr.update(sqlBuilder.toString(), paramList.toArray(new Object[0]));
     }
 
     @Override

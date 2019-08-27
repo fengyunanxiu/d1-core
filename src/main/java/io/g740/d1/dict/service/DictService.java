@@ -6,6 +6,7 @@ import io.g740.d1.dict.vo.DictQueryVO;
 import io.g740.d1.dict.entity.DictDO;
 import io.g740.d1.dto.PageResultDTO;
 import io.g740.d1.exception.ServiceException;
+import io.g740.d1.exception.custom.DuplicateResourceException;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -26,9 +27,11 @@ public interface DictService {
 
     void addBaseDictList(List<DictDTO> dictDTOS) throws SQLException, Exception;
 
-    void addBaseDict(DictDTO dictDTO);
+    void addBaseDict(DictDTO dictDTO) throws SQLException, ServiceException;
 
-    void updateBaseDict(DictDTO dictDTO);
+    void updateBaseDict(DictDTO dictDTO) throws SQLException, ServiceException;
+
+    void deleteDomain(DictDTO dictDTO) throws SQLException;
 
     /**
      * 级联查询字典数据

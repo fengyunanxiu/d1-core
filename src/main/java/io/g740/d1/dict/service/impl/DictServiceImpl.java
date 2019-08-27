@@ -132,7 +132,6 @@ public class DictServiceImpl implements DictService {
        if(!org.springframework.util.CollectionUtils.isEmpty(dictDOList)){
            throw new DuplicateResourceException(String.format("Domain:%s,Item:%s is duplicate",domain,item));
        }
-
        //遍历设置序号
        int index = 1;
        List<DictDO> dictDOS = new LinkedList<>();
@@ -150,18 +149,53 @@ public class DictServiceImpl implements DictService {
     }
 
     @Override
-    public void addBaseDict(DictDTO dictDTO) {
+    public void addBaseDict(DictDTO dictDTO) throws SQLException, ServiceException {
         String domain = dictDTO.getFieldDomain();
         String item = dictDTO.getFieldItem();
         String value = dictDTO.getFieldValue();
         String label = dictDTO.getFieldLabel();
-        this.dictRepository.findByApplication(domain,item,value,label);
+        List<DictDO> dictDOS = this.dictRepository.findByApplication(domain,item,value);
+        if(!org.springframework.util.CollectionUtils.isEmpty(dictDOS)){
+            throw new DuplicateResourceException("duplicate domain,item,value");
+        }
+        dictDOS = new LinkedList<>();
+        DictDO dictDo = new DictDO();
+        BeanUtils.copyProperties(dictDTO,dictDo);
+        dictDOS.add(dictDo);
+        this.dictRepository.batchInsert(dictDOS);
+    }
+
+    @Override
+    public void updateBaseDict(DictDTO dictDTO) throws SQLException, ServiceException {
+        String domain = dictDTO.getFieldDomain();
+        String item = dictDTO.getFieldItem();
+        String value = dictDTO.getFieldValue();
+        String label = dictDTO.getFieldLabel();
+        String fileId = dictDTO.getFieldId();
+        List<DictDO> dictDOS = this.dictRepository.findByApplication(domain,item,value);
+        if(!org.springframework.util.CollectionUtils.isEmpty(dictDOS)){
+           DictDO dctDO = dictDOS.get(0);
+           if(!fileId.equals(dctDO.getFieldId())){
+               throw new DuplicateResourceException("duplicate domain,item,value");
+           }
+        }
+        dictDOS = new LinkedList<>();
+        DictDO dictDo = new DictDO();
+        BeanUtils.copyProperties(dictDTO,dictDo);
+        dictDOS.add(dictDo);
+        this.dictRepository.batchUpdate(dictDOS);
+
+
+
+
 
     }
 
     @Override
-    public void updateBaseDict(DictDTO dictDTO) {
-
+    public void deleteDomain(DictDTO dictDTO) throws SQLException {
+        String domain = dictDTO.getFieldDomain();
+        String item = dictDTO.getFieldItem();
+        this.dictRepository.deleteByDomainAndItem(domain,item);
     }
 
     @Override

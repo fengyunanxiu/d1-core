@@ -52,7 +52,7 @@ public class DfFormTableSettingComponent {
 
         // 精确日期区间查询参数Map
         Map<String, String[]> accurateDateTimeRangeQueryParameterMap = new HashMap<>();
-        queryParameterGroup.setAccurateDateRange(accurateDateRangeQueryParameterMap);
+        queryParameterGroup.setAccurateDateTimeRange(accurateDateTimeRangeQueryParameterMap);
 
         // 精确候选值字符串查询参数Map
         Map<String, String[]> accurateInStringQueryParameterMap = new HashMap<>();
