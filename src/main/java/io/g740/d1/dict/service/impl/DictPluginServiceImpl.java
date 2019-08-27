@@ -72,6 +72,8 @@ public class DictPluginServiceImpl implements DictPluginService {
             result.setParamPassword(jsonObject.getString("password"));
             result.setParamUsername(jsonObject.getString("username"));
             result.setParamSQL(jsonObject.getString("sql"));
+        }else {
+            return  null;
         }
         return result;
     }
