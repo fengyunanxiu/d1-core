@@ -54,11 +54,11 @@ public class DefaultValueSQLPlugin {
         CronTrigger cronTrigger = new CronTrigger(cron);
         return this.taskScheduler.schedule(() -> {
             try {
-                LOGGER.info("begin to process default value sql plugin task");
+                LOGGER.info("begin to process default value sql plugin task, id: {}", defaultsConfigurationDO.getFieldId());
                 process(defaultsConfigurationDO);
-                LOGGER.info("end to process default value sql plugin task");
+                LOGGER.info("end to process default value sql plugin task, id: {}", defaultsConfigurationDO.getFieldId());
             } catch (Exception e) {
-                LOGGER.error("", e);
+                LOGGER.error("failed to process default value sql plugin task id: " + defaultsConfigurationDO.getFieldId(), e);
             }
         }, cronTrigger);
     }

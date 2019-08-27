@@ -83,6 +83,7 @@ public class DictPluginTaskManager {
                     boolean cancel = scheduledFuture.cancel(false);
                     if (cancel) {
                         runningScheduleMap.remove(key);
+                        LOGGER.info("success to cancel unused dict sql plugin, key: {}", key);
                     }
                 }
                 LOGGER.info("end to cancel unused dict sql plugin, size:{}", needDeleteScheduleEntryList.size());

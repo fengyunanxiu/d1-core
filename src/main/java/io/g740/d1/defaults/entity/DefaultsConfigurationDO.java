@@ -3,6 +3,8 @@ package io.g740.d1.defaults.entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
+
 /**
  * @author : zxiuwu
  * @version : V1.0
@@ -72,5 +74,35 @@ public class DefaultsConfigurationDO {
 
     public void setFieldManualConf(String fieldManualConf) {
         this.fieldManualConf = fieldManualConf;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DefaultsConfigurationDO that = (DefaultsConfigurationDO) o;
+        return Objects.equals(fieldId, that.fieldId) &&
+                Objects.equals(fieldFormDfKey, that.fieldFormDfKey) &&
+                Objects.equals(fieldFormFieldKey, that.fieldFormFieldKey) &&
+                fieldType == that.fieldType &&
+                Objects.equals(fieldPluginConf, that.fieldPluginConf) &&
+                Objects.equals(fieldManualConf, that.fieldManualConf);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fieldId, fieldFormDfKey, fieldFormFieldKey, fieldType, fieldPluginConf, fieldManualConf);
+    }
+
+    @Override
+    public String toString() {
+        return "DefaultsConfigurationDO{" +
+                "fieldId='" + fieldId + '\'' +
+                ", fieldFormDfKey='" + fieldFormDfKey + '\'' +
+                ", fieldFormFieldKey='" + fieldFormFieldKey + '\'' +
+                ", fieldType=" + fieldType +
+                ", fieldPluginConf='" + fieldPluginConf + '\'' +
+                ", fieldManualConf='" + fieldManualConf + '\'' +
+                '}';
     }
 }

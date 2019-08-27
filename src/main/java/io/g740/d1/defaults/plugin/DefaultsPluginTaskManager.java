@@ -105,6 +105,7 @@ public class DefaultsPluginTaskManager {
                     boolean cancel = scheduledFuture.cancel(false);
                     if (cancel) {
                         RUNNING_SCHEDULE_MAP.remove(key);
+                        LOGGER.info("success to cancel unused default value task, key: {}" + key);
                     }
                 }
                 LOGGER.info("end to cancel unused default value task, size: {}", needDeleteConfigurationEntryList.size());
@@ -141,12 +142,7 @@ public class DefaultsPluginTaskManager {
     }
 
     private String generateRunningScheduleMapKey(DefaultsConfigurationDO defaultsConfigurationDO) {
-        String fieldFormDfKey = defaultsConfigurationDO.getFieldFormDfKey();
-        String fieldFormFieldKey = defaultsConfigurationDO.getFieldFormFieldKey();
-        String fieldPluginConf = defaultsConfigurationDO.getFieldPluginConf();
-        JSONObject pluginConf = JSON.parseObject(fieldPluginConf);
-        String cron = pluginConf.getString("cron");
-        return fieldFormDfKey + "_" + fieldFormFieldKey + "_" + cron;
+        return String.valueOf(defaultsConfigurationDO.hashCode());
     }
 
 }

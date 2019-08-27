@@ -64,11 +64,11 @@ public class DictSQLPlugin {
         CronTrigger cronTrigger = new CronTrigger(fieldCron);
         return this.taskScheduler.schedule(() -> {
             try {
-                LOGGER.info("begin to process dict sql plugin task");
+                LOGGER.info("begin to process dict sql plugin task, id: {}", dictPluginConfigurationDO.getFieldId());
                 process(dictPluginConfigurationDO);
-                LOGGER.info("end to process dict sql plugin task");
+                LOGGER.info("end to process dict sql plugin task, id: {}", dictPluginConfigurationDO.getFieldId());
             } catch (Exception e) {
-                LOGGER.error("", e);
+                LOGGER.error("filed to process dict sql plugin task id:" + dictPluginConfigurationDO.getFieldId(), e);
             }
         }, cronTrigger);
     }
