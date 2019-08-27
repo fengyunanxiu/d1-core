@@ -12,6 +12,7 @@ public interface DsConstants {
 
     enum FormFieldQueryTypeEnum{
         SINGLE_DATE("SINGLE_DATE"),
+        SINGLE_DATETIME("SINGLE_DATETIME"),
         DATE_RANGE("DATE_RANGE"),
         DATE_TIME_RANGE("DATE_TIME_RANGE"),
         SINGLE_CHOICE_LIST("SINGLE_CHOICE_LIST"),

@@ -235,4 +235,31 @@ public class DateUtils {
         }
     }
 
+    /**
+     * 获取当前天的开始时间
+     * @param day
+     * @return
+     */
+    public static Date getStartTime(Calendar day) {
+        day.set(Calendar.HOUR_OF_DAY, 0);
+        day.set(Calendar.MINUTE, 0);
+        day.set(Calendar.SECOND, 0);
+        day.set(Calendar.MILLISECOND, 0);
+        return day.getTime();
+    }
+
+
+    /**
+     * 获取当前天的结束时间
+     * @param day
+     * @return
+     */
+    public static Date getEndTime(Calendar day) {
+        day.set(Calendar.HOUR_OF_DAY, 23);
+        day.set(Calendar.MINUTE, 59);
+        day.set(Calendar.SECOND, 59);
+        day.set(Calendar.MILLISECOND, 999);
+        return day.getTime();
+    }
+
 }
