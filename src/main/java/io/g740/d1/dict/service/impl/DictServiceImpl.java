@@ -61,7 +61,8 @@ public class DictServiceImpl implements DictService {
                 }).collect(Collectors.toList());
                 List<DictDO> existDictDOList = this.dictRepository.queryByDomainAndItemAndValueTupleList(domainAndItemAndValueTupleList);
                 if (existDictDOList != null && !existDictDOList.isEmpty()) {
-                    throw new DuplicateResourceException("find duplicate domain, item, values" + existDictDOList.stream().map(dictDO -> {
+                    Set<String> inputFileId = dictDOList.stream().map(DictDO::getFieldId).collect(Collectors.toSet());
+                    throw new DuplicateResourceException("find duplicate domain, item, values" + existDictDOList.stream().filter(dictDO -> !inputFileId.contains(dictDO.getFieldId())).map(dictDO -> {
                         String fieldDomain = dictDO.getFieldDomain();
                         String fieldItem = dictDO.getFieldItem();
                         String fieldValue = dictDO.getFieldValue();

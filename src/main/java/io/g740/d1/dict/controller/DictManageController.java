@@ -77,7 +77,6 @@ public class DictManageController {
     public void deleteDomain(@RequestBody DictDTO dictDTO) throws Exception {
         // 前端只会传fieldDomain 、fieldItem
         this.dictService.deleteDomain(dictDTO);
-
     }
 
 
