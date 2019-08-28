@@ -7,6 +7,8 @@ import io.g740.d1.dao.DfFormTableSettingDao;
 import io.g740.d1.dao.DfKeyBasicConfigDao;
 import io.g740.d1.dao.DsQueryDao;
 import io.g740.d1.datasource.DataSourceFactory;
+import io.g740.d1.dict.dto.DictOptionCascadeQueryDTO;
+import io.g740.d1.dict.service.DictService;
 import io.g740.d1.dto.*;
 import io.g740.d1.entity.DbBasicConfigDO;
 import io.g740.d1.entity.DfFormTableSettingDO;
@@ -53,6 +55,9 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
 
     @Autowired
     private DsBasicDictionaryService dsBasicDictionaryService;
+    
+    @Autowired
+    private DictService dictService;
 
     @Autowired
     private DfFormTableSettingComponent dfFormTableSettingComponent;
@@ -291,7 +296,7 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
         return sqlConditions;
     }
 
-    private List<DfKeyQueryFormSettingVO> realGetDfKeyQueryFormSetting(List<DfFormTableSettingDO> dfFormTableSettingDOList) throws SQLException, IOException {
+    private List<DfKeyQueryFormSettingVO> realGetDfKeyQueryFormSetting(List<DfFormTableSettingDO> dfFormTableSettingDOList) throws Exception {
         List<DfKeyQueryFormSettingVO> rootDfKeyQueryFormSettingVOList = new LinkedList<>();
         DfKeyQueryFormSettingVO dfKeyQueryFormSettingVO = null;
         for (DfFormTableSettingDO dfFormTableSettingDO : dfFormTableSettingDOList) {
@@ -306,12 +311,23 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
                     // 查找optionList,以及默认值
                     String domainName = dfFormTableSettingDO.getFormFieldDictDomainName();
                     String item=dfFormTableSettingDO.getFormFieldDictItem();
-                    OptionListAndDefaultValDTO optionListAndDefaultValDTO = this.dsBasicDictionaryService.getOptionListAndDefaultValDTOByDomainName(domainName,item);
-                    if(optionListAndDefaultValDTO != null){
-                        dfKeyQueryFormSettingVO.setFieldValue(optionListAndDefaultValDTO.getDefaultVal());
-                        dfKeyQueryFormSettingVO.setFieldOptionalValueList(optionListAndDefaultValDTO.getOptionDTOList());
+                    String formFieldChildFieldName = dfFormTableSettingDO.getFormFieldChildFieldName();
+                    //级联
+                    if(StringUtils.isNotNullNorEmpty(formFieldChildFieldName)) {
+                    	List<DictOptionCascadeQueryDTO> cascadeQueryByDomainAndItem = this.dictService.cascadeQueryByDomainAndItem(domainName, item);
+                    	if(cascadeQueryByDomainAndItem != null) {
+                    		 dfKeyQueryFormSettingVO.setFieldCascadeOptionalValueList(cascadeQueryByDomainAndItem);
+                    		 dfKeyQueryFormSettingVO.setFieldCascadeChildFieldName(formFieldChildFieldName);
+                    	}
+                    	
+                    }else {
+                    	  OptionListAndDefaultValDTO optionListAndDefaultValDTO = this.dsBasicDictionaryService.getOptionListAndDefaultValDTOByDomainName(domainName,item);
+                          if(optionListAndDefaultValDTO != null){
+                              dfKeyQueryFormSettingVO.setFieldOptionalValueList(optionListAndDefaultValDTO.getOptionDTOList());
+                          }
                     }
                 }
+                dfKeyQueryFormSettingVO.setFieldValue(dfFormTableSettingDO.getFormFieldDefaultVal());
                 dfKeyQueryFormSettingVO.setFormFieldQueryType(formQueryType);
                 rootDfKeyQueryFormSettingVOList.add(dfKeyQueryFormSettingVO);
             }
