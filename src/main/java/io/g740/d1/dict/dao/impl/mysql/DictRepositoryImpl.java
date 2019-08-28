@@ -188,7 +188,7 @@ public class DictRepositoryImpl implements DictRepository {
             throw new ServiceException("dict list is null");
         }
         List<Object[]> paramList = new ArrayList<>();
-        String sql = "insert into " + TABLE_NAME + " (" + F_ID + ", " + F_GMT_CREATE + ", " + F_DOMAIN + ", " + F_ITEM + ", " + F_VALUE + ", " + F_LABEL + ", " + F_SEQUENCE + ", " + F_PARENT_ID + ") values (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "insert into " + TABLE_NAME + " (" + F_GMT_CREATE + ", " + F_DOMAIN + ", " + F_ITEM + ", " + F_VALUE + ", " + F_LABEL + ", " + F_SEQUENCE + ", " + F_PARENT_ID + ") values (?, ?, ?, ?, ?, ?, ?)";
         for (DictDO dictDO : dictDOList) {
             if (dictDO == null
                     || StringUtils.isNullOrEmpty(dictDO.getFieldDomain())
@@ -198,7 +198,6 @@ public class DictRepositoryImpl implements DictRepository {
                 throw new ServiceException("domain, item, value, sequence, enable不能为空");
             }
             Object[] param = new Object[]{
-                    UUIDUtils.compress(),
                     new Date(),
                     dictDO.getFieldDomain(),
                     dictDO.getFieldItem(),
