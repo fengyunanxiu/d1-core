@@ -387,15 +387,20 @@ public class DictRepositoryImpl implements DictRepository {
 
 
     @Override
-    public List<DictDO> findByApplication(String domain, String item, String value) throws SQLException {
+    public List<DictDO> findByApplication(String domain, String item, List<String> values) throws SQLException {
         StringBuilder sqlBuilder = new StringBuilder("select * from " + DictDO.TABLE_NAME);
         List<String> sqlParamList = new ArrayList<>();
         sqlParamList.add(domain);
         sqlParamList.add(item);
-        sqlParamList.add(value);
-        sqlBuilder.append(" where (" + F_DOMAIN + " = ? and " + F_ITEM + " = ? and " + F_VALUE + " = ?) ");
-        // 排序
 
+        sqlBuilder.append(" where (" + F_DOMAIN + " = ? and " + F_ITEM + " = ? and " + F_VALUE + " in (  ");
+        // 排序
+        for (String value : values) {
+            sqlBuilder.append("?,");
+            sqlParamList.add(value);
+        }
+        sqlBuilder = sqlBuilder.deleteCharAt(sqlBuilder.length() - 1);
+        sqlBuilder.append(") )");
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         LOGGER.info("find by field_domain and field_item sql: {}", sqlBuilder.toString());
         return qr.query(sqlBuilder.toString(), new BeanListHandler<>(DictDO.class, new QueryRunnerRowProcessor()), sqlParamList.toArray(new Object[0]));

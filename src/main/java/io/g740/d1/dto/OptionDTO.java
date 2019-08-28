@@ -7,16 +7,8 @@ package io.g740.d1.dto;
  */
 public class OptionDTO {
 
-    private String optionId;
     private String optionValue;
-
-    public String getOptionId() {
-        return optionId;
-    }
-
-    public void setOptionId(String optionId) {
-        this.optionId = optionId;
-    }
+    private String optionLabel;
 
     public String getOptionValue() {
         return optionValue;
@@ -26,11 +18,19 @@ public class OptionDTO {
         this.optionValue = optionValue;
     }
 
+    public String getOptionLabel() {
+        return optionLabel;
+    }
+
+    public void setOptionLabel(String optionLabel) {
+        this.optionLabel = optionLabel;
+    }
+
     public OptionDTO() {
     }
 
-    public OptionDTO(String optionId, String optionValue) {
-        this.optionId = optionId;
+    public OptionDTO(String optionValue, String optionLabel) {
         this.optionValue = optionValue;
+        this.optionLabel = optionLabel;
     }
 }

@@ -40,7 +40,7 @@ public interface DictRepository {
     DictDO findById(String id) throws SQLException;
 
     void updateDomainNameOrItemName(String oldDomain, String newDomain, String oldItem, String newItem) throws SQLException;
-    List<DictDO>  findByApplication(String domain, String item, String value) throws SQLException;
+    List<DictDO>  findByApplication(String domain, String item, List<String> values ) throws SQLException;
 
     void deleteByDomainAndItem(String domain, String item) throws SQLException;
 
