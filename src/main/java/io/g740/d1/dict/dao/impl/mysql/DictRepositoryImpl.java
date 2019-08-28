@@ -339,7 +339,8 @@ public class DictRepositoryImpl implements DictRepository {
         //
         sqlBuilder.append(domainItemSqlCondition.toString());
         // 排序语句
-        sqlBuilder.append(" order by " + DictDO.F_DOMAIN + ", " + DictDO.F_ITEM + ",  " + DictDO.F_SEQUENCE);
+        sqlBuilder.append(" order by " + F_DOMAIN_ITEM_GMT_CREATE + " DESC,  " + DictDO.F_SEQUENCE);
+//        sqlBuilder.append(" order by " + DictDO.F_DOMAIN + ", " + DictDO.F_ITEM + ",  " + DictDO.F_SEQUENCE);
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         return qr.query(sqlBuilder.toString(), new BeanListHandler<>(DictDO.class, new QueryRunnerRowProcessor()), paramList.toArray(new Object[0]));
     }

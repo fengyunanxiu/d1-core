@@ -29,10 +29,6 @@ public interface DictService {
 
     void addDictList(List<DictDTO> dictDTOS) throws SQLException, Exception;
 
-    void addBaseDict(DictDTO dictDTO) throws SQLException, ServiceException;
-
-    void updateBaseDict(DictDTO dictDTO) throws SQLException, ServiceException;
-
     void deleteDomain(DictDTO dictDTO) throws SQLException;
 
     /**

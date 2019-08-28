@@ -1,6 +1,5 @@
 package io.g740.d1.dict.entity;
 
-import io.g740.d1.dao.convert.Column;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +25,7 @@ public class DictDO {
     public static final String F_LABEL = "field_label";
     public static final String F_SEQUENCE = "field_sequence";
     public static final String F_PARENT_ID = "field_parent_id";
+    public static final String F_DOMAIN_ITEM_GMT_CREATE = "domain_item_gmt_create";
 
     private String fieldId;
 
@@ -43,8 +43,9 @@ public class DictDO {
 
     private String fieldSequence;
 
-    @Column("parent_id")
     private String fieldParentId;
+
+    private Date domainItemGmtCreate;
 
     public String getFieldId() {
         return fieldId;
@@ -116,5 +117,14 @@ public class DictDO {
 
     public void setFieldParentId(String fieldParentId) {
         this.fieldParentId = fieldParentId;
+    }
+
+
+    public Date getDomainItemGmtCreate() {
+        return domainItemGmtCreate;
+    }
+
+    public void setDomainItemGmtCreate(Date domainItemGmtCreate) {
+        this.domainItemGmtCreate = domainItemGmtCreate;
     }
 }
