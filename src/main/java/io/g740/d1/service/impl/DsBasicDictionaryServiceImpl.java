@@ -1,17 +1,14 @@
 package io.g740.d1.service.impl;
 
-import io.g740.d1.dao.DsBasicDictionaryDao;
 import io.g740.d1.dict.dao.DictRepository;
 import io.g740.d1.dict.entity.DictDO;
 import io.g740.d1.dto.OptionDTO;
 import io.g740.d1.dto.OptionListAndDefaultValDTO;
-import io.g740.d1.entity.DsBasicDictionaryDO;
 import io.g740.d1.service.DsBasicDictionaryService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
