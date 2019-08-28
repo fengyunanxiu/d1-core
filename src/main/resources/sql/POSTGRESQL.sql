@@ -147,7 +147,8 @@ create table if not exists db_dict (
     field_value varchar(100) not null ,
     field_label varchar(100),
     field_sequence int,
-    field_parent_id varchar(64)
+    field_parent_id varchar(64),
+    domain_item_gmt_create timestamp,
 ) ;
 ###
 create index  db_dict_unique_idx
