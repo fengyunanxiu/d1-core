@@ -25,8 +25,8 @@ import java.sql.SQLException;
  * @version: V1.0
  */
 @Repository("PostgresqlTaskDaoImpl")
-public class PostgresqlTaskDaoImpl implements DataExportTaskDao {
-    private final static Logger LOGGER = LoggerFactory.getLogger(PostgresqlTaskDaoImpl.class);
+public class PostgresqlDataExportTaskDaoImpl implements DataExportTaskDao {
+    private final static Logger LOGGER = LoggerFactory.getLogger(PostgresqlDataExportTaskDaoImpl.class);
 
     @Resource(name="D1BasicDataSource")
     private DataSource d1BasicDataSource;
