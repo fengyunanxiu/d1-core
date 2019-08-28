@@ -62,7 +62,7 @@ public class DictManageController {
 
     }
 
-    @PutMapping("/domain")
+    @PostMapping("/domain-update")
     @ResponseBody
     @ApiOperation("batch update")
     public void batchUpdate(@RequestBody List<DictDO> dictDOList) throws Exception {
