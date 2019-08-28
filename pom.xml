@@ -18,6 +18,8 @@
         <spring.version>4.3.0.RELEASE</spring.version>
         <springfox.version>2.7.0</springfox.version>
         <poi.version>3.9</poi.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
 
