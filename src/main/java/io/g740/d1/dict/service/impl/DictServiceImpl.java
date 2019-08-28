@@ -53,7 +53,7 @@ public class DictServiceImpl implements DictService {
         } catch (SQLException e) {
             // 有重复数据时，查询重复的数据
             if (e.getMessage().contains("Duplicate")) {
-              throw new DuplicateResourceException("find duplicate data");
+                throw new DuplicateResourceException("find duplicate data");
             }
             throw e;
         }
@@ -136,87 +136,31 @@ public class DictServiceImpl implements DictService {
 
     @Override
     public void addDictList(List<DictDTO> dictDTOS) throws Exception {
-       String domain = dictDTOS.get(0).getFieldDomain();
-       String item = dictDTOS.get(0).getFieldItem();
-       List<DictDO> dictDOList = this.dictRepository.findByDomainAndItem(domain, item);
+        String domain = dictDTOS.get(0).getFieldDomain();
+        String item = dictDTOS.get(0).getFieldItem();
+        List<DictDO> dictDOList = this.dictRepository.findByDomainAndItem(domain, item);
 
-       List<String> values = dictDTOS.stream().map(DictDTO::getFieldValue).collect(Collectors.toList());
-       Long maxSequecnce = 1L;
-       if(!org.springframework.util.CollectionUtils.isEmpty(dictDOList)){
-           List<DictDO> byValueDictDOList = this.dictRepository.findByApplication(domain, item,values);
-           if(!org.springframework.util.CollectionUtils.isEmpty(byValueDictDOList)){
-               throw new DuplicateResourceException(String.format("domain : %s, item:%s ,value :%s is duplicate",domain,item,byValueDictDOList.get(0).getFieldValue()));
-           }
-
-            maxSequecnce = dictDOList.stream().map(DictDO::getFieldSequence).mapToLong(Long::valueOf).max().getAsLong();
-       }else{
-           maxSequecnce = 0L;
-       }
-           addNewDomainItem(dictDTOS,maxSequecnce);
-    }
-
-
-    private void addNewDomainItem(List<DictDTO> dictDTOS,Long sequence) throws ServiceException, SQLException {
-        //遍历设置序号
-
-        List<DictDO> dictDOS = new LinkedList<>();
-        DictDO dictDO = null;
-
-        for (DictDTO dictDTO : dictDTOS) {
-            sequence ++;
-            dictDO = new DictDO();
-            BeanUtils.copyProperties(dictDTO, dictDO);
-            dictDO.setFieldSequence("" + (sequence));
-            dictDOS.add(dictDO);
-        }
-        this.dictRepository.batchInsert(dictDOS);
-    }
-
-
-    @Override
-    public void addBaseDict(DictDTO dictDTO) throws SQLException, ServiceException {
-        String domain = dictDTO.getFieldDomain();
-        String item = dictDTO.getFieldItem();
-        String value = dictDTO.getFieldValue();
-        String label = dictDTO.getFieldLabel();
-        List<String> values = new LinkedList<>();
-        values.add(value);
-
-        List<DictDO> dictDOS = this.dictRepository.findByApplication(domain, item, values);
-        if (!org.springframework.util.CollectionUtils.isEmpty(dictDOS)) {
-            throw new DuplicateResourceException("duplicate domain,item,value");
-        }
-        dictDOS = new LinkedList<>();
-        DictDO dictDo = new DictDO();
-        BeanUtils.copyProperties(dictDTO, dictDo);
-        dictDOS.add(dictDo);
-        this.dictRepository.batchInsert(dictDOS);
-    }
-
-    @Override
-    public void updateBaseDict(DictDTO dictDTO) throws SQLException, ServiceException {
-        String domain = dictDTO.getFieldDomain();
-        String item = dictDTO.getFieldItem();
-        String value = dictDTO.getFieldValue();
-        String label = dictDTO.getFieldLabel();
-        String fileId = dictDTO.getFieldId();
-        List<String> values = new LinkedList<>();
-        values.add(value);
-
-        List<DictDO> dictDOS = this.dictRepository.findByApplication(domain, item, values);
-        if (!org.springframework.util.CollectionUtils.isEmpty(dictDOS)) {
-            DictDO dctDO = dictDOS.get(0);
-            if (!fileId.equals(dctDO.getFieldId())) {
-                throw new DuplicateResourceException("duplicate domain,item,value");
+        List<String> values = dictDTOS.stream().map(DictDTO::getFieldValue).collect(Collectors.toList());
+        long maxSequence = 0L;
+        // domainItem创建时间
+        Date domainItemGmtCreate = new Date();
+        if (!CollectionUtils.isEmpty(dictDOList)) {
+            List<DictDO> byValueDictDOList = this.dictRepository.findByApplication(domain, item, values);
+            if (!org.springframework.util.CollectionUtils.isEmpty(byValueDictDOList)) {
+                throw new DuplicateResourceException(String.format("domain : %s, item:%s ,value :%s is duplicate", domain, item, byValueDictDOList.get(0).getFieldValue()));
             }
+            domainItemGmtCreate = dictDOList.get(0).getDomainItemGmtCreate();
+            maxSequence = dictDOList.stream().map(DictDO::getFieldSequence).mapToLong(Long::valueOf).max().orElse(maxSequence);
         }
-        dictDOS = new LinkedList<>();
-        DictDO dictDo = new DictDO();
-        BeanUtils.copyProperties(dictDTO, dictDo);
-        dictDOS.add(dictDo);
-        this.dictRepository.batchUpdate(dictDOS);
-
-
+        //
+        List<DictDO> dictDOS = new LinkedList<>();
+        for (DictDTO dictDTO : dictDTOS) {
+            maxSequence++;
+            dictDTO.setDomainItemGmtCreate(domainItemGmtCreate);
+            dictDTO.setFieldSequence(String.valueOf(maxSequence));
+            dictDOS.add(dictDTO);
+        }
+        this.dictRepository.batchInsert(dictDOS);
     }
 
     @Override

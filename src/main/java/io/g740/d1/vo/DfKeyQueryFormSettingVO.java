@@ -1,8 +1,9 @@
 package io.g740.d1.vo;
 
-import io.g740.d1.dto.OptionDTO;
-
 import java.util.List;
+
+import io.g740.d1.dict.dto.DictOptionCascadeQueryDTO;
+import io.g740.d1.dto.OptionDTO;
 
 /**
  * @author : Kingzer
@@ -24,7 +25,18 @@ public class DfKeyQueryFormSettingVO {
      * 作为查询字段时，字段取值范围  id/value
      */
     private List<OptionDTO> fieldOptionalValueList;
+    
+    /**
+     * 作为查询字段时，字段取值范围(级联结构)  id/value
+     */
+    private List<DictOptionCascadeQueryDTO> fieldCascadeOptionalValueList;
+    
+    /**
+     * 作为查询字段时，字段取值范围(级联结构)  id/value
+     */
+    private String fieldCascadeChildFieldName;
 
+    
     /**
      * 作为查询字段时，为前端模型预留空字符串字段
      */
@@ -80,4 +92,21 @@ public class DfKeyQueryFormSettingVO {
     public void setFormFieldSequence(Integer formFieldSequence) {
         this.formFieldSequence = formFieldSequence;
     }
+
+	public List<DictOptionCascadeQueryDTO> getFieldCascadeOptionalValueList() {
+		return fieldCascadeOptionalValueList;
+	}
+
+	public void setFieldCascadeOptionalValueList(List<DictOptionCascadeQueryDTO> fieldCascadeOptionalValueList) {
+		this.fieldCascadeOptionalValueList = fieldCascadeOptionalValueList;
+	}
+
+	public String getFieldCascadeChildFieldName() {
+		return fieldCascadeChildFieldName;
+	}
+
+	public void setFieldCascadeChildFieldName(String fieldCascadeChildFieldName) {
+		this.fieldCascadeChildFieldName = fieldCascadeChildFieldName;
+	}
+    
 }

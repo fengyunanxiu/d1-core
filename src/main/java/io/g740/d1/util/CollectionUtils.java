@@ -3,6 +3,7 @@ package io.g740.d1.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -20,6 +21,10 @@ public class CollectionUtils {
         if (k != null && v != null) {
             map.put(k, v);
         }
+    }
+
+    public static boolean isEmpty(Collection<?> collection) {
+        return collection == null || collection.isEmpty();
     }
 
 }
