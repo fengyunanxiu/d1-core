@@ -32,7 +32,7 @@ public interface DsConstants {
         NUMBER_RANGE("NUMBER_RANGE"),
 
         SWITCH("SWITCH"),
-        SINGLE_CHOICE_LIST_W_EMPTY("SINGLE_CHOICE_LIST_W_EMPTY"),
+        SINGLE_CHOICE_LIST_R1("SINGLE_CHOICE_LIST_R1"),
         NULL_VALUE("NULL_VALUE"),
         EMPTY_VALUE("EMPTY_VALUE"),
         SEGMENTATION_TEXT("SEGMENTATION_TEXT"),
@@ -65,7 +65,7 @@ public interface DsConstants {
             List<String> choiceList = new ArrayList<>();
             choiceList.add(SINGLE_CHOICE_LIST.getVal());
             choiceList.add(MULTIPLE_CHOICE_LIST.getVal());
-            choiceList.add(SINGLE_CHOICE_LIST_W_EMPTY.getVal());
+            choiceList.add(SINGLE_CHOICE_LIST_R1.getVal());
             return choiceList;
         }
 
