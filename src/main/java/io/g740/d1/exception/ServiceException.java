@@ -2,6 +2,7 @@ package io.g740.d1.exception;
 
 import io.g740.d1.exception.custom.DuplicateResourceException;
 import io.g740.d1.exception.custom.IllegalParameterException;
+import io.g740.d1.exception.custom.OperationNotSupportedException;
 import io.g740.d1.exception.custom.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -27,8 +28,8 @@ public class ServiceException extends Exception {
 
 		ILLEGAL_PARAMETER_CODE("10170", HttpStatus.BAD_REQUEST),
 		NOT_FOUND("10150", HttpStatus.NOT_FOUND),
-		DUPLICATE_RESOURCE("10180", HttpStatus.BAD_REQUEST);
-
+		DUPLICATE_RESOURCE("10180", HttpStatus.BAD_REQUEST),
+		OPERATION_NOT_SUPPORTED("10190",HttpStatus.BAD_REQUEST);
 
 		private String code;
 		private HttpStatus httpStatus;
@@ -86,6 +87,21 @@ public class ServiceException extends Exception {
 		@Override
 		public ErrorCode toErrorCode(Exception exception) {
 			return ServiceErrorCode.DUPLICATE_RESOURCE;
+		}
+	}
+
+
+	@Component
+	static class OperationNotSupportedExceptionToErrorCode implements ExceptionToErrorCode {
+
+		@Override
+		public boolean canHandle(Exception exception) {
+			return exception instanceof OperationNotSupportedException;
+		}
+
+		@Override
+		public ErrorCode toErrorCode(Exception exception) {
+			return ServiceErrorCode.OPERATION_NOT_SUPPORTED;
 		}
 	}
 

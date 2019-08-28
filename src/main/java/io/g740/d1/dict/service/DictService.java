@@ -29,7 +29,7 @@ public interface DictService {
 
     void addDictList(List<DictDTO> dictDTOS) throws SQLException, Exception;
 
-    void deleteDomain(DictDTO dictDTO) throws SQLException;
+    void deleteDomain(DictDTO dictDTO) throws Exception;
 
     /**
      * 级联查询字典数据
