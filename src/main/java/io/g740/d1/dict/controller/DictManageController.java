@@ -106,18 +106,4 @@ public class DictManageController {
         this.dictService.batchDelete(idList);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

@@ -171,7 +171,6 @@ create table if not exists db_dict (
     field_value varchar(100) not null ,
     field_label varchar(100),
     field_sequence int,
-    field_enable boolean,
     field_parent_id varchar(64),
     unique  index db_dict_unique_idx(field_domain, field_item, field_value)
 ) charset=utf8 collate utf8_croatian_ci;

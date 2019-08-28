@@ -72,16 +72,12 @@ public class DictServiceImpl implements DictService {
         String value = dictDTO.getFieldValue();
         String label = dictDTO.getFieldLabel();
         String sequence = dictDTO.getFieldSequence();
-        Boolean enable = dictDTO.getFieldEnable();
         String parentId = dictDTO.getFieldParentId();
         Map<String, String> paramMap = new HashMap<>();
         CollectionUtils.putIfKVNotNull(paramMap, DictDO.F_DOMAIN, domain);
         CollectionUtils.putIfKVNotNull(paramMap, DictDO.F_ITEM, item);
         CollectionUtils.putIfKVNotNull(paramMap, DictDO.F_VALUE, value);
         CollectionUtils.putIfKVNotNull(paramMap, DictDO.F_LABEL, label);
-//        CollectionUtils.putIfKVNotNull(paramMap, DictDO.F_SEQUENCE, sequence);
-//        CollectionUtils.putIfKVNotNull(paramMap, DictDO.F_ENABLE, enable);
-//        CollectionUtils.putIfKVNotNull(paramMap, DictDO.F_PARENT_ID, parentId);
 
         // 查询不重复的domain和item总数
         long count = this.dictRepository.countByDomainAndItem(paramMap);
@@ -171,8 +167,6 @@ public class DictServiceImpl implements DictService {
             dictDO = new DictDO();
             BeanUtils.copyProperties(dictDTO, dictDO);
             dictDO.setFieldSequence("" + (sequence));
-            dictDO.setFieldEnable(Boolean.TRUE);
-
             dictDOS.add(dictDO);
         }
         this.dictRepository.batchInsert(dictDOS);

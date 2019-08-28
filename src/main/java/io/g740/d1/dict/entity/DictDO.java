@@ -25,7 +25,6 @@ public class DictDO {
     public static final String F_VALUE = "field_value";
     public static final String F_LABEL = "field_label";
     public static final String F_SEQUENCE = "field_sequence";
-    public static final String F_ENABLE = "field_enable";
     public static final String F_PARENT_ID = "field_parent_id";
 
     private String fieldId;
@@ -43,8 +42,6 @@ public class DictDO {
     private String fieldLabel;
 
     private String fieldSequence;
-
-    private Boolean fieldEnable;
 
     @Column("parent_id")
     private String fieldParentId;
@@ -111,14 +108,6 @@ public class DictDO {
 
     public void setFieldSequence(String fieldSequence) {
         this.fieldSequence = fieldSequence;
-    }
-
-    public Boolean getFieldEnable() {
-        return fieldEnable;
-    }
-
-    public void setFieldEnable(Boolean fieldEnable) {
-        this.fieldEnable = fieldEnable;
     }
 
     public String getFieldParentId() {

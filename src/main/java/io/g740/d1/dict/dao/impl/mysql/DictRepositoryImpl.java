@@ -147,7 +147,7 @@ public class DictRepositoryImpl implements DictRepository {
         }
         String sql = "update " + TABLE_NAME + " set " + F_GMT_MODIFIED + " = ?, " + F_DOMAIN + " = ?, " +
                 F_ITEM + " = ?, " + F_VALUE + " = ?, " + F_LABEL + " = ?, " + F_SEQUENCE + " = ?, " +
-                F_ENABLE + " = ?, " + F_PARENT_ID + "= ? where " + F_ID + " = ?";
+                F_PARENT_ID + "= ? where " + F_ID + " = ?";
         List<Object[]> paramList = new ArrayList<>();
         for (DictDO dictDO : dictDOList) {
             if (dictDO == null
@@ -155,9 +155,8 @@ public class DictRepositoryImpl implements DictRepository {
                     || StringUtils.isNullOrEmpty(dictDO.getFieldDomain())
                     || StringUtils.isNullOrEmpty(dictDO.getFieldItem())
                     || StringUtils.isNullOrEmpty(dictDO.getFieldValue())
-                    || StringUtils.isNullOrEmpty(dictDO.getFieldSequence())
-                    || dictDO.getFieldEnable() == null) {
-                throw new ServiceException("field_id, field_domain, field_item, field_value, field_sequence, field_enable不能为空");
+                    || StringUtils.isNullOrEmpty(dictDO.getFieldSequence())) {
+                throw new ServiceException("field_id, field_domain, field_item, field_value, field_sequence不能为空");
             }
             Object[] param = new Object[]{
                     new Date(),
@@ -166,7 +165,6 @@ public class DictRepositoryImpl implements DictRepository {
                     dictDO.getFieldValue(),
                     dictDO.getFieldLabel(),
                     dictDO.getFieldSequence(),
-                    dictDO.getFieldEnable(),
                     dictDO.getFieldParentId(),
                     dictDO.getFieldId()
             };
@@ -190,14 +188,13 @@ public class DictRepositoryImpl implements DictRepository {
             throw new ServiceException("dict list is null");
         }
         List<Object[]> paramList = new ArrayList<>();
-        String sql = "insert into " + TABLE_NAME + " (" + F_ID + ", " + F_GMT_CREATE + ", " + F_DOMAIN + ", " + F_ITEM + ", " + F_VALUE + ", " + F_LABEL + ", " + F_SEQUENCE + ", " + F_ENABLE + ", " + F_PARENT_ID + ") values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "insert into " + TABLE_NAME + " (" + F_ID + ", " + F_GMT_CREATE + ", " + F_DOMAIN + ", " + F_ITEM + ", " + F_VALUE + ", " + F_LABEL + ", " + F_SEQUENCE + ", " + F_PARENT_ID + ") values (?, ?, ?, ?, ?, ?, ?, ?)";
         for (DictDO dictDO : dictDOList) {
             if (dictDO == null
                     || StringUtils.isNullOrEmpty(dictDO.getFieldDomain())
                     || StringUtils.isNullOrEmpty(dictDO.getFieldItem())
                     || StringUtils.isNullOrEmpty(dictDO.getFieldValue())
-                    || StringUtils.isNullOrEmpty(dictDO.getFieldSequence())
-                    || dictDO.getFieldEnable() == null) {
+                    || StringUtils.isNullOrEmpty(dictDO.getFieldSequence())) {
                 throw new ServiceException("domain, item, value, sequence, enable不能为空");
             }
             Object[] param = new Object[]{
@@ -208,7 +205,6 @@ public class DictRepositoryImpl implements DictRepository {
                     dictDO.getFieldValue(),
                     dictDO.getFieldLabel(),
                     dictDO.getFieldSequence(),
-                    dictDO.getFieldEnable(),
                     dictDO.getFieldParentId()
             };
             paramList.add(param);
@@ -309,9 +305,6 @@ public class DictRepositoryImpl implements DictRepository {
         // 先查询有哪些domain和item
         List<Map<String, String>> domainItemMapList = this.queryDistinctDomainItemLimit(params, offset, pageSize);
         // 在这些domain和item的基础上在根据条件查询
-//        StringBuilder sqlBuilder = new StringBuilder("select " + DictDO.F_ID + "," + DictDO.F_VALUE + "," +
-//                DictDO.F_SEQUENCE + "," + DictDO.F_ENABLE + "," + DictDO.F_LABEL + "," + DictDO.F_PARENT_ID + " from " + DictDO.TABLE_NAME + " where 1= 1");
-
         StringBuilder sqlBuilder = new StringBuilder("select * from " + DictDO.TABLE_NAME + " where 1= 1");
         // 拼接条件
         List<Object> paramList = new ArrayList<>();
@@ -353,8 +346,8 @@ public class DictRepositoryImpl implements DictRepository {
 
     @Override
     public void updateValueByDomainAndItem(List<DictDO> dictDOList) throws SQLException {
-        String sql = " insert into " + TABLE_NAME + " (" + F_ID + ", " + F_GMT_CREATE + ", " + F_DOMAIN + ", " + F_ITEM + ", " + F_VALUE + " , " + F_LABEL + " , " + F_SEQUENCE + " , " + F_ENABLE + " , " + F_PARENT_ID + " ) " +
-                " values (?, ?, ?, ?, ?, ?, ?, ?, ?) on duplicate key update " + F_GMT_MODIFIED + " = ?, " + F_VALUE + " = ?, " + F_LABEL + " = ?, " + F_SEQUENCE + " = ?, " + F_ENABLE + " = ?, " + F_PARENT_ID + " = ? ";
+        String sql = " insert into " + TABLE_NAME + " (" + F_ID + ", " + F_GMT_CREATE + ", " + F_DOMAIN + ", " + F_ITEM + ", " + F_VALUE + " , " + F_LABEL + " , " + F_SEQUENCE + " , " + F_PARENT_ID + " ) " +
+                " values (?, ?, ?, ?, ?, ?, ?, ?) on duplicate key update " + F_GMT_MODIFIED + " = ?, " + F_VALUE + " = ?, " + F_LABEL + " = ?, " + F_SEQUENCE + " = ?, " + F_PARENT_ID + " = ? ";
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         Object[][] param = new Object[dictDOList.size()][15];
         for (int i = 0; i < dictDOList.size(); i++) {
@@ -364,23 +357,15 @@ public class DictRepositoryImpl implements DictRepository {
             String fieldValue = dictDO.getFieldValue();
             String fieldLabel = dictDO.getFieldLabel();
             String fieldSequence = dictDO.getFieldSequence();
-            Boolean fieldEnable = dictDO.getFieldEnable();
             String fieldParentId = dictDO.getFieldParentId();
             param[i][0] = UUIDUtils.compress();
-            param[i][1] = param[i][9] = new Date();
+            param[i][1] = param[i][8] = new Date();
             param[i][2] = fieldDomain;
             param[i][3] = fieldItem;
-            param[i][4] = param[i][10] = fieldValue;
-            param[i][5] = param[i][11] = fieldLabel;
-            param[i][6] = param[i][12] = fieldSequence;
-            param[i][7] = param[i][13] = fieldEnable;
-            param[i][8] = param[i][14] = fieldParentId;
-
-//            param[i][5] = fieldValue;
-//            param[i][6] = fieldLabel;
-//            param[i][7] = fieldSequence;
-//            param[i][8] = fieldEnable;
-//            param[i][9] = fieldParentId;
+            param[i][4] = param[i][9] = fieldValue;
+            param[i][5] = param[i][10] = fieldLabel;
+            param[i][6] = param[i][11] = fieldSequence;
+            param[i][7] = param[i][12] = fieldParentId;
         }
         qr.batch(sql, param);
     }
