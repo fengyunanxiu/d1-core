@@ -321,7 +321,6 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
                     		 dfKeyQueryFormSettingVO.setFieldCascadeOptionalValueList(cascadeQueryByDomainAndItem);
                     		 dfKeyQueryFormSettingVO.setFieldCascadeChildFieldName(formFieldChildFieldName);
                     	}
-                    	
                     }else {
                     	  OptionListAndDefaultValDTO optionListAndDefaultValDTO = this.dsBasicDictionaryService.getOptionListAndDefaultValDTOByDomainName(domainName,item);
                           if(optionListAndDefaultValDTO != null){
