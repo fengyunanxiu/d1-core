@@ -9,6 +9,8 @@ import io.g740.d1.dto.TableAndViewInfoDTO;
 import io.g740.d1.dto.TableColumnsDetailDTO;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -23,6 +25,7 @@ import java.util.List;
  */
 @Repository("PostgresqlDataSourceDaoImpl")
 public class PostgresqlDataSourceDaoImpl implements DataSourceDao {
+    private final static Logger LOGGER = LoggerFactory.getLogger(PostgresqlDataSourceDaoImpl.class);
     @Autowired
     private DataSourceFactory dataSourceFactory;
 
@@ -30,6 +33,7 @@ public class PostgresqlDataSourceDaoImpl implements DataSourceDao {
     public DataDaoType getDataDaoType() {
         return DataDaoType.POSTGRESQL;
     }
+
 
     @Override
     public List<DbInformationDTO> selectAllSchema(Long dsId) throws Exception {
@@ -39,6 +43,7 @@ public class PostgresqlDataSourceDaoImpl implements DataSourceDao {
                 "    2 as level" +
                 "   from information_schema.schemata" +
                 "   where schema_name not in ('information_schema','performance_schema','tmp','sys','mysql')";
+        LOGGER.info("sql string:{}", sql);
         List<DbInformationDTO> dbInformationDTOList = queryRunner.query(sql, new BeanListHandler<>(DbInformationDTO.class));
         return dbInformationDTOList;
     }
@@ -53,6 +58,7 @@ public class PostgresqlDataSourceDaoImpl implements DataSourceDao {
                 "   case table_type when 'BASE TABLE' then 'table' else 'view' end as type" +
                 " from information_schema.tables" +
                 " where table_schema not in ('information_schema','performance_schema','tmp','sys','mysql')";
+        LOGGER.info("sql string:{}", sql);
         List<TableAndViewInfoDTO> tableAndViewInfoDTOS = queryRunner.query(sql, new BeanListHandler<>(TableAndViewInfoDTO.class));
         return tableAndViewInfoDTOS;
     }
@@ -71,8 +77,9 @@ public class PostgresqlDataSourceDaoImpl implements DataSourceDao {
                 " from information_schema.columns" +
                 " where table_schema = ?" +
                 " and table_name = ?";
-        List<TableColumnsDetailDTO> tableColumnsDetailDTOList = queryRunner.query(sql, new BeanListHandler<>(TableColumnsDetailDTO.class), schema,table);
-        return  tableColumnsDetailDTOList;
+        LOGGER.info("sql string:{}", sql);
+        List<TableColumnsDetailDTO> tableColumnsDetailDTOList = queryRunner.query(sql, new BeanListHandler<>(TableColumnsDetailDTO.class), schema, table);
+        return tableColumnsDetailDTOList;
     }
 
 }

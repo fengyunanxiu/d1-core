@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -71,7 +72,8 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
     @Resource(name = "DbBasicConfigDao")
     private DbBasicConfigDao dbBasicConfigDao;
 
-    @Resource(name = "DsQueryDao")
+    @Autowired
+    @Qualifier("MysqlDsQueryDaoImpl")
     private DsQueryDao dsQueryDao;
 
     @Autowired
@@ -167,14 +169,14 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
     }
 
     @Override
-    public PageResultDTO executeQuery(String dataFacetKey, Map<String, String[]> simpleParameters, Pageable pageable, String moreWhereClause) throws Exception {
+    public PageResultDTO executeQuery(String dataFacetKey, Map<String, String[]> simpleParameters) throws Exception {
         DfKeyBasicConfigDO dfKeyBasicConfigDO = dfKeyBasicConfigDao.getDfKeyBasicConfigByDfKey(dataFacetKey);
         if(dfKeyBasicConfigDO ==null){
             throw new ResourceNotFoundException("data facet key is not found!");
         }
         //获取生成sql文件
-        AssemblyResultDTO assemblyResultDTO = generalQuery(dataFacetKey, simpleParameters, pageable, moreWhereClause,false);
-        PageResultDTO pageResultDTO = dsQueryDao.excuteQuery(assemblyResultDTO, dfKeyBasicConfigDO.getFkDbId());
+        SQLGenerResultDTO sqlGenerResultDTO = generalSQL(dataFacetKey, simpleParameters);
+        PageResultDTO pageResultDTO = dsQueryDao.excuteQuery(sqlGenerResultDTO, dfKeyBasicConfigDO.getFkDbId());
         return pageResultDTO;
     }
 

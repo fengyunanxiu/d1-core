@@ -42,7 +42,6 @@ public class PostgresqlDfKeyBasicConfigDaoImpl implements DfKeyBasicConfigDao {
         return DataDaoType.POSTGRESQL;
     }
 
-
     @Override
     public DfKeyBasicConfigDO getDfKeyBasicConfigByDfKey(String dataFacetKey) throws SQLException {
         QueryRunner queryRunner = new QueryRunner(d1BasicDataSource);

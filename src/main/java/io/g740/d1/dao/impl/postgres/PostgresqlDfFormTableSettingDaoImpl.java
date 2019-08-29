@@ -73,6 +73,7 @@ public class PostgresqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSett
                     String formFieldQueryType = resultSet.getString("form_field_query_type");
                     String formFieldChildrenDbFieldName = resultSet.getString("form_field_child_field_name");
                     String formFieldDictDomainName = resultSet.getString("form_field_dict_domain_name");
+                    String formFieldDictItem=resultSet.getString("form_field_dict_item");
                     String formFieldDefalutValStrategy = resultSet.getString("form_field_def_val_strategy");
                     Boolean tableFieldVisible = resultSet.getBoolean("table_field_visible");
                     String tableFiedldOrderBy = resultSet.getString("table_field_order_by");
@@ -102,6 +103,7 @@ public class PostgresqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSett
                     dfFormTableSettingDO.setFormFieldQueryType(formFieldQueryType);
                     dfFormTableSettingDO.setFormFieldChildFieldName(formFieldChildrenDbFieldName);
                     dfFormTableSettingDO.setFormFieldDictDomainName(formFieldDictDomainName);
+                    dfFormTableSettingDO.setFormFieldDictItem(formFieldDictItem);
                     dfFormTableSettingDO.setFormFieldDefValStrategy(formFieldDefalutValStrategy);
                     dfFormTableSettingDO.setTableFieldVisible(tableFieldVisible);
                     dfFormTableSettingDO.setTableFieldOrderBy(tableFiedldOrderBy);
@@ -141,7 +143,7 @@ public class PostgresqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSett
                 "  ?, ?, ?, ?, ?," +
                 "  ?, ?)";
         String now = DateUtils.ofLongStr(new java.util.Date());
-        Object[][] paramArray = new Object[dfFormTableSettingDOS.size()][];
+        Object[][] paramArray = new Object[dfFormTableSettingDOS.size()][26];
         for(int i=0,size=dfFormTableSettingDOS.size();i<size;i++){
             DfFormTableSettingDO dfFormTableSettingDO = dfFormTableSettingDOS.get(i);
             paramArray[i][0]=now;
@@ -150,31 +152,31 @@ public class PostgresqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSett
             paramArray[i][3]=dfFormTableSettingDO.getDbFieldName();
             paramArray[i][4]=dfFormTableSettingDO.getDbFieldType();
 
-            paramArray[i][6]=dfFormTableSettingDO.getViewFieldLabel();
-            paramArray[i][7]=dfFormTableSettingDO.getDbFieldComment();
-            paramArray[i][8]=dfFormTableSettingDO.getFormFieldVisible()?1:0;
-            paramArray[i][9]=dfFormTableSettingDO.getFormFieldSequence();
-            paramArray[i][10]=dfFormTableSettingDO.getFormFieldQueryType();
+            paramArray[i][5]=dfFormTableSettingDO.getViewFieldLabel();
+            paramArray[i][6]=dfFormTableSettingDO.getDbFieldComment();
+            paramArray[i][7]=dfFormTableSettingDO.getFormFieldVisible()?1:0;
+            paramArray[i][8]=dfFormTableSettingDO.getFormFieldSequence();
+            paramArray[i][9]=dfFormTableSettingDO.getFormFieldQueryType();
 
-            paramArray[i][11]=dfFormTableSettingDO.getFormFieldChildFieldName();
-            paramArray[i][12]=dfFormTableSettingDO.getFormFieldDictDomainName();
-            paramArray[i][13]=dfFormTableSettingDO.getFormFieldDictItem();
-            paramArray[i][14]=dfFormTableSettingDO.getFormFieldDefValStrategy();
+            paramArray[i][10]=dfFormTableSettingDO.getFormFieldChildFieldName();
+            paramArray[i][11]=dfFormTableSettingDO.getFormFieldDictDomainName();
+            paramArray[i][12]=dfFormTableSettingDO.getFormFieldDictItem();
+            paramArray[i][13]=dfFormTableSettingDO.getFormFieldDefValStrategy();
 
-            paramArray[i][15]=dfFormTableSettingDO.getTableFieldVisible()?1:0;
-            paramArray[i][16]=dfFormTableSettingDO.getTableFieldOrderBy();
-            paramArray[i][17]=dfFormTableSettingDO.getTableFieldQueryRequired()?1:0;
-            paramArray[i][18]=dfFormTableSettingDO.getTableFieldSequence();
-            paramArray[i][19]=dfFormTableSettingDO.getTableFieldColumnWidth();
+            paramArray[i][14]=dfFormTableSettingDO.getTableFieldVisible()?1:0;
+            paramArray[i][15]=dfFormTableSettingDO.getTableFieldOrderBy();
+            paramArray[i][16]=dfFormTableSettingDO.getTableFieldQueryRequired()?1:0;
+            paramArray[i][17]=dfFormTableSettingDO.getTableFieldSequence();
+            paramArray[i][18]=dfFormTableSettingDO.getTableFieldColumnWidth();
 
-            paramArray[i][20]=dfFormTableSettingDO.getExportFieldVisible()?1:0;
-            paramArray[i][21]=dfFormTableSettingDO.getExportFieldSequence();
-            paramArray[i][22]=dfFormTableSettingDO.getExportFieldWidth();
-            paramArray[i][23]=dfFormTableSettingDO.getTableParentLabel();
-            paramArray[i][24]=dfFormTableSettingDO.getFormFieldUseDefaultVal()?1:0;
+            paramArray[i][19]=dfFormTableSettingDO.getExportFieldVisible()?1:0;
+            paramArray[i][20]=dfFormTableSettingDO.getExportFieldSequence();
+            paramArray[i][21]=dfFormTableSettingDO.getExportFieldWidth();
+            paramArray[i][22]=dfFormTableSettingDO.getTableParentLabel();
+            paramArray[i][23]=dfFormTableSettingDO.getFormFieldUseDefaultVal()?1:0;
 
-            paramArray[i][25]=dfFormTableSettingDO.getFormFieldDefaultVal();
-            paramArray[i][26]=dfFormTableSettingDO.getColumnIsExist()?1:0;
+            paramArray[i][24]=dfFormTableSettingDO.getFormFieldDefaultVal();
+            paramArray[i][25]=dfFormTableSettingDO.getColumnIsExist()?1:0;
         }
 
         LOGGER.info("insert sql:{}",sql);
@@ -182,6 +184,7 @@ public class PostgresqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSett
         LOGGER.info("insert spent time：{}",System.currentTimeMillis()-startTime);
         return  result;
     }
+
 
 
     @Override
@@ -227,11 +230,10 @@ public class PostgresqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSett
                 "  form_field_visible as  formFieldVisible," +
                 "  form_field_sequence as  formFieldSequence ," +
                 "  form_field_query_type as  formFieldQueryType," +
-                "  form_field_is_exactly as  formFieldIsExactly ," +
                 "  form_field_child_field_name as  formFieldChildrenDbFieldName ," +
-                "  form_field_dict_domain_name as  formFieldDicDomainName ," +
-                "  form_field_use_dic as  formFieldUseDic ," +
-                "  form_field_def_val_stratege as  formFieldDefalutValStratege ," +
+                "  form_field_dict_domain_name as  formFieldDictDomainName ," +
+                "  form_field_dict_item as  formFieldDictItem ," +
+                "  form_field_def_val_strategy as  formFieldDefalutValStrategy ," +
                 "  table_field_visible as  tableFieldVisible," +
                 "  table_field_order_by as  tableFieldOrderBy ," +
                 "  table_field_query_required as  tableFieldQueryRequired," +
@@ -243,7 +245,6 @@ public class PostgresqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSett
                 "  table_parent_label as  tableParentLabel," +
                 "  form_field_use_default_val as  formFieldUseDefaultVal," +
                 "  form_field_default_val as  formFieldManMadeDefaultVal," +
-                "  form_field_default_val_sql as formFieldDefaultValSql ," +
                 "  column_is_exist as columIsExist " +
                 " from df_form_table_setting where df_key = ? and export_field_visible = ?";
         LOGGER.info("querySql:{}", querySql);
@@ -261,21 +262,26 @@ public class PostgresqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSett
                 "   db_field_name = ?," +
                 "   db_field_type = ?," +
                 "   view_field_label = ?," +
+
                 "   db_field_comment = ?," +
                 "   form_field_visible = ?," +
                 "   form_field_sequence = ?," +
                 "   form_field_query_type = ?," +
                 "   form_field_child_field_name = ?," +
+
                 "   form_field_dict_domain_name = ?," +
+                "   form_field_dict_item = ?," +
                 "   form_field_def_val_strategy = ?," +
                 "   table_field_visible = ?," +
                 "   table_field_order_by = ?," +
                 "   table_field_query_required = ?," +
+
                 "   table_field_sequence = ?," +
                 "   table_field_column_width = ?," +
                 "   export_field_visible = ?," +
                 "   export_field_sequence = ?," +
                 "   export_field_width = ?," +
+
                 "   table_parent_label = ?," +
                 "   form_field_use_default_val = ?," +
                 "   form_field_default_val = ?," +
@@ -293,23 +299,23 @@ public class PostgresqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSett
                 dfFormTableSettingDO.getFormFieldVisible()?1:0,
                 dfFormTableSettingDO.getFormFieldSequence(),
                 dfFormTableSettingDO.getFormFieldQueryType(),
-
                 dfFormTableSettingDO.getFormFieldChildFieldName(),
+
                 dfFormTableSettingDO.getFormFieldDictDomainName(),
+                dfFormTableSettingDO.getFormFieldDictItem(),
                 dfFormTableSettingDO.getFormFieldDefValStrategy(),
                 dfFormTableSettingDO.getTableFieldVisible()?1:0,
-
                 dfFormTableSettingDO.getTableFieldOrderBy(),
                 dfFormTableSettingDO.getTableFieldQueryRequired()?1:0,
+
                 dfFormTableSettingDO.getTableFieldSequence(),
                 dfFormTableSettingDO.getTableFieldColumnWidth(),
                 dfFormTableSettingDO.getExportFieldVisible()?1:0,
-
                 dfFormTableSettingDO.getExportFieldSequence(),
                 dfFormTableSettingDO.getExportFieldWidth(),
+
                 dfFormTableSettingDO.getTableParentLabel(),
                 dfFormTableSettingDO.getFormFieldUseDefaultVal()?1:0,
-
                 dfFormTableSettingDO.getFormFieldDefaultVal(),
                 dfFormTableSettingDO.getColumnIsExist()?1:0,
                 dfFormTableSettingDO.getId()
@@ -317,7 +323,5 @@ public class PostgresqlDfFormTableSettingDaoImpl extends AbstractDfFormTableSett
         result = queryRunner.update(updateSql, objectParams);
         return result;
     }
-
-
 
 }

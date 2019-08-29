@@ -28,8 +28,6 @@ public class MysqlDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
     @Resource(name="D1BasicDataSource")
     private DataSource d1BasicDataSource;
 
-    @Autowired
-    private DataSourceFactory dataSourceFactory;
 
     @Override
     public DataDaoType getDataDaoType() {

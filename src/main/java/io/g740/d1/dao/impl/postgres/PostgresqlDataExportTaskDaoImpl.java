@@ -37,6 +37,7 @@ public class PostgresqlDataExportTaskDaoImpl implements DataExportTaskDao {
         return DataDaoType.POSTGRESQL;
     }
 
+
     @Override
     public DataExportTaskDO addDataExportTask(DataExportTaskDO dataExportTaskDO) throws Exception {
         DataSource dataSource = d1BasicDataSource;
@@ -47,7 +48,7 @@ public class PostgresqlDataExportTaskDaoImpl implements DataExportTaskDao {
             String sql = "insert into data_export_task(start_at, end_at, failed_at, details, file_name, file_path)" +
                     " values (?, ?, ?, ?, ?, ?);";
             LOGGER.info("sql:{}", sql);
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            PreparedStatement preparedStatement = connection.prepareStatement(sql,PreparedStatement.RETURN_GENERATED_KEYS);
             //绑定参数
             bindParameters(preparedStatement,
                     dataExportTaskDO.getStartAt(),

@@ -37,7 +37,7 @@ public class MysqlDsTreeMenuCacheDaoImpl implements DsTreeMenuCacheDao {
                 dsTreeMenuCacheDO.getDsKeyInfo(),
         };
         String sql = "insert into ds_tree_menu_cache (ds_id, ds_basic_info, ds_schema_info, ds_table_view_info, ds_key_info)" +
-                " value ( ?, ?, ?, ?, ?)";
+                " values ( ?, ?, ?, ?, ?)";
         LOGGER.info("sql string:{}",sql);
         return queryRunner.update(sql, objectParams);
 

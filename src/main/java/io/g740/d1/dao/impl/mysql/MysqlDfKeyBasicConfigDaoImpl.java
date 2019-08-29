@@ -31,9 +31,6 @@ public class MysqlDfKeyBasicConfigDaoImpl implements DfKeyBasicConfigDao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MysqlDfKeyBasicConfigDaoImpl.class);
 
-    @Autowired
-    private DataSourceFactory dataSourceFactory;
-
     @Resource(name="D1BasicDataSource")
     private DataSource d1BasicDataSource;
 
