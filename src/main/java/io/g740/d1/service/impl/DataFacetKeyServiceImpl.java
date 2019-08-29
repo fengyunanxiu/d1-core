@@ -117,7 +117,7 @@ public class DataFacetKeyServiceImpl implements DataFacetKeyService {
         boolean updateResult = false;
         DfKeyBasicConfigDO dfKeyBasicConfigByDfKey = dfKeyBasicConfigDao.getDfKeyBasicConfigByDfKey(newDfKey);
         //新加的df key 是否已经存在
-        if (dfKeyBasicConfigByDfKey != null) {
+        if (dfKeyBasicConfigByDfKey != null&&!dfKey.equals(newDfKey)) {
             throw new IllegalParameterException("data facet key already exists!");
         }
         int updateRows = dfKeyBasicConfigDao.updateDataFacetKey(dfKey, newDfKey, description);

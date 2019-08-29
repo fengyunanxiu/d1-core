@@ -316,8 +316,8 @@ public class DictRepositoryImpl implements DictRepository {
             }
         }
         // 补充Domain，Item条件
-        StringBuilder domainItemSqlCondition = new StringBuilder(" and (");
         if (domainItemMapList != null && !domainItemMapList.isEmpty()) {
+        StringBuilder domainItemSqlCondition = new StringBuilder(" and (");
             for (int i = 0; i < domainItemMapList.size(); i++) {
                 Map<String, String> domainItemMap = domainItemMapList.get(i);
                 String domain = domainItemMap.get(DictDO.F_DOMAIN);
@@ -333,10 +333,12 @@ public class DictRepositoryImpl implements DictRepository {
                             .append(" and ").append(DictDO.F_ITEM).append(" like ").append(" ?").append(")");
                 }
             }
+            domainItemSqlCondition.append(") ");
+            //
+            sqlBuilder.append(domainItemSqlCondition.toString());
         }
-        domainItemSqlCondition.append(") ");
-        //
-        sqlBuilder.append(domainItemSqlCondition.toString());
+
+
         // 排序语句
         sqlBuilder.append(" order by " + F_DOMAIN_ITEM_GMT_CREATE + " DESC,  " + DictDO.F_SEQUENCE);
 //        sqlBuilder.append(" order by " + DictDO.F_DOMAIN + ", " + DictDO.F_ITEM + ",  " + DictDO.F_SEQUENCE);

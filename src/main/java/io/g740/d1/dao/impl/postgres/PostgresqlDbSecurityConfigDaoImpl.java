@@ -24,8 +24,6 @@ import java.sql.*;
  */
 @Repository("PostgresqlDbSecurityConfigDaoImpl")
 public class PostgresqlDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
-    @Autowired
-    private DataSourceFactory dataSourceFactory;
 
     @Resource(name="D1BasicDataSource")
     private DataSource d1BasicDataSource;
@@ -62,6 +60,7 @@ public class PostgresqlDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
                     String sshAuthType = resultSet.getString("ssh_auth_type");
                     String sshProxyPassword = resultSet.getString("ssh_proxy_password");
                     String sshKeyFile = resultSet.getString("ssh_key_file");
+                    String sshKeyContent= resultSet.getString("ssh_key_content");
                     String sshPassPhrase = resultSet.getString("ssh_pass_phrase");
                     //封装数据
                     dbSecurityConfigDO.setId(id);
@@ -79,6 +78,7 @@ public class PostgresqlDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
                     dbSecurityConfigDO.setSshAuthType(sshAuthType);
                     dbSecurityConfigDO.setSshProxyPassword(sshProxyPassword);
                     dbSecurityConfigDO.setSshKeyFile(sshKeyFile);
+                    dbSecurityConfigDO.setSshKeyContent(sshKeyContent);
                     dbSecurityConfigDO.setSshPassPhrase(sshPassPhrase);
                     return dbSecurityConfigDO;
                 }
@@ -104,9 +104,10 @@ public class PostgresqlDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
                     " ssh_auth_type, " +
                     "ssh_proxy_password," +
                     "ssh_key_file," +
+                    "ssh_key_content," +
                     "ssh_pass_phrase)" +
                     " values (?, ?, ?, ?, ?, ?," +
-                    "         ?, ?, ?, ?, ?," +
+                    "         ?, ?, ?, ?, ?, ?," +
                     "         ?, ?, ?, ?, ?)";
             DataSource dataSource = d1BasicDataSource;
             conn = dataSource.getConnection();
@@ -128,6 +129,7 @@ public class PostgresqlDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
                     dbSecurityConfigDO.getSshAuthType(),
                     dbSecurityConfigDO.getSshProxyPassword(),
                     dbSecurityConfigDO.getSshKeyFile(),
+                    dbSecurityConfigDO.getSshKeyContent(),
                     dbSecurityConfigDO.getSshPassPhrase()
             );
             update = preparedStatement.executeUpdate();
@@ -175,12 +177,13 @@ public class PostgresqlDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
                 "ssh_auth_type = ?," +
                 "ssh_proxy_password = ?," +
                 "ssh_key_file = ?," +
+                "ssh_key_content = ?," +
                 "ssh_pass_phrase = ?" +
                 " where id = ?";
         String now = DateUtils.ofLongStr(new java.util.Date());
         Object[] objectsParams = {now,
-                dbSecurityConfigDO.getUseSsl(),
-                dbSecurityConfigDO.getUseSshTunnel(),
+                dbSecurityConfigDO.getUseSsl()?1:0,
+                dbSecurityConfigDO.getUseSshTunnel()?1:0,
                 dbSecurityConfigDO.getSslCaFile(),
                 dbSecurityConfigDO.getSslClientCertificateFile(),
                 dbSecurityConfigDO.getSslClientKeyFile(),
@@ -191,6 +194,7 @@ public class PostgresqlDbSecurityConfigDaoImpl implements DbSecurityConfigDao {
                 dbSecurityConfigDO.getSshAuthType(),
                 dbSecurityConfigDO.getSshProxyPassword(),
                 dbSecurityConfigDO.getSshKeyFile(),
+                dbSecurityConfigDO.getSshKeyContent(),
                 dbSecurityConfigDO.getSshPassPhrase(),
                 dbSecurityConfigDO.getId()
         };

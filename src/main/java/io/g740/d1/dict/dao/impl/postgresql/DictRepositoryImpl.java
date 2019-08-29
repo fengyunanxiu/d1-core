@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import javax.annotation.Resource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.*;
 
 import static io.g740.d1.dict.entity.DictDO.*;
@@ -59,7 +60,7 @@ public class DictRepositoryImpl implements DictRepository {
         // 排序语句
         sqlBuilder.append(" order by field_domain, field_item, field_sequence ");
         // 分页信息
-        sqlBuilder.append(" limit ?, ? ");
+        sqlBuilder.append(" offset ? limit ?");
         paramList.add(offset);
         paramList.add(pageSize);
         LOGGER.info("query sql: {}", sqlBuilder.toString());
@@ -159,12 +160,12 @@ public class DictRepositoryImpl implements DictRepository {
                 throw new ServiceException("field_id, field_domain, field_item, field_value, field_sequence不能为空");
             }
             Object[] param = new Object[]{
-                    new Date(),
+                    new Timestamp(System.currentTimeMillis()),
                     dictDO.getFieldDomain(),
                     dictDO.getFieldItem(),
                     dictDO.getFieldValue(),
                     dictDO.getFieldLabel(),
-                    dictDO.getFieldSequence(),
+                    Integer.parseInt(dictDO.getFieldSequence()),
                     dictDO.getFieldParentId(),
                     dictDO.getFieldId()
             };
@@ -199,7 +200,7 @@ public class DictRepositoryImpl implements DictRepository {
             }
             Object[] param = new Object[]{
                     UUIDUtils.compress(),
-                    new Date(),
+                    new Timestamp(System.currentTimeMillis()),
                     dictDO.getFieldDomain(),
                     dictDO.getFieldItem(),
                     dictDO.getFieldValue(),
@@ -270,7 +271,7 @@ public class DictRepositoryImpl implements DictRepository {
         // group by 语句
         sqlBuilder.append(" group by " + DictDO.F_DOMAIN + ", " + DictDO.F_ITEM);
         // 分页
-        sqlBuilder.append(" limit ?, ? ");
+        sqlBuilder.append(" offset ? limit ?");
         paramList.add(offset);
         paramList.add(pageSize);
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
@@ -317,8 +318,9 @@ public class DictRepositoryImpl implements DictRepository {
             }
         }
         // 补充Domain，Item条件
-        StringBuilder domainItemSqlCondition = new StringBuilder(" and (");
         if (domainItemMapList != null && !domainItemMapList.isEmpty()) {
+        StringBuilder domainItemSqlCondition = new StringBuilder(" and (");
+
             for (int i = 0; i < domainItemMapList.size(); i++) {
                 Map<String, String> domainItemMap = domainItemMapList.get(i);
                 String domain = domainItemMap.get(DictDO.F_DOMAIN);
@@ -334,10 +336,11 @@ public class DictRepositoryImpl implements DictRepository {
                             .append(" and ").append(DictDO.F_ITEM).append(" like ").append(" ?").append(")");
                 }
             }
-        }
         domainItemSqlCondition.append(") ");
         //
         sqlBuilder.append(domainItemSqlCondition.toString());
+        }
+
         // 排序语句
         sqlBuilder.append(" order by " + DictDO.F_DOMAIN + ", " + DictDO.F_ITEM + ",  " + DictDO.F_SEQUENCE);
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
@@ -359,7 +362,7 @@ public class DictRepositoryImpl implements DictRepository {
             String fieldSequence = dictDO.getFieldSequence();
             String fieldParentId = dictDO.getFieldParentId();
             param[i][0] = UUIDUtils.compress();
-            param[i][1] = param[i][8] = new Date();
+            param[i][1] = param[i][8] = new Timestamp(System.currentTimeMillis());
             param[i][2] = fieldDomain;
             param[i][3] = fieldItem;
             param[i][4] = param[i][9] = fieldValue;

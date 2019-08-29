@@ -4,8 +4,8 @@ import io.g740.d1.dao.DataDaoType;
 import io.g740.d1.dao.DbBasicConfigDao;
 import io.g740.d1.dao.DsQueryDao;
 import io.g740.d1.datasource.DataSourceFactory;
-import io.g740.d1.dto.AssemblyResultDTO;
 import io.g740.d1.dto.PageResultDTO;
+import io.g740.d1.dto.SQLGenerResultDTO;
 import io.g740.d1.entity.DbBasicConfigDO;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.MapListHandler;
@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -43,13 +41,13 @@ public class MysqlDsQueryDaoImpl implements DsQueryDao {
     }
 
     @Override
-    public PageResultDTO excuteQuery(AssemblyResultDTO assemblyResultDTO, Long fkDbId) throws Exception {
+    public PageResultDTO excuteQuery(SQLGenerResultDTO assemblyResultDTO, Long fkDbId) throws Exception {
         DbBasicConfigDO dbBasicConfigDO = dbBasicConfigDao.findById(fkDbId);
         QueryRunner queryRunner = new QueryRunner(dataSourceFactory.builder(dbBasicConfigDO.getDbType(), dbBasicConfigDO.getId()));
 
         String countSql=assemblyResultDTO.getCountSql();
         String querySql=assemblyResultDTO.getQuerySql();
-        List<Object> paramList = assemblyResultDTO.getParamList();
+        List<Object> paramList = assemblyResultDTO.getParamsValue();
         long total=0L;
         List<Map<String, Object>> content=null;
         if(!CollectionUtils.isEmpty(paramList)){

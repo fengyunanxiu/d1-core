@@ -3,6 +3,7 @@ package io.g740.d1.component;
 import io.g740.d1.constant.DsConstants;
 import io.g740.d1.dto.QueryParameterGroupDTO;
 import io.g740.d1.entity.DfFormTableSettingDO;
+import io.g740.d1.util.CollectionUtils;
 import io.g740.d1.util.DateUtils;
 import org.springframework.stereotype.Component;
 
@@ -58,6 +59,9 @@ public class DfFormTableSettingComponent {
         queryParameterGroup.setAccurateInString(accurateInStringQueryParameterMap);
 
 
+        Map<String, String[]> hasNullOrEmptyParameterMap = new HashMap<>();
+        queryParameterGroup.setHasNullOrEmptyParameterMap(hasNullOrEmptyParameterMap);
+
         for (Map.Entry<String, String[]> entry : queryParameterMap.entrySet()) {
             String frontFieldName = entry.getKey();
             String[] queryParameterValueArray = entry.getValue();
@@ -88,6 +92,13 @@ public class DfFormTableSettingComponent {
             String fieldName = dfFormTableSettingDO.getDbFieldName();
             switch (formFieldQueryTypeEnum) {
                 case SINGLE_CHOICE_LIST:
+                case SINGLE_CHOICE_LIST_R1:
+                    if(DsConstants.SPECIAL_FORM_TYPE_CHOICE_NULL_OR_EMPTY.equals(queryParameterValueArray[0])){
+                        hasNullOrEmptyParameterMap.put(fieldName,null);
+                    }else{
+                        accurateEqualsStringQueryParameterMap.put(fieldName, queryParameterValueArray[0]);
+                    }
+                    break;
                 case SINGLE_DATETIME:
                 case RADIOBOX_CHOICE: {
                     accurateEqualsStringQueryParameterMap.put(fieldName, queryParameterValueArray[0]);
@@ -111,8 +122,27 @@ public class DfFormTableSettingComponent {
                     dateTimeRangeArr[1] = DateUtils.ofLongStr(endTime);
                     break;
                 }
-
                 case MULTIPLE_CHOICE_LIST:
+
+                    List<String> newList = new ArrayList<>();
+                    boolean hasNullFlag = false;
+
+                    for (String parameterValue : queryParameterValueArray) {
+                        if(DsConstants.SPECIAL_FORM_TYPE_CHOICE_NULL_OR_EMPTY.equals(parameterValue)){
+                            hasNullFlag = true;
+                        }else{
+                            newList.add(parameterValue);
+                        }
+                    }
+
+                    if(hasNullFlag){
+                        hasNullOrEmptyParameterMap.put(fieldName, newList.toArray(new String[newList.size()]));
+                    }else{
+                        accurateInStringQueryParameterMap.put(fieldName, queryParameterValueArray);
+                    }
+                    break;
+
+
                 case CHECKBOX_CHOICE: {
                     if (queryParameterValueArray.length == 1) {
                         accurateEqualsStringQueryParameterMap.put(fieldName, queryParameterValueArray[0]);
@@ -121,7 +151,6 @@ public class DfFormTableSettingComponent {
                     }
                     break;
                 }
-
 
                 case EXACT_MATCHING_TEXT: {
                     accurateEqualsStringQueryParameterMap.put(fieldName, queryParameterValueArray[0]);

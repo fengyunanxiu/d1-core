@@ -177,11 +177,8 @@ public class QueryFormTableApiController {
             throw new ResourceNotFoundException("Empty data facet key " + dataFacetKey);
         }
         Map<String, String[]> params = request.getParameterMap();
-
-        Pageable pageable = ParameterHandlerUtils.extractPageable(params);
-        String moreWhereClause = ParameterHandlerUtils.extractMoreClause(params);
-        Map<String, String[]> simpleParameters = ApiUtils.removeReservedParameters(params);
-        return  queryFormTableService.executeQuery(dataFacetKey, simpleParameters, pageable,moreWhereClause);
+        Map<String, String[]> simpleParameters = ApiUtils.restructureParameter(params);
+        return  queryFormTableService.executeQuery(dataFacetKey, simpleParameters);
     }
 
 

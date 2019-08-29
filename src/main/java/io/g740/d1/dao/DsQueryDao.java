@@ -1,10 +1,7 @@
 package io.g740.d1.dao;
 
-import io.g740.d1.dto.AssemblyResultDTO;
 import io.g740.d1.dto.PageResultDTO;
-
-import java.io.IOException;
-import java.sql.SQLException;
+import io.g740.d1.dto.SQLGenerResultDTO;
 
 /**
  * @function:
@@ -16,5 +13,5 @@ import java.sql.SQLException;
 public interface DsQueryDao {
     DataDaoType getDataDaoType();
 
-    PageResultDTO excuteQuery(AssemblyResultDTO assemblyResultDTO, Long fkDbId) throws Exception;
+    PageResultDTO excuteQuery(SQLGenerResultDTO assemblyResultDTO, Long fkDbId) throws Exception;
 }

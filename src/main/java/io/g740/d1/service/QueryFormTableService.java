@@ -25,7 +25,7 @@ public interface QueryFormTableService {
 
     AssemblyResultDTO generalQuery(String dataFacetKey, Map<String, String[]> simpleParameters, Pageable pageable, String moreWhereClause, boolean returnDatasource) throws Exception;
 
-    PageResultDTO executeQuery(String dataFacetKey, Map<String, String[]> simpleParameters, Pageable pageable, String moreWhereClause) throws Exception;
+    PageResultDTO executeQuery(String dataFacetKey, Map<String, String[]> simpleParameters) throws Exception;
 
     SQLGenerResultDTO generalSQL(String dataFacetKey, Map<String, String[]> requestParams) throws Exception;
 }
