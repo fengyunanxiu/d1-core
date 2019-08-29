@@ -51,38 +51,6 @@ create table if not exists db_security_config
 
 ###
 
-create table if not exists ds_basic_dictionary
-(
-    id           serial primary key,
-    domain_name  varchar(50),
-    item_id      varchar(100),
-    item_val     varchar(100),
-    is_auto      int,
-    gmt_create   varchar(30),
-    gmt_modified varchar(30)
-);
-
-###
-
-create table if not exists ds_dic_auto_config
-(
-    id                  serial primary key,
-    gmt_create          varchar(30)  not null,
-    gmt_modified        varchar(30)  not null,
-    fk_db_id            bigint       not null,
-    schema_name             varchar(100) not null,
-    table_name          varchar(100) not null,
-    item_id_field_name  varchar(100) not null,
-    item_val_field_name varchar(100) not null,
-    use_scheduler       int          not null,
-    cron                varchar(30)  not null,
-    domain_name         varchar(100) not null
-);
-
-
-###
-
-
 create table if not exists df_form_table_setting
 (
     id                                serial primary key,
@@ -110,9 +78,12 @@ create table if not exists df_form_table_setting
     export_field_width                int,
     table_parent_label                varchar(100),
     form_field_use_default_val        int,
-    form_field_default_val   varchar(200),
+    form_field_default_val            varchar(200),
     column_is_exist                   int default 1
 );
+###
+create index index_df_key
+    on df_form_table_setting (df_key);
 
 ###
 
@@ -165,4 +136,65 @@ from db_basic_config t1
                          on t1.id = t2.id;
 
 
+###
+
+create table if not exists db_dict (
+    field_id varchar(64) primary key ,
+    field_gmt_create timestamp,
+    field_gmt_modified timestamp,
+    field_domain varchar(64) not null ,
+    field_item varchar(64) not null ,
+    field_value varchar(100) not null ,
+    field_label varchar(100),
+    field_sequence int,
+    field_parent_id varchar(64),
+    domain_item_gmt_create timestamp,
+) ;
+###
+create index  db_dict_unique_idx
+	on db_dict(field_domain, field_item, field_value);
+
+###
+
+create table if not exists db_form_dict_configuration(
+    field_id varchar(64) primary key,
+    field_form_df_key varchar(100) not null,
+    field_form_field_key varchar(100) not null,
+    field_domain varchar(64),
+    field_item varchar(64)
+) ;
+
+###
+
+create table if not exists db_defaults_configuration(
+    field_id varchar(64) primary key,
+    field_form_df_key varchar(100) not null,
+    field_form_field_key varchar(100) not null,
+    field_type varchar(64) ,
+    field_plugin_conf text ,
+    field_manual_conf text
+);
+
+###
+
+create table if not exists db_dict_plugin_configuration(
+    field_id varchar(64) primary key ,
+    field_domain varchar(100) not null,
+    field_item varchar(100) not null,
+    field_enable boolean not null,
+    field_type varchar(50) not null,
+    field_param text,
+    field_cron varchar(100)
+);
+
+###
+
+create table if not exists ds_tree_menu_cache
+(
+    ds_id              bigint  not null primary key,
+    ds_basic_info      json   null,
+    ds_schema_info     json   null,
+    ds_table_view_info json   null,
+    ds_key_info        json   null
+);
 

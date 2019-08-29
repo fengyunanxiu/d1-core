@@ -61,9 +61,15 @@ public class D1BasicTableService {
                     //oralce分批执行plsql语句
                     String[] sqlBatchs = sql.split("###");
                     for (String s : sqlBatchs) {
-                        LOGGER.info("creating table>>>>{}", s);
-                        preparedStatement = connection.prepareStatement(s);
-                        preparedStatement.executeUpdate();
+                        try {
+                            LOGGER.info("creating >>>>{}", s);
+                            preparedStatement = connection.prepareStatement(s);
+                            preparedStatement.executeUpdate();
+
+                        }catch (Exception e){
+                            LOGGER.error("{}",e.getMessage());
+                            continue;
+                        }
                     }
                     break;
                 default:

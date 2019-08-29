@@ -67,14 +67,6 @@ public class DaoBeanConfig {
     }
 
 
-    @Bean(name="DsBasicDictionaryDao")
-    public DsBasicDictionaryDao getDsBasicDictionaryDao(){
-        if(StringUtils.isBlank(basicDbConfig.getType())){
-            basicDbConfig.setType("sqlite");
-        }
-        return dataDaoFactory.getDaoBean(DsBasicDictionaryDao.class, basicDbConfig.getType());
-    }
-
 
     @Bean(name="DfKeyBasicConfigDao")
     public DfKeyBasicConfigDao getDfKeyBasicConfigDao(){

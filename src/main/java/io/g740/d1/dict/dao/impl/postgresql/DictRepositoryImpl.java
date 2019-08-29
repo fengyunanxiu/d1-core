@@ -1,4 +1,4 @@
-package io.g740.d1.dict.dao.impl.mysql;
+package io.g740.d1.dict.dao.impl.postgresql;
 
 import io.g740.d1.dao.convert.QueryRunnerRowProcessor;
 import io.g740.d1.dict.dao.DictRepository;
@@ -29,7 +29,7 @@ import static io.g740.d1.dict.entity.DictDO.*;
  * @date : 2019/8/5 15:41
  * @description :
  */
-@Repository("MySQLDictRepository")
+@Repository("PostgresqlDictRepository")
 public class DictRepositoryImpl implements DictRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DictRepositoryImpl.class);
@@ -188,17 +188,18 @@ public class DictRepositoryImpl implements DictRepository {
             throw new ServiceException("dict list is null");
         }
         List<Object[]> paramList = new ArrayList<>();
-        String sql = "insert into " + TABLE_NAME + " (" + F_GMT_CREATE + ", " + F_DOMAIN_ITEM_GMT_CREATE + ", " + F_DOMAIN + ", " + F_ITEM + ", " + F_VALUE + ", " + F_LABEL + ", " + F_SEQUENCE + ", " + F_PARENT_ID + ") values (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "insert into " + TABLE_NAME + " (" + F_ID + ", " + F_GMT_CREATE + ", " + F_DOMAIN + ", " + F_ITEM + ", " + F_VALUE + ", " + F_LABEL + ", " + F_SEQUENCE + ", " + F_PARENT_ID + ") values (?, ?, ?, ?, ?, ?, ?, ?)";
         for (DictDO dictDO : dictDOList) {
             if (dictDO == null
                     || StringUtils.isNullOrEmpty(dictDO.getFieldDomain())
                     || StringUtils.isNullOrEmpty(dictDO.getFieldItem())
-                    || StringUtils.isNullOrEmpty(dictDO.getFieldValue())) {
-                throw new ServiceException("domain, item, value 不能为空");
+                    || StringUtils.isNullOrEmpty(dictDO.getFieldValue())
+                    || StringUtils.isNullOrEmpty(dictDO.getFieldSequence())) {
+                throw new ServiceException("domain, item, value, sequence, enable不能为空");
             }
             Object[] param = new Object[]{
+                    UUIDUtils.compress(),
                     new Date(),
-                    dictDO.getDomainItemGmtCreate(),
                     dictDO.getFieldDomain(),
                     dictDO.getFieldItem(),
                     dictDO.getFieldValue(),
@@ -338,8 +339,7 @@ public class DictRepositoryImpl implements DictRepository {
         //
         sqlBuilder.append(domainItemSqlCondition.toString());
         // 排序语句
-        sqlBuilder.append(" order by " + F_DOMAIN_ITEM_GMT_CREATE + " DESC,  " + DictDO.F_SEQUENCE);
-//        sqlBuilder.append(" order by " + DictDO.F_DOMAIN + ", " + DictDO.F_ITEM + ",  " + DictDO.F_SEQUENCE);
+        sqlBuilder.append(" order by " + DictDO.F_DOMAIN + ", " + DictDO.F_ITEM + ",  " + DictDO.F_SEQUENCE);
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         return qr.query(sqlBuilder.toString(), new BeanListHandler<>(DictDO.class, new QueryRunnerRowProcessor()), paramList.toArray(new Object[0]));
     }

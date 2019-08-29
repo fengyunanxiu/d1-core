@@ -50,36 +50,6 @@ create table if not exists  db_security_config
 
 ###
 
-create table if not exists  ds_basic_dictionary
-(
-    id           bigint primary key auto_increment,
-    domain_name  varchar(50),
-    item_id      varchar(100),
-    item_val     varchar(100),
-    is_auto      tinyint,
-    gmt_create   varchar(30),
-    gmt_modified varchar(30)
-) charset = utf8;
-
-###
-
-create table if not exists ds_dic_auto_config
-(
-    id                  bigint primary key auto_increment,
-    gmt_create          varchar(30)  not null,
-    gmt_modified        varchar(30)  not null,
-    fk_db_id            bigint       not null,
-    schema_name              varchar(100) not null,
-    table_name          varchar(100) not null,
-    item_id_field_name  varchar(100) not null,
-    item_val_field_name varchar(100) not null,
-    use_scheduler       tinyint      not null,
-    cron                varchar(30)  not null,
-    domain_name         varchar(100) not null
-);
-
-###
-
 create table if not exists  df_form_table_setting
 (
     id                                bigint primary key auto_increment,
@@ -163,7 +133,7 @@ from db_basic_config t1
 ###
 
 create table if not exists db_dict (
-    field_id varchar(64) primary key ,
+    field_id int primary key auto_increment,
     field_gmt_create datetime,
     field_gmt_modified datetime,
     field_domain varchar(64) not null ,
@@ -172,6 +142,7 @@ create table if not exists db_dict (
     field_label varchar(100),
     field_sequence int,
     field_parent_id varchar(64),
+    domain_item_gmt_create datetime,
     unique  index db_dict_unique_idx(field_domain, field_item, field_value)
 ) charset=utf8 collate utf8_croatian_ci;
 
