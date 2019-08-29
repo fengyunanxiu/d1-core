@@ -9,6 +9,7 @@ import io.g740.d1.dict.entity.DictDO;
 import io.g740.d1.dto.PageResultDTO;
 import io.g740.d1.exception.ServiceException;
 import io.g740.d1.exception.custom.DuplicateResourceException;
+import io.g740.d1.exception.custom.OperationNotSupportedException;
 import io.g740.d1.util.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,10 @@ public class DictServiceImpl implements DictService {
      */
     @Override
     public void batchDelete(List<String> idList) throws Exception {
+        List<DictDO> byParentIdList = this.dictRepository.findByParentIdList(idList);
+        if(!CollectionUtils.isEmpty(byParentIdList)){
+            throw new OperationNotSupportedException(" There are values associated with the id you want to delete !");
+        }
         this.dictRepository.batchDelete(idList);
     }
 
@@ -164,10 +169,17 @@ public class DictServiceImpl implements DictService {
     }
 
     @Override
-    public void deleteDomain(DictDTO dictDTO) throws SQLException {
+    public void deleteDomain(DictDTO dictDTO) throws Exception {
         String domain = dictDTO.getFieldDomain();
         String item = dictDTO.getFieldItem();
-        this.dictRepository.deleteByDomainAndItem(domain, item);
+        List<DictDO> byDomainAndItemList = this.dictRepository.findByDomainAndItem(domain, item);
+        if(!CollectionUtils.isEmpty(byDomainAndItemList)){
+            List<String> idList = byDomainAndItemList.stream().map(DictDO::getFieldId).collect(Collectors.toList());
+            this.batchDelete(idList);
+        }
+
+
+
     }
 
     @Override
