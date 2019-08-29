@@ -1,5 +1,6 @@
 package io.g740.d1.dict.entity;
 
+import io.g740.d1.sqlbuilder.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +13,7 @@ import java.util.Date;
  * @date : 2019/8/5 15:38
  * @description :
  */
+@Table("db_dict")
 public class DictDO {
 
     public static final String TABLE_NAME = "db_dict";
@@ -27,24 +29,35 @@ public class DictDO {
     public static final String F_PARENT_ID = "field_parent_id";
     public static final String F_DOMAIN_ITEM_GMT_CREATE = "domain_item_gmt_create";
 
+    @Column(value = F_ID)
+    @Id(generateType = GenerateType.AUTO)
     private String fieldId;
 
+    @Column(F_GMT_CREATE)
     private Date gmtCreate;
 
+    @Column(F_GMT_MODIFIED)
     private Date gmtModified;
 
+    @Column(F_DOMAIN)
     private String fieldDomain;
 
+    @Column(F_ITEM)
     private String fieldItem;
 
+    @Column(F_VALUE)
     private String fieldValue;
 
+    @Column(F_LABEL)
     private String fieldLabel;
 
+    @Column(F_SEQUENCE)
     private String fieldSequence;
 
+    @Column(F_PARENT_ID)
     private String fieldParentId;
 
+    @Column(value = F_DOMAIN_ITEM_GMT_CREATE, javaType = Type.Java.SQL_TIMESTAMP)
     private Date domainItemGmtCreate;
 
     public String getFieldId() {

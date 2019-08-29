@@ -46,6 +46,8 @@ public class DateUtils {
     private static final String DATETIME_2_PATTERN = "yyyy/MM/dd HH:mm:ss";
     private static final String DATETIME_3_PATTERN = "dd/MM/yyyy HH:mm:ss";
 
+    private static final String TIME_PATTERN = "HH:mm:ss";
+
     private static final org.joda.time.format.DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern(DATE_PATTERN);
     private static final org.joda.time.format.DateTimeFormatter DATE_2_FORMAT = DateTimeFormat.forPattern(DATE_2_PATTERN);
     private static final org.joda.time.format.DateTimeFormatter DATE_3_FORMAT = DateTimeFormat.forPattern(DATE_3_PATTERN);
@@ -53,6 +55,8 @@ public class DateUtils {
     private static final org.joda.time.format.DateTimeFormatter DATETIME_FORMAT = DateTimeFormat.forPattern(DATETIME_PATTERN);
     private static final org.joda.time.format.DateTimeFormatter DATETIME_2_FORMAT = DateTimeFormat.forPattern(DATETIME_2_PATTERN);
     private static final org.joda.time.format.DateTimeFormatter DATETIME_3_FORMAT = DateTimeFormat.forPattern(DATETIME_3_PATTERN);
+
+    private static final org.joda.time.format.DateTimeFormatter TIME_FORMATTER = DateTimeFormat.forPattern(TIME_PATTERN);
 
 
     public static String ofLongStr(Date date) {
@@ -90,6 +94,10 @@ public class DateUtils {
                 }
             }
         }
+    }
+
+    public static Date ofTime(String source) {
+        return TIME_FORMATTER.parseDateTime(source).toDate();
     }
 
     public static String ofShortDate(Date date) {

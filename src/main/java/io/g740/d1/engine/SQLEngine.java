@@ -31,7 +31,7 @@ public class SQLEngine {
         return null;
     }
 
-    private Connection getConnection(String jdbcUrl, String username, String password) throws Exception {
+    public Connection getConnection(String jdbcUrl, String username, String password) throws Exception {
         if (jdbcUrl.startsWith("jdbc:mysql")) {
             Class.forName("com.mysql.jdbc.Driver");
         }
@@ -48,7 +48,7 @@ public class SQLEngine {
     }
 
 
-    private List<Map<String, String>> executeSQL(Connection connection, String sql) throws SQLException {
+    public List<Map<String, String>> executeSQL(Connection connection, String sql) throws SQLException {
         Statement statement = null;
         ResultSet resultSet = null;
         try  {
@@ -62,14 +62,6 @@ public class SQLEngine {
                 int columnCount = metaData.getColumnCount();
                 for (int i = 1; i <= columnCount; i++) {
                     String columnLabel = metaData.getColumnLabel(i);
-
-//                    String columnTypeName = metaData.getColumnTypeName(i);
-//                    switch (columnTypeName) {
-//                        case "DATE":
-//                        case "TIME":
-//                        case "DATETIME":
-//                        case "TIMESTAMP":
-//                    }
                     Object object = resultSet.getObject(i);
                     if (object != null) {
                         if (object instanceof Date) {
@@ -80,7 +72,6 @@ public class SQLEngine {
                         }
 
                     }
-//                    String columnValue = resultSet.getString(i);
                 }
             }
             return result;

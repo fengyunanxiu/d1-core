@@ -4,21 +4,22 @@ package io.g740.d1.controller;
 import io.g740.d1.datasource.Constants;
 import io.g740.d1.datasource.DataSourceFactory;
 import io.g740.d1.dict.dto.DictOptionCascadeQueryDTO;
+import io.g740.d1.dict.entity.DictDO;
 import io.g740.d1.dict.service.DictService;
 import io.g740.d1.entity.DbBasicConfigDO;
+import io.g740.d1.sqlbuilder.BeanParser;
+import io.g740.d1.sqlbuilder.DictDOJpaRepository;
+import io.g740.d1.sqlbuilder.QuerProxy;
+import io.g740.d1.sqlbuilder.QueryProxyHandler;
 import io.g740.d1.util.DateUtils;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -39,6 +40,9 @@ public class TestController {
 
     @Autowired
     private DictService dictService;
+
+    @Autowired
+    private QuerProxy queryProxy;
 
     @ApiOperation("test cascade query")
     @GetMapping("/cascade-query")
@@ -105,18 +109,24 @@ public class TestController {
         long re=System.currentTimeMillis()-startTime;
         connection.close();
         return re;
-
-//        String sql = "insert into db_basic_config" +
-//                "(gmt_create,gmt_modified,type,name,host,port,user,password,url,other_params) values (datetime('now'),datetime('now'),?,?,?,?,?,?,?,?) ";
-//
-//        DbBasicConfigDO basicConfigDO = new DbBasicConfigDO();
-//
-//        basicConfigDO.setDbHost("test");
-//        Object[] params = new Object[]{basicConfigDO.getDbType(),basicConfigDO.getDbName(),basicConfigDO.getDbHost(),basicConfigDO.getDbPort(),basicConfigDO.getDbUser(),basicConfigDO.getDbPassword(),basicConfigDO.getDbUrl()};
-//        queryRunner.update(sql,params);
     }
 
+    @PostMapping("/bean-parser")
+    @ResponseBody
+    public void testBeanParser(@RequestBody DictDO dictDO) throws Exception {
+        BeanParser beanParser = new BeanParser();
+//        dictDO.setFieldDomain("test bean parser domain");
+//        dictDO.setFieldItem("test bean parser item");
+        beanParser.insert(DictDO.class, dictDO, dataSource, false);
+    }
 
+    @GetMapping("/proxy")
+    @ResponseBody
+    public List<DictDO> testProxy(String fieldId) {
+        DictDOJpaRepository instance = this.queryProxy.instance(DictDOJpaRepository.class);
+        List<DictDO> fieldIdList = instance.findByFieldId(fieldId);
+        return fieldIdList;
+    }
 
 
 }

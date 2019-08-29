@@ -58,7 +58,7 @@ public class ErrorCodes {
     }
 
     /**
-     * Query the {@linkplain #context} to find all available implementations of
+     * PartTree the {@linkplain #context} to find all available implementations of
      * {@linkplain ExceptionToErrorCode}.
      */
     private Stream<ExceptionToErrorCode> implementions() {
