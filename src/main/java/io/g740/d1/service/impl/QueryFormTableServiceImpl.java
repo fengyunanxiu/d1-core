@@ -328,7 +328,10 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
                           }
                     }
                 }
-                dfKeyQueryFormSettingVO.setFieldValue(dfFormTableSettingDO.getFormFieldDefaultVal());
+
+                if(dfFormTableSettingDO.getFormFieldUseDefaultVal()){
+                    dfKeyQueryFormSettingVO.setFieldValue(dfFormTableSettingDO.getFormFieldDefaultVal());
+                }
                 dfKeyQueryFormSettingVO.setFormFieldQueryType(formQueryType);
                 rootDfKeyQueryFormSettingVOList.add(dfKeyQueryFormSettingVO);
             }
