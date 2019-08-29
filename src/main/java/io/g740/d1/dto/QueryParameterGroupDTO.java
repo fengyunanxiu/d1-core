@@ -21,6 +21,9 @@ public class QueryParameterGroupDTO {
 	// 精确查询参数">= AND <="
 	private Map<String, String[]> accurateNumberRange;
 
+	//
+	Map<String, String[]> hasNullOrEmptyParameterMap;
+
 	public Map<String, String> getFuzzyLike() {
 		return fuzzyLike;
 	}
@@ -69,5 +72,13 @@ public class QueryParameterGroupDTO {
 
 	public void setAccurateNumberRange(Map<String, String[]> accurateNumberRange) {
 		this.accurateNumberRange = accurateNumberRange;
+	}
+
+	public Map<String, String[]> getHasNullOrEmptyParameterMap() {
+		return hasNullOrEmptyParameterMap;
+	}
+
+	public void setHasNullOrEmptyParameterMap(Map<String, String[]> hasNullOrEmptyParameterMap) {
+		this.hasNullOrEmptyParameterMap = hasNullOrEmptyParameterMap;
 	}
 }

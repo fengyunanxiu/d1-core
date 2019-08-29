@@ -259,4 +259,30 @@ public class SqlConditions {
 	public static void main(String[] args) {
 		System.out.println(new SqlConditions().getWhereClause());
 	}
+
+    public void createInOneFieldAndMultipleAndHasNullOrEmptyValue(String tableFieldName, String[] objects, String tableFieldType) {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(" ( " + tableFieldName + " is null or " + tableFieldName + " = '' ");
+
+		if(objects != null && objects.length > 0){
+			stringBuilder.append(" or ");
+			stringBuilder.append(tableFieldName + " in (");
+
+			StringBuilder conditionBuider = new StringBuilder();
+			for (Object parameter : objects) {
+				conditionBuider.append("?,");
+				parameters.add(parameter);
+				paramTypes.add(tableFieldType);
+			}
+
+			if(conditionBuider.length() > 0){
+				conditionBuider.deleteCharAt(conditionBuider.length()-1);
+				stringBuilder.append(conditionBuider);
+				stringBuilder.append(")");
+
+			}
+		}
+		stringBuilder.append(") ");
+		conditions.add(stringBuilder.toString());
+    }
 }

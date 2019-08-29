@@ -136,4 +136,24 @@ public class D1SQLUtils {
             }
         }
     }
+
+    public static void buildHasNullOrEmptyParameterString(Map<String, String[]> hasNullOrEmptyParameterMap, SqlConditions sqlConditions, List<DfFormTableSettingDO> dfFormTableSettingDOS) throws IllegalParameterException {
+        for (Map.Entry<String, String[]> parameterEntry : hasNullOrEmptyParameterMap.entrySet()) {
+            String parameter = parameterEntry.getKey();
+            String[] parameterValArr = parameterEntry.getValue();
+
+
+            List<String> collect = dfFormTableSettingDOS.stream()
+                    .filter(e -> e.getDbFieldName().equalsIgnoreCase(parameter))
+                    .map(DfFormTableSettingDO::getDbFieldType)
+                    .collect(Collectors.toList());
+            if (collect.isEmpty()) {
+                throw new IllegalParameterException("parameter name is not exist in from table setting");
+            }
+            // 这里parameterValArr可以为null或者孔
+            sqlConditions.createInOneFieldAndMultipleAndHasNullOrEmptyValue(parameter, parameterValArr,collect.get(0));
+
+        }
+
+    }
 }

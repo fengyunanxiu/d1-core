@@ -78,6 +78,8 @@ public class MySQLGenerator implements SQLGenerator {
                 Map<String, String[]> accurateDateTimeRange = queryParameterGroup.getAccurateDateTimeRange();
                 Map<String, String[]> accurateNumberRange = queryParameterGroup.getAccurateNumberRange();
 
+                Map<String, String[]> hasNullOrEmptyParameterMap = queryParameterGroup.getHasNullOrEmptyParameterMap();
+
                 if(fuzzyLike != null && !fuzzyLike.isEmpty()){
                     D1SQLUtils.buildFuzzyLikeQueryParameterString(fuzzyLike, sqlConditions, dfFormTableSettingDOS);
                 }
@@ -96,6 +98,12 @@ public class MySQLGenerator implements SQLGenerator {
                 if(accurateNumberRange != null && !accurateNumberRange.isEmpty()){
                     D1SQLUtils.buildAccurateNumberRangeQueryParameterString(accurateNumberRange, sqlConditions, dfFormTableSettingDOS);
                 }
+
+                if(hasNullOrEmptyParameterMap != null && !hasNullOrEmptyParameterMap.isEmpty()){
+                    D1SQLUtils.buildHasNullOrEmptyParameterString(hasNullOrEmptyParameterMap, sqlConditions, dfFormTableSettingDOS);
+                }
+
+
             } catch (Exception e) {
                 LOGGER.error("Failed to build sql", e);
                 throw new ServiceException(String.format("build sql Failed :%s",e.getMessage()));
