@@ -140,4 +140,20 @@ public class DictDO {
     public void setDomainItemGmtCreate(Date domainItemGmtCreate) {
         this.domainItemGmtCreate = domainItemGmtCreate;
     }
+
+    @Override
+    public String toString() {
+        return "DictDO{" +
+                "fieldId='" + fieldId + '\'' +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", fieldDomain='" + fieldDomain + '\'' +
+                ", fieldItem='" + fieldItem + '\'' +
+                ", fieldValue='" + fieldValue + '\'' +
+                ", fieldLabel='" + fieldLabel + '\'' +
+                ", fieldSequence='" + fieldSequence + '\'' +
+                ", fieldParentId='" + fieldParentId + '\'' +
+                ", domainItemGmtCreate=" + domainItemGmtCreate +
+                '}';
+    }
 }

@@ -11,7 +11,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author : zxiuwu
@@ -24,58 +26,7 @@ public class BeanParser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BeanParser.class);
 
-    private Insert insert;
-
-    public BeanParser() {
-        this.insert = new Insert();
-    }
-
-    public <T> void insert(Class<T> clazz, T t, DataSource dataSource, boolean autoCommit) throws Exception {
-
-        List<ColumnNode> columnNodeList = buildNode(clazz, t);
-
-        String tableName = parseTableName(clazz);
-
-        SQL sql = insert.single(columnNodeList, tableName);
-        if (sql == null) {
-            LOGGER.error("SQL is null");
-            return;
-        }
-        List<Object> fieldValueList = sql.getFieldValueList();
-        LOGGER.info("sql :{}", sql.getSql());
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        try {
-            connection = dataSource.getConnection();
-            if (!autoCommit) {
-                connection.setAutoCommit(false);
-            }
-            preparedStatement = connection.prepareStatement(sql.getSql());
-            if (fieldValueList != null && !fieldValueList.isEmpty()) {
-                for (int i = 0; i < fieldValueList.size(); i++) {
-                    preparedStatement.setObject(i + 1, fieldValueList.get(i));
-                }
-            }
-            preparedStatement.execute();
-            if (!autoCommit) {
-                connection.commit();
-            }
-        } catch (SQLException e) {
-            LOGGER.error("", e);
-            if (!autoCommit && connection != null) {
-                connection.rollback();
-            }
-        } finally {
-            if (preparedStatement != null) {
-                preparedStatement.close();
-            }
-            if (connection != null) {
-                connection.close();
-            }
-        }
-    }
-
-    private <T> List<ColumnNode> buildNode(Class<T> clazz, T t) throws Exception {
+    public static <T> List<ColumnNode> buildNode(Class<T> clazz, T t) throws Exception {
         Field[] declaredFields = clazz.getDeclaredFields();
         List<ColumnNode> columnNodeList = new ArrayList<>();
         for (Field declaredField : declaredFields) {
@@ -119,9 +70,45 @@ public class BeanParser {
         return tableName;
     }
 
+    public static <T> String getIdFieldName(Class<T> clazz) {
+        Field[] declaredFields = clazz.getDeclaredFields();
+        List<Field> idFieldList = Arrays.stream(declaredFields).filter((field) -> field.getAnnotation(Id.class) != null).collect(Collectors.toList());
+        if (idFieldList != null && !idFieldList.isEmpty()) {
+            return idFieldList.get(0).getName();
+        }
+        return null;
+    }
+
+    public static <T> List<ColumnNode> buildNode(Class<T> clazz) {
+        Field[] declaredFields = clazz.getDeclaredFields();
+        List<ColumnNode> columnNodeList = new ArrayList<>();
+        for (int i = 0; i < declaredFields.length; i++) {
+            Field declaredField = declaredFields[i];
+            Column columnAnnotation = declaredField.getAnnotation(Column.class);
+            if (columnAnnotation == null) {
+                continue;
+            }
+            Id idAnnotation = declaredField.getAnnotation(Id.class);
+            ColumnNode columnNode = new ColumnNode();
+            if (idAnnotation != null) {
+                columnNode.setId(true);
+                columnNode.setGenerateType(idAnnotation.generateType());
+            } else {
+                columnNode.setId(false);
+            }
+            columnNode.setColumnName(columnAnnotation.value());
+            columnNode.setJavaType(columnAnnotation.javaType());
+            columnNode.setSqlType(columnAnnotation.sqlType());
+            columnNode.setFieldName(declaredField.getName());
+            columnNodeList.add(columnNode);
+        }
+        return columnNodeList;
+    }
+
     public static class ColumnNode {
         private boolean id;
         private GenerateType generateType;
+        private String fieldName;
         private String columnName;
         private Object columnValue;
         private Type.SQL sqlType;
@@ -173,6 +160,14 @@ public class BeanParser {
 
         public void setJavaType(Type.Java javaType) {
             this.javaType = javaType;
+        }
+
+        public String getFieldName() {
+            return fieldName;
+        }
+
+        public void setFieldName(String fieldName) {
+            this.fieldName = fieldName;
         }
     }
 

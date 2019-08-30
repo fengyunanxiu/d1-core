@@ -9,8 +9,7 @@ import io.g740.d1.dict.service.DictService;
 import io.g740.d1.entity.DbBasicConfigDO;
 import io.g740.d1.sqlbuilder.BeanParser;
 import io.g740.d1.sqlbuilder.DictDOJpaRepository;
-import io.g740.d1.sqlbuilder.QuerProxy;
-import io.g740.d1.sqlbuilder.QueryProxyHandler;
+import io.g740.d1.sqlbuilder.QueryProxy;
 import io.g740.d1.util.DateUtils;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.dbutils.QueryRunner;
@@ -42,7 +41,7 @@ public class TestController {
     private DictService dictService;
 
     @Autowired
-    private QuerProxy queryProxy;
+    private QueryProxy queryProxy;
 
     @ApiOperation("test cascade query")
     @GetMapping("/cascade-query")
@@ -117,7 +116,7 @@ public class TestController {
         BeanParser beanParser = new BeanParser();
 //        dictDO.setFieldDomain("test bean parser domain");
 //        dictDO.setFieldItem("test bean parser item");
-        beanParser.insert(DictDO.class, dictDO, dataSource, false);
+//        beanParser.insert(DictDO.class, dictDO, dataSource, false);
     }
 
     @GetMapping("/proxy")
