@@ -20,4 +20,6 @@ public interface FormDictConfigurationRepository {
     FormDictConfigurationDO add(FormDictConfigurationDO formDictConfigurationDO) throws Exception;
 
     void update(FormDictConfigurationDO formDictConfigurationDO) throws Exception;
+
+    void saveOrUpdateList(List<FormDictConfigurationDO> formDictConfigurationDOS) throws SQLException;
 }

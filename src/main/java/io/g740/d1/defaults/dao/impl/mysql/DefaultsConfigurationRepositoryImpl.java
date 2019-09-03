@@ -2,6 +2,7 @@ package io.g740.d1.defaults.dao.impl.mysql;
 
 import io.g740.d1.dao.convert.QueryRunnerRowProcessor;
 import io.g740.d1.defaults.dao.DefaultsConfigurationRepository;
+import io.g740.d1.defaults.dto.DefaultsConfigurationDTO;
 import io.g740.d1.defaults.entity.DefaultConfigurationType;
 import io.g740.d1.defaults.entity.DefaultsConfigurationDO;
 import io.g740.d1.util.StringUtils;
@@ -94,6 +95,42 @@ public class DefaultsConfigurationRepositoryImpl implements DefaultsConfiguratio
                 " where field_id = ? ";
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         qr.update(sql, fieldType.name(), fieldPluginConf, fieldManualConf, fieldId);
+    }
+
+    @Override
+    public void updateManualConfListByDomainItem(List<DefaultsConfigurationDTO> updateManualConfByDomainItemConfigurationDTOS) throws SQLException {
+        String executeSql = " update " + DefaultsConfigurationDO.TABLE_NAME + " set field_type = 'MANUAL',field_manual_conf= null where  field_form_df_key = ? and field_form_field_key = ?";
+        QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
+        String[][] paramerArr = new String[updateManualConfByDomainItemConfigurationDTOS.size()][2];
+        for (int i = 0; i < updateManualConfByDomainItemConfigurationDTOS.size(); i++) {
+            paramerArr[i][0] = updateManualConfByDomainItemConfigurationDTOS.get(i).getFormDfKey();
+            paramerArr[i][1] = updateManualConfByDomainItemConfigurationDTOS.get(i).getFormFieldKey();
+        }
+        qr.batch(executeSql,paramerArr);
+
+
+    }
+
+    @Override
+    public void saveOrUpdateList(List<DefaultsConfigurationDO> defaultsConfigurationDOS) throws SQLException {
+        String executeSql = " insert into " + DefaultsConfigurationDO.TABLE_NAME +
+                " (field_id, field_form_df_key, field_form_field_key, field_type, field_plugin_conf, field_manual_conf) " +
+                " values(?, ?, ?, ?, ?, ?) on duplicate key update  field_type = ? , field_plugin_conf = ? ,field_manual_conf = ? ";
+        QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
+        String[][] paramerArr = new String[defaultsConfigurationDOS.size()][9];
+        for (int i = 0; i < defaultsConfigurationDOS.size(); i++) {
+            paramerArr[i][0] =  UUIDUtils.compress();
+            paramerArr[i][1] = defaultsConfigurationDOS.get(i).getFieldFormDfKey();
+            paramerArr[i][2] = defaultsConfigurationDOS.get(i).getFieldFormFieldKey();
+            paramerArr[i][3] = defaultsConfigurationDOS.get(i).getFieldType().name();
+            paramerArr[i][4] = defaultsConfigurationDOS.get(i).getFieldPluginConf();
+            paramerArr[i][5] = defaultsConfigurationDOS.get(i).getFieldManualConf();
+            paramerArr[i][6] = defaultsConfigurationDOS.get(i).getFieldType().name();
+            paramerArr[i][7] = defaultsConfigurationDOS.get(i).getFieldPluginConf();
+            paramerArr[i][8] = defaultsConfigurationDOS.get(i).getFieldManualConf();
+        }
+        qr.batch(executeSql.toString(),paramerArr);
+
     }
 
 }

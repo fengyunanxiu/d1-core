@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
  */
 public class FormDictConfigurationDO {
 
-    private static final String TABLE_NAME = "db_form_dict_configuration";
+    public static final String TABLE_NAME = "db_form_dict_configuration";
 
     private String fieldId;
 

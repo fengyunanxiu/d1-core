@@ -7,6 +7,7 @@ import io.g740.d1.dict.service.FormDictConfigurationService;
 import io.g740.d1.dict.vo.FormDictConfigurationVO;
 import io.g740.d1.exception.custom.IllegalParameterException;
 import io.g740.d1.service.DataFacetKeyService;
+import io.g740.d1.util.CollectionUtils;
 import io.g740.d1.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -64,6 +66,9 @@ public class FormDictConfigurationServiceImpl implements FormDictConfigurationSe
     }
 
 
+
+
+    // 根据fileId来进行区分的
     @Override
     public void allocateFormDictConfiguration(FormDictConfigurationDO formDictConfigurationDO) throws Exception {
         if (formDictConfigurationDO == null) {
@@ -94,6 +99,16 @@ public class FormDictConfigurationServiceImpl implements FormDictConfigurationSe
         }
         // 将domain和item更新到form table setting中
         this.dataFacetKeyService.updateDomainAndItemByDfKeyAndFieldName(fieldFormDfKey, fieldFormFieldKey, fieldDomain, fieldItem);
+    }
+
+
+    // TODO 只有四个值，根据参数进行item 和domain进行过判断
+    @Override
+    public void saveBatchList(List<FormDictConfigurationDO> formDictConfigurationDOS) throws SQLException {
+        if(!CollectionUtils.isEmpty(formDictConfigurationDOS)){
+            this.formDictConfigurationRepository.saveOrUpdateList(formDictConfigurationDOS);
+
+        }
     }
 
 }

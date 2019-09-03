@@ -1,5 +1,9 @@
 package io.g740.d1.entity;
 
+import io.g740.d1.defaults.dto.DefaultsConfigurationDTO;
+import io.g740.d1.dict.dto.DictDTO;
+import io.g740.d1.dict.entity.FormDictConfigurationDO;
+
 public class DfFormTableSettingDO {
 
     public static final String TABLE_NAME = "df_form_table_setting";
@@ -31,6 +35,8 @@ public class DfFormTableSettingDO {
     public static final String F_FORM_FIELD_USE_DEFAULT_VAL = "form_field_use_default_val";
     public static final String F_FORM_FIELD_DEFAULT_VAL = "form_field_default_val";
     public static final String F_FORM_FIELD_DEFAULT_VAL_SQL = "form_field_default_val_sql";
+
+
 
     private Long id;
 
@@ -89,6 +95,12 @@ public class DfFormTableSettingDO {
 
 
     private Boolean columnIsExist;
+
+
+    private FormDictConfigurationDO dictConfiguration;
+
+    private DefaultsConfigurationDTO defaultsConfiguration;
+
 
     public Long getId() {
         return id;
@@ -302,13 +314,27 @@ public class DfFormTableSettingDO {
         this.formFieldDefaultVal = formFieldDefaultVal;
     }
 
-
-
     public Boolean getColumnIsExist() {
         return columnIsExist;
     }
 
     public void setColumnIsExist(Boolean columnIsExist) {
         this.columnIsExist = columnIsExist;
+    }
+
+    public FormDictConfigurationDO getDictConfiguration() {
+        return dictConfiguration;
+    }
+
+    public void setDictConfiguration(FormDictConfigurationDO dictConfiguration) {
+        this.dictConfiguration = dictConfiguration;
+    }
+
+    public DefaultsConfigurationDTO getDefaultsConfiguration() {
+        return defaultsConfiguration;
+    }
+
+    public void setDefaultsConfiguration(DefaultsConfigurationDTO defaultsConfiguration) {
+        this.defaultsConfiguration = defaultsConfiguration;
     }
 }

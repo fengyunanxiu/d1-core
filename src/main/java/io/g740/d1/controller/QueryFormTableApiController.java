@@ -47,6 +47,8 @@ public class QueryFormTableApiController {
         if (StringUtils.isNullOrEmpty(dataFacetKey)) {
             throw new IllegalParameterException("Empty data facet key " + dataFacetKey);
         }
+
+
         Object result = this.queryFormTableService.getDfKeyQueryFormSetting(dataFacetKey);
         if (result == null) {
             throw new ResourceNotFoundException("Cannot find resource from data facet key " + dataFacetKey);

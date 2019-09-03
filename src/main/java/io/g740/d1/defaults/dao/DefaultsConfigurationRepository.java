@@ -1,5 +1,6 @@
 package io.g740.d1.defaults.dao;
 
+import io.g740.d1.defaults.dto.DefaultsConfigurationDTO;
 import io.g740.d1.defaults.entity.DefaultsConfigurationDO;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
@@ -31,4 +32,8 @@ public interface DefaultsConfigurationRepository {
     DefaultsConfigurationDO insert(DefaultsConfigurationDO defaultsConfigurationDO) throws Exception;
 
     void update(DefaultsConfigurationDO defaultsConfigurationDO) throws Exception;
+
+    void updateManualConfListByDomainItem(List<DefaultsConfigurationDTO> updateManualConfByDomainItemConfigurationDTOS) throws SQLException;
+
+    void saveOrUpdateList(List<DefaultsConfigurationDO> defaultsConfigurationDOS) throws SQLException;
 }

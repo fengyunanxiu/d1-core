@@ -127,7 +127,7 @@ public class MysqlDataSourceComponent {
                     dfFormTableSettingDO.setExportFieldWidth(20);
                 }
                 //dfFormTableSettingDO.setTableParentLabel();
-                dfFormTableSettingDO.setFormFieldUseDefaultVal(true);
+                dfFormTableSettingDO.setFormFieldUseDefaultVal(false);
 
                 dfFormTableSettingDO.setColumnIsExist(true);
 
@@ -241,7 +241,7 @@ public class MysqlDataSourceComponent {
                     dfFormTableSettingDO.setExportFieldWidth(20);
                 }
                 //dfFormTableSettingDO.setTableParentLabel();
-                dfFormTableSettingDO.setFormFieldUseDefaultVal(true);
+                dfFormTableSettingDO.setFormFieldUseDefaultVal(false);
 
                 dfFormTableSettingDO.setColumnIsExist(true);
 

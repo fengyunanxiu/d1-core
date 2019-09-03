@@ -12,6 +12,7 @@ import io.g740.d1.exception.ServiceException;
 import io.g740.d1.exception.custom.DuplicateResourceException;
 import io.g740.d1.exception.custom.IllegalParameterException;
 import io.g740.d1.service.DataFacetKeyService;
+import io.g740.d1.util.CollectionUtils;
 import io.g740.d1.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +20,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.sql.SQLException;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author : zxiuwu
@@ -113,7 +117,7 @@ public class DefaultsConfigurationServiceImpl implements DefaultsConfigurationSe
         jsonObject.put("enable", pluginEnable);
         defaultsConfigurationDO.setFieldPluginConf(jsonObject.toJSONString());
 
-        String fieldId = defaultsConfigurationDO.getFieldId();
+        String fieldId = defaultsConfigurationDTO.getId();
         DefaultsConfigurationDO existDefaultConfiguration = null;
         if (StringUtils.isNotNullNorEmpty(fieldId)) {
             existDefaultConfiguration = this.defaultsConfigurationRepository.queryById(fieldId);
@@ -150,6 +154,58 @@ public class DefaultsConfigurationServiceImpl implements DefaultsConfigurationSe
         Map<String, String> rowMap = executeResult.get(0);
         Collection<String> values = rowMap.values();
         return values;
+    }
+
+
+    // 要区分两种默认值，；一类只有fieldDomain和fieldItem ;一类是全的；这里根据fieldType有无进行区分
+    @Override
+    public void saveBatchListForForm(List<DefaultsConfigurationDTO> defaultsConfigurationDTOS) throws SQLException {
+        if(!CollectionUtils.isEmpty(defaultsConfigurationDTOS)){
+
+            List<DefaultsConfigurationDTO> updateManualConfByDomainItemConfigurationDTOS = defaultsConfigurationDTOS.stream().filter(e -> e.getFieldType() == null)
+                    .collect(Collectors.toList());
+
+            List<DefaultsConfigurationDTO> allInfoDefaultsConfigurationDTOS = defaultsConfigurationDTOS.stream().filter(e -> e.getFieldType() != null)
+                    .collect(Collectors.toList());
+
+            if(!CollectionUtils.isEmpty(updateManualConfByDomainItemConfigurationDTOS)){
+                this.defaultsConfigurationRepository.updateManualConfListByDomainItem(updateManualConfByDomainItemConfigurationDTOS);
+            }
+
+            if(!CollectionUtils.isEmpty(allInfoDefaultsConfigurationDTOS)){
+                List<DefaultsConfigurationDO> defaultsConfigurationDOS = new LinkedList<>();
+                DefaultsConfigurationDO defaultsConfigurationDO = null;
+                for (DefaultsConfigurationDTO allInfoDefaultsConfigurationDTO : allInfoDefaultsConfigurationDTOS) {
+                    defaultsConfigurationDO = new DefaultsConfigurationDO();
+                    defaultsConfigurationDO.setFieldFormDfKey(allInfoDefaultsConfigurationDTO.getFormDfKey());
+                    defaultsConfigurationDO.setFieldFormFieldKey(allInfoDefaultsConfigurationDTO.getFormFieldKey());
+                    defaultsConfigurationDO.setFieldId(allInfoDefaultsConfigurationDTO.getId());
+                    defaultsConfigurationDO.setFieldType(DefaultConfigurationType.valueOf(allInfoDefaultsConfigurationDTO.getFieldType()));
+                    defaultsConfigurationDO.setFieldManualConf(allInfoDefaultsConfigurationDTO.getManualConf());
+                    // 通过唯一主键 dfKey和fieldName进行更新，id其实用不上
+                    defaultsConfigurationDO.setFieldId(allInfoDefaultsConfigurationDTO.getId());
+
+                    String pluginJdbcUrl = allInfoDefaultsConfigurationDTO.getPluginJdbcUrl();
+                    String pluginPassword = allInfoDefaultsConfigurationDTO.getPluginPassword();
+                    String pluginSQL = allInfoDefaultsConfigurationDTO.getPluginSQL();
+                    String pluginUsername = allInfoDefaultsConfigurationDTO.getPluginUsername();
+                    String pluginCron = allInfoDefaultsConfigurationDTO.getPluginCron();
+                    String pluginEnable = allInfoDefaultsConfigurationDTO.getPluginEnable();
+                    String pluginType = allInfoDefaultsConfigurationDTO.getPluginType();
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("cron", pluginCron);
+                    jsonObject.put("type", pluginType);
+                    jsonObject.put("jdbc_url", pluginJdbcUrl);
+                    jsonObject.put("username", pluginUsername);
+                    jsonObject.put("password", pluginPassword);
+                    jsonObject.put("sql", pluginSQL);
+                    jsonObject.put("enable", pluginEnable);
+                    defaultsConfigurationDO.setFieldPluginConf(jsonObject.toJSONString());
+                    defaultsConfigurationDOS.add(defaultsConfigurationDO);
+                }
+                this.defaultsConfigurationRepository.saveOrUpdateList(defaultsConfigurationDOS);
+            }
+        }
     }
 
 }

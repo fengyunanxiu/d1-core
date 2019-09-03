@@ -15,9 +15,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import static io.g740.d1.dict.entity.FormDictConfigurationDO.*;
+
+
+
 
 /**
  * @author : zxiuwu
@@ -77,6 +84,36 @@ public class FormDictConfigurationRepositoryImpl implements FormDictConfiguratio
         String sql = " update db_form_dict_configuration set field_domain = ?, field_item = ? where field_id = ?";
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         qr.update(sql, domain, item, id);
+    }
+
+    @Override
+    public void saveOrUpdateList(List<FormDictConfigurationDO> formDictConfigurationDOS) throws SQLException {
+        String executeSql = "insert into db_form_dict_configuration(field_id, field_form_df_key," +
+                " field_form_field_key, field_domain, field_item) values(?, ?, ?, ?, ?)  on duplicate key update field_domain = ? ,field_item =?";
+        try (Connection connection = this.d1BasicDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(executeSql.toString());
+             ){
+            connection.setAutoCommit(false);
+            for (FormDictConfigurationDO formDictConfigurationDO : formDictConfigurationDOS) {
+                String formDfKey = formDictConfigurationDO.getFieldFormDfKey();
+                String formFieldKey = formDictConfigurationDO.getFieldFormFieldKey();
+                String domain = formDictConfigurationDO.getFieldDomain();
+                String item = formDictConfigurationDO.getFieldItem();
+                preparedStatement.setObject(1, UUIDUtils.compress());
+                preparedStatement.setObject(2, formDfKey);
+                preparedStatement.setObject(3, formFieldKey);
+                preparedStatement.setObject(4, domain);
+                preparedStatement.setObject(5, item);
+                preparedStatement.setObject(6, domain);
+                preparedStatement.setObject(7, item);
+                preparedStatement.addBatch();
+            }
+            preparedStatement.executeLargeBatch();
+            connection.commit();
+        }catch (Exception e){
+            LOGGER.error("jdbcTemplate.getDataSource().getConnection().commit() is Fail ");
+            throw  e;
+        }
     }
 
 }

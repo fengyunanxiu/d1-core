@@ -2,6 +2,7 @@ package io.g740.d1.defaults.dao.impl.postgresql;
 
 import io.g740.d1.dao.convert.QueryRunnerRowProcessor;
 import io.g740.d1.defaults.dao.DefaultsConfigurationRepository;
+import io.g740.d1.defaults.dto.DefaultsConfigurationDTO;
 import io.g740.d1.defaults.entity.DefaultConfigurationType;
 import io.g740.d1.defaults.entity.DefaultsConfigurationDO;
 import io.g740.d1.util.StringUtils;
@@ -92,6 +93,16 @@ public class DefaultsConfigurationRepositoryImpl implements DefaultsConfiguratio
                 " where field_id = ? ";
         QueryRunner qr = new QueryRunner(this.d1BasicDataSource);
         qr.update(sql, fieldType.name(), fieldPluginConf, fieldManualConf, fieldId);
+    }
+
+    @Override
+    public void updateManualConfListByDomainItem(List<DefaultsConfigurationDTO> updateManualConfByDomainItemConfigurationDTOS) {
+        // @TODO
+    }
+
+    @Override
+    public void saveOrUpdateList(List<DefaultsConfigurationDO> defaultsConfigurationDOS) {
+        // @TODO
     }
 
 }

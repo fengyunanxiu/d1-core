@@ -78,4 +78,12 @@ public class FormDictConfigurationRepositoryImpl implements FormDictConfiguratio
         qr.update(sql, domain, item, id);
     }
 
+
+
+    // @TODO
+    @Override
+    public void saveOrUpdateList(List<FormDictConfigurationDO> formDictConfigurationDOS) throws SQLException {
+
+    }
+
 }

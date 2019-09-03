@@ -60,14 +60,7 @@ public class DataFacetKeyController {
         if(CollectionUtils.isEmpty(dfFormTableSettingDOS)){
             throw new IllegalParameterException("form infomation can not be null!");
         }
-        List<DfFormTableSettingDO> dfFormTableSettingDOSForUpdate = dfFormTableSettingDOS.stream()
-                .filter(e -> e.getId() != null && e.getId() > 0)
-                .collect(Collectors.toList());
-
-        List<DfFormTableSettingDO> dfFormTableSettingDOSForAdd = dfFormTableSettingDOS.stream()
-                .filter((e) -> e.getId() == null || e.getId() <= 0)
-                .collect(Collectors.toList());
-         dataFacetKeyService.saveDfFormTableSetting(dfFormTableSettingDOSForUpdate, dfFormTableSettingDOSForAdd);
+         dataFacetKeyService.saveDfFormTableSetting(dfFormTableSettingDOS);
     }
 
 

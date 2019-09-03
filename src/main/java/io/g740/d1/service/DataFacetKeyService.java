@@ -37,4 +37,6 @@ public interface DataFacetKeyService {
     void updateDefaultValueStrategyType(String dfKey, String fieldKey, String strategyType) throws Exception;
 
     void updateDomainAndItemByDfKeyAndFieldName(String dfKey, String fieldName, String domain, String item) throws Exception;
+
+    void saveDfFormTableSetting(List<DfFormTableSettingDO> dfFormTableSettingDOS) throws Exception;
 }
