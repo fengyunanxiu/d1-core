@@ -155,6 +155,8 @@ create table if not exists db_form_dict_configuration(
     field_domain varchar(64),
     field_item varchar(64)
 ) charset=utf8 collate utf8_croatian_ci;
+
+###
 create unique index db_form__uindex
 	on db_form_dict_configuration (field_form_df_key, field_form_field_key);
 
@@ -169,6 +171,8 @@ create table if not exists db_defaults_configuration(
     field_plugin_conf longtext ,
     field_manual_conf longtext
 ) charset=utf8 collate utf8_croatian_ci;
+
+###
 
 create unique index db_defaults_configuration__uindex
      	on db_defaults_configuration (field_form_df_key, field_form_field_key)
