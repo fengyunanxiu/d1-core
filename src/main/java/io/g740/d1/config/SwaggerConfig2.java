@@ -28,28 +28,28 @@ import java.util.TimeZone;
 /**This class file configures the basic configuration of Swagger, please do not delete it. Modify the specific configuration information according to actual needs.
  * @author maven engine
  */
-@EnableSwagger2
+//@EnableSwagger2
 @Configuration
-public class SwaggerConfig extends WebMvcConfigurationSupport {
+public class SwaggerConfig2 extends WebMvcConfigurationSupport {
 
-    @Bean
-    public Docket productApi() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(apiInfo())
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("io.g740"))
-                .paths(PathSelectors.any())
-                .build();
-
-    }
-
-    private ApiInfo apiInfo() {
-        return  new ApiInfoBuilder()
-                .title("swagger")
-                .version("1.0")
-                .contact(new Contact("test", "", "test@pg.com.cn"))
-                .build();
-    }
+//    @Bean
+//    public Docket productApi() {
+//        return new Docket(DocumentationType.SWAGGER_2)
+//                .apiInfo(apiInfo())
+//                .select()
+//                .apis(RequestHandlerSelectors.basePackage("io.g740"))
+//                .paths(PathSelectors.any())
+//                .build();
+//
+//    }
+//
+//    private ApiInfo apiInfo() {
+//        return  new ApiInfoBuilder()
+//                .title("swagger")
+//                .version("1.0")
+//                .contact(new Contact("test", "", "test@pg.com.cn"))
+//                .build();
+//    }
 
     @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
