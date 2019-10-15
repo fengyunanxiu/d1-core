@@ -35,7 +35,7 @@ public class DictManageController {
     @GetMapping("/domain")
     @ResponseBody
     @ApiOperation("query")
-    public PageResultDTO<DictQueryVO> query(@RequestParam(required = false, value = "field_domain") String domain,
+    public PageResultDTO query(@RequestParam(required = false, value = "field_domain") String domain,
                                             @RequestParam(required = false, value = "field_item") String item,
                                             @RequestParam(required = false, value = "field_value") String value,
                                             @RequestParam(value = "page", defaultValue = "0") int page,

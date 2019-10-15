@@ -48,7 +48,7 @@ public class DefaultsConfigurationController {
     @PostMapping("/test-sql")
     @ResponseBody
     @ApiOperation("test sql")
-    public Collection<String> executeTestSQL(@RequestBody DefaultsConfigurationDTO defaultsConfigurationDTO) {
+    public Collection executeTestSQL(@RequestBody DefaultsConfigurationDTO defaultsConfigurationDTO) {
         return this.defaultsConfigurationService.executeSQLTest(defaultsConfigurationDTO);
     }
 

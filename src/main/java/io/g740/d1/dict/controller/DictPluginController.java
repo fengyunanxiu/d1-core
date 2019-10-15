@@ -49,7 +49,7 @@ public class DictPluginController {
     @PostMapping("/test-sql")
     @ResponseBody
     @ApiOperation("test sql")
-    public Map<String, Object> executeSQLTest(@RequestBody DictPluginDTO dictPluginDTO) {
+    public Map executeSQLTest(@RequestBody DictPluginDTO dictPluginDTO) {
         Map<String, Object> result = new HashMap<>();
         List<Map<String, String>> testResult = this.dictPluginService.executeSQLTest(dictPluginDTO);
         boolean allMatch = testResult.stream().limit(5).allMatch(rowMap -> rowMap.get("value") != null && rowMap.get("sequence") != null && rowMap.get("label") != null);

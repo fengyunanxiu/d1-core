@@ -121,7 +121,7 @@ public class TestController {
 
     @GetMapping("/proxy")
     @ResponseBody
-    public List<DictDO> testProxy(String fieldId) {
+    public List testProxy(String fieldId) {
         DictDOJpaRepository instance = this.queryProxy.instance(DictDOJpaRepository.class);
         List<DictDO> fieldIdList = instance.findByFieldId(fieldId);
         return fieldIdList;
