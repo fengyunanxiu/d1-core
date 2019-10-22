@@ -175,8 +175,12 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
             throw new ResourceNotFoundException("data facet key is not found!");
         }
         //获取生成sql文件
+        long start =System.currentTimeMillis();
         SQLGenerResultDTO sqlGenerResultDTO = generalSQL(dataFacetKey, simpleParameters);
+        LOGGER.info("生成sql耗时：{}",System.currentTimeMillis()-start);
+        start=System.currentTimeMillis();
         PageResultDTO pageResultDTO = dsQueryDao.excuteQuery(sqlGenerResultDTO, dfKeyBasicConfigDO.getFkDbId());
+        LOGGER.info("执行sql耗时：{}",System.currentTimeMillis()-start);
         return pageResultDTO;
     }
 

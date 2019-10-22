@@ -6,6 +6,8 @@ import io.g740.d1.service.QueryFormTableService;
 import io.g740.d1.util.ApiUtils;
 import io.g740.d1.util.ParameterHandlerUtils;
 import com.mysql.jdbc.StringUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
@@ -21,12 +23,14 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/d1/query-suite")
+@Api(tags = "QueryFormTableApiController")
 public class QueryFormTableApiController {
     @Autowired
     private QueryFormTableService queryFormTableService;
 
     @GetMapping("/form-table-setting")
     @ResponseBody
+    @ApiOperation(value = "queryDataSourceClassicQueryPageSetting")
     public Object queryDataSourceClassicQueryPageSetting(
             @RequestParam(name = "data_facet_key", required = true) String dataFacetKey, HttpServletRequest request,
             HttpServletResponse response) throws Exception {
@@ -42,6 +46,7 @@ public class QueryFormTableApiController {
 
     @GetMapping("/form-setting")
     @ResponseBody
+    @ApiOperation(value = "queryFormSetting")
     public Object queryFormSetting(@RequestParam(name = "data_facet_key", required = true) String dataFacetKey,
                                    HttpServletRequest request, HttpServletResponse response) throws Exception {
         if (StringUtils.isNullOrEmpty(dataFacetKey)) {
@@ -65,6 +70,7 @@ public class QueryFormTableApiController {
      */
     @GetMapping("/table-setting")
     @ResponseBody
+    @ApiOperation(value = "queryTableSetting")
     public Object queryTableSetting(@RequestParam(name = "data_facet_key", required = true) String dataFacetKey,
                                     HttpServletRequest request, HttpServletResponse response) throws Exception {
         if (StringUtils.isNullOrEmpty(dataFacetKey)) {
@@ -128,6 +134,7 @@ public class QueryFormTableApiController {
      */
     @GetMapping("/query")
     @ResponseBody
+    @ApiOperation(value = "generalQuery")
     public Object generalQuery(@RequestParam(name = "data_facet_key", required = true) String dataFacetKey,
                                HttpServletRequest request) throws Exception {
         if (StringUtils.isNullOrEmpty(dataFacetKey)) {
@@ -152,6 +159,7 @@ public class QueryFormTableApiController {
      */
     @GetMapping("/query-and-datasource")
     @ResponseBody
+    @ApiOperation(value = "generalQueryAndDataSource")
     public Object generalQueryAndDataSource(@RequestParam(name = "data_facet_key", required = true) String dataFacetKey,
                                             HttpServletRequest request) throws Exception {
         if (StringUtils.isNullOrEmpty(dataFacetKey)) {
@@ -173,6 +181,7 @@ public class QueryFormTableApiController {
      */
     @GetMapping("/execute-query")
     @ResponseBody
+    @ApiOperation(value = "executeQuery")
     public Object executeQuery(@RequestParam(name = "data_facet_key", required = true) String dataFacetKey,
                                HttpServletRequest request) throws Exception {
         if (StringUtils.isNullOrEmpty(dataFacetKey)) {
@@ -193,6 +202,7 @@ public class QueryFormTableApiController {
      */
     @GetMapping("/general-sql")
     @ResponseBody
+    @ApiOperation(value = "generalSQL")
     public Object generalSQL(@RequestParam(name = "data_facet_key", required = true) String dataFacetKey,
                                HttpServletRequest request) throws Exception {
         if (StringUtils.isNullOrEmpty(dataFacetKey)) {

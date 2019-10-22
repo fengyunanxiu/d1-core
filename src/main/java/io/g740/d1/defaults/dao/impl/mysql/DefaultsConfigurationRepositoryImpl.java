@@ -57,6 +57,7 @@ public class DefaultsConfigurationRepositoryImpl implements DefaultsConfiguratio
         return qr.query(sql, new BeanListHandler<>(DefaultsConfigurationDO.class, new QueryRunnerRowProcessor()));
     }
 
+    
 
     @Override
     public DefaultsConfigurationDO insert(DefaultsConfigurationDO defaultsConfigurationDO) throws Exception {
