@@ -1,5 +1,6 @@
 package io.g740.d1.util;
 
+import io.g740.d1.constant.DsConstants;
 import io.g740.d1.constant.QueryParamConstants;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -58,6 +59,8 @@ public class ParameterHandlerUtils {
         }
         if (page != null && size != null) {
             return  new PageRequest(page, size, sort);
+        }else if(sort != null && sorts.length > 0){
+            return  new PageRequest(0, DsConstants.SIZE_WITHOUT_PAGEABLE , sort);
         }
         return null;
     }

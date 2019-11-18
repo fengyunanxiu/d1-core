@@ -112,4 +112,7 @@ public interface DsConstants {
 
     String urlSuffix = "?useUnicode=true&characterEncoding=UTF-8";
     String SPECIAL_FORM_TYPE_CHOICE_NULL_OR_EMPTY = "__SPECIAL_FORM_TYPE_CHOICE_NULL_OR_EMPTY__";
+
+
+    int SIZE_WITHOUT_PAGEABLE = -1;
 }

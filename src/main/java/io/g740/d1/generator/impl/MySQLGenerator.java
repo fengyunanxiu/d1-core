@@ -1,5 +1,6 @@
 package io.g740.d1.generator.impl;
 
+import io.g740.d1.constant.DsConstants;
 import io.g740.d1.dto.QueryParameterGroupDTO;
 import io.g740.d1.dto.SQLGenerResultDTO;
 import io.g740.d1.entity.DfFormTableSettingDO;
@@ -123,9 +124,11 @@ public class MySQLGenerator implements SQLGenerator {
         StringBuilder sorParam = new StringBuilder();
         StringBuilder pageParam = new StringBuilder();
         if(pageable != null) {
-            long offset = pageable.getPageSize()*pageable.getPageNumber();
-            int limit = pageable.getPageSize();
-            pageParam.append(" LIMIT " + offset + "," +limit);
+            if(pageable.getPageSize() != DsConstants.SIZE_WITHOUT_PAGEABLE){
+                long offset = pageable.getPageSize()*pageable.getPageNumber();
+                int limit = pageable.getPageSize();
+                pageParam.append(" LIMIT " + offset + "," +limit);
+            }
 
             Sort sort = pageable.getSort();
             if (sort != null) {
