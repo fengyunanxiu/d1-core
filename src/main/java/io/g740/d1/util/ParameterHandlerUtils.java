@@ -60,7 +60,7 @@ public class ParameterHandlerUtils {
         if (page != null && size != null) {
             return  new PageRequest(page, size, sort);
         }else if(sort != null && sorts.length > 0){
-            return  new PageRequest(0, DsConstants.SIZE_WITHOUT_PAGEABLE , sort);
+            return  new PageRequest( DsConstants.SIZE_WITHOUT_PAGEABLE , DsConstants.SIZE_WITHOUT_PAGEABLE , sort);
         }
         return null;
     }
