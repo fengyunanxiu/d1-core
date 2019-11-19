@@ -251,6 +251,7 @@ public class DataSourceFactory {
         mysqlProperties.setProperty("Url", url);
         mysqlProperties.setProperty("User", dbUserName);
         mysqlProperties.setProperty("Password", dbPassword);
+        mysqlProperties.setProperty("Driver",driverName);
         datasource = DataSourcePoolUtils.createDatasource(mysqlProperties);
         dataSourceMap.put(dsId, datasource);
         return datasource;
