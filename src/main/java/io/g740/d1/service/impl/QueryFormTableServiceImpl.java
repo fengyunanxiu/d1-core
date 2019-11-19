@@ -227,7 +227,7 @@ public class QueryFormTableServiceImpl implements QueryFormTableService {
         StringBuilder sorParam = new StringBuilder();
         StringBuilder pageParam = new StringBuilder();
         if(pageable != null) {
-            if(;){
+            if(pageable.getPageSize() != DsConstants.SIZE_WITHOUT_PAGEABLE  || pageable.getPageNumber() != DsConstants.SIZE_WITHOUT_PAGEABLE){
                 long offset = pageable.getPageSize()*pageable.getPageNumber();
                 int limit = pageable.getPageSize();
                 pageParam.append(" LIMIT " + offset + "," +limit);
