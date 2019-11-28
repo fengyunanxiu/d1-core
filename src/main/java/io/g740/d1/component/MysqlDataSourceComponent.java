@@ -77,7 +77,7 @@ public class MysqlDataSourceComponent {
                 String columnName = tableColumnsDetailDTO.getColumnName();
                 dfFormTableSettingDO.setViewFieldLabel(getLabelName(columnName));
                 dfFormTableSettingDO.setDbFieldComment(tableColumnsDetailDTO.getColumnComment());
-                dfFormTableSettingDO.setFormFieldVisible(true);
+                dfFormTableSettingDO.setFormFieldVisible(false);
                 dfFormTableSettingDO.setFormFieldSequence(tableColumnsDetailDTO.getOrdinalPosition());
                 dfFormTableSettingDO.setFormFieldQueryType(DsConstants.FormFieldQueryTypeEnum.EXACT_MATCHING_TEXT.getVal());
 
@@ -85,7 +85,7 @@ public class MysqlDataSourceComponent {
                 //dfFormTableSettingDO.setFormFieldDictDomainName();
                 //dfFormTableSettingDO.getFormFieldDefaultValStrategy();
 
-                dfFormTableSettingDO.setTableFieldVisible(true);
+                dfFormTableSettingDO.setTableFieldVisible(false);
                 dfFormTableSettingDO.setTableFieldOrderBy(FormTableSettingConstants.OrderBy.NONE.toString());
                 dfFormTableSettingDO.setTableFieldQueryRequired(true);
                 dfFormTableSettingDO.setTableFieldSequence(tableColumnsDetailDTO.getOrdinalPosition());
