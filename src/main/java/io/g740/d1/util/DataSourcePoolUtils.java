@@ -17,6 +17,8 @@ import java.util.Properties;
  */
 public class DataSourcePoolUtils {
 
+
+
     public static DataSource createDatasource(Properties properties) throws Exception {
 
 
@@ -61,7 +63,19 @@ public class DataSourcePoolUtils {
 
         //校验datasource连接是够有效
         validDatasourceConnect(dataSource);
+
+
+
+        // 添向外传播形式
+        broadCastDasourceInit(dataSource);
+
         return dataSource;
+    }
+
+    private static void broadCastDasourceInit(DataSource dataSource) {
+        DataSourceCreatedEvent dataSourceCreatedEvent = DataSourceCreatedEventFactory.getDataSourceCreatedEvent();
+        dataSourceCreatedEvent.postDeal(dataSource);
+
     }
 
     private static void validDatasourceConnect(DataSource ds) throws Exception {
