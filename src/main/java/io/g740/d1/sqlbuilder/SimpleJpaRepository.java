@@ -1,10 +1,10 @@
 package io.g740.d1.sqlbuilder;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 
+import javax.sql.DataSource;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.*;

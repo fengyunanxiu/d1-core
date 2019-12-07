@@ -25,7 +25,6 @@ import io.g740.d1.util.StringUtils;
 import io.g740.d1.vo.DfKeyQueryFormSettingVO;
 import io.g740.d1.vo.DfKeyQueryTableSettingVO;
 import io.g740.d1.vo.DfKeyQueryVO;
-import org.apache.tomcat.jdbc.pool.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -36,6 +35,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;

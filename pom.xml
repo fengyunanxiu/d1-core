@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.g740</groupId>
     <artifactId>d1-core</artifactId>
-    <version>1.0.5.RELEASE</version>
+    <version>1.0.6.RELEASE</version>
     <packaging>jar</packaging>
 
     <name>d1-core</name>
@@ -184,11 +184,11 @@
             <version>${poi.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-jdbc</artifactId>
-            <version>8.5.23</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.tomcat</groupId>-->
+<!--            <artifactId>tomcat-jdbc</artifactId>-->
+<!--            <version>8.5.23</version>-->
+<!--        </dependency>-->
 
 
         <dependency>

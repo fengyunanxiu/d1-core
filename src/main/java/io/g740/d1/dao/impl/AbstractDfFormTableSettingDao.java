@@ -5,12 +5,12 @@ import io.g740.d1.dao.convert.QueryRunnerRowProcessor;
 import io.g740.d1.entity.DfFormTableSettingDO;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
-import org.apache.tomcat.jdbc.pool.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static io.g740.d1.entity.DfFormTableSettingDO.*;
 
+import javax.sql.DataSource;
 import javax.xml.crypto.Data;
 import java.sql.SQLException;
 

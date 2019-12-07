@@ -11,7 +11,6 @@ import io.g740.d1.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
-import org.apache.tomcat.jdbc.pool.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.sql.SQLException;

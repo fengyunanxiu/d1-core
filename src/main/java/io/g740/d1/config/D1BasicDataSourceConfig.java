@@ -3,13 +3,13 @@ package io.g740.d1.config;
 import io.g740.d1.init.D1BasicDataService;
 import io.g740.d1.init.D1BasicTableService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tomcat.jdbc.pool.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.sql.DataSource;
 import java.io.File;
 
 /**

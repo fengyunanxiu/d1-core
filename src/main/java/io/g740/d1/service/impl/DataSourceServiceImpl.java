@@ -1,5 +1,6 @@
 package io.g740.d1.service.impl;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import io.g740.d1.component.CacheComponent;
 import io.g740.d1.constant.DsConstants;
 import io.g740.d1.dao.DbBasicConfigDao;
@@ -19,7 +20,7 @@ import io.g740.d1.util.FileReaderUtil;
 import com.alibaba.fastjson.JSON;
 import com.jcraft.jsch.Session;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tomcat.jdbc.pool.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -364,7 +366,7 @@ public class DataSourceServiceImpl implements DataSourceService {
             DataSource dataSource = dataSourceFactory.dataSourceMap.get(dbBasicConfigDO.getId());
             if (dataSource != null) {
                 //注销
-                dataSource.postDeregister();
+                ((DruidDataSource)dataSource).postDeregister();
                 dataSourceFactory.dataSourceMap.remove(dbBasicConfigDO.getId());
             }
 

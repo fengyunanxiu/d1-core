@@ -7,11 +7,12 @@ import io.g740.d1.entity.DbSecurityConfigDO;
 import io.g740.d1.util.DateUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.tomcat.jdbc.pool.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.*;
 
