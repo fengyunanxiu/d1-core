@@ -65,7 +65,7 @@ public class CommonExportExecutor implements ExportExecutor {
             String filePath = path.toString();
             file = new File(filePath);
             connection = dataSource.getConnection();
-            connection.setNetworkTimeout(Executors.newFixedThreadPool(1), 3600000);
+//            connection.setNetworkTimeout(Executors.newFixedThreadPool(1), 3600000);
             preparedStatement = connection.prepareStatement(querySql);
             //绑定参数
             if(!CollectionUtils.isEmpty(paramList)){

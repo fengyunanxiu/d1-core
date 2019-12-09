@@ -47,9 +47,9 @@ public class MySQLGenerator implements SQLGenerator {
         String wholeWhereClause = (StringUtils.isNotNullNorEmpty(sqlConditions.getWhereClause()) ? " AND " : "") + sqlConditions.getWhereClause() + (moreWhereClause == null ? "" : moreWhereClause);
         String countSql = generateCountSql(tableName,wholeWhereClause);
 
-        LOGGER.info("count sql: {}", countSql);
+        LOGGER.info("count sql: {}, params:{}", countSql, sqlConditions.getParameters());
         String querySql = generateQuerySql(tableName, wholeWhereClause, pageable);
-        LOGGER.info("query sql: {}", querySql);
+        LOGGER.info("query sql: {}, params:{}", querySql, sqlConditions.getParameters());
 
         sqlGenerResultDTO.setCountSql(countSql);
         sqlGenerResultDTO.setQuerySql(querySql);
