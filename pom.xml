@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.g740</groupId>
     <artifactId>d1-core</artifactId>
-    <version>1.0.7.RELEASE</version>
+    <version>1.0.8.RELEASE</version>
     <packaging>jar</packaging>
 
     <name>d1-core</name>
@@ -17,7 +17,7 @@
         <java.version>1.8</java.version>
         <spring.version>4.3.0.RELEASE</spring.version>
         <springfox.version>2.7.0</springfox.version>
-        <poi.version>3.9</poi.version>
+        <poi.version>4.0.0 </poi.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>

@@ -192,18 +192,20 @@ public class CommonExcelWriter {
 
         // 设置这些样式
         titleRowStyle.setFillForegroundColor((short) 40);
-        titleRowStyle.setFillPattern((short) 1);
-        titleRowStyle.setBorderBottom((short) 1);
-        titleRowStyle.setBorderLeft((short) 1);
-        titleRowStyle.setBorderRight((short) 1);
-        titleRowStyle.setBorderTop((short) 1);
-        titleRowStyle.setAlignment(CellStyle.ALIGN_CENTER);//水平居中
-        titleRowStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);//垂直居中
+
+
+        titleRowStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND );
+        titleRowStyle.setBorderBottom(BorderStyle.THIN );
+        titleRowStyle.setBorderLeft(BorderStyle.THIN);
+        titleRowStyle.setBorderRight(BorderStyle.THIN);
+        titleRowStyle.setBorderTop(BorderStyle.THIN);
+        titleRowStyle.setAlignment(HorizontalAlignment.CENTER );//水平居中
+        titleRowStyle.setVerticalAlignment(VerticalAlignment.CENTER);//垂直居中
         // 生成一个字体
         Font titleRowFont = workbook.createFont();
         titleRowFont.setColor((short) 20);
         titleRowFont.setFontHeightInPoints((short) 12);
-        titleRowFont.setBoldweight((short) 700);
+        titleRowFont.setBold(true);
         // 把字体应用到当前的样式
         titleRowStyle.setFont(titleRowFont);
 
@@ -214,14 +216,15 @@ public class CommonExcelWriter {
         // 生成并设置另一个样式
         CellStyle contentRowStyle = workbook.createCellStyle();
         // HSSFColor
-        contentRowStyle.setFillForegroundColor(HSSFColor.WHITE.index);
-        contentRowStyle.setFillPattern((short) 1);
-        contentRowStyle.setBorderBottom((short) 1);
-        contentRowStyle.setBorderLeft((short) 1);
-        contentRowStyle.setBorderRight((short) 1);
-        contentRowStyle.setBorderTop((short) 1);
-        contentRowStyle.setAlignment((short) 2);
-        contentRowStyle.setVerticalAlignment((short) 1);
+        contentRowStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.WHITE.getIndex());
+        contentRowStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND );
+
+        contentRowStyle.setBorderBottom(BorderStyle.THIN );
+        contentRowStyle.setBorderLeft(BorderStyle.THIN );
+        contentRowStyle.setBorderRight(BorderStyle.THIN );
+        contentRowStyle.setBorderTop(BorderStyle.THIN );
+        contentRowStyle.setAlignment(HorizontalAlignment.CENTER );
+        contentRowStyle.setVerticalAlignment(VerticalAlignment.CENTER );
         // 生成另一个字体
         Font contentRowFont = workbook.createFont();
         contentRowFont.setFontHeightInPoints((short) 10);
