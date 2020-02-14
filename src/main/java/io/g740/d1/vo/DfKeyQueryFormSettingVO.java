@@ -20,6 +20,7 @@ public class DfKeyQueryFormSettingVO {
      * 作为查询字段时，元素类型
      */
     private String formFieldQueryType;
+    
 
     /**
      * 作为查询字段时，字段取值范围  id/value
