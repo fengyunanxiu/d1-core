@@ -299,9 +299,10 @@ public class DataFacetKeyServiceImpl implements DataFacetKeyService {
                 if(StringUtils.isEmpty(dfFormTableSettingDO.getFormFieldDictDomainName()) || StringUtils.isEmpty(dfFormTableSettingDO.getFormFieldDictItem()) ){
                     throw new IllegalParameterException(String.format("Field Name like:%s's Element Type is %s,must set a Optional Values",dbFieldName,formQueryType));
                 }
-                if( !StringUtils.isEmpty(dfFormTableSettingDO.getFormFieldDefaultVal()) || !StringUtils.isEmpty(dfFormTableSettingDO.getFormFieldDefValStrategy()) || dfFormTableSettingDO.getFormFieldUseDefaultVal() ){
-                    throw new IllegalParameterException(String.format("Field Name like:%s's Element Type is %s,can not use a default val",dbFieldName,formQueryType));
-                }
+//              不在校验默认值，可以使用默认值
+//                if( !StringUtils.isEmpty(dfFormTableSettingDO.getFormFieldDefaultVal()) || !StringUtils.isEmpty(dfFormTableSettingDO.getFormFieldDefValStrategy()) || dfFormTableSettingDO.getFormFieldUseDefaultVal() ){
+//                    throw new IllegalParameterException(String.format("Field Name like:%s's Element Type is %s,can not use a default val",dbFieldName,formQueryType));
+//                }
             }else{
                 if(!StringUtils.isEmpty(dfFormTableSettingDO.getFormFieldDictDomainName()) || !StringUtils.isEmpty(dfFormTableSettingDO.getFormFieldDictItem()) ){
                     throw new IllegalParameterException(String.format("Field Name like:%s's Element Type is %s,can not set a Optional Values",dbFieldName,formQueryType));
